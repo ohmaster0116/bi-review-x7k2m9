@@ -16329,6 +16329,20 @@ function gapTrackerPanel(){
 function whaleTrajBadge(){
   try{
     var S=window.__SUJO; if(!S||!S.near_term_boundaries||!S.near_term_boundaries.length)return '';
+    // ★★[헤븐 08-07 · 이사 "고장난거 싹 없애라"] 낡은 좌표로 판정을 내면 그건 고장이다.
+    //  [실행] sujo_layer.generated = 2026-07-27 (11일 전) · price 65,208 (당시 가격)
+    //         ★생산기가 코드에 없다(케빈 전수 직독 9곳 · write 0). 갱신될 방법이 없다.
+    //  기준일을 붙이는 건 임시방편이었다. ★11일 전 좌표로 "복도 유지 중 / 생명선 이탈"을 판정하면
+    //  회원이 틀린 자리를 본다. ★날짜를 적어줘도 그 판정 자체가 틀렸다.
+    //  → ★배너 임계와 같은 2.2일을 넘으면 이 배지를 ★그리지 않는다.
+    //  ★공사 팻말도 안 띄운다(케인 08-03 "값 없으면 빈 채로 둔다"). 상단 스테일 배너가 이미 말한다.
+    try{
+      var _sg=S.generated||S.as_of||S.asof;
+      if(_sg){
+        var _sd=new Date(String(_sg).slice(0,10)+'T00:00:00Z');
+        if(!isNaN(_sd.getTime()) && (Date.now()-_sd.getTime())/86400000 > 2.2) return '';
+      }
+    }catch(e){}
     var px=(typeof E!=='undefined'&&E&&E.d1&&E.d1.length)?E.d1[E.d1.length-1].c:(S.price||0);
     if(!px)return '';
     var f0=function(x){return '$'+Math.round(x).toLocaleString('en-US');};
@@ -16371,6 +16385,16 @@ function whaleTrajPanel(){
   try{
     var T=window.__WHALE_TRAJ, S=window.__SUJO;
     if(!T||!T.monthly||!T.monthly.length||!S)return '';
+    // ★★[헤븐 08-07 · 이사 "고장난거 싹 없애라"] 배지와 같은 처리.
+    //  이 패널의 좌표(복도·경계·밴드)가 전부 sujo_layer 에서 온다. ★11일 전 값이면 자리가 틀렸다.
+    //  생산기가 코드에 없어 갱신될 방법이 없다(케빈 전수 직독). ★2.2일 넘으면 안 그린다.
+    try{
+      var _pg2=S.generated||S.as_of||S.asof;
+      if(_pg2){
+        var _pd2=new Date(String(_pg2).slice(0,10)+'T00:00:00Z');
+        if(!isNaN(_pd2.getTime()) && (Date.now()-_pd2.getTime())/86400000 > 2.2) return '';
+      }
+    }catch(e){}
     var f0=function(x){return x==null?'없음':'$'+Math.round(x).toLocaleString('en-US');};
     var mon=T.monthly, cor=(S.long_campaign_corridor||{}), band=(S.axis_realistic_band||{}), px=S.price||T.current_price||0, nb=S.near_term_boundaries||[];
     // [헤븐 07-27 이사 '잔여 변동폭으로'] 남은 기간 실제 도달 범위 = 현재가 ± 일평균변동폭×√(남은일수). 월봉/주봉 전체폭(대부분 소진) 대체.
@@ -17668,7 +17692,16 @@ let _matTrack=null;
 // [2026-07-13 이사 '재갱신 안 됨' 적발] __CRON 스냅샷 스테일 가드 - as_of 24h 초과 시 경고 바(케빈 크론 재가동 시 자동 해소)
 window.addEventListener('DOMContentLoaded',function(){try{
   var C=window.__CRON||{};var stamps=[];
-  [['wave_lifecycle_state','as_of'],['whale_delta_state','as_of'],['maturity_track','asof'],['sujo_layer','generated'],['whale_trajectory','as_of']].forEach(function(k){
+  // ★★[헤븐 08-07 · 이사 "고장난거 싹 없애라"] sujo_layer 를 이 목록에서 뺐다.
+  //  그 값을 쓰던 배지·패널(whaleTrajBadge·whaleTrajPanel)을 ★2.2일 초과 시 안 그리게 바꿨다.
+  //  ★화면에 안 나가는 값을 배너가 "11일 전"이라고 말하면 회원이 ★없는 걸 찾는다.
+  //  배너는 ★회원이 실제로 보는 것 중 낡은 것만 말한다. 나머지 4개는 여전히 화면에 쓰인다.
+  // ★★[헤븐 08-07 2차 · 이사 "고장난거 싹 없애라"] whale_trajectory 는 ★as_of 가 아니라 generated 를 본다.
+  //  [실행] whale_trajectory  as_of=2026-08-05 · ★generated=2026-08-07T09:15 · 파일 mtime=08-07 09:15
+  //     ★as_of 는 '데이터 기준일'(마지막 완성 주봉)이고 ★생산기는 매일 09:15 에 돈다(스케줄러 확인).
+  //     as_of 로 재면 ★매일 정상 갱신되는 파일을 "2일 전 정지"로 오탐한다 = ★배너가 거짓 경보를 낸다.
+  //  → 갱신 여부는 ★generated(있으면) 우선, 없으면 as_of. 나머지 3개는 generated 가 없어 as_of 유지.
+  [['wave_lifecycle_state','as_of'],['whale_delta_state','as_of'],['maturity_track','asof'],['whale_trajectory','generated']].forEach(function(k){
     try{var v=(C[k[0]]||{})[k[1]];if(v){v=String(v).slice(0,10);if(v.length>=10)stamps.push(v);}}catch(e){}});   // 월 단위(YYYY-MM) as_of는 정상 표기라 제외
   if(!stamps.length)return;
   var oldest=stamps.sort()[0];
