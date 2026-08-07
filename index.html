@@ -16335,10 +16335,25 @@ function whaleTrajBadge(){
     if(floorRef)l2+='발밑 <b>'+f0(floorRef.level)+'</b>('+(floorRef.weight>1?floorRef.weight+'겹':(floorRef.role||''))+') ';
     if(up)l2+='· ↑ <b style="color:var(--sell)">'+f0(up.level)+'</b> 넘어야 확장 ';
     if(life)l2+='· ↓ <b style="color:var(--sell)">'+f0(life.level)+'</b> 생명선 이탈 시 계단 하락';
+    // ★★[헤븐 08-07] 이 배지는 ★메인 첫 3초에 뜨는데 좌표 출처가 sujo_layer 다.
+    //  [실행] 08-07 실측: sujo_layer.generated = ★2026-07-27 (11일 전) · ★생산기가 코드에 없다(케빈 전수 직독).
+    //  즉 ★11일 전 좌표로 오늘 "복도 유지 중 / 생명선 이탈" 판정을 내고 있었다.
+    //  상단 스테일 배너가 전체를 말하지만 ★이 배지 자체에는 날짜가 없어 회원이 오늘 값으로 읽는다.
+    //  → ★기준일을 배지 안에 적는다. 오래됐으면 며칠 전인지 숫자로 낸다.
+    //  ★값을 지어내거나 숨기지 않는다. 언제 값인지 같이 보여준다.
+    var _asof='', _ad=null;
+    try{
+      var _g=S.generated||S.as_of||S.asof;
+      if(_g){ _ad=new Date(String(_g).slice(0,10)+'T00:00:00Z'); }
+      if(_ad&&!isNaN(_ad.getTime())){
+        var _days=Math.floor((Date.now()-_ad.getTime())/86400000);
+        _asof=' · 기준 '+String(_g).slice(0,10)+(_days>=2?' <b style="color:var(--gold2)">('+_days+'일 전)</b>':'');
+      }
+    }catch(e){}
     return '<div class="panel" onclick="whaleView=\'future\';setTab(\'BTC\')" style="margin-bottom:10px;cursor:pointer;border:1px solid var(--bd)"><div style="padding:10px 14px">'
       +'<div style="font-size:12.5px;font-weight:700;color:'+vcol+'">🐋 고래 궤적 · '+verdict+' <span style="float:right;font-size:10px;color:var(--gold2)">미래 →</span></div>'
       +'<div style="font-size:11px;color:var(--tx2);margin-top:4px;line-height:1.6">'+l2+'</div>'
-      +'<div style="font-size:9.5px;color:var(--tx3);margin-top:3px">고래 델타중립 캠페인 복도 · 시나리오(예측 아님) · 상세=미래 탭</div></div></div>';   // [케인 07-28] 패널 div 미닫힘(5/4) 수정 - 뒤 차트/TF버튼이 이 클릭패널에 중첩돼 클릭 시 고래추적 이동 버그
+      +'<div style="font-size:9.5px;color:var(--tx3);margin-top:3px">고래 델타중립 캠페인 복도 · 시나리오(예측 아님) · 상세=미래 탭'+_asof+'</div></div></div>';   // [케인 07-28] 패널 div 미닫힘(5/4) 수정 - 뒤 차트/TF버튼이 이 클릭패널에 중첩돼 클릭 시 고래추적 이동 버그
   }catch(e){return '';}
 }
 // [헤븐 07-27 이사 '고래 궤적 주/월 미리 그려라·사유 명확히'] 2축(고래 복도+변동폭 밴드)+경계별 사유. 케빈 sujo_layer·케인 검증. 시나리오·조건부·원장 ±1,000P 채점.
@@ -16411,7 +16426,22 @@ function whaleTrajPanel(){
     // [테리 07-27 기저율] 하강은 모달 아님 — 완료 8캠페인 중 5개(62%) 추가하강 ≤−3%=정체/리셋. 하강(가설1·38%) vs 정체·리셋(62%) 동등 병기·단정 금지.
     var baseHtml='<div class="panel" style="margin-bottom:10px;border:1px solid var(--gold)"><div style="padding:9px 13px;font-size:11px;line-height:1.75;color:var(--tx2)"><b style="color:var(--gold2)">★ 이 하강은 "예상 경로"가 아니라 가설 1</b>, 과거 완료 8캠페인 실측: <b>5개(62%)가 추가하강 ≤−3%로 정체·리셋</b>, 계단 하강 지속은 3개(38%)뿐. 모달 결과는 <b>정체·리셋</b>이지 −26% 연속하강이 아닙니다. → <b style="color:var(--sell)">하강 지속 38%</b> vs <b style="color:var(--buy)">정체·리셋 62%</b> 동등하게 보세요(경로 단정 금지·테리 검증).</div></div>';
     var badge='<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">시나리오 · 예측 아님 · 조건부</span>';
-    return '<h2 class="sec" style="margin:2px 0 8px">고래 궤적 · 주/월 투영 '+badge+'</h2>'
+    // ★★[헤븐 08-07] 이 패널도 좌표 출처가 sujo_layer / whale_trajectory 인데 ★기준일 표시가 없었다.
+    //  [실행] sujo_layer.generated = 2026-07-27 (★11일 전) · ★생산기가 코드에 없다(케빈 전수 직독).
+    //  회원이 오늘 값으로 읽습니다. ★언제 값인지 제목 옆에 적는다(첫3초 배지와 같은 처리).
+    var _pAsof='';
+    try{
+      var _pg=(S&&(S.generated||S.as_of||S.asof))||(T&&(T.as_of||T.generated))||null;
+      if(_pg){
+        var _pd=new Date(String(_pg).slice(0,10)+'T00:00:00Z');
+        if(!isNaN(_pd.getTime())){
+          var _pdays=Math.floor((Date.now()-_pd.getTime())/86400000);
+          _pAsof='<span class="sub" style="font-size:10.5px;margin-left:8px">좌표 기준 '+String(_pg).slice(0,10)
+                 +(_pdays>=2?' <b style="color:var(--gold2)">('+_pdays+'일 전)</b>':'')+'</span>';
+        }
+      }
+    }catch(e){}
+    return '<h2 class="sec" style="margin:2px 0 8px">고래 궤적 · 주/월 투영 '+badge+_pAsof+'</h2>'
       +'<div class="sub" style="margin:0 0 10px;font-size:11px;line-height:1.7">고래 델타중립 매도 캠페인이 만드는 <b style="color:#D85A30">복도(매도평단선~전투포인트)</b>가 계단 하강하는 그림 + <b style="color:#378ADD">도달 가능 범위(변동폭 밴드)</b>. 두 축 겹치는 자리가 실제 격전. <b>확정 예언 아님, 이 가설을 추적·채점</b>(원장 ±1,000P·매주/매월).</div>'
       +'<div class="panel" style="margin-bottom:10px"><div style="padding:8px 6px">'+svg+'</div></div>'
       +baseHtml+secA+invHtml+secB;
