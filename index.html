@@ -8752,10 +8752,18 @@ function viewWaveInner(){
     saga+=`<div class="sub" style="font-size:10.5px;margin-top:4px">잠금 기준(완성 캔들만): ${cline!=null?('평단 <b>'+f1(cline)+'</b> · 스트릭 '+cst):'형성 미확정(스트릭 '+cst+')'} - 위 표시는 진행 캔들 포함 라이브(§5-2 표시/잠금 구분)</div>`;
   }catch(e){}
   // 생명선 이원화(이사 승인 2026-07-05) - [AR 기준 정정 2026-07-05]: 확장평균×40% → AR52×45%(재측정 _vbfill_ar52.py, 교차 40~50% 구간 중앙 - 할애 밴드와 AR 통일·이사 적발 "얕은 차주선" 해소). 케빈 검증 회부.
+  // ★★[헤븐 08-07 · 케빈 수집 1번] 화면 문구만 "생명선 이원화" → "★방어선 두 층"으로 바꿨다.
+  //   ★계산·구조는 그대로다. ★단어만 바꿨다.
+  //   이유: 정본에서 생명선 = ★주봉 실존가 하나다(L11866 "주봉 실존가=생명선" · L11896 정본 07-13).
+  //   그런데 이 카드가 말하는 두 선은 ★일봉 파동선과 ★주봉 −30% 위험선이라 ★둘 다 생명선이 아니다.
+  //   [실행] 같은 단어가 화면에서 ★세 뜻으로 쓰이고 있었다:
+  //     ①주봉 실존가(정본·LIVE)  ②추세전환가(용어사전 , 같이 정정)  ③여기 두 선
+  //   회원이 LIVE 에서 배운 뜻으로 이 카드를 읽으면 ★지킬 자리를 틀린다.
+  //   ★이사 승인 용어라 임의 변경이 아니라 ★보고 대상으로 올린다. 되돌릴 때는 이 줄만 보면 된다.
   try{const W=E.w1,wb=W[W.length-1];const n52=Math.min(52,W.length-1);let s52=0;for(let i=W.length-1-n52;i<W.length-1;i++)s52+=W[i].h-W[i].l;const ar52=s52/n52;
     let sAR=0;for(let i=0;i<W.length-1;i++)sAR+=W[i].h-W[i].l;const arW=sAR/(W.length-1);
     const wStruct=wb.o-0.45*ar52, wFill=(wb.h-wb.l)/arW*100;
-    saga+=`<div style="font-size:11.5px;margin-top:6px;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;line-height:1.7"><b>생명선 이원화</b> - 전술(일봉 파동선) <b style="color:var(--gold2)">${f1(ws.line)}</b> / 주봉 파동 위험선(−30%·평균변동폭 52주) <b style="color:#c9a227">${f1(wb.o-0.30*ar52)}</b>${wFill>=100?` · 차주 예상 <b style="color:#c9a227">${f1(px-0.30*ar52)}</b><span class="sub">(시가=현재가 가정, 주 시작 갱신)</span>`:''}<br><span class="sub">일봉선은 주봉 정상 호흡만으로 닿는 전술선. 주봉 눌림은 −15%(${f1(wb.o-0.15*ar52)})까지 정상, <b>−30% 이탈=파동 위험</b>(반등률 32%로 급락), −45%(${f1(wStruct)})부터는 완주 우위 전환=반등 기대 접기. 이탈 판정은 주봉 <b>종가</b>. <span style="opacity:.75">(오늘의 화면 카드와 동일 층위)</span><br><b>위계 원리(실측 기준·정의 확정 중)</b> - 트리거는 하위, 명목은 상위: 상위 파동은 거의 예외 없이 하위가 먼저 살아야 태어나고(일→주 100%·4시간→일 99.6%), 상위 힘이 꺾이는 날엔 하위가 먼저 깨져 있지만(99~100%), 하위 이탈이 위로 번진 경우는 4시간→일봉 7%(5일)·일봉→주봉 1.1%(28일)뿐 - 하위 이탈=감시 개시, 판정권=상위 본전.</span></div>`;
+    saga+=`<div style="font-size:11.5px;margin-top:6px;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;line-height:1.7"><b>방어선 두 층</b> - 전술(일봉 파동선) <b style="color:var(--gold2)">${f1(ws.line)}</b> / 주봉 파동 위험선(−30%·평균변동폭 52주) <b style="color:#c9a227">${f1(wb.o-0.30*ar52)}</b>${wFill>=100?` · 차주 예상 <b style="color:#c9a227">${f1(px-0.30*ar52)}</b><span class="sub">(시가=현재가 가정, 주 시작 갱신)</span>`:''}<br><span class="sub">일봉선은 주봉 정상 호흡만으로 닿는 전술선. 주봉 눌림은 −15%(${f1(wb.o-0.15*ar52)})까지 정상, <b>−30% 이탈=파동 위험</b>(반등률 32%로 급락), −45%(${f1(wStruct)})부터는 완주 우위 전환=반등 기대 접기. 이탈 판정은 주봉 <b>종가</b>. <span style="opacity:.75">(오늘의 화면 카드와 동일 층위)</span><br><b>위계 원리(실측 기준·정의 확정 중)</b> - 트리거는 하위, 명목은 상위: 상위 파동은 거의 예외 없이 하위가 먼저 살아야 태어나고(일→주 100%·4시간→일 99.6%), 상위 힘이 꺾이는 날엔 하위가 먼저 깨져 있지만(99~100%), 하위 이탈이 위로 번진 경우는 4시간→일봉 7%(5일)·일봉→주봉 1.1%(28일)뿐 - 하위 이탈=감시 개시, 판정권=상위 본전.</span></div>`;
   }catch(e){}
   // 장대 대응 배너(매수 파동 활성 시) + 오늘 라이브 판정
   let bigBanner='';
@@ -13148,7 +13156,7 @@ function scGlossary(txt){try{
     ['생존선','아래에서 받치는 자리들이 한데 모인 마지노선입니다. 여기까지 깨지면 아래쪽 근거가 소진된 것으로 봅니다. 위쪽의 같은 개념이 강 저항입니다.'],
     ['강 저항','위에서 막는 자리들이 한데 모인 천장입니다. 여기를 마감으로 넘으면 위쪽 근거가 소진된 것으로 봅니다. 아래쪽의 같은 개념이 생존선입니다.'],
     ['관문','가는 방향의 첫 벽입니다. 마감으로 넘으면 다음 자리가 열리고, 막히면 되돌림이 나옵니다.'],
-    ['생명선','지금 추세가 전환된 가격입니다(예: 주봉이 매수로 돌아선 자리). 지키는 동안 그 추세가 유효하고, 마감으로 깨지면 추세 종료로 판정합니다. 매도 추세에서는 반대로 위쪽에 있습니다.'],
+    ['생명선','<b>주봉 파동을 만든 주체의 평단</b>입니다(주봉 실존가). 이 선을 지키는 동안 그 주체가 살아 있고, 마감으로 깨지면 그 축이 무너진 것으로 봅니다. 꼬리로 스치는 건 판정하지 않고 마감 가격으로만 봅니다. 매도 파동에서는 반대로 위쪽에 있습니다.'],   /* ★★[헤븐 08-07 · 케빈 수집 1번] 구 문장은 "지금 추세가 전환된 가격"이라 ★추세전환가를 설명하고 있었다. 정본은 L11866 "주봉 실존가=생명선" · L11896 "생명선=주봉 실존가(정본 07-13)" · L11916 "생명선(주봉 실존가)". ★회원이 용어사전에서 배운 뜻과 화면 값이 다르면 지킬 자리를 틀린다 */
     ['보폭','그 기간이 평소에 움직이는 거리입니다. 하루 보폭, 주간 보폭처럼 씁니다.'],
     ['이동률','그 기간 중심에서 위 또는 아래로 보폭 대비 얼마나 갔는지의 비율입니다.'],
     ['유지율','그만큼 이동했을 때 끝까지 그 방향을 지킨 과거 비율(실측)입니다.'],
@@ -14171,7 +14179,23 @@ function simpleTopPanel(){try{
 function todayPlanCard(){try{
   var D = window.__DAILYPLAN; if(!D || !D['lines'] || !D['lines'].length) return '';   // 원장 없으면 그리지 않는다(없는 계획을 만들지 않음)
   var px = null; try{ px = E.d1[E.d1.length-1].c; }catch(e){ px = D['px_at_issue']; }
+  // ★★[헤븐 08-07 시공1 · 케인 발의 14:59 · 성공이 공개 사이트 실물로 확인 15:47] 도달 상태 표시.
+  //  사고: 진입가 64,419 를 ★당일 저가 64,230.6 이 통과했는데 카드는 "내려오면 삽니다"였다.
+  //   회원은 "아직 안 왔구나" 하고 기다려 ★진입을 통째로 놓친다.
+  //   ★다른 결함은 회원이 잘못 '읽는' 것이고 이건 '행동을 못 하는' 것이다. 팀 3인이 독립으로 1순위를 냈다.
+  //  ★좌표는 바꾸지 않는다. 발행 불변(이사 조문) 그대로이고 ★관측 사실 한 줄을 더 적을 뿐이다.
+  //  ★판정 자 , 닿음은 ★장중 사건이라 당일 ★저가·고가로 잰다(성공 4축: 목표·손절 체결=장중).
+  //   종가로 재면 "장중에 닿았다 되돌아온 날"이 미도달로 적혀 ★놓친 진입을 다시 숨긴다.
+  //  ★단 "마감으로 넘기면·잃으면"인 돌파감시·무효선은 ★종가가 정본이라(이사 07-15 생사=종가)
+  //   장중 터치를 넘김으로 세지 않고 ★'마감 대기'로 갈라 적는다. 판정 축을 섞지 않는다.
+  //  ★px 는 priceTick(2초)이 갱신한다. 백그라운드면 얼지만 저가는 단조 감소라 ★늦게 알릴 뿐 오탐이 안 난다.
+  var _bar = null; try{ _bar = E.d1[E.d1.length-1]; }catch(e){}
+  var _lo = (_bar && _bar.l != null) ? _bar.l : null;
+  var _hi = (_bar && _bar.h != null) ? _bar.h : null;
   var f = function(v){ return (v==null||isNaN(v)) ? '없음' : '$' + Math.round(v).toLocaleString('en-US'); };
+  var gapTxt = function(lv){ return (lv!=null && px) ? ' · ' + Math.abs((px-lv)/px*100).toFixed(2) + '% 남음' : ''; };
+  var tag = function(txt, on){ return ' <span class="sub" style="font-size:10.5px;color:'
+    + (on ? 'var(--buy)' : 'var(--tx3)') + '">[' + txt + ']</span>'; };
   var note = function(t){ return t ? ' <span class="sub" style="font-size:10.5px">' + t + '</span>' : ''; };
   var stopTxt = function(l){
     if(l['무효좌표'] == null) return '';
@@ -14184,13 +14208,27 @@ function todayPlanCard(){try{
   };
   var SPEC = {
     '매수준비': {ico:'ti-arrow-down-right', col:'var(--buy)',
-      t:function(l){ return '<b>' + f(l['좌표']) + '까지 내려오면 삽니다</b>'; },
+      // ★닿았으면 "내려오면"이라는 미래형을 안 쓴다(성공 완료판정 ①). 좌표 숫자는 그대로다.
+      t:function(l){ var lv=l['좌표'], hit=(_lo!=null && lv!=null && _lo<=lv);
+        return hit ? ('<b>' + f(lv) + ' 자리에 닿았습니다</b>' + tag('오늘 저가 ' + f(_lo), true))
+                   : ('<b>' + f(lv) + '까지 내려오면 삽니다</b>' + tag('아직' + gapTxt(lv), false)); },
       d:function(l){ return (l['계열'] ? l['계열'] + ' 자리입니다.' : '') + stopTxt(l); }},
     '돌파감시': {ico:'ti-arrow-up-right', col:'var(--sell)',
-      t:function(l){ return '<b>' + f(l['좌표']) + '을 마감으로 넘기면 따라 붙습니다</b>'; },
+      // ★판정 자가 '마감'이라 종가로 가른다. 장중 터치는 사실이니 적되 ★넘김으로 세지 않는다.
+      t:function(l){ var lv=l['좌표'],
+            closed=(px!=null && lv!=null && px>=lv), touched=(_hi!=null && lv!=null && _hi>=lv);
+        return '<b>' + f(lv) + '을 마감으로 넘기면 따라 붙습니다</b>'
+          + (closed ? tag('지금 이 위 · 마감 대기', true)
+                    : touched ? tag('장중 터치 · 마감 미확정', false)
+                              : tag('아직' + gapTxt(lv), false)); },
       d:function(l){ return '넘기 전에는 사지 않습니다.' + (l['무효좌표']!=null ? stopTxt(l) : ' 넘긴 뒤 들어가면 그 자리를 다시 마감으로 잃을 때 나옵니다.'); }},
     '무효선': {ico:'ti-shield-half', col:'#f0a83c',
-      t:function(l){ return '<b>' + f(l['좌표']) + '을 마감으로 잃으면 오늘 구도는 끝입니다</b>'; },
+      // ★이탈은 나쁜 사건이라 강조색을 안 쓴다. 그리고 ★미도달일 때는 아무 표시도 안 한다(불필요한 안심 금지).
+      t:function(l){ var lv=l['좌표'],
+            below=(px!=null && lv!=null && px<lv), touched=(_lo!=null && lv!=null && _lo<=lv);
+        return '<b>' + f(lv) + '을 마감으로 잃으면 오늘 구도는 끝입니다</b>'
+          + (below ? tag('지금 이 아래 · 마감 대기', false)
+                   : touched ? tag('장중 이탈 · 마감은 방어 중', false) : ''); },
       d:function(l){ return '들고 있다면 여기가 마지노선입니다, 여기서는 버티지 않습니다.'; }}
   };
   var body = D['lines'].map(function(l){
