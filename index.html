@@ -987,7 +987,17 @@ function sitgaGradePanel(){try{
     ['⑤ 과열','var(--buy)','강하나 이격 극대 - 추격 금지·이익 실현 고려.']];
   let rows='';
   for(const k in KO){const d=asofWaveDisp(k);if(!d||d.vw==null||d.dir<=0)continue;
-    const vw=sitgaCanonVW(k,d.vw),gap=(px-vw)/vw*100,q=Q[k];   // ★[헤븐 08-07 시공2] 이 칸 이름이 '실존가(손절선)'이라 정본 장부로 통일
+    // ★★[헤븐 08-07 17:2x 즉시 롤백] 이 줄을 정본으로 바꿨다가 ★되돌렸다. 사유를 남긴다.
+    //  ★Q(등급 분위 임계)가 ★어느 실존가로 산출됐는지 출처가 확인되지 않았다.
+    //  vw 만 정본으로 갈면 괴리가 커져 ★등급이 통째로 밀린다. [실행] px 64,405.74 로 실측:
+    //     h1  0.13%→0.20%   ② 눌림  → ③ 보유
+    //     h4 -0.11%→0.47%   ★① 위험(신규 진입 금지·손절 준비) → ★③ 보유(보유 유지)   ★정반대 지시
+    //     d1  0.82%→2.35%   ② 눌림  → ③ 보유
+    //  ★손절 눈금(L1095)은 값 하나라 정본화가 곧 개선이지만, ★여기는 값이 ★임계와 짝이다.
+    //   짝의 한쪽만 갈면 ★없던 결함이 생긴다. ★성공이 "L972 는 분위 문제가 있으니 L1077 먼저"라고
+    //   먼저 짚었는데 ★내가 그 회신을 안 읽고 둘 다 갈았다. 내 과실이다.
+    //  ★Q 출처가 확정되면(케인 회신 대기) 임계와 값을 ★같이 갈아야 한다. 그 전까지 현행 유지.
+    const vw=d.vw,gap=(px-vw)/vw*100,q=Q[k];
     const g=gap<=q[0]?0:gap<=q[1]?1:gap<=q[2]?2:gap<=q[3]?3:4,G=GR[g];
     rows+=`<tr><td class="l">${KO[k]}</td><td class="num">${f1(vw)}</td><td class="num" style="color:${gap>=0?'var(--buy)':'var(--sell)'}">${gap>=0?'+':''}${gap.toFixed(2)}%</td><td class="l"><b style="color:${G[1]}">${G[0]}</b></td><td class="l" style="font-size:11px;line-height:1.5">${G[2]}</td></tr>`;}
   if(!rows)return '';
