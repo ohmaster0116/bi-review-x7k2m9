@@ -8868,7 +8868,7 @@ function viewWaveInner(){
     // [케인 서명 스펙④] first-touch: 위·아래 둘 다 있으면 가까운 쪽 먼저(거리비 단조 20~89%·과거 81% 적중)
     let ftLine='';
     if(upN!=null&&dnN!=null){const _mu=(upN-pxx)/arr,_md=(pxx-dnN)/arr;const _near=_mu<=_md?'위 '+f1(upN):'아래 '+f1(dnN);
-      ftLine=`<div style="margin:5px 0" class="sub">◇ 어디 먼저 - 거리로 가까운 <b style="color:var(--gold2)">${_near}</b> 쪽에 먼저 닿는 게 기본입니다 (거리비 단조·과거 81% 적중).</div>`;}
+      ftLine=`<div style="margin:5px 0" class="sub">◇ 어디 먼저 - 거리로 가까운 <b style="color:var(--gold2)">${_near}</b> 쪽에 먼저 닿는 게 기본입니다 <span style="opacity:.8">(가까워서 먼저 닿는 것이지 그 좌표라서가 아닙니다)</span>.</div>`;}<!-- ★[헤븐 08-07] 구 문구 "거리비 단조·과거 81% 적중" 제거. _kane_make_report L88·L129 실측: 화면 표기 81% vs ★대조군 81% · 순리프트 −0.4pp = ★좌표 엣지 없음. 케인 처방 그대로 "81%는 거리의 성질이지 좌표의 성적이 아님". 숫자를 빼고 성질만 남긴다 -->
     // [케인 서명 스펙③] 거리=확률 요약 한 줄
     const reachSum=`<div style="margin:6px 0 0" class="sub">★ <b>가까운 목표는 거의 갑니다(94%) · 먼 목표는 반반입니다, 거리가 확률입니다.</b></div>`;
     const rws=line(upN,1,'▲ 상단 미확인')+line(dnN,-1,'▼ 하단 미확인')+ftLine+midLine+farNote+((upN!=null||dnN!=null)?reachSum:'');
@@ -13249,7 +13249,17 @@ function scChartSvg(){try{
   base+='<line x1="'+xe+'" y1="14" x2="'+xe+'" y2="278" stroke="var(--tx3)" stroke-width="1" stroke-dasharray="2 4" opacity=".5"/>'
     +'<circle cx="'+(xe-step+cw/2)+'" cy="'+Y(px)+'" r="3.5" fill="var(--gold2)"/>';
   var labs='';
-  [[z.다음목표,'다음 목표','var(--sell)'],[z.첫관문,'첫 관문','var(--sell)'],[z.생명선,'생명선','var(--buy)'],[z.지지1,'1차 지지','var(--buy)'],[z.지지2,'2차 지지','var(--buy)']].forEach(function(L){if(!L[0])return;
+  // ★★[헤븐 08-07 이름 충돌 수정] z.생명선 라벨을 '아래 첫 관문'으로 바꾼다.
+  //  [실행] scenario_state 안에 '생명선'이 ★4자리 · ★3개 값이다.
+  //     차트TF.주.자리.생명선  63,520   ← ★정본(L11866 "주봉 실존가=생명선")
+  //     복기TF.주.자리.생명선  63,520
+  //     ★차트.자리.생명선      64,127   ← 이 차트가 그리던 값
+  //     ★복기.자리.생명선      64,419
+  //  [직독] narrative_scenario.py L677  "생명선": dns[0]  ← ★scenario_board d1(일봉) 첫 dn_level
+  //     ★즉 이건 '일봉 시나리오의 아래 첫 관문'이지 생명선(주봉 실존가)이 아니다. ★이름만 틀렸다.
+  //  회원이 한 화면에서 '생명선 63,520', 다른 화면에서 '생명선 64,127'을 본다. ★값은 유효하니 라벨만 고친다.
+  //  (데이터 키는 하위호환으로 두고 표시 이름만 정확히 , 생성기 키 변경은 소비처 전수 확인 후 별건)
+  [[z.다음목표,'다음 목표','var(--sell)'],[z.첫관문,'첫 관문','var(--sell)'],[z.생명선,'아래 첫 관문','var(--buy)'],[z.지지1,'1차 지지','var(--buy)'],[z.지지2,'2차 지지','var(--buy)']].forEach(function(L){if(!L[0])return;
     labs+='<text x="748" y="'+(Number(Y(L[0]))+4)+'" fill="'+L[2]+'" font-size="11.5">'+L[0].toLocaleString()+' '+L[1]+'</text>';});
   var cards='';
   // [이사 07-30] 서두(큰 그림·미는 힘)는 위 시황 브리핑이 담당 → 여기선 출력 금지(위아래 중복 방지)
