@@ -17585,7 +17585,23 @@ function _axisLegend(v){
     +'<b style="color:var(--gold2)">굴림</b> 자리(승부처·전투존·밴드)는 <b>현재가에 따라 옮겨갑니다</b>, 승부처는 현재가 위 첫 매도벽이라 돌파하면 다음 벽으로 이동(고정선 아님).';
   v.insertBefore(_lg,v.firstChild);
 }
-function setTab(t){active=t;try{history.replaceState(null,'','#'+encodeURIComponent(t));}catch(e){}render();window.scrollTo(0,0);}
+// ★★[헤븐 08-07 · 케빈 발견] setTab 에 ★검증이 없었다. 모르는 이름도 그대로 active 에 들어간다.
+//  [실행] setTab('zzz_없는탭_test') → ★5,882자가 렌더된다. 회원이 옛 링크·잘못된 해시로 들어오면
+//  ★뭔가 보이는데 그게 뭔지 모르는 화면이 된다.
+//  → ★알려진 탭이 아니면 LIVE 로 보낸다. ★메뉴에 없지만 링크로만 가는 탭 5개
+//    (오늘의 분석·정렬·대치·심층 근거·전투포인트·전략)는 ★살아 있는 자산이라 허용 목록에 넣는다.
+//    [실행 케빈] 5개 전부 고유 렌더 분기 있음 · DOM 4,282~20,408자 · 오늘 데이터 살아 있음.
+var _LINK_ONLY_TABS=['오늘의 분석','정렬·대치','심층 근거','전투포인트','전략','열린 갭','지지·저항','미확인값밴드','기준가','변동폭','종합 밴드','파동 분석','고래 추적','추세전환가','알고리즘','상관계수','정합 원장','구독','snapshot'];
+function _knownTab(t){
+  try{
+    if(!t)return false;
+    if(_LINK_ONLY_TABS.indexOf(t)>=0)return true;
+    var ok=false;
+    TABGROUPS.forEach(function(g){g.tabs.forEach(function(x){if(x===t)ok=true;});});
+    return ok;
+  }catch(e){ return true; }   // ★검증기가 죽으면 막지 않는다(기존 동작 유지). 검증은 안전망이지 관문이 아니다
+}
+function setTab(t){if(!_knownTab(t))t='LIVE';active=t;try{history.replaceState(null,'','#'+encodeURIComponent(t));}catch(e){}render();window.scrollTo(0,0);}
 // 탭 딥링크(#탭이름) - README 명세 복원 + 서명 탭 헤드리스 검증 경로
 try{
   var _h=decodeURIComponent((location.hash||'').slice(1));
