@@ -8940,7 +8940,18 @@ function viewWaveInner(){
     const c2=s2.dir>0?'var(--buy)':'var(--sell)';
     // 표기 기준=전일 마감(이사 확정 2026-07-07): 주·월봉 진행봉은 확정 일봉으로 재집계(이번 주=어제까지)
     const a2=asofWaveDisp(x.k); if(a2&&a2.dir===s2.dir)s2.line=a2.line;
-    const vw2=(a2&&a2.dir===s2.dir&&a2.vw)?a2.vw:waveVW(E[x.k],s2);
+    // ★★[헤븐 08-07 시공2 마지막분 · 성공 18:08 라이브 회부] ★6번째 자리다.
+    //  [실행] 회원 화면 , 주봉 매도 연속 2주차 "★실존 64,095.3 · 표면 64,026.1 · 굴림 64,091.8"
+    //  ★내가 이 자리를 "굴림 실존가 계열이라 단정 못 한다"며 회부했는데 ★틀렸다.
+    //   같은 줄이 ★실존·표면·굴림을 ★따로 찍는다. vw2 는 ★실존이다. 굴림은 rl2 다.
+    //  ★64,095 는 내가 17:30 에 직접 "정본은 63,519.64=생명선"이라고 쓴 그 숫자다.
+    //   참조선은 고쳤는데 ★여기가 남았다. ★575.7달러.
+    //  ★★왜 계속 새로 나왔나(3→4→5→6곳) , ★변수명으로 셌기 때문이다
+    //   asofWaveDisp · _asofW · _asofD · a2 로 ★이름이 계속 바뀐다.
+    //   ★성공 처방 , ★렌더 라벨('실존')에서 거꾸로 센다. ★라벨은 회원이 보는 것이라 안 늘어난다.
+    //   ★그리고 '실존가'가 아니라 ★'실존'으로 넓혀야 한다. 줄임말로도 쓴다.
+    //  ★tf 는 d1 고정이 아니라 ★x.k 다.
+    const vw2=(a2&&a2.dir===s2.dir&&a2.vw)?sitgaCanonVW(x.k,a2.vw):waveVW(E[x.k],s2);
     const rl2=(function(){try{return vwRollDisp(x.k)}catch(e){return null}})();
     return `<b style="color:${c2}">${waveWord(x.k,s2.dir,s2.mode,s2.days)}</b> <span class="sub">${vw2?`실존 <b>${f1(vw2)}</b>·표면 ${f1(s2.line)}${rl2?`·굴림 ${f1(rl2)}`:''}`:`표면 ${f1(s2.line)}`}</span>`;}).join(' · ');
   const shortSt=['m30','h1','h4'].map(k2=>({k:k2,s:waveState(k2)})).filter(x=>x.s);
