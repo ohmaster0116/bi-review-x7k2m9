@@ -288,6 +288,17 @@ function _updStamp(){
         if(h>=24)s+=' (★'+_ageTxt(h)+' 전)';
       }
     }
+    try{
+      var _wsx=(window.__CRON&&__CRON.watch_state)||window.__WATCH||null;
+      if(!_wsx||!_wsx.generated){ s+=' · ★갱신 감시 없음'; }
+      else{
+        var _wa=(Date.now()-new Date(_wsx.generated).getTime())/3600000;
+        if(!isFinite(_wa)) s+=' · ★갱신 감시 없음';
+        else if(_wa>4.5) s+=' · ★갱신 감시가 '+_ageTxt(_wa)+' 멈춤';
+        else if((_wsx.anomalies||0)>0) s+=' · ★갱신 지연 감지';
+        else s+=' · 갱신 감시 정상';
+      }
+    }catch(e){}
     upd.textContent=s;
   }catch(e){}
 }
@@ -16920,6 +16931,7 @@ function loadCron(name,set,_try){
     const d=(window.__CRON||{})[name];if(d){set(d);_cronRe();}
   });
 }
+loadCron('watch_state',d=>{window.__WATCH=d;try{_updStamp();}catch(e){}});
 loadCron('maturity_track',d=>{_matTrack=d;});
 let _whCanon=null;   // [2026-07-08 케빈 회부] 전투 전사(戰史) 정본 데이터
 loadCron('whale_battle_canon',d=>{_whCanon=d;});
