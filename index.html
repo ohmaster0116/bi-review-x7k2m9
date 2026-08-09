@@ -878,8 +878,9 @@ function sitgaGradePanel(){try{
     ['⑤ 과열','var(--buy)','강하나 이격 극대 - 추격 금지·이익 실현 고려.']];
   let rows='';
   for(const k in KO){const d=asofWaveDisp(k);if(!d||d.vw==null||d.dir<=0)continue;
-    let vw=d.vw;
+    let vw=null;
     try{const _ws=waveState(k); if(_ws&&_ws.mode!=='none'&&_ws.dir>0){const _lv=waveVW(E[k],_ws); if(_lv)vw=_lv;}}catch(e){}
+    if(vw==null)continue;
     const gap=(px-vw)/vw*100,q=Q[k];
     const g=gap<=q[0]?0:gap<=q[1]?1:gap<=q[2]?2:gap<=q[3]?3:4,G=GR[g];
     rows+=`<tr><td class="l">${KO[k]}</td><td class="num">${f1(vw)}</td><td class="num" style="color:${gap>=0?'var(--buy)':'var(--sell)'}">${gap>=0?'+':''}${gap.toFixed(2)}%</td><td class="l"><b style="color:${G[1]}">${G[0]}</b></td><td class="l" style="font-size:11px;line-height:1.5">${G[2]}</td></tr>`;}
