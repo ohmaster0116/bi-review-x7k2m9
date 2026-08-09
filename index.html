@@ -13344,6 +13344,21 @@ function subjectClashPanel(){try{
     +'</div></div>';
 }catch(e){return '';}}
 function _degraded(nm,src){return '<div class="panel" style="border:1px dashed var(--bd)"><div style="padding:11px 15px;font-size:12px;color:var(--tx2)"><b style="color:var(--gold2)">'+nm+'</b>, 값을 불러오는 중입니다<div class="sub" style="font-size:10.5px;margin-top:3px;line-height:1.7">5분마다 갱신되는 '+(src||'정본 데이터')+'가 아직 도착하지 않았습니다. 잠시 후 자동으로 채워집니다.</div></div></div>';}   // [P2 07-30 럭키 B3] 방어 부정문 제거·능동형
+function _magnetStrip(t){
+  try{
+    return String(t)
+      .replace(/가격을\s*아래로\s*당기는\s*자석\s*자리/g, '아래쪽 되돌림 자리')
+      .replace(/가격을\s*위로\s*당기는\s*자석\s*자리/g, '위쪽 되돌림 자리')
+      .replace(/하방\s*회귀\s*자석/g, '아래쪽 되돌림 자리')
+      .replace(/상방\s*회귀\s*자석/g, '위쪽 되돌림 자리')
+      .replace(/회귀\s*자석/g, '되돌림 자리')
+      .replace(/미확인\s*자석/g, '미확인 기준가')
+      .replace(/자석\s*클러스터/g, '되돌림 밀집 구간')
+      .replace(/자석\s*자리/g, '되돌림 자리')
+      .replace(/자석\s*성격/g, '되돌림 성격');
+  }catch(e){ return t; }
+}
+try{ window._magnetStrip=_magnetStrip; }catch(e){}
 function verdictCard(mode){try{
   var V=window.__VERDICT; if(!V||!V.data)return _degraded('판독 카드','판독 정본(verdict_live)');
   var d=V.data; var f=function(v){return v==null?'없음':'$'+Math.round(v).toLocaleString('en-US');};
@@ -13382,21 +13397,6 @@ function verdictCard(mode){try{
       +'<div style="font-size:14px;font-weight:800">지금 거리로 보면 '+fLbl+'에 먼저 닿을 가능성 '+fP+'%</div>'
       +'<div style="font-size:11px;color:var(--tx2);margin-top:3px">'+((ft.confident===false)?'<span style="color:var(--gold2)">※ 위아래 거리가 비슷해 혼전, 신뢰 낮음(적중 62%)</span>':'거리차 뚜렷해 명확한 편(극단 적중 87~90%)')+'. 확률이지 단정 아님.</div></div>';}
   var lk=d.scenarios_locked;
-function _magnetStrip(t){
-  try{
-    return String(t)
-      .replace(/가격을\s*아래로\s*당기는\s*자석\s*자리/g, '아래쪽 되돌림 자리')
-      .replace(/가격을\s*위로\s*당기는\s*자석\s*자리/g, '위쪽 되돌림 자리')
-      .replace(/하방\s*회귀\s*자석/g, '아래쪽 되돌림 자리')
-      .replace(/상방\s*회귀\s*자석/g, '위쪽 되돌림 자리')
-      .replace(/회귀\s*자석/g, '되돌림 자리')
-      .replace(/미확인\s*자석/g, '미확인 기준가')
-      .replace(/자석\s*클러스터/g, '되돌림 밀집 구간')
-      .replace(/자석\s*자리/g, '되돌림 자리')
-      .replace(/자석\s*성격/g, '되돌림 성격');
-  }catch(e){ return t; }
-}
-try{ window._magnetStrip=_magnetStrip; }catch(e){}
 window.__MAGNET_LEFT=function(){
   try{
     var srcs=[JSON.stringify(window.__SCBOARD||{}),JSON.stringify(window.__VERDICT||{}),
