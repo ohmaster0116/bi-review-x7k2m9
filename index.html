@@ -15038,19 +15038,20 @@ function viewUB(){
     const bD=b9('d1'),bW=b9('w1'),bM=b9('M1'),bY=b9('y1');
     if(bD&&bW&&bM){
       const cols=[['일봉',bD],['주봉',bW],['월봉',bM]];
-      const avg3=[0,1,2,3,4,5,6,7,8].map(i=>(bD[i]+bW[i]+bM[i])/3);
-      cols.push(['평균',avg3]);
+      const avg2=[0,1,2,3,4,5,6,7,8].map(i=>(bD[i]+bW[i])/2);          // ★일주 , 신설
+      const avg3=[0,1,2,3,4,5,6,7,8].map(i=>(bD[i]+bW[i]+bM[i])/3);    // ★일주월 , 종전 "평균"
+      cols.push(['일주 평균',avg2],['일주월 평균',avg3]);
       let refB=avg3;
-      if(bY){const avg4=[0,1,2,3,4,5,6,7,8].map(i=>(bD[i]+bW[i]+bM[i]+bY[i])/4);cols.push(['연봉',bY],['합산 평균',avg4]);refB=avg4;}
+      if(bY){const avg4=[0,1,2,3,4,5,6,7,8].map(i=>(bD[i]+bW[i]+bM[i]+bY[i])/4);cols.push(['연봉',bY],['일주월연 합산',avg4]);refB=avg4;}
       const seg=pxInsertPos(refB,px), G=grpCells(seg);
       let tr='';
       for(let i=0;i<9;i++){const c=lvlColor(i);
         if(i===seg)tr+=pxRowHtml(px,cols.length,G.own);
         const grp=i===0?G.buy:i===4?G.mid:i===5?G.sell:'';
         tr+=`<tr>${grp}<td class="l" style="color:${c};font-weight:${i===4?600:400}">${zoneName(LBLB[i],refB,i,px)}</td>`
-          +cols.map(x=>`<td class="num" style="color:${c};font-weight:${x[0].indexOf('평균')>=0?700:400}">${f1(x[1][i])}</td>`).join('')+'</tr>';}
+          +cols.map(x=>`<td class="num" style="color:${c};font-weight:${(x[0].indexOf('평균')>=0||x[0].indexOf('합산')>=0)?700:400}">${f1(x[1][i])}</td>`).join('')+'</tr>';}
       if(seg===9)tr+=pxRowHtml(px,cols.length,true);
-      compT=`<div class="panel"><div class="hd">미확인값 밴드 합산 - 일·주·월·연 <span class="sub">(${ubBasis==='center'?'중심가':'기준가'} · TF별=첫 상단~첫 하단 미확인 9층 · 평균=일주월 · 합산 평균=일주월연 · 정본 엑셀 첫 시트와 동일)</span></div>
+      compT=`<div class="panel"><div class="hd">미확인값 밴드 합산 - 일·주·월·연 <span class="sub">(${ubBasis==='center'?'중심가':'기준가'} · TF별=첫 상단~첫 하단 미확인 9층 · 일주=일+주 · 일주월=일+주+월 · 일주월연 합산=일+주+월+연 · 정본 엑셀 첫 시트와 동일)</span></div>
         ${zoneStrength(refB,px)}<div class="scroll"><table><thead><tr><th></th><th class="l">위치</th>${cols.map(x=>`<th>${x[0]}</th>`).join('')}</tr></thead><tbody>${tr}</tbody></table></div></div>`;
     }
   }catch(e){compT='';}

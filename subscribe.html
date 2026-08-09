@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="확신과 가설만 넘칠 뿐, 검증된 내용은 시장에 없다. 2,357일 검증된 데이터로 메이저를 추적하는 비트코인 판독 구독.">
+<title>비트인포 구독 · 비트코인 판독 | BITINFO</title>
+<style>
+  :root{
+    --ink:#0c0e13; --ink2:#10131a; --panel:#161a23; --panel2:#1b202b;
+    --line:#272d3a; --line2:#333b4b;
+    --tx:#e9ecf3; --tx2:#98a1b4; --tx3:#616a7d;
+    --gold:#d3a13c; --gold2:#ecc879; --goldsoft:rgba(211,161,60,.12);
+    --buy:#3fbd85; --sell:#e2596c;
+    --maxw:940px;
+    --f:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  .wrap{background:var(--ink);color:var(--tx);font-family:var(--f);line-height:1.6;
+    -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;
+    background-image:radial-gradient(1100px 520px at 50% -8%,rgba(211,161,60,.08),transparent 70%);}
+  .wrap :where(h1,h2,h3,p,ul,li,div){margin:0}
+  .sec{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .band{border-top:1px solid var(--line);padding:64px 0}
+  .band.first{border-top:none}
+  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px}
+  .lead{font-size:13.5px;color:var(--tx2);max-width:62ch}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;border-radius:11px;
+    padding:13px 22px;cursor:pointer;text-decoration:none;border:1px solid transparent;transition:transform .12s,background .15s}
+  .btn:active{transform:translateY(1px)}
+  .btn-g{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#211803;box-shadow:0 6px 22px -8px rgba(211,161,60,.55)}
+  .btn-o{background:transparent;color:var(--tx);border-color:var(--line2)}
+  .btn-o:hover{border-color:var(--gold);color:var(--gold2)}
+
+  /* HERO */
+  .hero{max-width:var(--maxw);margin:0 auto;padding:66px 22px 60px;text-align:center}
+  .brand{display:inline-flex;align-items:center;gap:9px;font-size:12px;letter-spacing:.16em;color:var(--tx2);text-transform:uppercase;font-weight:700;margin-bottom:26px}
+  .brand b{color:var(--gold2);letter-spacing:.24em}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--buy);box-shadow:0 0 10px var(--buy)}
+  h1{font-size:clamp(30px,5.4vw,50px);line-height:1.14;font-weight:800;letter-spacing:-.02em;text-wrap:balance;margin-bottom:18px}
+  h1 .g{color:var(--gold2)}
+  .sub{font-size:clamp(15px,2vw,18px);color:var(--tx2);max-width:36ch;margin:0 auto 30px;text-wrap:balance}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .reassure{margin-top:18px;font-size:12px;color:var(--tx3)}
+  .reassure b{color:var(--tx2)}
+
+  /* verdict card (product-as-hero) */
+  .verdict{max-width:560px;margin:38px auto 0;text-align:left;background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line2);border-radius:16px;padding:18px 20px;box-shadow:0 24px 60px -30px #000}
+  .verdict .tag{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);display:flex;justify-content:space-between}
+  .verdict .tag .live{color:var(--buy);display:inline-flex;align-items:center;gap:6px}
+  .verdict .call{font-size:19px;font-weight:800;margin:11px 0 4px;letter-spacing:-.01em}
+  .verdict .call .warn{color:var(--gold2)}
+  .verdict .line{font-size:12.5px;color:var(--tx2)}
+  .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-radius:11px;overflow:hidden;margin-top:14px}
+  .vcell{background:var(--panel2);padding:11px 12px}
+  .vcell .k{font-size:10px;color:var(--tx3);letter-spacing:.04em}
+  .vcell .v{font-size:16px;font-weight:800;margin-top:3px}
+  .vcell .v.buy{color:var(--buy)} .vcell .v.sell{color:var(--sell)} .vcell .v.gold{color:var(--gold2)}
+
+  /* promises */
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .promise{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+  .promise .pk{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.02em;margin-bottom:10px}
+  .promise h3{font-size:17px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+  .promise p{font-size:12.5px;color:var(--tx2);line-height:1.75}
+
+  /* get list */
+  .gets{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:8px}
+  .get{background:var(--panel);padding:20px 20px;display:flex;gap:14px}
+  .get .gi{font-size:12px;font-weight:800;color:var(--gold);min-width:26px;font-variant-numeric:tabular-nums;padding-top:2px}
+  .get h3{font-size:15px;font-weight:700;margin-bottom:4px}
+  .get h3 .paid{font-size:9.5px;color:var(--gold2);border:1px solid rgba(236,200,121,.4);border-radius:6px;padding:1px 6px;margin-left:7px;letter-spacing:.04em;vertical-align:middle}
+  .get h3 .free{font-size:9.5px;color:var(--buy);border:1px solid rgba(63,189,133,.45);border-radius:6px;padding:1px 6px;margin-left:7px;letter-spacing:.04em;vertical-align:middle}
+  .get .gi.on{color:var(--buy)}
+  .get p{font-size:12px;color:var(--tx2);line-height:1.7}
+
+  /* ledger / performance */
+  .ledger-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .stat{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:14px;padding:20px 18px}
+  .stat .sv{font-size:clamp(26px,4vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--gold2)}
+  .stat .sk{font-size:11.5px;color:var(--tx2);margin-top:9px;line-height:1.5}
+  .stat .sn{font-size:10px;color:var(--tx3);margin-top:3px}
+  .ledger-note{font-size:11.5px;color:var(--tx3);margin-top:18px;line-height:1.7;border-left:2px solid var(--gold);padding-left:13px}
+
+  /* method */
+  .steps5{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px}
+  .m{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px}
+  .m .mk{font-size:11px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .m h3{font-size:14.5px;font-weight:700;margin:9px 0 6px}
+  .m p{font-size:12px;color:var(--tx2);line-height:1.7}
+  .method-kicker{font-size:15px;color:var(--tx);max-width:56ch;margin-top:10px;line-height:1.7}
+  .method-kicker b{color:var(--gold2)}
+
+  /* pricing */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .plan{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 22px;position:relative;display:flex;flex-direction:column}
+  .plan.best{border-color:var(--gold);background:linear-gradient(180deg,rgba(211,161,60,.07),var(--panel))}
+  .plan .flag{position:absolute;top:-11px;left:22px;font-size:10.5px;font-weight:700;letter-spacing:.06em;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#211803;border-radius:7px;padding:3px 10px}
+  .plan .pname{font-size:14px;font-weight:700;color:var(--tx)}
+  .plan .save{font-size:11.5px;color:var(--gold2);margin-top:4px;min-height:16px}
+  .plan .price{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:16px 0 2px}
+  .plan .price small{font-size:14px;color:var(--tx2);font-weight:600}
+  .plan .permonth{font-size:12px;color:var(--tx3)}
+  .plan ul{list-style:none;padding:16px 0 18px;display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);margin-top:16px}
+  .plan li{font-size:12.5px;color:var(--tx2);display:flex;gap:9px;line-height:1.5}
+  .plan li .ck{color:var(--gold);font-weight:800}
+  .plan .foot{font-size:10.5px;color:var(--tx3);margin-top:auto;padding-top:12px;line-height:1.7}
+  .plan .btn{width:100%;justify-content:center;margin-top:4px}
+
+  /* how */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px}
+  .step .sn2{font-size:12px;font-weight:800;color:var(--ink);background:var(--gold2);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .step h3{font-size:14px;font-weight:700;margin-bottom:5px}
+  .step p{font-size:11.5px;color:var(--tx2);line-height:1.65}
+
+  /* faq */
+  .faq{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:8px}
+  details{border-top:1px solid var(--line);background:var(--panel)}
+  details:first-child{border-top:none}
+  summary{cursor:pointer;padding:16px 20px;font-size:13.5px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary .plus{color:var(--gold);font-weight:400;font-size:18px;transition:transform .2s}
+  details[open] summary .plus{transform:rotate(45deg)}
+  details .ans{padding:0 20px 17px;font-size:12.5px;color:var(--tx2);line-height:1.75}
+
+  /* final + footer */
+  .final{text-align:center;background:radial-gradient(700px 300px at 50% 120%,rgba(211,161,60,.12),transparent)}
+  .final h2{font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:-.02em;text-wrap:balance;margin-bottom:10px}
+  .foot-legal{max-width:var(--maxw);margin:0 auto;padding:34px 22px 60px;border-top:1px solid var(--line);font-size:11px;color:var(--tx3);line-height:1.85}
+  .foot-legal b{color:var(--tx2)}
+  .h2big{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.02em;text-wrap:balance;margin-bottom:12px}
+  .designtag{max-width:var(--maxw);margin:0 auto;padding:14px 22px;font-size:11px;color:var(--tx3);text-align:center;letter-spacing:.03em}
+
+  @media(max-width:820px){
+    .three,.gets,.stats,.steps5,.plans,.flow{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .vgrid{grid-template-columns:1fr 1fr 1fr}
+    .band{padding:50px 0}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body style="margin:0;background:#0c0e13">
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="brand"><span class="dot"></span> 비트인포 <b>BITINFO</b> · 비트코인 판독 구독</div>
+    <h1>확신과 가설만 넘칠 뿐,<br><span class="g">검증된 내용</span>은 시장에 없다.</h1>
+    <p class="sub">2,357일 솔직하게 검증된 데이터로, 메이저를 추적하세요.</p>
+    <div class="cta-row">
+      <a class="btn btn-g" href="#pricing">구독 시작하기 →</a>
+      <a class="btn btn-o" href="#ledger">솔직한 성적, 먼저 보기</a>
+    </div>
+    <p class="reassure">먼저 검증하십시오. 확신이 서지 않으면, 첫 <b>30일 전액 환불</b>합니다.</p>
+
+    <div class="verdict" aria-label="실시간 판독 미리보기">
+      <div class="tag"><span>지금 이 순간의 판독</span><span class="live"><span class="dot"></span>실시간 연동</span></div>
+      <div class="call"><span class="warn">경계</span> · 생명선 방어 시험 — 이탈 시 숏</div>
+      <div class="line">주봉 매수 유지 · 승부처 돌파 시 강화 / 생명선 종가 이탈 = 큰 틀 훼손</div>
+      <div class="vgrid">
+        <div class="vcell"><div class="k">현재가</div><div class="v num">$63,900</div></div>
+        <div class="vcell"><div class="k">승부처(위)</div><div class="v sell num">$64,143</div></div>
+        <div class="vcell"><div class="k">생명선(아래)</div><div class="v buy num">$63,361</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PROMISES -->
+  <section class="band">
+    <div class="sec">
+      <div class="eyebrow">원칙</div>
+      <h2 class="h2big">누구도 내걸지 않는 세 가지</h2>
+      <p class="lead">수익을 장담하는 곳은 많습니다. 이 세 가지를 감당하는 곳은, 드뭅니다.</p>
+      <div class="three">
+        <div class="promise">
+          <div class="pk">01</div>
+          <h3>확신이 서지 않으면, 환불</h3>
+          <p>첫 구독 후 30일 이내 해지 시 사유를 묻지 않고 전액 환불합니다. 판단은 검증 이후에.</p>
+        </div>
+        <div class="promise">
+          <div class="pk">02</div>
+          <h3>기록을 지우지 않습니다</h3>
+          <p>매일의 판단을 발표 시점에 봉인합니다. 다음 마감으로 자동 채점되며, 사후 수정은 불가능합니다.</p>
+        </div>
+        <div class="promise">
+          <div class="pk">03</div>
+          <h3>목표가 아니라, 무효 조건을 먼저</h3>
+          <p>얼마를 번다가 아니라, 어디서 이 판단이 무너지는지를 매번 먼저 명시합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section class="band">
+    <div class="sec">
+      <div class="eyebrow">무료 · 구독</div>
+      <h2 class="h2big">먼저 의심하십시오.<br>무료로 전부 검증하십시오.</h2>
+      <p class="lead">우리 판단이 실제로 어떻게 채점됐는지는 <b style="color:var(--buy)">무료</b>로 열어둡니다. 실제 자리·손절·실시간 대응은 <b style="color:var(--gold2)">구독</b>입니다.</p>
+      <div class="gets">
+        <div class="get"><div class="gi on">01</div><div><h3>정합 원장 <span class="free">무료</span></h3><p>우리가 짚은 것이 실제로 맞았는지 — 손실 건까지 솔직한 성적 그대로. 의심은 여기서.</p></div></div>
+        <div class="get"><div class="gi on">02</div><div><h3>오늘의 판단 한 줄 <span class="free">무료</span></h3><p>방향과 경계, 무효 조건 한 줄. 매일의 감(感)을 공짜로 맞춰보십시오.</p></div></div>
+        <div class="get"><div class="gi">03</div><div><h3>판독 카드 <span class="paid">구독</span></h3><p>짚은 자리·손절선·도달 확률 전체. 확정이 아니라 확률과 무효 조건으로.</p></div></div>
+        <div class="get"><div class="gi">04</div><div><h3>지지·저항 통합 지도 <span class="paid">구독</span></h3><p>밴드와 계단을 한 지도로. 각 자리에 종류와 중요도(강·중·약)까지.</p></div></div>
+        <div class="get"><div class="gi">05</div><div><h3>실시간 속보 알림 <span class="paid">구독</span></h3><p>내 자리(승부처·생명선)를 가격이 돌파·이탈하는 순간, 텔레그램으로 즉시.</p></div></div>
+        <div class="get"><div class="gi">06</div><div><h3>내 포지션 스위치 <span class="paid">구독</span></h3><p>진입가를 넣으면 손익률·관건선까지 거리가 전부 내 기준으로 재편됩니다.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEDGER (performance, our weapon) -->
+  <section class="band" id="ledger">
+    <div class="sec">
+      <div class="ledger-head">
+        <div>
+          <div class="eyebrow">정합 원장</div>
+          <h2 class="h2big">수익률을 내세우지 않습니다.<br>대신, 솔직한 성과를 그대로 공개합니다.</h2>
+          <p class="lead" style="margin-top:12px">수익률만 외치는 곳은 많습니다. 그중 틀린 판단과 손실까지 그대로 남기는 곳은 — 찾기 어려우실 겁니다.</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="sv num">2,357<small style="font-size:15px">일</small></div><div class="sk">look-ahead 없는 실측 백테스트</div><div class="sn">2017년~ 전체사</div></div>
+        <div class="stat"><div class="sv num">79–84%</div><div class="sk">골든 축 위 방향 유지율</div><div class="sn">3일 지평 · 표본 N=643</div></div>
+        <div class="stat"><div class="sv num" style="font-size:19px;color:var(--gold2)">승패 전량</div><div class="sk">판단을 가리지 않고 공개</div><div class="sn">맞은 것도 틀린 것도 · 손실까지 원장에</div></div>
+        <div class="stat"><div class="sv num">0</div><div class="sk">사후 수정 건수</div><div class="sn">발행 시 잠금 · 불가침</div></div>
+      </div>
+      <p class="ledger-note">숫자는 확정이 아니라 조건부 실측 확률입니다. 골든 엣지는 성격 매수 국면에서 유효하며, 실전 정합 성적은 성적표(정합 원장)에서 실시간으로 그대로 공개되며, 표본이 쌓일수록 신뢰가 오릅니다. 우리는 어떤 경우에도 수익을 보장하지 않고, 판독은 매매 명령이 아닙니다 — 판단의 책임은 투자자 본인에게 있습니다.</p>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section class="band">
+    <div class="sec">
+      <div class="eyebrow">판독 엔진</div>
+      <h2 class="h2big">가격 구조에 쌓인 매수·매도 우위를 읽습니다</h2>
+      <p class="method-kicker">뉴스 예측이 아닙니다. <b>파동·실존가·골든축</b>으로 주체의 평단과 방어선을 추적하고, 검증을 통과하지 못한 신호는 <b>스스로 폐기</b>합니다. 장담은 흔하고, 검증은 드뭅니다 — 우리는 검증을 팝니다.</p>
+      <div class="steps5">
+        <div class="m"><div class="mk">Step 01</div><h3>주체 추적</h3><p>연속 매수·매도 파동의 거래량 가중 평단으로 "누가 이 자리를 지키나"를 봅니다.</p></div>
+        <div class="m"><div class="mk">Step 02</div><h3>자리 강도</h3><p>여러 시간축·소스가 같은 가격에 수렴할수록 강한 자리 — 통합 지도로 등급화.</p></div>
+        <div class="m"><div class="mk">Step 03</div><h3>가짜 엣지 기각</h3><p>look-ahead 감사로 자기 백테스트를 스스로 반토막 내며 착시를 걸러냅니다.</p></div>
+        <div class="m"><div class="mk">Step 04</div><h3>발행 전 잠금</h3><p>판단을 발표 전에 잠그고, 다음 마감 실측으로 자동 채점합니다.</p></div>
+        <div class="m"><div class="mk">Step 05</div><h3>정직한 공개</h3><p>맞은 것도 틀린 것도, 손실까지 원장에 그대로 남깁니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="band" id="pricing">
+    <div class="sec">
+      <div class="eyebrow">구독 · 월 단위</div>
+      <h2 class="h2big">등급을 선택하세요</h2>
+      <p class="lead">깊이에 따라 세 등급. 실시간 대응이 필요하면 노멀, 내 포지션까지 관리하려면 프로. <b style="color:var(--gold2)">연간 결제 시 20% 할인.</b></p>
+      <div class="plans">
+        <div class="plan">
+          <div class="pname">베이직</div>
+          <div class="save">기본 판독</div>
+          <div class="price num">99,000<small>원/월</small></div>
+          <div class="permonth num">연 결제 시 월 79,200원</div>
+          <ul>
+            <li><span class="ck">✓</span> 판독 카드 — 방향·자리·손절선</li>
+            <li><span class="ck">✓</span> 지지·저항 통합 지도</li>
+            <li><span class="ck">✓</span> 일봉 시나리오</li>
+            <li><span class="ck">✓</span> 정합 원장 열람</li>
+          </ul>
+          <div class="foot">30일 이내 전액 환불 · 연 결제 20% 할인</div>
+          <a class="btn btn-o" href="#">베이직 시작</a>
+        </div>
+        <div class="plan best">
+          <div class="flag">가장 많이 선택 · 추천</div>
+          <div class="pname">노멀</div>
+          <div class="save num">실시간 대응 포함</div>
+          <div class="price num">199,000<small>원/월</small></div>
+          <div class="permonth num">연 결제 시 월 159,200원</div>
+          <ul>
+            <li><span class="ck">✓</span> 베이직 전체 +</li>
+            <li><span class="ck">✓</span> 일·주·월 시나리오 전체</li>
+            <li><span class="ck">✓</span> 실시간 속보 알림 (텔레그램)</li>
+            <li><span class="ck">✓</span> 정합 원장 상세 · 전략 성적</li>
+          </ul>
+          <div class="foot">30일 이내 전액 환불 · 연 결제 20% 할인</div>
+          <a class="btn btn-g" href="#">노멀 시작 →</a>
+        </div>
+        <div class="plan">
+          <div class="pname">프로</div>
+          <div class="save num">내 포지션까지</div>
+          <div class="price num">399,000<small>원/월</small></div>
+          <div class="permonth num">연 결제 시 월 319,200원</div>
+          <ul>
+            <li><span class="ck">✓</span> 노멀 전체 +</li>
+            <li><span class="ck">✓</span> 내 포지션 스위치 (개인화)</li>
+            <li><span class="ck">✓</span> 우선 속보 알림</li>
+            <li><span class="ck">✓</span> 심화 전략 리포트</li>
+          </ul>
+          <div class="foot">30일 이내 전액 환불 · 연 결제 20% 할인</div>
+          <a class="btn btn-o" href="#">프로 시작</a>
+        </div>
+      </div>
+      <p class="ledger-note" style="border-color:var(--line2);border-left-color:var(--gold)">결제 수단 — 신용·체크카드(토스페이먼츠·추후 연동) 또는 계좌이체. 30일 이내 해지 시 사유를 묻지 않고 전액 환불(위약금 없음). 환불은 서비스 만족도 기준이며 투자 성과와 무관합니다. <b>※ 등급별 기능 배분은 조정 가능.</b></p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="band">
+    <div class="sec">
+      <div class="eyebrow">이용 방법</div>
+      <h2 class="h2big">구독 이후 이렇게 이용합니다</h2>
+      <div class="flow">
+        <div class="step"><div class="sn2 num">1</div><h3>구독 결제</h3><p>구독 기간을 선택하고 토스페이먼츠로 결제합니다. 카드 할부 가능.</p></div>
+        <div class="step"><div class="sn2 num">2</div><h3>웹·앱 접속</h3><p>결제 후 안내대로 웹에 접속하거나 전용 앱을 설치합니다.</p></div>
+        <div class="step"><div class="sn2 num">3</div><h3>계정 연동</h3><p>결제 정보로 로그인하면 이용 권한이 자동으로 연결됩니다.</p></div>
+        <div class="step"><div class="sn2 num">4</div><h3>판독 이용</h3><p>매일의 판단·자리·손절선과 실시간 속보 알림을 바로 확인합니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="band">
+    <div class="sec">
+      <div class="eyebrow">자주 묻는 질문</div>
+      <h2 class="h2big">궁금한 것들</h2>
+      <div class="faq">
+        <details open><summary>오른다·내린다를 실시간으로 알려주나요?<span class="plus">+</span></summary><div class="ans">아니요. 우리는 방향을 단정하지 않습니다. 대신 자리(어디서 사고파는 힘이 부딪히나)와 확률, 그리고 그 그림이 깨지는 무효 조건을 드립니다. 판단과 실행은 회원의 몫입니다.</div></details>
+        <details><summary>30일 이내 해지하면 정말 전액 환불되나요?<span class="plus">+</span></summary><div class="ans">네. 첫 구독 후 30일 이내 해지 시 사유를 묻지 않고 결제 금액을 전액 환불합니다(위약금 없음). 만족하지 못하면 비용을 돌려받습니다.</div></details>
+        <details><summary>정합 원장은 진짜 우리 성적인가요?<span class="plus">+</span></summary><div class="ans">발행 시점에 판단을 잠그고, 다음 마감 가격이 나오면 실제 시세로 자동 채점합니다. 저희도 사후에 못 고치며, 맞은 것도 틀린 것도 손실까지 그대로 공개합니다.</div></details>
+        <details><summary>초보자도 쓸 수 있나요?<span class="plus">+</span></summary><div class="ans">판단 한 줄과 손절선부터 보시면 됩니다. 각 주장 옆의 "왜?"를 누르면 근거로 바로 갈 수 있어, 익숙해질수록 더 깊게 읽을 수 있습니다.</div></details>
+        <details><summary>실시간 속보 알림은 어떻게 오나요?<span class="plus">+</span></summary><div class="ans">현재가가 내 자리(승부처·생명선 등 정본 레벨)를 돌파하거나 이탈하면 즉시 텔레그램으로 보냅니다. 조용한 장에는 울리지 않습니다.</div></details>
+        <details><summary>해지는 어떻게 하나요?<span class="plus">+</span></summary><div class="ans">구독 기간 중 언제든 해지할 수 있습니다. 30일 경과 후에는 이용한 기간을 제외한 잔액을 법령 한도 내에서 환급합니다.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="band final">
+    <div class="sec">
+      <h2>확신은, 검증 다음입니다.</h2>
+      <p class="sub" style="margin:0 auto 24px">먼저 30일 검증하십시오. 확신이 서지 않으면 전액 환불합니다.</p>
+      <div class="cta-row"><a class="btn btn-g" href="#pricing">구독 시작하기 →</a></div>
+    </div>
+  </section>
+
+  <div class="foot-legal">
+    <b>프로그인베스트(froginvest)</b> · 비트인포 BITINFO · 대표 오한결 · 고객센터 준비 중<br>
+    본 서비스는 불특정 다수를 대상으로 하는 투자정보 제공 서비스로, 개별 투자자문을 제공하지 않습니다. 투자의 최종 책임은 투자자 본인에게 있으며, 가상자산은 원금 손실이 발생할 수 있고 과거의 성과가 미래의 수익을 보장하지 않습니다. 구독·결제는 사이트(토스페이먼츠)를 통해 진행됩니다.<br>
+    이용약관 · 개인정보처리방침 · 투자위험고지
+  </div>
+
+</div>
+</body>
+</html>
