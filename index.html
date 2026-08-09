@@ -13456,7 +13456,14 @@ function _scRow(s){
       +'<div style="color:var(--tx3);font-size:10px;margin-top:2px">실존가·기준가【고정】은 봉 마감 전까지 안 움직이고, 이 굴림가는 실시간으로 이동합니다.</div></div>';
   }
   var tfs=d.tf_scenarios, scWeekly='', scMonthly='';
-  if(tfs&&tfs.weekly&&tfs.weekly.scenarios){ var wk=tfs.weekly; scWeekly=_scCard('이번 주봉 시나리오', wk.scenarios, wk.issued, wk.note, false); }
+  if(tfs&&tfs.weekly&&tfs.weekly.scenarios){ var wk=tfs.weekly;
+    var _wsc=(wk.scenarios||[]).map(function(s){
+      if(!s||typeof s.text!=='string'||!/^\[(큰 그림|큰 틀)\]/.test(s.text)) return s;
+      var _p=s.text.split('\n\n');
+      while(_p.length>1&&/^\[(큰 그림|큰 틀|지금 미는 힘|주체)\]/.test(_p[0])) _p.shift();   // ★length>1 = 전부 지워 빈 카드 되는 것 방지
+      var _c={}; for(var _k in s) _c[_k]=s[_k]; _c.text=_p.join('\n\n'); return _c;         // ★사본 , 원본 배열 오염 금지
+    });
+    scWeekly=_scCard('이번 주봉 시나리오', _wsc, wk.issued, wk.note, false); }
   var mo=d.monthly_scenario;
   if(mo&&mo.scenarios){ scMonthly=_scCard('이달 월봉 시나리오', mo.scenarios, mo.issued, '', false); }
   var scCards=scDaily+scWeekly+scMonthly;
