@@ -12122,7 +12122,7 @@ function frameSellVW(div){try{
   return {vw,alive,len:e-s+1};
 }catch(e){return null;}}
 // 위계 사슬 멘트 공용 조립 - tilt=하단−상단 미확인 쏠림(+반등/−눌림), wkAlive=주봉 생명선 생존
-function hierChain(tilt,wkAlive){try{
+function hierChain(tilt,wkAlive,gDn,gUp){try{   // ★[헤븐 08-09] gDn·gUp 은 선택 인자(하위 호환) , 개수를 가진 호출부만 넘긴다
   // [이사 확정 2026-07-12 위계 재정의] 반기 프레임 폐기 - 대추세=파동 시작~현재 전체 매도 파동 · 중기=분기(최근 완성 3개월) · 단기=월 · 시그널=일주 (케인 v070779 판 한 장과 동일 소스)
   const px=E.d1[E.d1.length-1].c;
   const dae=frameSellVW(3);
@@ -12135,8 +12135,21 @@ function hierChain(tilt,wkAlive){try{
   let st='';const ws2=waveState('M1');
   if(ws2&&ws2.mode!=='none')st='단기(월) '+(ws2.dir<0?'<b style="color:var(--sell)">매도 '+ws2.days+'봉 중</b>':'<b style="color:var(--buy)">매수 '+ws2.days+'봉 중</b>')+' <span class="sub">(전환은 월봉이 바뀌어야)</span>';
   const gM=E.M1[E.M1.length-1].gijun;
-  const sig=tilt>0?('시그널(일·주) <b style="color:var(--buy)">반전 켜짐</b><span class="sub">('+(wkAlive?'주봉 생명선 생존':'생명선 이탈')+(px>=gM?'·현재가 월 기준가 위=반전 1봉 시도':'')+')</span>')
-    :tilt<0?'시그널(일·주) <b style="color:var(--sell)">눌림 지속</b>':'시그널(일·주) 중립';
+  // ★★[헤븐 08-09 시공 C · 케빈 회부] "시그널 반전 켜짐/눌림 지속" ★방향 주장 제거.
+  //  [실행] 케빈 대조군 , 전구간 N=2770 · H=3/5/10/20 ★4칸 전부 음수·CI 0 포함 = 널
+  //     200일선 아래 ★-3.82%p CI[-7.58,-0.06] · ★-4.56%p CI[-8.32,-0.79] = ★유의하게 음수
+  //     ★즉 하락장에서 이 신호를 방향으로 읽으면 ★무작위보다 나쁘다.
+  //  ★그리고 ★용어 충돌 , 메인이 "시그널 방향 없음 롱 63,035 · 숏 64,966 대치 중"이라 쓴다.
+  //     ★회원은 '시그널'을 ★롱/숏 실존가 대치로 배우는데 ★여기 '시그널'은 tilt 다. ★다른 것이다.
+  //  ★tilt 가 실제로 세는 것은 ★아래쪽 미확인 기준가 개수(gDn) - 위쪽 개수(gUp) 다.
+  //     ★개수는 ★사실이라 검증이 필요 없다. ★그 개수 차이를 ★방향으로 번역한 것이 문제였다.
+  //  ★gDn·gUp 은 ★선택 인자다. 호출부 4곳 중 개수를 가진 곳만 넘긴다(하위 호환).
+  //     ★못 받으면 ★개수 없이 "더 많음"까지만 말한다. ★"우세·우위"는 안 쓴다(케빈 지적) ,
+  //     ★그러면 "아래가 많으니 오른다"로 다시 읽힌다.
+  const _cnt=(gDn!=null&&gUp!=null);
+  const sig=_cnt
+    ? ('되돌림 자리(일·주) 아래 <b>'+gDn+'곳</b> · 위 <b>'+gUp+'곳</b>'+(wkAlive?'<span class="sub"> · 주봉 생명선 생존</span>':'<span class="sub"> · 생명선 이탈</span>'))
+    : (tilt>0?'되돌림 자리(일·주) 아래쪽이 더 많음':tilt<0?'되돌림 자리(일·주) 위쪽이 더 많음':'되돌림 자리(일·주) 같음');
   let regime='';
   if(dae&&midVW!=null&&ws2&&ws2.mode!=='none'){const v=[daeUp,midUp,ws2.dir>0];
     regime=v.every(x=>x)?'<b style="color:var(--buy)">상승 국면</b>(3층 정렬)':v.every(x=>!x)?'<b style="color:var(--sell)">하락 국면</b>(3층 정렬)':'<b>전환 국면</b>(층 엇갈림)';}
@@ -12564,7 +12577,7 @@ function hierPanel(){try{
     for(let i=Math.max(1,N3-21);i<N3-1;i++){const b=A3[i];let mn=1e15,mx=0;
       for(let j=i+1;j<N3;j++){if(A3[j].l<mn)mn=A3[j].l;if(A3[j].h>mx)mx=A3[j].h;}
       if(mn>b.gijun)gDn++;if(mx<b.gijun)gUp++;}
-    const hc=hierChain(gDn-gUp,wAlive);
+    const hc=hierChain(gDn-gUp,wAlive,gDn,gUp);   // ★[헤븐 08-09] 개수를 같이 넘긴다 , 방향 대신 사실을 쓰게
     concl=(hc.regime?hc.regime+' - ':'')+hc.chain;
   }catch(e){concl='위계 계산 중';}
   return `<div class="panel" style="border:1px solid rgba(214,162,58,.35)">
@@ -12878,7 +12891,11 @@ function reportPayload(){try{
       const rows=[];
       // 1 방향(월 파동+시그널·검증 p.02/.04)
       const dirSt=monDir>0?'▲':monDir<0?'▼':'=';
-      rows.push({층:'방향',상태:dirSt,근거값:'월 파동 '+(monDir>0?'매수':monDir<0?'매도':'중립')+(wsM&&wsM.days?' '+wsM.days+'봉':'')+' · 시그널 '+(tilt>0?'반전 시도':tilt<0?'눌림':'중립'),판정좌표:monDir<0?wall:null});
+      // ★★[헤븐 08-09 시공 C · 케빈 안 A] '시그널 반전 시도/눌림' → ★개수 사실로.
+  //  ★케빈 주의 2 , 요약패널(L14949)이 ★split('·')[0] 로 ★첫 조각만 쓴다.
+  //     ★"월 파동 …"을 안 건드려야 요약이 그대로다. ★뒤 조각만 바꿨다.
+  //  ★케빈 주의 1 , 서버(payload_direct:472)와 ★같은 문장이라 ★쌍으로 같이 고친다.
+  rows.push({층:'방향',상태:dirSt,근거값:'월 파동 '+(monDir>0?'매수':monDir<0?'매도':'중립')+(wsM&&wsM.days?' '+wsM.days+'봉':'')+' · 되돌림 자리 아래 '+gDn+'곳 위 '+gUp+'곳',판정좌표:monDir<0?wall:null});
       // 2 주체(전투존 위치 vs 하프존·서명)
       const subSt=(half!=null)?(px>half?'▲':'▼'):'=';
       rows.push({층:'주체',상태:subSt,근거값:'전투존 '+(posPct!=null?posPct+'%':'없음')+'·하프존 '+(half?Math.round(half):'없음'),판정좌표:half?Math.round(half):null});
