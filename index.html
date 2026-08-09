@@ -1042,11 +1042,25 @@ function sitgaGradePanel(){try{
     //   짝의 한쪽만 갈면 ★없던 결함이 생긴다. ★성공이 "L972 는 분위 문제가 있으니 L1077 먼저"라고
     //   먼저 짚었는데 ★내가 그 회신을 안 읽고 둘 다 갈았다. 내 과실이다.
     //  ★Q 출처가 확정되면(케인 회신 대기) 임계와 값을 ★같이 갈아야 한다. 그 전까지 현행 유지.
-    const vw=d.vw,gap=(px-vw)/vw*100,q=Q[k];
+    // ★★★[헤븐 08-09 · ★이사 지시 "A안으로 가라"] 등급표 vw 를 ★라이브 waveVW 로 되돌린다.
+    //  ★사유 , Q(등급 분위 임계)가 ★라이브 waveVW 분포로 만들어졌다. ★값과 임계의 축을 맞춘다.
+    //  [실행] 케인 git log -S , Q(07-08) 가 sitgaCanonVW(08-07)보다 ★30일 먼저 있었다 = 정본 산출 아님
+    //  [실행] 내 독립 재현(브라우저·N=1287 · 실제 화면 함수 그대로)
+    //     라이브 waveVW  [0.22, 1.40, 3.21, 7.27]  ← ★현행 Q [0.17,1.51,3.41,7.74] 에 근접 = ★Q 는 라이브 축
+    //     as-of         [-1.09, 1.34, 3.96, 9.38] ← 케인 [-1.19,1.35,4.04,9.54] 와 일치
+    //  ★(b)안(Q 를 as-of 로 재산출)은 ★내 검산에서 ★①위험 구간을 오히려 좁혔다(-1.08%~0.17% 가 ②눌림으로).
+    //     ★케인 우려(①위험이 ②눌림으로 보인다)와 ★반대 방향이라 ★이사께 올렸고 ★(a)로 결정됐다.
+    //  ★★이 칸은 ★이사 07-07 확정("표기 기준=전일 마감까지")의 ★예외다. ★이사 08-09 지시로 바꾼다.
+    //     ★사유 , 등급은 ★분포 대비 위치를 말하는 것이라 ★분포를 만든 축과 같은 축이어야 한다.
+    //     ★as-of 는 다른 화면(손절 눈금·참조선)에서 그대로 쓴다. ★이 칸만 라이브다.
+    //  ★폴백 , 라이브를 못 구하면 ★as-of 를 그대로 쓴다. 값을 지우지 않는다.
+    let vw=d.vw;
+    try{const _ws=waveState(k); if(_ws&&_ws.mode!=='none'&&_ws.dir>0){const _lv=waveVW(E[k],_ws); if(_lv)vw=_lv;}}catch(e){}
+    const gap=(px-vw)/vw*100,q=Q[k];
     const g=gap<=q[0]?0:gap<=q[1]?1:gap<=q[2]?2:gap<=q[3]?3:4,G=GR[g];
     rows+=`<tr><td class="l">${KO[k]}</td><td class="num">${f1(vw)}</td><td class="num" style="color:${gap>=0?'var(--buy)':'var(--sell)'}">${gap>=0?'+':''}${gap.toFixed(2)}%</td><td class="l"><b style="color:${G[1]}">${G[0]}</b></td><td class="l" style="font-size:11px;line-height:1.5">${G[2]}</td></tr>`;}
   if(!rows)return '';
-  return `<div class="panel"><div class="hd">실존가 등급 - 현재가 vs 주체 평단(손절선) <span class="sub">(현재가 실시간 · 실존가=전일 확정 손절선 · 등급=역사 분위 · 판독이지 예측 아님)</span></div>
+  return `<div class="panel"><div class="hd">실존가 등급 - 현재가 vs 주체 평단(손절선) <span class="sub">(현재가 실시간 · 실존가=현재 파동 평단(손절선) · 등급=역사 분위 · 판독이지 예측 아님)</span></div>
     <div class="scroll"><table><thead><tr><th class="l">봉</th><th>실존가(손절선)</th><th>괴리</th><th class="l">등급</th><th class="l">행동 지침</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="sub" style="padding:6px 12px;font-size:10px;border-top:1px solid var(--bd)">★저괴리(평단 근접)=위험·손절 근접 / 고괴리=강하나 추격 위험. 매수 파동 진행 중만 표기. 등급별 통계는 참고(과거 봉 기준·검증 중).</div></div>`;
 }catch(e){return '';}}
