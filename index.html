@@ -18322,6 +18322,30 @@ let _matTrack=null;
 var _STALE_GLOBAL={sujo_layer:'__SUJO', whale_trajectory:'__WHALE_TRAJ',
                    wave_lifecycle_state:'__WAVELIFE', whale_delta_state:'__WHDELTA',
                    maturity_track:'__MATTRACK'};
+// ★★[헤븐 08-09 시공 F] 인라인 시각 문자열 파서. ★표기가 5가지라 하나로 못 읽는다.
+//  [실행 08-09] 인라인 24키 전수:
+//     ISO T 17건  2026-08-09T09:40:08        ← 접미 없음 = ★생산기 datetime.now() = 로컬 KST
+//     날짜만 5건  2026-08-09
+//     초없음 1건  2026-08-09T09:24
+//     UTC   1건  2026-08-09 00:25 UTC       ← ★명시적 UTC. 공백 구분 + 접미
+//     ★월만 1건  2026-07                     ← whale_delta_state. ★일 신선도 판정 불가라 제외
+//  ★못 읽으면 null 을 준다. ★NaN 을 그대로 흘리면 배너가 ★아예 안 뜨는 쪽으로 죽는다(케빈 경고).
+//  ★null 은 stamps 에서 빠지므로 ★기존 동작(월 단위 제외)과 같다.
+function _asofMs(v){
+  if(!v)return null;
+  var t=String(v).trim();
+  if(/^\d{4}-\d{2}$/.test(t))return null;                    // ★월 단위 , 일 신선도 판정 불가
+  if(/^\d{4}-\d{2}-\d{2}$/.test(t)){                          // 날짜만 , 로컬 자정으로 본다
+    var d0=new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8,10));
+    return isNaN(d0.getTime())?null:d0.getTime();
+  }
+  var utc=/(\bUTC?\b|Z)\s*$/i.test(t);                        // UTC 접미가 있나
+  t=t.replace(/\s*(UTC?|Z)\s*$/i,'').replace(/\s+/,'T');      // 접미 제거 + 공백 구분을 T 로
+  if(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(t))t+=':00';      // 초가 없으면 채운다
+  if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(t))return null;
+  var ms=Date.parse(t.slice(0,19)+(utc?'Z':''));              // ★접미 없으면 로컬로 읽는다
+  return isNaN(ms)?null:ms;
+}
 function _staleScan(){try{
   var C=window.__CRON||{};var stamps=[];
   // ★★[헤븐 08-07 · 이사 "고장난거 싹 없애라"] sujo_layer 를 이 목록에서 뺐다.
@@ -18342,11 +18366,29 @@ function _staleScan(){try{
       var g=window[_STALE_GLOBAL[k[0]]||''] || null;
       var src=(g && (g[k[1]]||g.generated||g.as_of||g.asof)) ? g : (C[k[0]]||{});
       var v=src[k[1]]||src.generated||src.as_of||src.asof;
-      if(v){v=String(v).slice(0,10);if(v.length>=10)stamps.push(v);}
+      // ★★[헤븐 08-09 시공 F · 케빈 회부] ★날짜만 보고 시각을 버리던 것을 고친다.
+      //  구: v=String(v).slice(0,10) → 그 뒤 new Date(oldest+'T00:00:00Z')
+      //  ★두 가지가 틀렸다.
+      //   ① ★시각을 버려서 항상 그날 자정으로 본다 → age 를 실제보다 크게 잰다
+      //   ② ★전부 'Z'(UTC)로 붙여 읽는데 ★생산기는 datetime.now()(로컬 KST)를 쓴다
+      //      → ★KST 시각을 UTC 로 읽어 ★9시간 더 낡게 센다
+      //  ★[실행 08-09] 인라인 시각 표기가 ★5가지였다:
+      //     ISO T 17건(로컬) · 날짜만 5건 · 초없음 1건 · "0:25 UTC" 1건 · ★월만 1건
+      //  ★[실행] 그래서 지금 정상 상태인데 oldest age 가 ★2.00일이다. ★임계 2.2 까지 여유 4.8시간뿐.
+      //     wave_lifecycle_state 하나만 하루 밀려도 ★거짓 배너가 뜬다. ★이미 위험 구간이었다.
+      //  ★정확히 재면 1.63일 → 여유 13.7시간. ★2.85배 늘어난다.
+      //  ★★임계 2.2 는 ★그대로 둔다. 케빈 님 안(1.3일)은 ★지금 값 1.63 이 넘어 즉시 오탐이 난다.
+      //     ★해상도만 고치는 것이 답이고 임계는 손대지 않는다.
+      //  ★월 단위(YYYY-MM)는 ★일 신선도 판정이 원천 불가라 ★현행대로 제외한다(주석 그대로 유지).
+      if(v){
+        var ms=_asofMs(v);
+        if(ms!=null)stamps.push({ms:ms,label:String(v).slice(0,10)});
+      }
     }catch(e){}});   // 월 단위(YYYY-MM) as_of는 정상 표기라 제외
   if(!stamps.length)return;
-  var oldest=stamps.sort()[0];
-  var age=(Date.now()-new Date(oldest+'T00:00:00Z').getTime())/86400000;
+  stamps.sort(function(a,b){return a.ms-b.ms;});
+  var oldest=stamps[0].label;
+  var age=(Date.now()-stamps[0].ms)/86400000;
   if(age>2.2)_staleBar('고래 추적·생애주기·수급층 판독이 '+oldest+' 기준입니다('+Math.floor(age)+'일 전). 가격·파동 장부·전투존은 실시간입니다.');
   else _staleClear();   // ★파일이 최신이면 인라인 기준으로 떴던 배너를 내린다
 }catch(e){}}
