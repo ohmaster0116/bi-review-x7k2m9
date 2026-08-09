@@ -13972,11 +13972,21 @@ function viewScenario(){
   }
   // === 이력 있음: 선택 시 본문, 아니면 날짜 목록 ===
   var sel=scDay?ents.filter(function(e){return String(e.id)===String(scDay);})[0]:(ents[0]||null);   // [케빈 07-29 이사] 들어오면 최신 발행분이 바로 펼쳐지게(목록만 보이던 문제)
+  // ★★★[헤븐 08-09 시공 · 케인 회부] ★목록이 영영 안 그려지고 있었다.
+  //  [직독] 구조 , sel 은 ★scDay 가 없어도 ents[0] 을 잡는다 → if(sel){ … ★return 상세; }
+  //     → 그 아래 listHtml 은 ★도달 불가 코드였다.
+  //  [실행] 케인 확인 , entries ★15건(d1 13·w1 1·M1 1) 전부 로드되는데 ★화면 목록은 1행.
+  //     ★'‹ 목록'을 눌러도 setScDay(null) → sel=ents[0] → ★또 상세가 뜬다(케인 "클릭 후에도 동일").
+  //  ★원인은 ★07-29 변경이다(위 주석 그대로) , "바로 펼쳐지게(목록만 보이던 문제)".
+  //     ★펼치기를 넣으면서 ★목록을 잃었다. ★한쪽을 고치고 다른 쪽을 안 본 경우다.
+  //  ★처방 , ★둘 다 그린다. 상세를 ★_detail 에 담고 ★그 아래 목록을 붙인다.
+  //     ★07-29 의도도 살고 ★게시판 본래 기능(이력이 쌓인다)도 산다.
+  //     ★화면 자기 문구가 "발행 이력이 쌓입니다"인데 ★안 쌓이는 것처럼 보였다.
+  var _detail='';
   if(sel){
     var up=(sel.up_levels||[]).map(function(v){return '$'+Math.round(v).toLocaleString('en-US');}).join(' · ');
     var dn=(sel.dn_levels||[]).map(function(v){return '$'+Math.round(v).toLocaleString('en-US');}).join(' · ');
-    return head+'<div onclick="setScDay(null)" style="cursor:pointer;font-size:12px;color:var(--tx2);margin-bottom:10px">‹ 목록</div>'
-      +'<div class="panel" style="border:1px solid var(--gold);border-radius:12px;padding:14px 16px">'
+    _detail='<div class="panel" style="border:1px solid var(--gold);border-radius:12px;padding:14px 16px">'
       +'<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:12px;color:var(--gold2);font-weight:700">'+dLab(sel.issued_at)+' · '+scSec+' 예상 시나리오</span>'+badge(sel)+'</div>'
       +(sel.headline?'<div style="font-size:14px;font-weight:700;margin-bottom:8px;line-height:1.5">'+sel.headline+'</div>':'')
       +(function(){var S2=window.__SCEN||{};var td=(S2.차트||{}).발행일,yd=(S2.복기||{}).날짜;var ch='';
@@ -14004,11 +14014,17 @@ function viewScenario(){
       +((sel.result!=null&&(String(sel.result).indexOf('미결')>=0||String(sel.result).indexOf('관망')>=0))?'<div style="margin-top:9px;font-size:11px;color:var(--tx3)">미결, 결착됐으나 짚은 자리 도달 0(종가 기준) · 정합 분모 제외 · '+(sel.invalidate_held?'무효선 유지':'무효선 이탈')+'</div>':(sel.result!=null&&sel.match_score!=null?'<div style="margin-top:9px;font-size:11px;color:var(--tx3)">채점: '+sel.result+' · 정합도 '+sel.match_score+' · 도달 '+(sel.levels_reached||0)+'/'+(sel.levels_total||0)+' · '+(sel.invalidate_held?'무효선 유지':'무효선 이탈')+'</div>':'<div style="margin-top:9px;font-size:11px;color:var(--tx3)">채점 대기, 결착 주기 후 정합도 산정.</div>'))
       +'</div>';
   }
+  // ★[헤븐 08-09] 아래 listHtml 은 구조상 ★if(sel) 의 return 때문에 도달할 수 없었다.
+  //  ★이제 _detail 에 담고 ★목록과 같이 반환한다.
   var listHtml='<div style="border:1px solid var(--bd);border-radius:12px;overflow:hidden">'
     +ents.map(function(e,ix){
       return '<div onclick="setScDay(&quot;'+String(e.id).replace(/"/g,'')+'&quot;)" style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;'+(ix?'border-top:1px solid var(--bd);':'')+(ix===0?'background:rgba(214,162,58,.05);':'')+'"><span style="font-size:13px;font-weight:700;color:'+(ix===0?'var(--gold2)':'var(--tx)')+'">'+dLab(e.issued_at)+' '+scSec+' 예상 시나리오'+(ix===0?' <span style="font-size:10px;color:var(--gold);border:1px solid rgba(214,162,58,.4);border-radius:9px;padding:1px 7px;margin-left:6px">최신</span>':'')+'</span><span style="display:flex;align-items:center;gap:7px">'+badge(e)+'<span class="sub" style="font-size:11px">›</span></span></div>';
     }).join('')+'</div>';
-  return head+aggHtml+listHtml;
+  // ★[헤븐 08-09] 상세(_detail)를 펼친 채 ★그 아래 목록을 붙인다.
+  //  ★_detail 이 없으면(선택 불가) 목록만. ★07-29 의도와 게시판 기능이 둘 다 산다.
+  return head+aggHtml
+    +(_detail?_detail+'<div class="sub" style="font-size:11px;margin:14px 0 6px">발행 이력 '+ents.length+'건</div>':'')
+    +listHtml;
 }
 function viewInvestReport(){
   var btn=function(k,t){return '<button onclick="setRpSec(&quot;'+k+'&quot;)" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(rpSec===k?'#46c2ff':'var(--bd)')+';background:'+(rpSec===k?'rgba(70,194,255,.13)':'transparent')+';color:'+(rpSec===k?'#46c2ff':'var(--tx2)')+';font-weight:'+(rpSec===k?700:400)+'">'+t+'</button>';};
