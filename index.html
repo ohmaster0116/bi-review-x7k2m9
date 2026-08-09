@@ -1112,7 +1112,7 @@ function convClusters(){
     const gj2=b=>((b.o+b.c)/2+(b.h+b.l)/2)/2, cen2=b=>(b.h+b.l+2*b.c)/4;
     const L=[];const add=(sys,name,v)=>{if(v!=null&&isFinite(v)&&v>0)L.push({sys,name,v});};
     [['d1','전일'],['w1','전주'],['M1','전월']].forEach(pr=>{const a=E[pr[0]];if(a&&a.length>=2){const p=a[a.length-2];
-      add('기준가',pr[1]+' 기준가',gj2(p));add('중심가',pr[1]+' 중심가',cen2(p));}});
+      add('기준가',pr[1]+' 기준가',gj2(p));add('중심가',pr[1]+' 지지저항 중심',cen2(p));}});   // ★[헤븐 08-09 · 이사 지시] cen2=(res+sup)/2 → 지지저항 밴드. 라벨만 붙임
     try{const c=otCalc('d1');if(c)add('받침 전투','받침 전투평균(일)',c.battle);}catch(e){}
     ['m30','h1','d1'].forEach(k=>{try{const r=waveRS4(k);add('파동평단','위 물량 평단('+NAME[k]+')',r.R4);add('파동평단','아래 물량 평단('+NAME[k]+')',r.S4);}catch(e){}});
     [['d1','일'],['w1','주'],['M1','월']].forEach(pr=>{try{const f2=vbFill(pr[0]);if(f2){add('변동폭',pr[1]+' 캡 상단',f2.o+f2.ar);add('변동폭',pr[1]+' 캡 하단',f2.o-f2.ar);}}catch(e){}});
@@ -1184,7 +1184,7 @@ const LG_TYPE={regime:'국면',wave:'파동',unconfirmed:'미확인 도달',band
 const LG_RESULT={hit:['✅','회귀 적중','var(--buy)'],miss:['❌','미회귀','var(--sell)'],alive:['✅','파동 생존','var(--buy)'],dead:['⚠','파동 이탈(힘 약화)','var(--sell)'],resolved:['🎯','기한 내 도달','var(--buy)'],late:['🐢','지연 도달(예상 초과)','var(--sell)'],unresolved:['❌','미도달(기한 초과)','var(--sell)'],win:['✅','목표 달성','var(--buy)'],stop:['❌','손절','var(--sell)'],close:['⏹','마감청산','var(--tx2)'],nofill:['⏸','미체결(성적 제외)','var(--tx2)'],skip:['⏸','관망(성적 제외)','var(--tx2)'],invalidated:['🛑','파기선 발동','var(--sell)'],expire:['⏹','만기청산','var(--tx2)'],in_range:['✅','범위 적중','var(--buy)'],out_range:['❌','범위 이탈','var(--sell)']};
 function lgPred(r){const p=r.pred||{};
   if(r.type==='supply_range')return `예상 범위 <b>${f1(p.loBand)} ~ ${f1(p.hiBand)}</b> <span class="sub">시가 ${f1(p.open)} · 폭 ${f1(p.width)} · 오차여유 ${f1(p.RMSE)}</span>`+(r.retroactive?' <span class="sub" style="color:#f0a83c">· 소급 잠금(성적 제외)</span>':'');
-  if(r.type==='whale_tp')return `고래 방어선 <b>${f1(p.tp)}</b> <span class="sub">중심 ${f1(p.tp_center)}${p.tp_roll?' · 굴림 '+f1(p.tp_roll):''}${p.drift!=null?' · 전일대비 '+(p.drift>=0?'+':'')+p.drift:''}</span>`;
+  if(r.type==='whale_tp')return `고래 방어선 <b>${f1(p.tp)}</b> <span class="sub">중심 ${f1(p.tp_center)}(전투포인트)${p.tp_roll?' · 굴림 '+f1(p.tp_roll):''}${p.drift!=null?' · 전일대비 '+(p.drift>=0?'+':'')+p.drift:''}</span>`;
   let _px=null;try{_px=E.d1[E.d1.length-1].c;}catch(e){}
   if(r.type==='regime')return `국면 <b>${p.regime}</b> · 당일 회귀율 ${p.rr_all}% <span class="sub">(다음 캔들이 기준가 터치)</span>`+(p.miss_streak?` · 미회귀 ${p.miss_streak}`:'');   // "회귀율" 동어이의 해소(이사 전수감사): 96%=최종(언젠가)과 구분
   if(r.type==='wave')return p.buyW?`매수 파동선 <b>${f1(p.buyW)}</b>`:(p.sellW?`매도 파동선 ${f1(p.sellW)}`:'무파동');
@@ -1254,7 +1254,7 @@ function viewLedger(){
    {t:'압박 깊이 함수(돈→깊이)',lv:'전략',who:'P7 시대검증(ρ0.45~0.53·워크포워드)',num:'배율 0~100%→계단 ~58% 제거 · 200%+→전량권·바닥 중앙 278%',say:'어디까지 내려올지는 가격이 아니라 상대가 쓴 돈이 정한다 - 화력 증감이 깊이 예보.'},
    {t:'트랜치 원장·넷 회계',lv:'전략',who:'회계 분해·현 파동 실측(헤지 매칭 P8 4자 진행)',num:'마지막 트랜치=매도 장부와 규모·단가 ±0.5% 일치(현 파동)',say:'실존가는 평균의 가면 - 페이지별 장부를 열면 마지막 돈의 위치와 헤지 보험이 보인다.'},
    {t:'부활=수명 연장',lv:'전략',who:'헤븐 실측(N4 소표본 명시)',num:'사이클: 무이탈 3일 vs 부활 23일',say:'1회 이탈은 죽음이 아니라 휩쏘 - 흔들리고 살아난 파동이 오래 간다.'},
-   {t:'합산 캔들(파동=한 캔들)',lv:'전략',who:'항등(좌표 변환)·이사 정본',num:'좌표 변환 항등(자체 정본) - 현 파동=월중심(0.1차)',say:'파동을 접으면 상위 봉 좌표가 나온다 - 위치 도구이지 방어선 약속이 아니다.'},
+   {t:'합산 캔들(파동=한 캔들)',lv:'전략',who:'항등(좌표 변환)·이사 정본',num:'좌표 변환 항등(자체 정본) - 현 파동=월봉 파동 0.1차 좌표',say:'파동을 접으면 상위 봉 좌표가 나온다 - 위치 도구이지 방어선 약속이 아니다.'},
    {t:'저항 전환일(단기 하방)',lv:'가설',who:'사이클 특성 62%(N21)·전기간 우연 미배제(p0.148)·4h 미재현',num:'+1일 62%·꼬리 −3.1%(사이클)',say:'이 사이클에선 잘 맞아왔으나 우연 배제 미완 - 특성 참고, 확신 금지.'},
    {t:'급락 익일 반등 매수',lv:'전략',who:'경고 도구',num:'승률 35%·평균 −1.28%·꼬리 −17%(N17)',say:'이 사이클 최악의 자리 - 물타기 반등 베팅 경고.'},
    {t:'신고가 추격 롱',lv:'전략',who:'경고 도구',num:'승률 40%·평균 −1.54%(N10)',say:'돌파는 리테스트 확인 후 - 추격은 손실 우위였다.'},
@@ -10094,7 +10094,7 @@ function lwSideRender(){
   el.innerHTML=bandBar+(function(){try{return zoneStrength(c9,px)||'';}catch(e){return '';}})()+`<table style="width:100%"><thead><tr><th></th><th class="l">위치</th><th>현재역할</th><th>중심밴드</th></tr></thead><tbody>${rows}</tbody></table>
     <div style="padding:7px 10px;font-size:11px;color:var(--tx2);line-height:1.75;border-bottom:1px solid var(--bd)">현재가 <b style="color:var(--gold2)">${f1(px)}</b>${move?' · <b>'+move+'</b>':''} · ${seg===0?'상단 돌파':seg===9?'하단 이탈':`<b>${zoneName(LW_LBL9[seg-1],c9,seg-1,px)}</b>↔<b>${zoneName(LW_LBL9[seg],c9,seg,px)}</b> 사이`}<br>${(()=>{const pct=Math.max(0,Math.min(100,Math.round((px-c9[8])/((c9[0]-c9[8])||1)*100)));return `<b style="color:var(--buy)">매수율(장악) ${pct}%</b> : <b style="color:var(--sell)">매도율(장악) ${100-pct}%</b> <span class="sub">(하단~상단 내 현재가 위치)</span>`;})()}<br><span class="sub" style="font-size:10px">위 = 뚫어야 할 저항 / 아래 = 받쳐주는 지지 · 우세%는 밴드 내 가격 위치 기준</span></div>
     <div style="padding:8px 10px;font-size:10.5px;color:var(--tx2);line-height:2.1">
-      <b style="color:var(--tx)">사용 설명서 · 중심선 기준 매매</b><br>
+      <b style="color:var(--tx)">사용 설명서 · 지지저항 중심선 기준 매매</b><br>
       <b>① 진입</b> - 매수존에서는 롱 관점이, 매도존에서는 숏 관점이 우위인 구간입니다<br>
       <b>② 방법</b> - 추격보다 중심선 되돌림 확인이 먼저인 자리입니다<br>
       <b>③ 손절 기준</b> - 지지가 마감으로 깨지면 롱 논리가, 저항이 마감으로 뚫리면 숏 논리가 약해집니다<br>
@@ -10679,7 +10679,7 @@ function simPanel(){
     <div style="padding:5px 14px;font-size:11px;color:var(--tx2);border-bottom:1px solid var(--bd)">${note}</div>
     <div style="max-height:${boxH};overflow-y:${ex?'auto':'hidden'};overflow-x:auto"><table><thead><tr><th class="l">단계</th><th>중심 도달가</th><th>다음 변동폭 (수익·점프⚡)</th><th>손절(1차 진입손절만)</th><th>리스크폭</th><th>손익비</th><th>이익보존가</th></tr></thead><tbody>${r.rows||'<tr><td colspan="7" class="sub" style="padding:8px">미확인 레벨 부족(데이터 누적/상위봉)</td></tr>'}</tbody></table></div>
     <div style="text-align:center;padding:6px;border-top:1px solid var(--bd)"><button class="tfb" onclick="simToggle('${key}')">${ex?'▲ 접기':'▼ 더 보기 (5 → 최대 20단계 · 펼치면 스크롤)'}</button></div></div>`;};
-  return `<div class="panel"><div class="hd">중심가격 이동 경로 - 관점전환가($${f1(flip)})를 손절로 들어갔을 때 (최대 20단계)</div>
+  return `<div class="panel"><div class="hd">지지저항 중심 이동 경로 - 관점전환가($${f1(flip)})를 손절로 들어갔을 때 (최대 20단계)</div>
     <div style="padding:8px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--bd)"><span class="sub">📈 위 차트에서 고른 봉과 연동</span><span style="color:var(--gold2);font-weight:800;font-size:13px">${NAME[k]||k}</span><span class="sub" style="margin-left:auto">한 칸 ≈ $${f1(sp)}</span></div>
     <div style="padding:8px 14px;font-size:12px;border-bottom:1px solid var(--bd);line-height:1.65">미확인 밴드의 <b>중심(주요전투구간)이 한 단계씩 이동하는 경로</b>입니다(상·하단 제외, 중심만). 현재가 <b>$${f1(px)}</b>, 관점전환가 <b style="color:var(--gold2)">$${f1(flip)}</b>.</div></div>
     ${tbl('▼ 하방 (현 방향·숏)','var(--sell)',dnR,dnTot,'현재 <b style="color:var(--sell)">하방 우위</b> - 추세대로 움직일 시 단계별 중심 이동과 주요 대응값입니다. <b>숏 유지 시 손절·이익보존가는 현재가 위로 재생성</b>(위로 튀면 청산), 가격이 내려갈수록 두 선도 따라 내려옵니다.','dn')}
@@ -10952,7 +10952,7 @@ function support2Axis(){
       +'<div style="padding:10px 15px">'
         +'<div style="font-size:12.5px;font-weight:700;color:var(--gold2);margin-bottom:7px">'+(S.read||'')+'</div>'
         +'<div style="font-size:11.5px;color:var(--tx2);margin-bottom:5px"><b>축1 · 저항/지지</b> <span class="sub">캔들 종가 vs 기준가·중심가 - 한 캔들로 즉시 · TF 높을수록 신뢰(주봉&gt;30분)</span> - 종합 <b>'+A1.summary+'</b>(위 '+A1.weighted_up+' / 아래 '+A1.weighted_dn+', 신뢰가중)</div>'
-        +'<div class="scroll"><table><thead><tr><th class="l">TF</th><th>종가</th><th class="l">기준가/중심가</th><th class="l">판정</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+        +'<div class="scroll"><table><thead><tr><th class="l">TF</th><th>종가</th><th class="l">기준가/지지저항 중심</th><th class="l">판정</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
         +'<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tx2);line-height:1.7"><b>축2 · 파동 생사</b> <span class="sub">실존가(주체 실제 평단) - 구조·누적</span><br>'
           +'파동 실존가 <b style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+f0(A2.siljon)+'</b> · 현재가 '+f0(A2.price)+' <b class="'+(alive?'up':'dn')+'" style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+(alive?'생존 (+'+A2.edge_pct+'%)':'이탈=반등 종료')+'</b> <span class="sub">- 나이 '+A2.born_days+'일 · 지키면 생존, 1회 이탈=휩쏘 후보(주체가 이익 보존하며 물량을 뺏는 수법 - 정본 2026-07-08) · 연속 이탈+계단 순차 제거 시 종료</span></div>'
         +_sellHtml
@@ -11940,7 +11940,7 @@ function patternLogPanel(){try{
       const gW2=E.w1[E.w1.length-2].gijun, gM2=E.M1[E.M1.length-1].gijun;
       const near=(gA!=null&&Math.abs(gA-gW2)/gW2<0.01&&Math.abs(gA-gM2)/gM2<0.01);
       const avgLine=(gA!=null||cA!=null)?`미확인 평균선: ${gA!=null?'기준가 <b style="color:var(--gold2)">'+f1(gA)+'</b>':''}${gA!=null&&cA!=null?' · ':''}${cA!=null?'중심가 <b style="color:var(--gold2)">'+f1(cA)+'</b>':''}${near?' - <b>주봉('+f1(gW2)+')·월봉('+f1(gM2)+') 기준가와 수렴</b> = 안 딛는 이유가 이 진지':''}`:'';
-      const uncLine=li('기준가',alive.gDn,alive.gUp)+'<br>'+li('중심가',alive.cDn,alive.cUp)+(avgLine?'<br>'+avgLine:'')+'<br>→ '+uncRead;
+      const uncLine=li('기준가',alive.gDn,alive.gUp)+'<br>'+li('중심가축 미확인',alive.cDn,alive.cUp)+(avgLine?'<br>'+avgLine:'')+'<br>→ '+uncRead;
       return `<div style="padding:9px 14px;border-top:1px solid var(--bd);background:rgba(214,162,58,.05);font-size:11.5px;line-height:1.8"><b style="color:var(--gold2)">패턴 의견</b> - ${head}<br>${uncLine}<br>${ops.map(x=>x.s).join('<br>')}<br><span class="sub" style="font-size:10px">미터치 횟수의 쏠림으로 읽는 해석이며 예측이 아닙니다. 창이 짧은 봉(주봉 4·월봉 6)은 참고만.</span></div>`;
     })()}</div>`;
 }catch(e){return '';}}
@@ -13063,7 +13063,7 @@ function _computeMVS(){
   else if(regimeBull&&flowBuy) st={key:'long_strong',word:'매수 우위 · 롱 강',color:'buy',dir:1,confirm:false};
   else if(above&&(flowSell||regimeTurn)) st={key:'long_pullback',word:'롱 구조 · 단기 조정 · 확인 먼저',color:'warn',dir:0,confirm:true};
   else st={key:'long',word:'매수 시그널 유지 · 롱 우위',color:'buy',dir:1,confirm:(dM!==dW&&dM!==0)};
-  var posw=sepP>0.15?'힘중심 위':(sepP<-0.15?'힘중심 아래':'힘중심 부근');
+  var posw=sepP>0.15?'4좌표 평균 위':(sepP<-0.15?'4좌표 평균 아래':'4좌표 평균 부근');
   var flowWord=flowSell?'분·시·일 매도 우위':flowBuy?'분·시·일 매수 우위':'분·시·일 혼조';
   var posZone=sepP>=0.5?'앞서감(비쌈)':(sepP<=-1?'눌림 깊음':(flowSell?(posw+' · 매도 우위'):flowBuy?(posw+' · 매수 우위'):(posw+' · 혼조')));
   var colVar=st.color==='buy'?'var(--buy)':st.color==='sell'?'var(--sell)':'var(--gold2)';   // 헤드라인=stance 색(defend=경계 gold)
@@ -13155,7 +13155,7 @@ function twoBreathPanel(){try{
 
   var pResp=(up2?('승부처 <b style="color:var(--tx)">'+fUsd(up2)+'</b> 돌파 시 강화 · '):'')
     +(dn2?('생명선 <b style="color:var(--tx)">'+fUsd(dn2)+'</b> 이탈 시 큰 틀 전환<br>'):'')
-    +'힘중심 <b style="color:var(--tx)">'+fUsd(sum4)+'</b>'
+    +'4좌표 평균 <b style="color:var(--tx)">'+fUsd(sum4)+'</b>'
     +(_jlR!=null?(' · 아래 지지값 <b style="color:var(--tx)">'+fUsd(_jlR)+'</b>(일봉실존)'):'')
     +(life!=null?(' → 생명선 <b style="color:var(--tx)">'+fUsd(life)+'</b> · 생명선 이탈 = 큰 틀이 매도 쪽으로 바뀜'):'');
   var ang=Math.max(-3,Math.min(3,Peff))/3*52;
@@ -13194,7 +13194,7 @@ function twoBreathPanel(){try{
     var _g2=_PB['축2_골든_유지']||{}, _h3=_PB['축3_방향_하프존']||{}, _a1=_PB['축1_자리_fade']||{}, _cb=_PB['조합_MAIN_DIR']||{};
     var _dParts=[];
     if(_dParts.length)dProbLine='<div style="font-size:11px;color:var(--tx3);margin-top:4px;line-height:1.5">'+_dParts.join(' · ')+'</div>';
-    if(_cb['다음날_상승확률']!=null){var _rng=(_cb['오늘_분면']&&_cb['오늘_분면'].indexOf('방향↑')>=0)?'상반':'하반';var _jK=above?'과열':'과냉';var _jKd=above?'힘중심 위':'힘중심 아래';var _fk=(_rng==='상반'?'방향↑':'방향↓')+'·'+_jK;var _fm=(_cb['분면']&&_cb['분면'][_fk])?_cb['분면'][_fk]:null;var _cP=_fm?_fm['상승']:_cb['다음날_상승확률'],_cN=_fm?_fm['N']:_cb['N'];comboLine='<div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;background:rgba(214,162,58,.07);border:1px solid rgba(214,162,58,.28);border-radius:10px;padding:9px 11px;margin-top:9px"><i class="ti ti-chart-arrows" style="color:var(--gold2);font-size:14px;margin-top:1px" aria-hidden="true"></i><span style="color:var(--tx2)"><b style="color:var(--tx)">레인지 '+_rng+' · 자리 '+_jKd+'</b> → 다음날 상승 '+_prob(_cP,_cN)+(_cb['갭pp']!=null?' <span style="color:var(--tx3)">· 갭 +'+_cb['갭pp']+'pp</span>':'')+'<br><span style="font-size:10.5px;color:var(--tx3)">확률 프로필 · 단정 아님'+(_PB.generated?' · '+_PB.generated.slice(11,16)+' 기준':'')+'</span></span></div>';}
+    if(_cb['다음날_상승확률']!=null){var _rng=(_cb['오늘_분면']&&_cb['오늘_분면'].indexOf('방향↑')>=0)?'상반':'하반';var _jK=above?'과열':'과냉';var _jKd=above?'4좌표 평균 위':'4좌표 평균 아래';var _fk=(_rng==='상반'?'방향↑':'방향↓')+'·'+_jK;var _fm=(_cb['분면']&&_cb['분면'][_fk])?_cb['분면'][_fk]:null;var _cP=_fm?_fm['상승']:_cb['다음날_상승확률'],_cN=_fm?_fm['N']:_cb['N'];comboLine='<div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;background:rgba(214,162,58,.07);border:1px solid rgba(214,162,58,.28);border-radius:10px;padding:9px 11px;margin-top:9px"><i class="ti ti-chart-arrows" style="color:var(--gold2);font-size:14px;margin-top:1px" aria-hidden="true"></i><span style="color:var(--tx2)"><b style="color:var(--tx)">레인지 '+_rng+' · 자리 '+_jKd+'</b> → 다음날 상승 '+_prob(_cP,_cN)+(_cb['갭pp']!=null?' <span style="color:var(--tx3)">· 갭 +'+_cb['갭pp']+'pp</span>':'')+'<br><span style="font-size:10.5px;color:var(--tx3)">확률 프로필 · 단정 아님'+(_PB.generated?' · '+_PB.generated.slice(11,16)+' 기준':'')+'</span></span></div>';}
   }
   var card2='';
   (function(){
@@ -16572,7 +16572,7 @@ function viewSign(){
     say:'흔들리고 살아난 파동이 진짜다 - 부활 확인 후의 보유가 수명을 먹는다.',ver:'헤븐 실측 · 표본 확대(하위 TF)=성공 몫'},
    {nm:'합산 캔들',st:'전략',def:'파동 전체를 캔들 하나로 접는 좌표 변환 - 시가·저가=시작 캔들, 고가·종가=마무리 캔들.',
     how:'자체 좌표 변환 산식(사내 정본·항등 검증)',
-    num:'현 파동: 기준가1=61,250=월중심(0.1차) · 평균기준가=현재가 0.02%',
+    num:'현 파동: 기준가1=61,250=월봉 파동 0.1차 좌표 · 평균기준가=현재가 0.02%',
     say:'파동만 보고도 월봉의 좌표를 얻는다 - 위치 도구이지 방어선 약속이 아니다(방어선 예측력은 기각).',ver:'항등(검증 불요) · 예측 주장은 정직 기각'},
    {nm:'셋업 특성 사전',st:'전략',def:'이 사이클에서 각 자리(급락 익일·신고가 추격 등)가 실제로 어떤 성격이었는지의 실측 사전.',
     how:'2025-12~ 사이클 한정 재측정: 승률·평균·MFE/MAE·꼬리. 오늘 발동된 것만 종합화면 카드로 자동 표출.',
