@@ -13385,6 +13385,7 @@ function _magnetStrip(t){
       .replace(/자석\s*성격/g, '되돌림 성격');
   }catch(e){ return t; }
 }
+try{ window._magnetStrip=_magnetStrip; }catch(e){}
 window.__MAGNET_LEFT=function(){
   try{
     var srcs=[JSON.stringify(window.__SCBOARD||{}),JSON.stringify(window.__VERDICT||{}),
