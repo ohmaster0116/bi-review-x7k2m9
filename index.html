@@ -310,7 +310,10 @@ function _updStamp(){
       if(!isNaN(t)){
         var h=(Date.now()-t)/3600000;
         s+=' · 판독 '+dstr(t,true);
-        if(h>=24)s+=' (★'+Math.floor(h/24)+'일 전)';
+        // ★[헤븐 08-09 · 성공 회부] Math.floor 라 ★46.3시간이 "1일 전"으로 찍혔다.
+        //  ★계산은 맞지만 회원은 "하루 낡았다"로 읽는다. ★거의 이틀인데.
+        //  ★시간을 병기한다. 24h 미만은 시간만, 그 위는 "N일 M시간".
+        if(h>=24)s+=' (★'+_ageTxt(h)+' 전)';
       }
     }
     upd.textContent=s;
@@ -18349,6 +18352,16 @@ var _STALE_GLOBAL={sujo_layer:'__SUJO', whale_trajectory:'__WHALE_TRAJ',
 //     ★월만 1건  2026-07                     ← whale_delta_state. ★일 신선도 판정 불가라 제외
 //  ★못 읽으면 null 을 준다. ★NaN 을 그대로 흘리면 배너가 ★아예 안 뜨는 쪽으로 죽는다(케빈 경고).
 //  ★null 은 stamps 에서 빠지므로 ★기존 동작(월 단위 제외)과 같다.
+// ★[헤븐 08-09 · 성공 회부 14:33] 경과 시간 문구. ★Math.floor(h/24) 만 쓰면 ★46.3시간이 "1일 전"이다.
+//  ★계산은 맞지만 회원은 "하루 낡았다"로 읽는다. ★거의 이틀인데 그렇게 안 보인다.
+//  ★올림도 답이 아니다(25시간이 "2일 전"이 되면 과장). ★일+시간을 같이 적는 게 정확하다.
+function _ageTxt(h){
+  h=Math.max(0,h);
+  if(h<24)return Math.round(h)+'시간';
+  var d=Math.floor(h/24), r=Math.round(h%24);
+  if(r>=24){d+=1;r=0;}                       // 반올림이 24로 튀는 경계 처리
+  return r?(d+'일 '+r+'시간'):(d+'일');
+}
 function _asofMs(v){
   if(!v)return null;
   var t=String(v).trim();
@@ -18435,7 +18448,7 @@ try{
     window.__DATA_ASOF=j.asof; try{_updStamp();}catch(e){}
     var t=new Date(j.asof).getTime(); if(isNaN(t))return;
     var h=(Date.now()-t)/3600000;
-    if(h>=24)_staleBar('판독·계획·좌표 ★전체가 '+dstr(t,true)+' 기준입니다('+Math.floor(h/24)+'일 전). 가격만 실시간입니다 - 이 화면의 자리값으로 매매 판단하지 마십시오.');
+    if(h>=24)_staleBar('판독·계획·좌표 ★전체가 '+dstr(t,true)+' 기준입니다('+_ageTxt(h)+' 전). 가격만 실시간입니다 - 이 화면의 자리값으로 매매 판단하지 마십시오.');
   }).catch(function(){});
 }catch(e){}});
 // ★배너는 하나만 띄우고 덮어쓴다. 둘 다 뜨면 회원이 어느 게 큰 문제인지 못 고른다.
