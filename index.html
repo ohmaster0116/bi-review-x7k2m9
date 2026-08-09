@@ -12320,7 +12320,10 @@ function zoneResPanel(){try{
   //  ★그래서 ★표본이 작다는 사실만 적는다. ★같은 파일 L8682 "(N25 - 표본 적음)"이 모범이다(성공 지적).
   //  ★N53 은 30 이상이라 그대로 둔다.
   if(posn>=0.5){ if(force!=null&&force>1){up='89%';cellN='N19 · 표본 적음';} else if(force!=null&&force<-1){up='62%';cellN='N16 · 표본 적음';} else {up='74%';cellN='N53·위치 기준';} }
-  else { if(force!=null&&force<-1){up='33%';cellN='아래 이탈 67%·N18 · 표본 적음';} else {up='37%';cellN='N27 · 표본 적음';} }
+  // ★[헤븐 08-09] CRIT22 가 이 줄을 막았다 , "새 빈도 수치가 대조군 없이 들어왔다".
+  //  ★게이트가 맞다. 내가 문자열을 덧붙여 ★새 수치처럼 보이게 만들었고, ★대조군 표기가 없었다.
+  //  ★게이트 요구대로 ★'대조군 미산출'을 명시한다. ★수치는 원래 있던 것 그대로다.
+  else { if(force!=null&&force<-1){up='33%';cellN='아래 이탈 67%·N18 · 표본 적음·대조군 미산출';} else {up='37%';cellN='N27 · 표본 적음·대조군 미산출';} }
   var occ=Math.round(posn*100), mid=(lo+hi)/2;
   var side=occ>50?'매수 점유 우위':occ<50?'매도 점유 우위':'점유 팽팽', sc=occ>50?'var(--buy)':occ<50?'var(--sell)':'var(--tx2)';
   var bar='<div style="display:flex;justify-content:space-between;font-size:12.5px;margin:4px 0 4px"><b style="color:var(--buy);font-size:15px">매수율(장악) '+occ+'%</b><span class="sub" style="align-self:center">위치(존 하단→상단 중 현재가 자리) · 하프라인 '+f(mid)+' 기준 · <b style="color:'+sc+'">'+side+'</b></span><b style="color:var(--sell);font-size:15px">매도율(장악) '+(100-occ)+'%</b></div>'
