@@ -10171,6 +10171,19 @@ function viewOpenTrade(){
   const rgBanner=rg&&rg.state!=='box'?`<div style="padding:10px 14px;margin-bottom:12px;border:1px solid ${rg.state==='trend'?'#ef5350':'#f0a83c'};border-radius:10px;background:${rg.state==='trend'?'rgba(239,83,80,.07)':'rgba(240,168,60,.07)'};font-size:12.5px;line-height:1.7">
     <b style="color:${rg.state==='trend'?'#ef5350':'#f0a83c'}">${rg.state==='trend'?(rg.dir>0?'매수':'매도')+' 추세 확장 구간으로 접어들 수 있음':'경계 구간'}</b> - ${rg.state==='trend'?'확실하게 접어들면 확장 진입입니다. 받침(승률 매매)은 박스판 전략이라 자제하고, <b>눌림목 지정가</b>를 확인하세요.':'회귀율이 꺾이는 중이라 관망·비중 축소가 안전하다는 판단입니다.'} <span class="sub">(일봉 회귀율 평소 ${rg.full.toFixed(1)}% → 최근 ${rg.recent.toFixed(1)}%${rg.streak?' · 미회귀 '+rg.streak+'연속 '+(rg.dir>0?'상방':'하방'):''})</span></div>`:'';
   // 전진검증 일지 - 화면 적중률의 유일한 소스
+  // ★★[헤븐 08-09 시공 B4 · 성공 회부] ★거짓 약속 제거. 화면이 없는 자동화를 약속하고 있었다.
+  //  [직독] 구 문구 2곳
+  //    L10184  대기 (오늘부터 쌓입니다)
+  //    L10185  아직 기록이 없습니다 - 매일 신호가 잠기고 ★다음 날 자동 판정됩니다
+  //  [실행] ★OT_FWD 를 채우는 생산기 , 클루드 폴더 전 py 전수 grep → ★0개.
+  //    ★잠그는 코드가 없다. 그러니 "매일 잠기고 다음 날 판정된다"는 ★거짓이다.
+  //  [직독] 그런데 바로 위 주석이 ★"화면 적중률의 유일한 소스"라고 적어놨다.
+  //    ★유일한 소스가 비었으면 ★이 탭에 적중률이라는 것이 존재하지 않는다.
+  //  ★그래서 회원이 ★위쪽 백테스트 성적을 ★실전 성적으로 읽는다. 그게 이 건의 크기다.
+  //  ★처방 , 없는 약속을 지우고 ★있는 사실을 적는다. ★공사 팻말이 아니다 ,
+  //    "전진검증 0건 · 위 성적은 백테스트"를 읽으면 회원이 ★비중을 다르게 건다.
+  //  ★손대지 않은 것 , L1416·L1422(검증 성적표)는 ★_ledger 연동이고 실제로 쌓인다(케인 확인 187건).
+  //    L10251(라이브 전진검증)은 ★채점기가 존재하고 케인이 안건2 확정까지 ★의도적으로 멈춘 것이라 ★회부한다.
   const fres=OT_FWD.map(x=>({x,r:otResolveFwd(x)}));
   const fdone=fres.filter(v=>['win','stop','close'].includes(v.r.st));
   const fwr=fdone.length?Math.round(fdone.filter(v=>v.r.st==='win'||(v.r.st==='close'&&v.r.pnl>0)).length/fdone.length*100):null;
@@ -10181,8 +10194,8 @@ function viewOpenTrade(){
   const fNet=fdone.reduce((s,v)=>s+((v.r.raw!=null?v.r.raw/v.x.e:0)-(v.r.fee||0)),0)*100;
   const fGross=fdone.reduce((s,v)=>s+(v.r.raw!=null?v.r.raw/v.x.e:0),0)*100;
   const fwd=`<div class="panel"><div class="hd" style="color:#46c2ff">전진검증 일지 <span class="sub">- 날짜로 잠근 신호 vs 실제 · 지정가 터치=체결 가정 · 이 숫자가 이 스킬의 진짜 성적</span></div>
-    <div style="padding:10px 14px;font-size:13px;border-bottom:1px solid var(--bd)">전진 적중률 <b style="font-size:16px;color:${fwr==null?'var(--tx2)':fwr>=60?'var(--buy)':'var(--sell)'}">${fwr==null?'대기 (오늘부터 쌓입니다)':fwr+'%'}</b> <span class="sub">${fdone.length?'('+fdone.length+'건 판정)':''}</span>${fdone.length?` · 누적 <b style="color:${fNet>=0?'var(--buy)':'var(--sell)'}">${fNet>=0?'+':''}${fNet.toFixed(2)}%</b> <span class="sub">넷(수수료 0.08% 차감) · 그로스 ${fGross>=0?'+':''}${fGross.toFixed(2)}% · 무레버</span>`:''}</div>
-    ${frows||'<div class="sub" style="padding:12px 14px">아직 기록이 없습니다 - 매일 신호가 잠기고 다음 날 자동 판정됩니다.</div>'}</div>`;
+    <div style="padding:10px 14px;font-size:13px;border-bottom:1px solid var(--bd)">전진 적중률 <b style="font-size:16px;color:${fwr==null?'var(--tx2)':fwr>=60?'var(--buy)':'var(--sell)'}">${fwr==null?'전진검증 0건':fwr+'%'}</b> <span class="sub">${fdone.length?'('+fdone.length+'건 판정)':''}</span>${fdone.length?` · 누적 <b style="color:${fNet>=0?'var(--buy)':'var(--sell)'}">${fNet>=0?'+':''}${fNet.toFixed(2)}%</b> <span class="sub">넷(수수료 0.08% 차감) · 그로스 ${fGross>=0?'+':''}${fGross.toFixed(2)}% · 무레버</span>`:''}</div>
+    ${frows||'<div class="sub" style="padding:12px 14px">전진검증 기록 <b>0건</b>입니다. 이 탭의 위쪽 성적은 <b>백테스트</b>이고 실전 기록이 아닙니다.</div>'}</div>`;
   const rules=`<div class="panel"><div class="hd">규칙 - 이렇게 한다</div><div class="spaced" style="padding:11px 14px;font-size:12.5px;line-height:1.95">
       <b>1.</b> 매일 <b>09시(새 일봉)</b> 열리면 이 탭의 <b>전투평균·목표·손절</b> 값을 확인합니다(보드가 자동 계산, 봉 시작 순간 확정).<br>
       <b>2.</b> 시가와 전투평균 이격이 <b>기준 이상</b> 벌어지면 → 전투평균 자리에 <b>지정가</b>(위면 매수·아래면 매도) 걸고 <b>체결 기다림</b>. 기준·목표·손절은 <b>평소 변동폭(AR, 최근 120일봉 평균폭)에 비례</b>해 매일 자동 조정됩니다 - 이격 평균변동폭×6.7%·목표 +20%·손절 −36%${A1?` (지금 기준 이격 ${f1(A1.need)}·목표 +${f1(A1.tgtP)}·손절 −${f1(A1.stpP)})`:''}. 가격이 6만이든 12만이든 <b>같은 의미</b>가 유지됩니다.<br>
