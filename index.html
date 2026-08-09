@@ -12939,6 +12939,7 @@ function viewScenario(){
           if(ents[0]&&String(sel.id)===String(ents[0].id))ch=scTfSvg(_t2,'예상')+scTfSvg(_t2,'복기');}
         var perTxt=ch&&scSec==='일봉'&&sel.issued_at===td&&((S2.차트||{}).경로||[]).some(function(p){return p&&p.본문;});
         var body=perTxt?(sel.note||''):(sel.text||'');
+        try{ body=_magnetStrip(body); }catch(e){}   // ★실패해도 원문 그대로 나가게 , 화면이 죽지 않는다
         var TFK={'일봉':'일','주봉':'주','월봉':'월'}[scSec], nar='';
         try{
           if(sel.issued_at===td&&S2.시나리오&&S2.시나리오[TFK])nar=S2.시나리오[TFK].이야기||'';
