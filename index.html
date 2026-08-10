@@ -10974,9 +10974,9 @@ function gongOpinion(){
   } else flow=`방향 혼조 - 관망`;
   const flipLine=total<=-15?`<b style="color:var(--gold2)">관점 전환선 ${nR?'$'+f1(nR.price):'없음'}</b>(이 위로 종가 돌파 시 매수 관점 전환)`:total>=15?`<b style="color:var(--gold2)">관점 전환선 ${nS?'$'+f1(nS.price):'없음'}</b>(이 아래로 종가 이탈 시 매도 관점 전환)`:'';
   let act;
-  if(total<=-15)act=`반등 시 위 저항 ${nR?'<b style="color:var(--res)">$'+f1(nR.price)+'</b>':'없음'} 부근 숏${nS?`, 아래 지지 <b style="color:var(--sup)">$${f1(nS.price)}</b> 이탈 시 추가 하방`:''}`;
-  else if(total>=15)act=`눌림 시 아래 지지 ${nS?'<b style="color:var(--sup)">$'+f1(nS.price)+'</b>':'없음'} 부근 롱, 위 저항 ${nR?'<b style="color:var(--res)">$'+f1(nR.price)+'</b>':'없음'} 돌파 시 추가 상방`;
-  else act=`방향 미정 - 위 ${nR?'<b>$'+f1(nR.price)+'</b>':'없음'} 돌파 / 아래 ${nS?'<b>$'+f1(nS.price)+'</b>':'없음'} 이탈 확인 후 진입`;
+  if(total<=-15)act=`반등하면 위 저항 ${nR?'<b style="color:var(--res)">$'+f1(nR.price)+'</b>':'없음'} 가 먼저 시험되는 자리입니다${nS?`, 아래 지지 <b style="color:var(--sup)">$${f1(nS.price)}</b> 를 종가로 내주면 하방이 열립니다`:''}`;
+  else if(total>=15)act=`눌리면 아래 지지 ${nS?'<b style="color:var(--sup)">$'+f1(nS.price)+'</b>':'없음'} 가 먼저 시험되는 자리입니다, 위 저항 ${nR?'<b style="color:var(--res)">$'+f1(nR.price)+'</b>':'없음'} 를 넘으면 상방이 열립니다`;
+  else act=`방향 미정 , 위 ${nR?'<b>$'+f1(nR.price)+'</b>':'없음'} 돌파 / 아래 ${nS?'<b>$'+f1(nS.price)+'</b>':'없음'} 이탈이 갈림길입니다`;
   let vbCap='';
   {const caps=[['d1','일'],['w1','주'],['M1','월']].map(pr=>{const g2=vbFill(pr[0]);if(!g2)return '';
       const uL=(g2.o+g2.ar)-px, dL=px-(g2.o-g2.ar);
