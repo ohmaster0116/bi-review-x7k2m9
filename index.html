@@ -17171,7 +17171,9 @@ let _cronReTm=null;
 function _cronRe(){clearTimeout(_cronReTm);_cronReTm=setTimeout(()=>{try{if(DATA&&E&&Date.now()-_lastScroll>6000){const sy=window.pageYOffset;render();window.scrollTo(0,sy);}}catch(e){}},350);}
 function loadCron(name,set,_try){
   _try=_try||0;
-  fetch(name+'.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(d=>{set(d);_cronRe();})
+  fetch(name+'.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(d=>{
+    try{ if(window.__CRON) window.__CRON[name]=d; }catch(e){}
+    set(d);_cronRe();})
   .catch(()=>{
     if(_try<3){setTimeout(function(){loadCron(name,set,_try+1);},1500*(_try+1));return;}
     const d=(window.__CRON||{})[name];if(d){set(d);_cronRe();}
