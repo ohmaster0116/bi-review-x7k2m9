@@ -11847,15 +11847,14 @@ function waveBook(tf){try{
     if(v2<=0)continue;
     var asof=u2/v2,alive=true;
     for(var j2=k+1;j2<n;j2++){if(A[j2].c<asof){alive=false;break;}}
-    if(alive)inc.push(k);
+    inc.push(k);
   }
   if(!inc.length)return null;
   inc.forEach(function(k2){cu+=g(A[k2])*A[k2].v;cv+=A[k2].v;});
   var sitga=cv>0?cu/cv:null;
   var ups=inc.filter(function(k2){return k2===s0||g(A[k2])>g(A[k2-1]);}).map(function(k2){return g(A[k2]);});
   var surf=ups.length?ups.reduce(function(a,b){return a+b;},0)/ups.length:null;
-  var lu=cu+g(A[n-1])*A[n-1].v, lv=cv+A[n-1].v;
-  var roll=lv>0?lu/lv:null;
+  var roll=sitga;
   var steps=[];
   for(var q=inc.length-1;q>=0&&steps.length<5;q--){
     var k3=inc[q],u3=0,v3=0;
@@ -11865,8 +11864,9 @@ function waveBook(tf){try{
   var deadT=[],revT=[],stepsAll=[];
   for(var q2=s0;q2<n-1;q2++){
     var u4=0,v4=0;for(var t4=s0;t4<=q2;t4++){u4+=g(A[t4])*A[t4].v;v4+=A[t4].v;}
-    var alive4=inc.indexOf(q2)>=0;
-    var rev4=alive4&&deadT.length>0&&inc.indexOf(q2-1)<0;
+    var _av4=(v4>0)?(u4/v4):null, alive4=true;
+    if(_av4!=null){ for(var _j5=q2+1;_j5<n;_j5++){ if(A[_j5].c<_av4){ alive4=false; break; } } }
+    var rev4=alive4&&deadT.length>0;
     var f4=0;if(v4>0){var av4=u4/v4;for(var j4=q2+1;j4<n;j4++){if(A[j4].c<av4)break;if(A[j4].l<av4)f4++;}}
     stepsAll.push({t:A[q2].t,vw:v4>0?u4/v4:null,alive:alive4,rev:rev4,fights:f4});
     if(!alive4)deadT.push(A[q2].t);else if(rev4)revT.push(A[q2].t);}
