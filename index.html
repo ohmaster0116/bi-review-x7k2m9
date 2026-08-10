@@ -13531,10 +13531,10 @@ function twoBreathPanel(){try{
           +(here?'<span class="sub" style="font-size:10.5px;color:var(--tx)">현재가 여기</span>':'')
           +'</div>';
       }
-      var half=(px<C)?'롱측 절반':'숏측 절반';
+      var half=(px<C)?'롱측 절반':'숏측 절반', side=(px<C)?'아래':'위';
       return '<div style="margin-top:10px;padding:10px 12px;border:1px solid var(--bd);border-radius:11px">'
         +'<div style="font-size:10.5px;letter-spacing:.06em;color:var(--tx2);text-transform:uppercase;margin-bottom:6px">뿌리 5선</div>'
-        +'<div style="font-size:12.5px;margin-bottom:6px">현재가는 뿌리 중심 <b style="color:var(--gold2)">'+fUsd(C)+'</b> 아래, <b>'+half+'</b>에 있습니다.</div>'
+        +'<div style="font-size:12.5px;margin-bottom:6px">현재가는 뿌리 중심 <b style="color:var(--gold2)">'+fUsd(C)+'</b> '+side+', <b>'+half+'</b>에 있습니다.</div>'
         +body
         +'<div class="sub" style="font-size:10px;margin-top:6px;line-height:1.6">자리 표시입니다. 이 가격에서 어떻게 움직이는지는 아직 측정하지 않았습니다.</div>'
         +'</div>';
