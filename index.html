@@ -14620,7 +14620,7 @@ function defenseLadderPanel(){try{
     +'<details style="margin-top:6px"><summary style="cursor:pointer;padding:6px 11px;border:1px solid var(--bd);border-radius:8px;font-size:10.5px;font-weight:700;color:var(--tx2)">보조 좌표(주 실존·미확인 평균·최종 뿌리·대추세) 펼쳐 보기</summary><div class="scroll" style="margin-top:5px"><table><tbody>'+auxRows+'</tbody></table></div></details></div>'
     +((dnsMore.length||upsMore.length)?('<details style="margin-top:6px"><summary style="cursor:pointer;font-size:11px;color:var(--gold2)">전체 보기, 더 먼 계단 '+(dnsMore.length+upsMore.length)+'개(롱 '+dnsMore.length+'·숏 '+upsMore.length+')</summary>'
       +'<div style="margin-top:5px;font-size:11px;line-height:1.9;color:var(--tx2)">'
-      +(dnsMore.length?('<b style="color:var(--buy)">롱</b> '+dnsMore.map(function(u){return f(u.v)+'<span class="sub">('+u.d+')</span>';}).join(' · ')+'<br>'):'')
+      +(dnsMore.length?('<b style="color:var(--buy)">롱</b> '+dnsMore.map(function(u){return f(u.v)+'<span class="sub">('+u.d+(/이탈/.test(u.life||'')?'<span style="color:var(--sell)"> 이탈</span>':'')+')</span>';}).join(' · ')+'<br>'):'')
       +(upsMore.length?('<b style="color:var(--sell)">숏</b> '+upsMore.map(function(u){return f(u.v)+'<span class="sub">('+(u.d||u.n)+')</span>';}).join(' · ')):'')
       +'</div></details>'):'')
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">계단 하나가 소멸하면 다음 줄이 자동 충원(5칸 고정) · N중봉 실존=서로 다른 봉(층) N개의 실존가가 같은 자리에 수렴 - 수가 클수록 강함</div></div></div>';
