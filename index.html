@@ -14566,7 +14566,7 @@ function defenseLadderPanel(){try{
   var dl=function(t){var d=new Date(t);return dlY(d);};
   var bd=waveBook('d1'); if(!bd)return '';
   var bw=null;try{bw=waveBook('w1');}catch(e){}
-  var dnsAll=(bd.stepsAll||[]).filter(function(st){return st.alive&&st.vw<px;}).map(function(st){return {v:st.vw,d:dl(st.t),n:'롱 계단',layer:'일',life:(st.rev?'부활 ✔':'생존')+(st.fights?' · 전투 '+st.fights+'회':'')};});
+  var dnsAll=(bd.stepsAll||[]).filter(function(st){return st.vw<px;}).map(function(st){return {v:st.vw,d:dl(st.t),n:'롱 계단',layer:'일',life:(st.alive?(st.rev?'부활 ✔':'생존'):'이탈')+(st.fights?' · 전투 '+st.fights+'회':'')};});
   dnsAll.sort(function(a,b){return b.v-a.v;}); var dns=dnsAll.slice(0,5);
   var dnsMore=dnsAll.slice(5);   // [이사 07-30 승인·상한 안건①] 잔여 계단=전체 보기로 개방(기본 5칸 불변)
   var ups=[];
