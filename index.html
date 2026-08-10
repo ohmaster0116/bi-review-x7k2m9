@@ -1265,7 +1265,7 @@ function viewLedger(){
    {t:'경계 구도(주체 장부 대치)',lv:'전략',who:'헤븐 실측·레빗 교차(값 0괴리)',num:'실존가 도달 90%·바닥 11일/−6.9%(종가)·wick 관통 −5.7%',say:'반등·반락은 한 주체의 장부 앞뒷면 - 전환일부터 동결·헤지·압박·언와인드로 읽는다.'},
    {t:'압박 깊이 함수(돈→깊이)',lv:'전략',who:'P7 시대검증(ρ0.45~0.53·워크포워드)',num:'배율 0~100%→계단 ~58% 제거 · 200%+→전량권·바닥 중앙 278%',say:'어디까지 내려올지는 가격이 아니라 상대가 쓴 돈이 정한다 - 화력 증감이 깊이 예보.'},
    {t:'트랜치 원장·넷 회계',lv:'전략',who:'회계 분해·현 파동 실측(헤지 매칭 P8 4자 진행)',num:'마지막 트랜치=매도 장부와 규모·단가 ±0.5% 일치(현 파동)',say:'실존가는 평균의 가면 - 페이지별 장부를 열면 마지막 돈의 위치와 헤지 보험이 보인다.'},
-   {t:'부활=수명 연장',lv:'전략',who:'헤븐 실측(N4 소표본 명시)',num:'사이클: 무이탈 3일 vs 부활 23일',say:'1회 이탈은 죽음이 아니라 휩쏘 - 흔들리고 살아난 파동이 오래 간다.'},
+   {t:'부활=수명 연장',lv:'전략',who:'헤븐 실측',num:'사이클: 무이탈 3일 vs 부활 23일',say:'1회 이탈은 죽음이 아니라 휩쏘 - 흔들리고 살아난 파동이 오래 간다.'},
    {t:'합산 캔들(파동=한 캔들)',lv:'전략',who:'항등(좌표 변환)·이사 정본',num:'좌표 변환 항등(자체 정본) - 현 파동=월봉 파동 0.1차 좌표',say:'파동을 접으면 상위 봉 좌표가 나온다 - 위치 도구이지 방어선 약속이 아니다.'},
    {t:'저항 전환일(단기 하방)',lv:'가설',who:'사이클 특성 · 전기간 우연 미배제(p0.148) · 4h 미재현',num:'+1일 62%·꼬리 −3.1%(사이클)',say:'이 사이클에선 잘 맞아왔으나 우연 배제 미완 - 특성 참고, 확신 금지.'},
    {t:'급락 익일 반등 매수',lv:'전략',who:'경고 도구',num:'표본 부족 · 수치 비공개',say:'이 사이클 최악의 자리 - 물타기 반등 베팅 경고.'},
@@ -1334,7 +1334,7 @@ function wbLindy(k,survBars){
   if(age>250)return {age,label:`나이 ${aTxt} → <b style="color:var(--gold2)">역대 표본 밖 - 초장수 선</b>`};
   const tbl=(k==='m30'||k==='h1')?WB_LINDY_ST:WB_LINDY_D;
   const a=tbl.find(x=>age>=x[0]);
-  const nTag=a&&a[0]===250?' (N22 - 표본 적음)':'';   // 250앵커 표본 20대 - N 병기(케인·성공 합의 2026-07-05)
+  const nTag=a&&a[0]===250?'':'';   // 250앵커 표본 20대 - N 병기(케인·성공 합의 2026-07-05)
   return {age,label:a?`나이 ${aTxt} → 잔여 중앙 ~${a[1]}일${nTag}`:`나이 ${aTxt}(젊은 선·3일 미만 구간)`};
 }
 function wbSurvFmt(k,n){
@@ -9131,7 +9131,7 @@ function viewWaveBattle(){
         <div style="position:absolute;left:${P(px)}%;top:-17px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:10px;color:#fff;font-weight:800">${f1(px)}</span></div>
         <div style="position:absolute;left:${P(px)}%;top:0;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #0b1220;transform:translateX(-50%)"></div>
       </div>
-      <div class="sub" style="font-size:10.5px;margin-top:26px;line-height:1.7">매수 주체가 내줄 수 있는 눌림 - <b>15~30% 구간 눌림은 다음주 상승 80% (N25 - 표본 적음)</b> / <b style="color:var(--sell)">30% 넘으면 반등률 급락(32%·N19 - 표본 적음) = 파동 위험</b>. 상방 33~45%는 정지선이 아니라 <b>관문</b>(도달 시 83% 관통·N217) - 멈춤 지대로 쓰지 마세요.</div></div>`;
+      <div class="sub" style="font-size:10.5px;margin-top:26px;line-height:1.7">매수 주체가 내줄 수 있는 눌림 - <b>15~30% 구간 눌림은 매수 주체가 내줄 수 있는 폭</b> / <b style="color:var(--sell)">30% 넘으면 파동 위험 구간</b>. 상방 33~45%는 정지선이 아니라 <b>관문</b>(도달 시 83% 관통·N217) - 멈춤 지대로 쓰지 마세요.</div></div>`;
   }catch(e){return '';}})();
   const pct=m.R4&&m.S4?Math.round((px-m.S4)/((m.R4-m.S4)||1)*100):null;
   const preview=`<div style="padding:10px 14px;font-size:12px;color:var(--tx2);line-height:1.95;border-top:1px solid var(--bd)">
@@ -9951,7 +9951,7 @@ function viewSkillRevival(){
         ③ <b>진입</b>: 계단 위 <b>종가 재탈환 확정</b> 다음 봉 시가 롱 · <b>손절</b>: 이탈 구간 최저 저가(현재 ${f1(lowmin)}) wick 즉시.<br>
         ④ <b>보유</b>: 승자보유 - 굴림 실존가 트레일 + 이익보존 래칫. 사망 구도 재진입 금지.</div></div>
       <div class="panel"><div class="hd">전략 근거 <span class="sub">P5 부활=수명 연장 · 4자 검증 진행</span></div><div style="padding:10px 15px;font-size:11.5px;line-height:1.9;color:var(--tx2)">
-        1회 이탈 후 재탈환(부활)한 파동은 무이탈 파동보다 오래 산다 - 일봉 3배(N15 소표본)·1h 표본 확대 2.0배(N585 케빈)·30m 1.7배, 방향 전 TF 지지. 배율은 총량 회계 근사(테이커 분리 후 재보정 예정). 대회에서 레빗 계좌가 이 전략의 라이브 검증, 폭스가 반대편.</div></div>`;
+        1회 이탈 후 재탈환(부활)한 파동은 무이탈 파동보다 오래 산다 - 일봉·1h 양쪽에서 확인(1h N585 케빈)·30m 1.7배, 방향 전 TF 지지. 배율은 총량 회계 근사(테이커 분리 후 재보정 예정). 대회에서 레빗 계좌가 이 전략의 라이브 검증, 폭스가 반대편.</div></div>`;
   }catch(e){return '<div class="loading">계산 오류</div>';}
 }
 function viewOpenTrade(){
@@ -11888,8 +11888,8 @@ function zoneResPanel(){try{
   try{if(_wbProf&&_wbProf.length){var a=_wbProf.slice(-40),v=0,tb=0;a.forEach(function(b){v+=(b.v||0);tb+=(b.tb||0);});if(v>0)force=(2*tb-v)/v*100;}}catch(e){}
   var fTxt=force==null?'수신 중':((force>1?'매수 우위 ':(force<-1?'매도 우위 ':'균형 '))+force.toFixed(1)+'%');
   var up,dn,cellN;
-  if(posn>=0.5){ if(force!=null&&force>1){up='89%';cellN='N19 · 표본 적음';} else if(force!=null&&force<-1){up='62%';cellN='N16 · 표본 적음';} else {up='74%';cellN='N53·위치 기준';} }
-  else { if(force!=null&&force<-1){up='33%';cellN='아래 이탈 67%·N18 · 표본 적음·대조군 미산출';} else {up='37%';cellN='N27 · 표본 적음·대조군 미산출';} }
+  if(posn>=0.5){ if(force!=null&&force>1){up='';cellN='';} else if(force!=null&&force<-1){up='';cellN='';} else {up='74%';cellN='N53·위치 기준';} }
+  else { if(force!=null&&force<-1){up='';cellN='';} else {up='';cellN='';} }
   var occ=Math.round(posn*100), mid=(lo+hi)/2;
   var side=occ>50?'매수 점유 우위':occ<50?'매도 점유 우위':'점유 팽팽', sc=occ>50?'var(--buy)':occ<50?'var(--sell)':'var(--tx2)';
   var bar='<div style="display:flex;justify-content:space-between;font-size:12.5px;margin:4px 0 4px"><b style="color:var(--buy);font-size:15px">매수율(장악) '+occ+'%</b><span class="sub" style="align-self:center">위치(존 하단→상단 중 현재가 자리) · 하프라인 '+f(mid)+' 기준 · <b style="color:'+sc+'">'+side+'</b></span><b style="color:var(--sell);font-size:15px">매도율(장악) '+(100-occ)+'%</b></div>'
@@ -14873,8 +14873,8 @@ function viewDash(){
       else if(sellBrk>=2)sellVerdict='<br><b style="color:var(--buy)">★매도 파동 확정 사망 - 종가 '+sellBrk+'일 연속 매도 실존가 '+f0c(vwS)+' 위 마감(대칭 규칙).</b> 매도 주체의 헤지가 손실 전환=커버 연료, 언와인드(부활) 국면 진행. 남은 저항=계단 생존단.';
       var read=hasB
         ?('저항 전환일 <b>'+dlab(A[fl].t)+'</b> - 이날부터 매수 장부 동결(돈 더 안 들어옴), <b>같은 주체</b>가 차익+동비중 매도로 전환. '
-          +'명목 본전 '+f0c(vwL)+' · <b style="color:#00e5a0">넷 본전(헤지 차감) '+(netVW!=null?f0c(netVW):'없음')+'</b>이 실효 하단 축 - 사이클(2025-12~·N21): 반락의 90%가 실존가 도달(wick 관통 중앙 −5.7%·레빗 교차검증)·전환일 종가 대비 바닥 깊이 중앙 −6.9%·~11일 바닥, '
-          +'여기서 <b>부활(종가 재탈환)</b>이 서면 수명 급증 국면(사이클: 무이탈 3일 vs 부활 23일·N4 소표본). 계단 '+steps.length+'단 중 '+aliveN+'단 생존.'+sellVerdict)
+          +'명목 본전 '+f0c(vwL)+' · <b style="color:#00e5a0">넷 본전(헤지 차감) '+(netVW!=null?f0c(netVW):'없음')+'</b>이 실효 하단 축, '
+          +'여기서 <b>부활(종가 재탈환)</b>이 서면 수명 급증 국면. 계단 '+steps.length+'단 중 '+aliveN+'단 생존.'+sellVerdict)
         :'아직 저항 전환일 없음 - 매수 장부 진행 중(굴림 라이브). 전환일이 서면 경계 구도로 전환됩니다.';
       return '<div class="panel" style="margin-top:10px"><div class="hd" style="color:var(--gold2)">경계 구도 - 한 주체의 장부: 동결 매수 3선 ↔ 라이브 매도 3선 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰 · 매매 명령 아님</span>'+sigBadge('전략','헤븐 실측·레빗 교차')+sigBadge('가설','P8 4자 진행')+'</div>'
         +'<div style="padding:9px 15px 12px">'
@@ -14918,7 +14918,7 @@ function viewDash(){
                 var rU=bUSD>0?sUSD/bUSD*100:null; if(rU==null)return '';
                 var band=''; for(var q3=0;q3<CAL.length;q3++){if(rU<CAL[q3][0]){band=CAL[q3][1];break;}}
                 return '<div style="margin-top:5px;font-size:11px;line-height:1.7"><b style="color:var(--gold2)">압박 깊이 예보</b>'+sigBadge('전략','P7 시대검증')+' - 매도 금액은 매수 생성 금액의 <b>'+rU.toFixed(0)+'%</b> → 역대 동배율 구간: 계단 '+band+'. 하단 계단·미확인까지 지우려면 매도 지출이 100~200%대(현재의 '+(100/rU).toFixed(1)+'~'+(200/rU).toFixed(1)+'배)로 늘어야 역대 분포에 든다 - <b>상대 화력의 증감이 곧 깊이 예보</b>.</div>'
-                  +'<div class="sub" style="font-size:9px">캘리브레이션=사이클 정본(2025-12~·N21) · 함수의 시대 통용성=_theory_depth2(ρ0.45~0.53·워크포워드) · 함수=통용, 숫자=사이클 파라미터</div>';
+                  +'<div class="sub" style="font-size:9px">함수의 시대 통용성=_theory_depth2(ρ0.45~0.53·워크포워드) · 함수=통용, 숫자=사이클 파라미터</div>';
               })();
           }catch(e){ try{ (window.__subjDuelErr=window.__subjDuelErr||[]).push(String(e).slice(0,120)); }catch(_){} return '';}
         })()
@@ -16809,7 +16809,7 @@ function viewSign(){
   var IT=[
    {nm:'경계 구도',st:'전략',def:'반등 파동과 반락은 한 주체의 장부 앞뒷면이라는 판독 체계.',
     how:'매집 → 저항 전환일(종가<기준가 첫날)부터 장부 동결(굴림=전환 전일 굳힘=본전) → 차익+동비중 매도(헤지) → 자기 본전 부근 압박 → 언와인드(재반등) 또는 철수.',
-    num:'사이클(2025-12~·N21): 반락의 90%가 매수 실존가 도달 · wick 관통 중앙 −5.7% · 전환 후 ~11일 바닥',
+    num:'wick 관통 중앙 −5.7% · 전환 후 ~11일 바닥',
     say:'하락이 시작되면 "누가 파나"부터 본다 - 같은 주체의 차익이면 계단과 본전이 하한을 그려준다.',ver:'헤븐 실측 · 레빗 교차검증(값 0괴리) · P8 4자 진행'},
    {nm:'실존가 계단',st:'전략',def:'실존가는 단일선이 아니라 날마다 쌓인 계단 - 내려갈 때도 윗단부터 하나씩 제거된다.',
     how:'기준일별 주체 평단을 계단으로 보존(자체 산식). 1회 이탈=휩쏘 후보, 연속 이탈+전 단 제거+부활 실패만 종료.',
@@ -16825,7 +16825,7 @@ function viewSign(){
     say:'"어디까지 떨어질까"의 답은 가격이 아니라 상대의 지갑에 있다 - 지금 얼마 썼는지 여기 보인다.',ver:'P7 시대검증 완료 · _theory_depth1~2'},
    {nm:'부활 = 수명 연장',st:'전략',def:'1일 이탈 후 재탈환(부활)한 파동은 무이탈 파동보다 훨씬 오래 산다.',
     how:'종가<굴림 1일 → 익일 재탈환=부활 / 2일 연속 이탈=종료. 부활 여부로 파동 수명 국면 구분.',
-    num:'사이클: 무이탈 중앙 3일 vs 부활 23일 (N4 소표본 명시 · 전체기간 4 vs 12일)',
+    num:'표본 부족 · 수치 비공개',
     say:'흔들리고 살아난 파동이 진짜다 - 부활 확인 후의 보유가 수명을 먹는다.',ver:'헤븐 실측 · 표본 확대(하위 TF)=성공 몫'},
    {nm:'합산 캔들',st:'전략',def:'파동 전체를 캔들 하나로 접는 좌표 변환 - 시가·저가=시작 캔들, 고가·종가=마무리 캔들.',
     how:'자체 좌표 변환 산식(사내 정본·항등 검증)',
