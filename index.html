@@ -13176,8 +13176,11 @@ function waveBook(tf,ax){try{
   var s0=null;
   for(var i=Math.max(1,n-90);i<n-2;i++){
     if(A[i-1].c<V(A[i-1])&&A[i].c>V(A[i])&&A[i+1].c>V(A[i+1])){
+      
+      
+      
       var root=g(A[i]),ok=true;
-      for(var j=i+1;j<n;j++){if(A[j].c<root){ok=false;break;}}   
+      for(var j=i+1;j<n-1;j++){if(A[j].c<root){ok=false;break;}}   
       if(ok){s0=i;break;}
     }
   }
@@ -13229,7 +13232,7 @@ function waveBook(tf,ax){try{
     steps.push({t:A[k3].t,vw:u3/v3});
   }
   
-  var deadT=[],revT=[],stepsAll=[];
+  var deadT=[],stepsAll=[];   
   for(var q2=s0;q2<n-1;q2++){
     var u4=0,v4=0;for(var t4=s0;t4<=q2;t4++){u4+=g(A[t4])*A[t4].v;v4+=A[t4].v;}
     
@@ -13241,12 +13244,18 @@ function waveBook(tf,ax){try{
     
     
     
-    var _av4=(v4>0)?(u4/v4):null, alive4=true;
-    if(_av4!=null){ for(var _j5=q2+1;_j5<n;_j5++){ if(A[_j5].c<_av4){ alive4=false; break; } } }
-    var rev4=alive4&&deadT.length>0;
-    var f4=0;if(v4>0){var av4=u4/v4;for(var j4=q2+1;j4<n;j4++){if(A[j4].c<av4)break;if(A[j4].l<av4)f4++;}}
-    stepsAll.push({t:A[q2].t,vw:v4>0?u4/v4:null,alive:alive4,rev:rev4,fights:f4});
-    if(!alive4)deadT.push(A[q2].t);else if(rev4)revT.push(A[q2].t);}
+    
+    
+    
+    
+    
+    
+    var _av4=(v4>0)?(u4/v4):null;
+    var _cx4=(A[n-2]!=null)?A[n-2].c:A[n-1].c;              
+    var alive4=(_av4==null)||(_cx4>=_av4);                  
+    var f4=0;if(v4>0){var av4=u4/v4;for(var j4=q2+1;j4<n-1;j4++){if(A[j4].c<av4)break;if(A[j4].l<av4)f4++;}}
+    stepsAll.push({t:A[q2].t,vw:v4>0?u4/v4:null,alive:alive4,fights:f4});
+    if(!alive4)deadT.push(A[q2].t);}
   
   
   
@@ -13263,10 +13272,10 @@ function waveBook(tf,ax){try{
   
   
   var _px=A[n-2]!=null?A[n-2].c:A[n-1].c;                       
-  var _sv=stepsAll.filter(function(st){return st.vw!=null&&st.vw<=_px;});   
+  var _sv=stepsAll.filter(function(st){return st.alive;});      
   var rep=_sv.length?_sv[_sv.length-1].vw:null;                 
   var repAlive=_sv.length;
-  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,revT:revT,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
+  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
 }catch(e){return null;}}
 
 
@@ -13352,7 +13361,7 @@ function waveBookPanel(){try{
   var conflTxt=conflOk?('뿌리 본진(합치 폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) '+f(cLo)+'~'+f(cHi))
     :('<b style="color:var(--gold2)">합치 풀림</b>(폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) - 주봉 실존가 '+f(gW)+' · 월봉 기준가 '+f(gM)+(ua!=null?' · 미확인 평균 '+f(ua):'')+' 각자 지지');
   var banner='<b style="color:var(--gold2)">현 파동 장부(정본: 전 층 v가중 · 매 갱신 자동 재계산)</b> - '
-    +'일봉 실존가 <b>'+f(bd.sitga)+'</b>'+(bw?' · 주봉 실존가 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
+    +'일봉 굴림(전 캔들 평단) <b>'+f(bd.sitga)+'</b>'+(bd.rep!=null?' <span class="sub">· 실존가 '+f(bd.rep)+' (생존 '+(bd.nAlive||0)+'층)</span>':'')+(bw?' · 주봉 굴림 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
     +' → <b>싸우는 곳</b>: 위 매도 파동선 '+(fightUp?f(fightUp):'없음')+foeTxt+' vs 아래 실존가 진지 '+f(bd.sitga)+' · '+conflTxt+' · 최종 뿌리 '+f(bd.root)+'.'
     +(moFlip!=null?'<br><b style="color:var(--gold2)">월봉 성격 전환 라인 '+f(moFlip)+'</b> - 현재가가 이 '+(px>=moFlip?'<b style="color:var(--buy)">위</b>(이번 달이 매수 성격으로 바뀌는 중)':'<b style="color:var(--sell)">아래</b>(매도 성격 유지)')+' · 자체 산식 · 실시간 이동':'');
   
@@ -13362,7 +13371,7 @@ function waveBookPanel(){try{
     if(s5!=null){var pk=s5;for(var i5=s5;i5<n5;i5++)if(A5[i5].h>A5[pk].h)pk=i5;
       var vU=0,vD=0;for(var i5=s5;i5<=pk;i5++)vU+=A5[i5].v;for(var i5=pk+1;i5<n5;i5++)vD+=A5[i5].v;
       if(vU>0&&pk<n5-1){var rat=vD/vU*100;
-        duel='<div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--bd)"><b style="color:var(--gold2)">이번 파동과 대립각</b> - 판정선(일봉 실존가) <b>'+f(bd.sitga)+'</b> '
+        duel='<div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--bd)"><b style="color:var(--gold2)">이번 파동과 대립각</b> - 판정선(일봉 굴림) <b>'+f(bd.sitga)+'</b> '
           
           
           
@@ -13406,7 +13415,7 @@ function waveBookPanel(){try{
     +'<div style="padding:10px 15px 12px">'
     +'<div style="padding:10px 13px;margin-bottom:9px;background:rgba(0,229,160,.06);border-left:3px solid #00e5a0;border-radius:9px;font-size:12.5px;line-height:1.85">'+banner+duel+'</div>'
     +tbl+strip+wbProfileBars(bd.s0,px,cLo,cHi)+prob
-    +'<div class="sub" style="font-size:9.5px;margin-top:4px">읽는 법: 일봉 실존가=단기 진지(굴림=실시간 반영) · 주봉 실존가=생명선 · 월봉 기준가=한 층 더 아래 받침(진행봉이라 실시간으로 움직임 - 월 마감 때 확정) · 일·주·월이 겹치는 구간=뿌리 본진(가장 강한 자리) · 실존가가 밀리면 경계도 같이 이동</div>'
+    +'<div class="sub" style="font-size:9.5px;margin-top:4px">읽는 법: 실존가=생존 층 중 최전방(층이 먹히면 다음 층으로 승계) · 굴림=파동 전 층 평단 · 월봉 기준가=한 층 더 아래 받침(진행봉이라 실시간으로 움직임 - 월 마감 때 확정) · 일·주·월이 겹치는 구간=뿌리 본진(가장 강한 자리) · 실존가가 밀리면 경계도 같이 이동</div>'
     +'</div></div>';
 }catch(e){return '';}}
 
@@ -16464,7 +16473,7 @@ function sellBook(tf,ax){try{
   for(var i=Math.max(1,n-90);i<n-2;i++){
     if(A[i-1].c>V(A[i-1])&&A[i].c<V(A[i])&&A[i+1].c<V(A[i+1])){
       var root=g(A[i]),ok=true;
-      for(var j=i+1;j<n;j++){if(A[j].c>root){ok=false;break;}}
+      for(var j=i+1;j<n-1;j++){if(A[j].c>root){ok=false;break;}}   
       if(ok)cands.push(i);
     }
   }
@@ -16658,11 +16667,11 @@ function defenseLadderPanel(){try{
   
   
   
-  var dnsAll=(bd.stepsAll||[]).filter(function(st){return st.vw<px;}).map(function(st){return {v:st.vw,d:dl(st.t),n:'롱 계단',layer:'일',life:(st.alive?(st.rev?'부활 ✔':'생존'):'이탈')+(st.fights?' · 전투 '+st.fights+'회':'')};});
+  var dnsAll=(bd.stepsAll||[]).filter(function(st){return st.vw<px;}).map(function(st){return {v:st.vw,d:dl(st.t),n:'롱 계단',layer:'일',life:(st.alive?'생존':'소멸')+(st.fights?' · 전투 '+st.fights+'회':'')};});
   dnsAll.sort(function(a,b){return b.v-a.v;}); var dns=dnsAll.slice(0,5);
   var dnsMore=dnsAll.slice(5);   
   var ups=[];
-  try{var sb=sellBook();if(sb)sb.steps.forEach(function(st){if(st.alive&&st.vw>px)ups.push({v:st.vw,d:dl(st.t),n:'숏 계단',layer:'일',life:st.fights>0?('wick 전투 '+st.fights+'회'):'생존'});});}catch(e){}
+  try{var sb=sellBook();if(sb)sb.steps.forEach(function(st){if(st.vw>px)ups.push({v:st.vw,d:dl(st.t),n:'숏 계단',layer:'일',life:(st.alive?'생존':'소멸')+(st.fights>0?(' · 전투 '+st.fights+'회'):'')});});}catch(e){}
   try{var L=waveLedger('d1');if(L){var reps=[];L.waves.forEach(function(w){if(w.dir<0&&w.death==null&&!w.open){var lv=null;try{lv=vwOfWave(E.d1,w)||w.line;}catch(e2){lv=w.line;}if(lv&&lv>px)reps.push({v:lv,d:dl(E.d1[w.s].t)+'~',n:'다음 숏 파동',layer:'일',life:(E.d1.length-1-w.e)+'일 생존'});}});reps.sort(function(a,b){return a.v-b.v;});if(reps.length>1)ups.push(reps[1]);}}catch(e){}
   ups.sort(function(a,b){return a.v-b.v;}); var upsMore=ups.slice(5); ups=ups.slice(0,5);
   var hi=[];
