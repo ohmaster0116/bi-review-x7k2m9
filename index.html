@@ -10882,7 +10882,7 @@ const STRAT_HUB=[
   en:'파동 확정(기준가 2연속) 다음 봉 시가',st:'실존가 종가 이탈',tp:'승자보유(파동 사망까지)',
   m:'승률 25~38% · 손익비 6.4~10.8 · N60~2,591'},
  {nm:'반복형(회전+재진입)',bong:'주·일·4시간',stat:['페이퍼 가동','var(--gold2)'],
-  en:'파동 확정 + 실존가 재진입',st:'굴림 사망(종가 이탈)',tp:'표면가 회전 청산',
+  en:'파동 확정 + 실존가 재진입',st:'실존가 사망(종가 이탈)',tp:'표면가 회전 청산',
   m:'승률 25~40% · 손익비 6.3~10.1 · 최악 절반'},
  {nm:'프랙탈 받침',bong:'일·주봉',stat:['4자 서명 진행','var(--buy)'],
   en:'진행 중 고가−0.3AR 되돌림 지정가',st:'진입−0.8AR(프랙탈 예산 초과)',tp:'+1.5~2AR',
@@ -16574,7 +16574,7 @@ function rootBranchStrip(){try{
     } else {
     waveChain=`<div class="spaced" style="padding:8px 14px;font-size:11.5px;line-height:2.0;border-bottom:1px solid var(--bd);background:rgba(35,211,158,.06)">
       <b style="color:var(--gold2)">현재 시점 - 매수 반전 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=전 층 v가중)</span><br>
-      <b style="color:var(--buy)">일봉 반전 시그널${dS?'('+dS+')':''}</b> 롱 파동 시작 - 실존가 <b>${bd?f1(bd.sitga):'없음'}</b> · 굴림 ${bd?f1(bd.roll):'없음'}<br>
+      <b style="color:var(--buy)">일봉 반전 시그널${dS?'('+dS+')':''}</b> 롱 파동 시작 - 실존가 <b>${bd?f1(bd.sitga):'없음'}</b><br>
       <b style="color:var(--buy)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 실존가 <b>${bw&&bw.sitga?f1(bw.sitga):'형성 중(새 주 초입)'}</b>${bw&&bw.sitga&&bd&&bd.sitga?(Math.abs(bw.sitga-bd.sitga)/px<=0.0015?` <span class="sub">(일봉 ${f1(bd.sitga)}와 수렴)</span>`:` <span class="sub">(일봉 ${f1(bd.sitga)}와 ${((bw.sitga-bd.sitga)/px*100).toFixed(1)}% 차)</span>`):''}<br>
       <b style="color:${px>monInfl?'var(--buy)':'var(--sell)'}">월봉 성격 ${px>monInfl?'바꾸는 중':'매도'}</b> - 전환 라인 ${f1(monInfl)} ${px>monInfl?'위':'아래'}<br>
       <b style="color:var(--sell)">이전 매도 파동과 싸움</b> - 상대 <b>${sell?f1(sell):'없음'}</b>${sStart?' <span class="sub">('+md2(sStart)+'~'+md2(sEnd)+' 발원·'+sDays+'일 생존)</span>':''}<br>
@@ -17101,7 +17101,7 @@ function viewDash(){
           }
         }
         var pair=function(a,b){return '<b style="color:var(--buy)">'+f0c(a)+'</b><span class="sub" style="font-size:9px"> ↔ </span><b style="color:var(--sell)">'+f0c(b)+'</b>';};
-        var rel=(vwL!=null)?(pxc>=vwL?(rollS!=null&&pxc<rollS?'경계 안(본전 위·매도 굴림 아래)':'본전 위'):'본전 아래(계단 구간)'):'없음';
+        var rel=(vwL!=null)?(pxc>=vwL?(rollS!=null&&pxc<rollS?'경계 안(본전 위·매도 실존가 아래)':'본전 위'):'본전 아래(계단 구간)'):'없음';
         return '<div style="display:flex;gap:13px;flex-wrap:wrap;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(28,36,51,.6);font-size:12px">'
           +'<b style="width:40px">'+nm+'</b>'
           +'<span class="tag" style="font-size:9.5px;background:rgba(139,148,168,.12);color:'+cc+'">'+chip+(hasB?' · 전환 '+dlab(A[fl].t):'')+'</span>'
@@ -17213,7 +17213,7 @@ function viewDash(){
       return '<div class="panel" style="margin-top:10px"><div class="hd" style="color:var(--gold2)">경계 구도 - 한 주체의 장부: 동결 매수 실존가 ↔ 라이브 매도 실존가 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰 · 매매 명령 아님</span>'+sigBadge('전략','헤븐 실측·레빗 교차')+sigBadge('가설','P8 4자 진행')+'</div>'
         +'<div style="padding:9px 15px 12px">'
         +'<div style="padding:11px 15px;margin-bottom:10px;background:rgba(214,162,58,.07);border-left:3px solid var(--gold2);border-radius:9px;font-size:13px;line-height:1.9;color:var(--tx)"><b style="color:var(--gold2);font-size:12px">지금 이 구도가 말하는 것</b><br>'+read+'</div>'
-        +'<div class="sub" style="font-size:10.5px;line-height:1.7;margin-bottom:6px"><b>반등 프랙탈과 반락 프랙탈의 주체는 같다</b> - 매집 후 기준가가 저항으로 뜬 날부터 돈을 더 넣지 않고(장부 동결·굴림 굳힘) 차익+동비중 매도로 자기 본전 부근까지 눌렀다가, 언와인드(재반등)하거나 철수한다. 실존가는 계단 - 내려갈 때도 윗단부터 하나씩.</div>'
+        +'<div class="sub" style="font-size:10.5px;line-height:1.7;margin-bottom:6px"><b>반등 프랙탈과 반락 프랙탈의 주체는 같다</b> - 매집 후 기준가가 저항으로 뜬 날부터 돈을 더 넣지 않고(장부 동결) 차익+동비중 매도로 자기 본전 부근까지 눌렀다가, 언와인드(재반등)하거나 철수한다. 실존가는 계단 - 내려갈 때도 윗단부터 하나씩.</div>'
         +'<div class="scroll"><table><thead><tr><th class="l">선</th><th style="color:var(--buy)">매수 장부'+(hasB?'(동결 '+dlab(A[bEnd].t)+')':'(라이브)')+'</th><th style="color:var(--gold2)">경계(중간)</th><th style="color:var(--sell)">매도 장부(라이브)</th></tr></thead><tbody>'
         
 
@@ -17298,7 +17298,7 @@ function viewDash(){
             steps.forEach(function(x,ii){if(ii>0)marks.push({v:x.vw,n:x.d+' 계단',c:x.alive?'rgba(35,211,158,.55)':'rgba(139,148,168,.35)',w:1});});
             
             if(vwS!=null)marks.push({v:vwS,n:'매도 실존가',c:'var(--sell)',w:2});
-            if(rollS!=null)marks.push({v:rollS,n:'매도 굴림(라이브)',c:'#ff5a6e',w:3});
+            if(rollS!=null)marks.push({v:rollS,n:'매도 실존가',c:'#ff5a6e',w:3});
             
             try{
               if(_battleMap&&_battleMap.zones){
@@ -19321,7 +19321,7 @@ function viewWhale(){
 function viewSign(){
   var IT=[
    {nm:'경계 구도',st:'전략',def:'반등 파동과 반락은 한 주체의 장부 앞뒷면이라는 판독 체계.',
-    how:'매집 → 저항 전환일(종가<기준가 첫날)부터 장부 동결(굴림=전환 전일 굳힘=본전) → 차익+동비중 매도(헤지) → 자기 본전 부근 압박 → 언와인드(재반등) 또는 철수.',
+    how:'매집 → 저항 전환일(종가<기준가 첫날)부터 장부 동결(실존가=전환 전일 굳힘=본전) → 차익+동비중 매도(헤지) → 자기 본전 부근 압박 → 언와인드(재반등) 또는 철수.',
     num:'wick 관통 중앙 −5.7% · 전환 후 ~11일 바닥',
     say:'하락이 시작되면 "누가 파나"부터 본다 - 같은 주체의 차익이면 계단과 본전이 하한을 그려준다.',ver:'헤븐 실측 · 레빗 교차검증(값 0괴리) · P8 4자 진행'},
    {nm:'실존가 계단',st:'전략',def:'실존가는 단일선이 아니라 날마다 쌓인 계단 - 내려갈 때도 윗단부터 하나씩 제거된다.',
