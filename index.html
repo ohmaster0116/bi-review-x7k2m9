@@ -948,14 +948,12 @@ function vwNascent(tf){
       if(d2!==dr)break;idx.unshift(t2);st++;}
     if(!st)return null;const bs=idx.map(i2=>A2[i2]);if(bs.some(b=>!(b.v>0)))return null;
     const sv2=bs.reduce((a2,b)=>a2+b.v,0);return {dir:dr,days:st,vw:bs.reduce((a2,b)=>a2+b.gijun*b.v,0)/sv2,surf:bs.reduce((a2,b)=>a2+b.gijun,0)/bs.length};}catch(e){return null}}
-function vwRollDisp(tf){                                            
-  try{
-    const A=E[tf]; if(!A||A.length<5)return null;
-    const s=waveState(tf); if(!s||s.mode==='none')return null;
-    const st=s.mode==='live'&&s.w?s.w.s:A.length-s.days;
-    return vwRolling(A,st,A.length-1);
-  }catch(e){return null;}
-}
+
+
+
+
+
+
 function asofBars(tf){
   try{
     const A=E[tf]; const D=E.d1; if(!A||A.length<45||!D||D.length<2)return null;
@@ -10129,7 +10127,7 @@ function viewWaveInner(){
   const isMajor=w=>w.formDays>=5||(n-w.e)>=30;
   const rowW=(w,role,gap,nearest)=>{const mj=isMajor(w);
     return `<tr style="${mj?'':'opacity:.55'}"><td class="l" style="color:${role==='저항'?'var(--sell)':'var(--buy)'};font-weight:${mj?800:400};white-space:nowrap">${nearest?'<span style="color:var(--gold2);font-weight:800">▶ </span>':''}${mj?'★ ':''}${role}${nearest&&!mj?' <span style="font-size:9px;color:var(--gold2)">약한 관문</span>':''}</td>
-    <td class="num" style="font-weight:${mj?800:400};font-size:${mj?'14px':'12px'};color:${role==='저항'?'var(--sell)':'var(--buy)'}">${(function(){try{const vw=vwOfWave(E.d1,w);if(!vw)return f1(w.line);const rl=vwRollWave(E.d1,w);return `${f1(vw)}<br><span class="sub" style="font-weight:400">표면 ${f1(w.line)}${rl?` · 굴림 ${f1(rl)}`:''}</span>`;}catch(e){return f1(w.line)}})()}</td>
+    <td class="num" style="font-weight:${mj?800:400};font-size:${mj?'14px':'12px'};color:${role==='저항'?'var(--sell)':'var(--buy)'}">${(function(){try{const vw=vwOfWave(E.d1,w);if(!vw)return f1(w.line);return `${f1(vw)}`;}catch(e){return f1(w.line)}})()}</td>
     <td class="l" style="font-size:11.5px">${waveKDate(w.s)}~${waveKDate(w.e,true)} 형성(${w.formDays}일) 후 <b>${n-w.e}일 생존 중</b>${(function(){try{const L2=wbLindy('d1',n-w.e);return L2&&L2.label?' · <span style="color:var(--gold2)">'+L2.label+'</span>':'';}catch(e){return ''}})()} - 주체 ${w.dir>0?'롱':'숏'} 진입가${mj?' <span style="color:var(--gold2);font-size:10px;font-weight:700">주요</span>':''}${(function(){try{const r=defenseRec(E.d1,w);if(!r)return '';return r.touch?(r.def>=3?` · <b style="color:var(--gold2);font-size:12px">종가 방어 ${r.def}/${r.touch}회 - 다회 방어(전체의 1%)</b><span style="font-size:9px;color:var(--tx3)">(기록)</span>`:` · <span style="color:var(--gold2)">종가 방어 ${r.def}/${r.touch}회</span><span style="font-size:9px;color:var(--tx3)">(기록)</span>`):' · <span style="font-size:10px;color:var(--tx3)">아직 시험 안 됨</span>';}catch(e){return ''}})()}</td>
     <td class="num" style="font-size:11px;color:var(--tx2)">${gap!=null?'공백 '+f1(gap):''}</td></tr>`;};
   let ladder='';
@@ -10307,7 +10305,7 @@ function viewWaveInner(){
     if(s2.mode==='none'){
       
       const nas=vwNascent(x.k);
-      return `${WUNIT[x.k][0]} <span class="sub">무파동${nas?` · 새 ${nas.dir>0?'매수':'매도'} 흐름 ${nas.days}${WUNIT[x.k][2]} - 표면 ${f1(nas.surf)}·실존가 <b>${f1(nas.vw)}</b><span style="opacity:.7">(형성 미확정·실시간)</span>`:''}</span>`;
+      return `${WUNIT[x.k][0]} <span class="sub">무파동${nas?` · 새 ${nas.dir>0?'매수':'매도'} 흐름 ${nas.days}${WUNIT[x.k][2]} - 실존가 <b>${f1(nas.vw)}</b><span style="opacity:.7">(형성 미확정·실시간)</span>`:''}</span>`;
     }
     const c2=s2.dir>0?'var(--buy)':'var(--sell)';
     
@@ -10324,7 +10322,7 @@ function viewWaveInner(){
     
     
     const vw2=(a2&&a2.dir===s2.dir&&a2.vw)?sitgaCanonVW(x.k,a2.vw):waveVW(E[x.k],s2);
-    return `<b style="color:${c2}">${waveWord(x.k,s2.dir,s2.mode,s2.days)}</b> <span class="sub">${vw2?`실존 <b>${f1(vw2)}</b>·표면 ${f1(s2.line)}`:`표면 ${f1(s2.line)}`}</span>`;}).join(' · ');
+    return `<b style="color:${c2}">${waveWord(x.k,s2.dir,s2.mode,s2.days)}</b> <span class="sub">${vw2?`실존 <b>${f1(vw2)}</b>`:`실존 ${f1(s2.line)}`}</span>`;}).join(' · ');
   const shortSt=['m30','h1','h4'].map(k2=>({k:k2,s:waveState(k2)})).filter(x=>x.s);
   const sDirs=shortSt.map(x=>x.s.mode==='none'?0:x.s.dir);
   const sBuy=sDirs.filter(d2=>d2>0).length, sSell=sDirs.filter(d2=>d2<0).length;
@@ -10334,13 +10332,13 @@ function viewWaveInner(){
   const shortLines=shortSt.map(x=>{const s2=x.s;
     if(s2.mode==='none'){
       const nas2=vwNascent(x.k);   
-      return `<td class="l">${NAME[x.k]}</td><td class="l" style="color:var(--tx2)">무파동${nas2?` <span class="sub">· 새 ${nas2.dir>0?'매수':'매도'} 흐름 ${nas2.days}봉째(형성 미확정)</span>`:''}</td><td class="num">${nas2?`<b style="color:var(--tx)">${f1(nas2.vw)}</b><br><span class="sub">표면 ${f1(nas2.surf)}</span>`:''}</td>`;
+      return `<td class="l">${NAME[x.k]}</td><td class="l" style="color:var(--tx2)">무파동${nas2?` <span class="sub">· 새 ${nas2.dir>0?'매수':'매도'} 흐름 ${nas2.days}봉째(형성 미확정)</span>`:''}</td><td class="num">${nas2?`<b style="color:var(--tx)">${f1(nas2.vw)}</b>`:''}</td>`;
     }
     const c2=s2.dir>0?'var(--buy)':'var(--sell)';
     const vw3=waveVW(E[x.k],s2);
     
     const matur=(x.k==='h1'&&_matTrack&&_matTrack.active===true)?`<br><span class="sub" style="color:var(--gold2)">${s2.days}봉째 성숙 - <b>성숙 파동일수록 추세 지속 (방향)</b> <span style="opacity:.75">BTC 정본 · ETH 방향 동조(독립확증 아님·최약) · 방향 효과도 축소 중(최근 0 근접·특히 ETH)</span></span>`:'';
-    return `<td class="l">${NAME[x.k]}</td><td class="l"><b style="color:${c2}">${s2.dir>0?'매수':'매도'} ${s2.mode==='form'?'연속':'생존'} ${s2.days}봉째</b>${matur}</td><td class="num">${vw3?`<b>${f1(vw3)}</b><br><span class="sub">표면 ${f1(s2.line)}</span>`:f1(s2.line)}</td>`;}).map(r2=>`<tr>${r2}</tr>`).join('');
+    return `<td class="l">${NAME[x.k]}</td><td class="l"><b style="color:${c2}">${s2.dir>0?'매수':'매도'} ${s2.mode==='form'?'연속':'생존'} ${s2.days}봉째</b>${matur}</td><td class="num">${vw3?`<b>${f1(vw3)}</b>`:f1(s2.line)}</td>`;}).map(r2=>`<tr>${r2}</tr>`).join('');
   
   const cons=waveConsensus(), P=cons.P, S=cons.S;
   const pTxt=consPlain(cons); 
@@ -10377,7 +10375,7 @@ function viewWaveInner(){
     <h2 class="sec" style="margin:14px 0 10px;font-size:15px">② 단기 파동 온도계 (30분·1시간·4시간) <span class="sub">- 방향 신호 아님 · 과열/과매도 게이지 (기간과 상관 +0.14~0.19 = 다른 정보)</span></h2>
     <div class="panel" style="border-left:3px solid ${thermo[1]}">
       <div style="padding:10px 14px;font-size:13px"><b style="color:${thermo[1]}">${thermo[0]}</b><div style="font-size:12px;color:var(--tx2);margin-top:4px;line-height:1.7">${thermo[2]}</div></div>
-      <div class="scroll" style="border-top:1px solid var(--bd)"><table><thead><tr><th class="l">봉</th><th class="l">파동 상태</th><th>실존가(표면)</th></tr></thead><tbody>${shortLines}</tbody></table></div>
+      <div class="scroll" style="border-top:1px solid var(--bd)"><table><thead><tr><th class="l">봉</th><th class="l">파동 상태</th><th>실존가</th></tr></thead><tbody>${shortLines}</tbody></table></div>
       <div style="padding:7px 14px;font-size:10.5px;color:var(--tx2);border-top:1px solid var(--bd);line-height:1.6">※ 단기 3개 캔들 점수를 기간과 <b>합산하지 않습니다</b>(3코인 검증에서 합산 모델 기각). 기간=방향, 단기=온도 - 역할이 다릅니다. ETH는 온도 신호가 무딘 편.<br>※ <b>실존가(주체 실제 평단)</b>: 파동을 만든 주체가 실제로 잡고 있는 자리. 종가가 이 선을 잃으면 지금까지의 힘이 약해졌다는 기준입니다 - <b>실측 검증(4자 독립 재현·서명 2026-07-06)</b>. 되돌림 통계는 이탈 깊이 효과가 섞여 있어 '얕은 이탈일수록 잘 돌아온다'는 사실 기술로 읽는 것이 정확합니다.</div></div>
     ${addiction}`;
   return applyLayer(_html);
@@ -16716,20 +16714,19 @@ function sitgaHealth(){
       var a2=null; try{a2=asofWaveDisp(tf);}catch(e){}
       var line=(a2&&a2.dir===s.dir&&a2.line!=null)?a2.line:s.line;
       var vw=(a2&&a2.dir===s.dir&&a2.vw)?a2.vw:(function(){try{return waveVW(E[tf],s);}catch(e){return null;}})();
-      var rl=null; try{rl=vwRollDisp(tf);}catch(e){}   
-      var rec={dir:s.dir,mode:s.mode,line:line,vw:vw,roll:rl};
+      
+
+
+
+
+
+      var rec={dir:s.dir,mode:s.mode,line:line,vw:vw};
       
       if(line==null||!isFinite(line)){H.ok=false;H.issues.push(tf+' 표면 null/NaN');}
       
       if(vw!=null){
         if(!isFinite(vw)){H.ok=false;H.issues.push(tf+' 실존 NaN/Inf');}
         else if(line&&isFinite(line)&&Math.abs(vw-line)/line>0.10){H.ok=false;H.issues.push(tf+' 실존 표면 괴리 과대 실존 '+Math.round(vw)+' vs 표면 '+Math.round(line)+' ('+(((vw-line)/line)*100).toFixed(1)+'%)');}
-      }
-      
-      if(rl!=null){
-        var ref=(vw!=null&&isFinite(vw))?vw:line;
-        if(!isFinite(rl)){H.ok=false;H.issues.push(tf+' 굴림 NaN/Inf');}
-        else if(ref&&isFinite(ref)&&Math.abs(rl-ref)/ref>0.15){H.ok=false;H.issues.push(tf+' 굴림 드리프트 굴림 '+Math.round(rl)+' vs 기준 '+Math.round(ref)+' ('+(((rl-ref)/ref)*100).toFixed(1)+'%)');}
       }
       H.tf[tf]=rec;
     });
@@ -16753,7 +16750,7 @@ function sitgaHealth(){
   window.__SITGA_HEALTH=H;
   
   try{document.documentElement.setAttribute('data-sitga-health',H.ok?'ok':('FAIL '+H.issues.join(' | ')).slice(0,400));}catch(e){}
-  if(!H.ok){try{console.warn('[SITGA_HEALTH] 실존/굴림 불변식 위반:',H.issues.join(' | '));}catch(e){}}
+  if(!H.ok){try{console.warn('[SITGA_HEALTH] 실존 불변식 위반:',H.issues.join(' | '));}catch(e){}}
   return H;
 }
 try{setTimeout(function(){try{sitgaHealth();}catch(e){}},3000);setInterval(function(){try{sitgaHealth();}catch(e){}},60000);}catch(e){}
