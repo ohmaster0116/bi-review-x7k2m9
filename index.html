@@ -9964,7 +9964,7 @@ function viewWave(){
       var gp=(px2!=null)?((v-px2)/px2*100):null;
       return '<div style="display:flex;gap:8px;align-items:baseline;padding:2px 0">'
         +'<span style="flex:0 0 74px;font-size:10.5px;color:'+(col[k]||'var(--tx3)')+(k==='뿌리 중심'?';font-weight:700':'')+'">'+k+'</span>'
-        +'<b style="font-size:12px'+(k==='뿌리 중심'?';color:var(--gold2)':'')+'">'+fUsd(v)+'</b>'
+        +'<b style="font-size:12px'+(k==='뿌리 중심'?';color:var(--gold2)':'')+'">$'+Math.round(v).toLocaleString('en-US')+'</b>'
         +(gp!=null?'<span class="sub" style="font-size:10px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span>':'')
         +'</div>';}).join('');
     return '<div style="margin:0 0 10px;padding:9px 12px;border:1px solid var(--bd);border-radius:11px">'
