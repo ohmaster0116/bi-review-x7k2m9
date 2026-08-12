@@ -15543,7 +15543,8 @@ function subjectClashPanel(){try{
   var isLong=M.above;
   var root=(M.root!=null)?M.root:null;
   var up=(M.up!=null)?M.up:null;   
-  var roll=null; try{roll=vwRollDisp('w1');}catch(e){}
+  
+
   var gld=null; try{if(p.방향무게&&p.방향무게.골든)gld=p.방향무게.골든.유지율[0];}catch(e){}
   var S=0; try{S=waveConsensus().S;}catch(e){}
   var i=A.length-2,b=A[i],pb=A[i-1],g4=function(x){return(x.o+x.h+x.l+x.c)/4;};
@@ -15556,7 +15557,6 @@ function subjectClashPanel(){try{
   var bigHead=M.stance.dir>0?'매수 주체 우위 · 승부처 돌파 시도':(M.stance.dir<0?'매도 주체 우위 · 생명선 아래 누름':'주체 공방 · '+M.stance.word);
   var target=isLong?up:life, targetLab=isLong?'승부처':'생명선';
   var guard=isLong?life:up, guardLab=isLong?'방어선 생명선':'저항선 승부처';
-  var rollDir=(roll!=null&&life!=null)?(roll>=life?' <span style="color:var(--buy)">↑매집</span>':' <span style="color:var(--sell)">↓이탈</span>'):'';
   var gldTxt=gld!=null?(' · 골든 '+(isLong?'위':'아래')+' <b style="color:var(--tx)">'+gld+'%</b>'):'';
   var bigFacts='뿌리 '+B(root)+' → '+targetLab+' '+B(target)+' <span style="color:var(--tx3)">(반대 주체가 방어)</span>'
     
