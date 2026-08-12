@@ -9975,9 +9975,14 @@ function viewWave(){
     }catch(e){}
   }
   try{
-    if(wvSec==='전투')return axTab+head+viewWaveBattle();
+    
+    
+    
+    
+    var _wbp=''; try{_wbp=waveBookPanel()||'';}catch(e){_wbp='';}
+    if(wvSec==='전투')return axTab+head+_wbp+viewWaveBattle();
     if(wvSec==='차트')return axTab+head+wvSecHtml();
-    return axTab+head+viewWaveInner();
+    return axTab+head+_wbp+viewWaveInner();
   }finally{E=_E0; window.__WAVE_AX=_AX0;}
 }
 
