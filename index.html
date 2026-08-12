@@ -874,7 +874,15 @@ function waveVW(A,ws){
     const ck=ws.mode==='live'&&ws.w?('L'+ws.w.s+'_'+ws.w.e):('D'+ws.days);
     let cm=_vwCache.get(A);
     if(cm&&cm.has(ck))return cm.get(ck);
-    const bs=ws.mode==='live'&&ws.w?A.slice(ws.w.s,ws.w.e+1):A.slice(A.length-ws.days);
+    
+
+
+
+
+
+
+
+    const bs=ws.mode==='live'&&ws.w?A.slice(ws.w.s,ws.w.e+1):A.slice(A.length-ws.days,A.length-1);
     
     let r=null;
     if(bs.length&&!bs.some(b=>!(b.v>0))){
