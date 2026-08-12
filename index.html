@@ -13215,7 +13215,19 @@ function waveBook(tf,ax){try{
   
   var V=function(b){return (b.o+b.h+b.l)/3;};
   var s0=null;
-  for(var i=Math.max(1,n-90);i<n-2;i++){
+  
+  
+  
+  
+  
+  
+  try{
+    var _wbSrv=(((((window.__CRON||{}).verdict_live||{}).data||{})['파동']||{}).wb||{})[tf];
+    if(_wbSrv&&_wbSrv.s0!=null){
+      for(var _k0=0;_k0<n;_k0++){ if(A[_k0].t===_wbSrv.s0){ s0=_k0; break; } }
+    }
+  }catch(e){ s0=null; }
+  for(var i=(s0!=null?n:Math.max(1,n-90));i<n-2;i++){
     if(A[i-1].c<V(A[i-1])&&A[i].c>V(A[i])&&A[i+1].c>V(A[i+1])){
       
       
