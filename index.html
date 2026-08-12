@@ -13512,7 +13512,7 @@ function waveBookPanel(){try{
     +'<div style="padding:10px 15px 12px">'
     +'<div style="padding:10px 13px;margin-bottom:9px;background:rgba(0,229,160,.06);border-left:3px solid #00e5a0;border-radius:9px;font-size:12.5px;line-height:1.85">'+banner+duel+'</div>'
     +tbl+strip+wbProfileBars(bd.s0,px,cLo,cHi)+prob
-    +'<div class="sub" style="font-size:9.5px;margin-top:4px">읽는 법: 실존가=생존 층 중 최전방(층이 먹히면 다음 층으로 승계) · 굴림=파동 전 층 평단 · 월봉 기준가=한 층 더 아래 받침(진행봉이라 실시간으로 움직임 - 월 마감 때 확정) · 일·주·월이 겹치는 구간=뿌리 본진(가장 강한 자리) · 실존가가 밀리면 경계도 같이 이동</div>'
+    +'<div class="sub" style="font-size:9.5px;margin-top:4px">읽는 법: 실존가=생존 최전방 층까지 형성된 주체 평단(층이 먹히면 다음 층으로 승계 · 완성봉 기준) · 월봉 기준가=한 층 더 아래 받침(진행봉이라 실시간으로 움직임 - 월 마감 때 확정) · 일·주·월이 겹치는 구간=뿌리 본진(가장 강한 자리) · 실존가가 밀리면 경계도 같이 이동</div>'
     +'</div></div>';
 }catch(e){return '';}}
 
@@ -19461,7 +19461,7 @@ function _axisLegend(v){
   _lg.id='axisLegend'; _lg.className='sub';
   _lg.style.cssText='font-size:10.5px;line-height:1.75;padding:7px 12px;margin:0 0 9px;border:1px dashed var(--bd);border-radius:9px;color:var(--tx3)';
   _lg.innerHTML='<b style="color:var(--tx2)">자리 읽는 법</b>, <b style="color:var(--buy)">고정</b> 자리(생명선·실존가·기준가)는 그 가격에 그대로 남습니다. '
-    +'<b style="color:var(--gold2)">굴림</b> 자리(승부처·전투존·밴드)는 <b>현재가에 따라 옮겨갑니다</b>, 승부처는 현재가 위 첫 매도벽이라 돌파하면 다음 벽으로 이동(고정선 아님).';
+    +'<b style="color:var(--gold2)">이동</b> 자리(승부처·전투존·밴드)는 <b>현재가에 따라 옮겨갑니다</b>, 승부처는 현재가 위 첫 매도벽이라 돌파하면 다음 벽으로 이동(고정선 아님).';
   v.insertBefore(_lg,v.firstChild);
 }
 
