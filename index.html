@@ -15258,7 +15258,23 @@ function twoBreathPanel(){try{
     +(dn2?('생명선 <b style="color:var(--tx)">'+fUsd(dn2)+'</b> 이탈 시 큰 틀 전환<br>'):'')
     +'4좌표 평균 <b style="color:var(--tx)">'+fUsd(sum4)+'</b>'
     +(_jlR!=null?(' · 아래 지지값 <b style="color:var(--tx)">'+fUsd(_jlR)+'</b>(일봉실존)'):'')
-    +(life!=null?(' → 생명선 <b style="color:var(--tx)">'+fUsd(life)+'</b> · 생명선 이탈 = 큰 틀이 매도 쪽으로 바뀜'):'');
+    +(life!=null?(' → 생명선 <b style="color:var(--tx)">'+fUsd(life)+'</b> · 생명선 이탈 = 큰 틀이 매도 쪽으로 바뀜'):'')
+    
+    
+    
+    
+    +(function(){try{
+        var _it=[];
+        if(up2!=null)_it.push({v:up2,n:'승부처'});
+        if(dn2!=null)_it.push({v:dn2,n:'생명선'});
+        if(_jlR!=null)_it.push({v:_jlR,n:'일봉 실존가'});
+        if(life!=null&&life!==dn2)_it.push({v:life,n:'생명선'});
+        var _g=gyeopGroup(_it,30).filter(function(x){return x.겹;});
+        if(!_g.length)return '';
+        return '<br><span class="sub" style="font-size:11px">'
+          +_g.map(function(x){return '겹 <b style="color:var(--tx)">'+fUsd(x.v)+'</b> ('+x.label+')';}).join(' · ')
+          +' <span style="color:var(--tx3)">, 두 자리가 사실상 한 대역입니다</span></span>';
+      }catch(e){return '';}})();
   var ang=Math.max(-3,Math.min(3,Peff))/3*52;
   var fillD=isLong?'var(--buy)':'var(--sell)';
   var half=isLong?'M60 62 A48 48 0 0 1 108 62':'M12 62 A48 48 0 0 1 60 62';
