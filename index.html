@@ -14645,7 +14645,12 @@ function viewHanjang(){try{
   var pos='';
   
   var s1=(function(){try{return igniteHeroLine()||'';}catch(e){return '';}})()   
-    +twoBreathPanel()+actionChipsPanel();
+    +twoBreathPanel()
+    
+    
+    
+    +(function(){try{return waveNineTable()||'';}catch(e){return '';}})()
+    +actionChipsPanel();
   var why='<div style="font-size:11px;color:var(--tx2);padding:7px 13px;border:1px dashed var(--bd);border-radius:9px;margin-bottom:10px;line-height:2">이 판단의 근거, '
     +_whyLink('국면·층별 정렬은 왜?','정렬·대치','why_regime')
     +_whyLink('큰 구조·단기 재료는 왜?','심층 근거','why_ing')
@@ -17343,7 +17348,7 @@ function viewDash(){
   
   
   
-  return igniteHeroLine()+twoBreathPanel()+waveNineTable()+actionChipsPanel()+waveIgnitePanel()+jumpBandPanel()+whaleTrajBadge()
+  return igniteHeroLine()+twoBreathPanel()+actionChipsPanel()+waveIgnitePanel()+jumpBandPanel()+whaleTrajBadge()
     +'<div id="lwSlot" style="min-width:0;margin-top:10px"></div>'   
     +verdictCard()+subjectClashPanel()+simpleTopPanel()+daeungPanel()+tfFlipPanel()+liveDuelBlock()
     +daeungPlanPanel()+dirWeightPanel()+xAxisPanel()+volBalancePanel()+defenseLadderPanel()
