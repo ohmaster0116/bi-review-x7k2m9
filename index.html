@@ -9911,7 +9911,7 @@ function waveDetailPanel(){try{
   return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':'주봉')+' 파동 상세 <span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
     +'<div style="padding:8px 15px 0;display:flex;gap:8px">'+ltBtn+'</div>'
     +'<div style="padding:8px 15px 12px">'+(wvLT==='d1'?mk('d1','일봉 파동',12):mk('w1','주봉 파동',10)+wStat)
-    +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(소멸✖·부활✔)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
+    +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
 }catch(e){return '';}}
 
 
@@ -12720,7 +12720,7 @@ function decisiveAxis(){
     
     var _repSrc='';
     try{var _wbA=waveBook('d1');
-      if(_wbA){ if(_wbA.rep!=null){siljon=_wbA.rep; _repSrc=' <span class="sub" style="font-size:9.5px">층 승계 '+(_wbA.nAlive||0)+'층</span>';}
+      if(_wbA){ if(_wbA.rep!=null){siljon=_wbA.rep; _repSrc=' <span class="sub" style="font-size:9.5px">생존 '+(_wbA.nAlive||0)+'층 중 최전방</span>';}
                 else if(_wbA.sitga){siljon=_wbA.sitga;} }
     }catch(e){}   
     var vb=vbBand('M1'); if(!siljon||!vb)return '';
