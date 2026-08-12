@@ -15382,7 +15382,23 @@ function twoBreathPanel(){try{
         var fx=function(v){return '$'+Math.round(v).toLocaleString('en-US');};
         var pxx=Mx.px, dns=[['일봉 실존가',Mx.root],['생명선',Mx.life]].filter(function(a){return a[1]&&a[1]<pxx;}).sort(function(a,b){return b[1]-a[1];});
         var line='';
-        if(dns.length){
+        
+        
+        
+        
+        
+        
+        var _gy=null;
+        try{ if(dns.length>1){ var _gg=gyeopGroup(dns.map(function(x){return {v:x[1],n:x[0]};}),30).filter(function(z){return z.겹;});
+              if(_gg.length===1&&_gg[0].count===dns.length)_gy=_gg[0]; } }catch(e){ _gy=null; }
+        if(_gy){
+          var _dg=(pxx-_gy.v)/pxx*100;
+          line=(_dg<=0.3?('지금 겹 '+fx(_gy.v)+' <span class="sub">('+_gy.label+')</span>이(가) 공격받는 중')
+                        :('발밑 겹 '+fx(_gy.v)+' <span class="sub">('+_gy.label+')</span>이(가) 받치는 중('+_dg.toFixed(1)+'% 아래)'))
+            +' · 두 자리가 <b>'+Math.round(Math.abs(dns[0][1]-dns[1][1]))+'달러</b> 차라 한 대역으로 봅니다'
+            +(Mx.life&&pxx>=Mx.life?' · 종가로 깨지면 큰 틀이 바뀝니다':'')
+            +(Mx.up?' · 반전 조건=승부처 '+fx(Mx.up)+' 종가 돌파':'');
+        }else if(dns.length){
           var n0=dns[0], d0=(pxx-n0[1])/pxx*100;
           line=(d0<=0.3?('지금 '+n0[0]+' '+fx(n0[1])+'이(가) 공격받는 중')
                        :('발밑 '+n0[0]+' '+fx(n0[1])+'이(가) 받치는 중('+d0.toFixed(1)+'% 아래)'))
