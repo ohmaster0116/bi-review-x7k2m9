@@ -9950,6 +9950,27 @@ function viewWave(){
   
   
   const axBtn=['기준값','중심값'].map(a=>`<button onclick="setWaveAx('${a}')" style="font-size:12.5px;font-weight:${a===waveAx?700:400};padding:6px 16px;border:none;border-bottom:2px solid ${a===waveAx?'var(--gold2)':'transparent'};background:none;color:${a===waveAx?'var(--gold2)':'var(--tx2)'};cursor:pointer">${a} 축</button>`).join('');
+  
+  
+  
+  const ax5=(function(){try{
+    var EF=window.__EVENTFRAME||{};
+    var F=(waveAx==='중심값')?EF['뿌리5선_중심값']:EF['뿌리5선'];
+    if(!F||F['뿌리 중심']==null)return '<div class="sub" style="padding:6px 2px;font-size:10.5px">'+waveAx+' 축 5선 , 산출 대기</div>';
+    var px2=null; try{px2=E.d1[E.d1.length-1].c;}catch(e){}
+    var K=['숏 뿌리','하프(숏측)','뿌리 중심','하프(롱측)','롱 뿌리'];
+    var col={'숏 뿌리':'var(--sell)','뿌리 중심':'var(--gold2)','롱 뿌리':'var(--buy)'};
+    var rows=K.map(function(k){ var v=F[k]; if(v==null)return '';
+      var gp=(px2!=null)?((v-px2)/px2*100):null;
+      return '<div style="display:flex;gap:8px;align-items:baseline;padding:2px 0">'
+        +'<span style="flex:0 0 74px;font-size:10.5px;color:'+(col[k]||'var(--tx3)')+(k==='뿌리 중심'?';font-weight:700':'')+'">'+k+'</span>'
+        +'<b style="font-size:12px'+(k==='뿌리 중심'?';color:var(--gold2)':'')+'">'+fUsd(v)+'</b>'
+        +(gp!=null?'<span class="sub" style="font-size:10px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span>':'')
+        +'</div>';}).join('');
+    return '<div style="margin:0 0 10px;padding:9px 12px;border:1px solid var(--bd);border-radius:11px">'
+      +'<div style="font-size:10.5px;letter-spacing:.06em;color:var(--tx2);text-transform:uppercase;margin-bottom:5px">뿌리 5선 <span style="text-transform:none;letter-spacing:normal;color:var(--tx3)">('+waveAx+' 축)</span></div>'
+      +rows+'</div>';
+  }catch(e){return '';}})();
   const axTab=`<div style="display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:0 0 10px">${axBtn}<span class="sub" style="margin-left:auto;align-self:center;font-size:10.5px">${waveAx==='중심값'?'저항·지지의 한가운데로 잰 축':'봉 전체의 무게중심으로 잰 축'}</span></div>`;
   
   const head=`<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">코인 테스트기:</span>${btn}${waveCoin!=='BTC'?`<span class="sub" style="color:var(--gold2)">- ${waveCoin} · 3코인 검증 통과 엔진(파동·국면·미확인·합의)만 이식 · 받침/벽/고래는 BTC 전용</span>`:''}</div>`;
@@ -9980,9 +10001,9 @@ function viewWave(){
     
     
     var _wbp=''; try{_wbp=waveBookPanel()||'';}catch(e){_wbp='';}
-    if(wvSec==='전투')return axTab+head+_wbp+viewWaveBattle();
+    if(wvSec==='전투')return axTab+ax5+head+_wbp+viewWaveBattle();
     if(wvSec==='차트')return axTab+head+wvSecHtml();
-    return axTab+head+_wbp+viewWaveInner();
+    return axTab+ax5+head+_wbp+viewWaveInner();
   }finally{E=_E0; window.__WAVE_AX=_AX0;}
 }
 
@@ -15314,7 +15335,7 @@ function twoBreathPanel(){try{
       
       var half=(px<C)?'롱측 절반':'숏측 절반', side=(px<C)?'아래':'위';
       return '<div style="margin-top:10px;padding:10px 12px;border:1px solid var(--bd);border-radius:11px">'
-        +'<div style="font-size:10.5px;letter-spacing:.06em;color:var(--tx2);text-transform:uppercase;margin-bottom:6px">뿌리 5선</div>'
+        +'<div style="font-size:10.5px;letter-spacing:.06em;color:var(--tx2);text-transform:uppercase;margin-bottom:6px">뿌리 5선 <span style="text-transform:none;letter-spacing:normal;color:var(--tx3)">(기준값 축)</span></div>'
         +'<div style="font-size:12.5px;margin-bottom:6px">현재가는 뿌리 중심 <b style="color:var(--gold2)">'+fUsd(C)+'</b> '+side+', <b>'+half+'</b>에 있습니다.</div>'
         +body
         +'<div class="sub" style="font-size:10px;margin-top:6px;line-height:1.6">자리 표시입니다. 이 가격에서 어떻게 움직이는지는 아직 측정하지 않았습니다.</div>'
