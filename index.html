@@ -13217,7 +13217,19 @@ function waveBook(tf,ax){try{
     var f4=0;if(v4>0){var av4=u4/v4;for(var j4=q2+1;j4<n;j4++){if(A[j4].c<av4)break;if(A[j4].l<av4)f4++;}}
     stepsAll.push({t:A[q2].t,vw:v4>0?u4/v4:null,alive:alive4,rev:rev4,fights:f4});
     if(!alive4)deadT.push(A[q2].t);else if(rev4)revT.push(A[q2].t);}
-  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,revT:revT,stepsAll:stepsAll};
+  
+  
+  
+  
+  
+  
+  
+  
+  var _px=A[n-1].c;
+  var _dn=stepsAll.filter(function(st){return st.alive&&st.vw!=null&&st.vw<=_px;}).map(function(st){return st.vw;});
+  var rep=_dn.length?Math.max.apply(null,_dn):null;
+  var repAlive=stepsAll.filter(function(st){return st.alive;}).length;
+  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,revT:revT,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
 }catch(e){return null;}}
 
 
