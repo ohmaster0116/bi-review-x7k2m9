@@ -11823,8 +11823,8 @@ function tradeProtocol(){
     var px=(E&&E.d1)?E.d1[E.d1.length-1].c:P.price;
     var up=P['상방_익절']||{}, al=P['1차경보_대피']||{}, re=P['재진입_귀가']||{}, fs=P['최종손절_포기']||{};
     var num=function(t){var m=String(t||'').replace(/,/g,'').match(/([0-9]{4,7})/);return m?+m[1]:null;};
-    var lifeLine=num(up.trigger)||63425, reLow=num(re.cond_B)||57800;
-    var tg1=(up.targets&&up.targets[0])||65881, tg2=(up.targets&&up.targets[1])||84920;
+    var lifeLine=num(up.trigger), reLow=num(re.cond_B);
+    var _T=up.targets||[], tg1=(_T[0]!=null?_T[0]:null), tg2=(_T[1]!=null?_T[1]:null);
     var LV=[
       {v:tg2,  n:'매도평단(최종 저항)', L:'최종 분할 익절 완료', N:'추격 금지 - 과열 관찰', S:'구조 진입 후보(캠페인 평단)'},
       {v:tg1,  n:'1차 관문',           L:'부분 익절', N:'돌파 후 재지지 확인 시 매수', S:'숏 손절(상방 확정)'},
