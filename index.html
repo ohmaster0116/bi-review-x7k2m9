@@ -12906,23 +12906,33 @@ function waveDeltaGrid(){
 function battleBalance(){
   try{
     const A=E.d1, px=A[A.length-1].c;
-    const L=waveLedger('d1'); if(!L)return '';
-    const alive=L.waves.filter(w=>!w.open&&w.death==null);
-    const _sr=sellRes();
-    const gate=_sr?(_sr.w||{s:_sr.s,e:_sr.e,line:_sr.v,dir:-1}):alive.filter(w=>w.dir<0&&w.line>px).sort((a,b)=>a.line-b.line)[0];
-    const _bbNote=function(msg){return '<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 평단(실존가) ↔ 주요 저항(매도 평단) <span class="sub">위치 표기 · 예측 아님</span></div><div style="padding:10px 15px;font-size:11.5px;color:var(--tx2);line-height:1.75">'+msg+'</div></div>';};   
-    if(!gate)return _bbNote('현재가 위에 살아 있는 <b>매도 파동이 없습니다</b> - 저항 축 부재 상태. 위 매도 파동이 생기면 자동 복원됩니다.');
-    let roll=null, rollSrc='현재 매수 파동';
-    const ws=waveState('d1');
-    if(ws&&ws.mode!=='none'&&ws.dir>0)roll=vwRollDisp('d1');
-    if(!roll){const sup=alive.filter(w=>w.dir>0&&w.line<px).sort((a,b)=>b.line-a.line)[0];if(sup){roll=vwRollWave(A,sup)||sup.line;rollSrc='아래 첫 지지 파동';}}
-    if(!roll)return _bbNote('<b>매수 평단 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 저항 축: '+f1(vwOfWave(A,gate)||gate.line)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 자동 복원.');
-    const gv=_sr?_sr.v:(vwOfWave(A,gate)||gate.line);   
-    if(!(gv>roll))return _bbNote('축 역전(지지 '+f1(roll)+' ≥ 저항 '+f1(gv)+') - 균형 게이지 정의 불가 구간. 상태만 표기합니다.');
+    const _bbNote=function(msg){return '<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 실존가 ↔ 매도 실존가 <span class="sub">위치 표기 · 예측 아님</span></div><div style="padding:10px 15px;font-size:11.5px;color:var(--tx2);line-height:1.75">'+msg+'</div></div>';};   
+    
+
+
+
+
+
+
+    let gv=null, gate=null;
+    try{const _sb=sellBook('d1'); if(_sb&&_sb.rep!=null){gv=_sb.rep; gate={s:_sb.s,e:_sb.e,line:_sb.rep,dir:-1,nAlive:_sb.nAlive};}}catch(e){}
+    if(gv==null)return _bbNote('현재가 위에 살아 있는 <b>매도 파동이 없습니다</b> - 저항 축 부재 상태. 위 매도 파동이 생기면 자동 복원됩니다.');
+    let roll=null, rollSrc='', _wbD=null;
+    try{_wbD=waveBook('d1');
+      if(_wbD){ if(_wbD.rep!=null){roll=_wbD.rep; rollSrc='생존 '+(_wbD.nAlive||0)+'층 중 최전방';}
+                else if(_wbD.sitga){roll=_wbD.sitga;} }
+    }catch(e){}
+    if(roll==null)return _bbNote('<b>매수 실존가 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 매도 실존가: '+f1(gv)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 자동 복원.');
+    if(!(gv>roll))return _bbNote('축 역전(매수 실존가 '+f1(roll)+' ≥ 매도 실존가 '+f1(gv)+') - 균형 게이지 정의 불가 구간. 상태만 표기합니다.');
     const pos=Math.max(0,Math.min(100,(px-roll)/(gv-roll)*100));
     const upGap=gv-px, dnGap=px-roll;
     let vBuy=null;
-    if(ws&&ws.mode!=='none'&&ws.dir>0){const st=ws.mode==='live'&&ws.w?ws.w.s:A.length-ws.days;const bs=A.slice(st,A.length);if(!bs.some(b=>!(b.v>0)))vBuy=bs.reduce((x,b)=>x+b.v,0);}
+    
+
+    try{let _bs=-1;
+      if(_wbD&&_wbD.s0!=null){for(let k=0;k<A.length;k++){if(A[k].t===_wbD.s0){_bs=k;break;}}}
+      if(_bs>=0){const bs=A.slice(_bs,A.length-1);if(bs.length&&!bs.some(b=>!(b.v>0)))vBuy=bs.reduce((x,b)=>x+b.v,0);}
+    }catch(e){}
     let vSell=null;
     try{const bs=A.slice(gate.s,gate.e+1);if(!bs.some(b=>!(b.v>0)))vSell=bs.reduce((x,b)=>x+b.v,0);}catch(e){}
     let volBar='';
@@ -12936,18 +12946,18 @@ function battleBalance(){
         </div>
         <span style="color:var(--sell);white-space:nowrap">매도 ${Math.round(vSell).toLocaleString()}</span>
         <span class="sub" style="white-space:nowrap">(매수=형성~현재 · 매도=저항 형성기)</span></div>`;}
-    return `<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 평단(실존가) ↔ 주요 저항(매도 평단) <span class="sub">위치 표기 · 예측 아님</span></div>
+    return `<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 실존가 ↔ 매도 실존가 <span class="sub">위치 표기 · 예측 아님</span></div>
       <div style="padding:10px 14px 12px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
-          <span style="color:var(--buy)">매수 평단 <b>${f1(roll)}</b> <span class="sub">(${rollSrc}·실시간)</span></span>
-          <span style="color:var(--sell)">주요 저항 <b>${f1(gv)}</b></span></div>
+          <span style="color:var(--buy)">매수 실존가 <b>${f1(roll)}</b>${rollSrc?` <span class="sub">(${rollSrc})</span>`:''}</span>
+          <span style="color:var(--sell)">매도 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
         <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
           <div style="position:absolute;left:${pos}%;top:-4px;width:3px;height:22px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--tx2);margin-top:4px">
-          <span>평단까지 −${f1(dnGap)} (${(dnGap/px*100).toFixed(1)}%)</span>
+          <span>매수 실존가까지 −${f1(dnGap)} (${(dnGap/px*100).toFixed(1)}%)</span>
           <span style="color:var(--gold2);font-weight:700">현재가 ${f1(px)} - 구간 ${Math.round(pos)}% 지점</span>
-          <span>저항까지 +${f1(upGap)} (${(upGap/px*100).toFixed(1)}%)</span></div>
+          <span>매도 실존가까지 +${f1(upGap)} (${(upGap/px*100).toFixed(1)}%)</span></div>
         ${volBar}
       </div></div>`;
   }catch(e){return ''}
