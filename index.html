@@ -11734,6 +11734,47 @@ function viewSR(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1',
     +ks.map(k=>bandPanelM(NAME[k],srCols(k),px,null,k)).join('')+'</div>'
     +'<div class="bandgrid2">'+comboPanelM('일·주',['d1','w1'],srBand)+comboPanelM('일·주·월',['d1','w1','M1'],srBand)+comboPanelM('일·주·월·연',['d1','w1','M1','y1'],srBand)+'</div>';}
 function avgSpreadK(k,n){const a=E[k];if(!a||a.length<2)return 0;n=Math.min(n||60,a.length-1);let s=0,c=0;for(let i=a.length-n;i<a.length;i++){if(i>0){s+=Math.abs(a[i].center-a[i-1].center);c++;}}return c?s/c:0;}
+
+
+
+
+
+
+
+
+function gyeopGroup(items, win){
+  
+  try{
+    win = (win==null) ? 30 : win;
+    var A = (items||[]).filter(function(x){return x && x.v!=null && isFinite(x.v);})
+                       .slice().sort(function(a,b){return a.v-b.v;});
+    var out=[], cur=[];
+    var flush=function(){
+      if(!cur.length) return;
+      if(cur.length===1){ out.push({v:cur[0].v, n:cur[0].n, 겹:false, members:[cur[0].n]}); }
+      else{
+        var sum=0; cur.forEach(function(x){sum+=x.v;});
+        var cnt={}; cur.forEach(function(x){cnt[x.n]=(cnt[x.n]||0)+1;});
+        var nm=Object.keys(cnt).map(function(k){return cnt[k]>1?(k+'×'+cnt[k]):k;}).join('·');
+        out.push({v:sum/cur.length, n:'겹', 겹:true, members:cur.map(function(x){return x.n;}), label:nm, count:cur.length});
+      }
+      cur=[];
+    };
+    A.forEach(function(x){
+      if(!cur.length){ cur=[x]; return; }
+      
+      var near = cur.some(function(y){return Math.abs(y.v-x.v)<=win;});
+      if(near) cur.push(x); else { flush(); cur=[x]; }
+    });
+    flush();
+    return out;
+  }catch(e){ return (items||[]).map(function(x){return {v:x.v,n:x.n,겹:false,members:[x.n]};}); }
+}
+
+function gyeopText(g, f){
+  f = f || function(v){return '$'+Math.round(v).toLocaleString('en-US');};
+  return g.겹 ? ('겹 '+f(g.v)+' <span class="sub">('+g.label+')</span>') : (g.n+' '+f(g.v));
+}
 function collectLevels(){const out=[],ks=['m30','h1','h4','d1','w1','M1','y1'];
   ks.forEach(k=>{const a=E[k];if(!a||a.length<2)return;const b=a[a.length-1];
     out.push({p:b.res,t:'R',s:NAME[k]+' 저항'});out.push({p:b.sup,t:'S',s:NAME[k]+' 지지'});
