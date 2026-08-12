@@ -15328,8 +15328,8 @@ function twoBreathPanel(){try{
         var _g=gyeopGroup(_it,30).filter(function(x){return x.겹;});
         if(!_g.length)return '';
         return '<br><span class="sub" style="font-size:11px">'
-          +_g.map(function(x){return '겹 <b style="color:var(--tx)">'+fUsd(x.v)+'</b> ('+x.label+')';}).join(' · ')
-          +' <span style="color:var(--tx3)">, 두 자리가 사실상 한 대역입니다</span></span>';
+          +_g.map(function(x){return gyeopText(x,fUsd);}).join(' · ')
+          +'</span>';
       }catch(e){return '';}})();
   var ang=Math.max(-3,Math.min(3,Peff))/3*52;
   var fillD=isLong?'var(--buy)':'var(--sell)';
@@ -15437,8 +15437,8 @@ function twoBreathPanel(){try{
               if(_gg.length===1&&_gg[0].count===dns.length)_gy=_gg[0]; } }catch(e){ _gy=null; }
         if(_gy){
           var _dg=(pxx-_gy.v)/pxx*100;
-          line=(_dg<=0.3?('지금 겹 '+fx(_gy.v)+' <span class="sub">('+_gy.label+')</span>이(가) 공격받는 중')
-                        :('발밑 겹 '+fx(_gy.v)+' <span class="sub">('+_gy.label+')</span>이(가) 받치는 중('+_dg.toFixed(1)+'% 아래)'))
+          line=(_dg<=0.3?('지금 '+gyeopText(_gy,fx)+'이(가) 공격받는 중')
+                        :('발밑 '+gyeopText(_gy,fx)+'이(가) 받치는 중('+_dg.toFixed(1)+'% 아래)'))
             
             +(Mx.life&&pxx>=Mx.life?' · 종가로 깨지면 큰 틀이 바뀝니다':'')
             +(Mx.up?' · 반전 조건=승부처 '+fx(Mx.up)+' 종가 돌파':'');
