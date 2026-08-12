@@ -9826,7 +9826,7 @@ function viewWaveInner(){
       :['역풍 합의 - 롱 금지','var(--sell)',`긴 호흡(${at.sells.join('·')})도 짧은 호흡(30분~4시간)도 전부 매도 - 롱 금지·관망. 실측 다음 캔들 −0.08~−0.27%.`];}
   else badge=['혼조 - 교차 신호 없음','var(--tx2)',`지금은 ${pTxt}로 엇갈려 있어 방향 신호가 없습니다 - 파동선 사수 여부만 보세요. <span class="sub">(단기 과열 상태의 숏 합의는 신호로 게시하지 않습니다)</span>`];
   const lyBtnW=['입문','숙련','운용'].map(v=>`<button onclick="setLayer('${v}')" style="font-size:10.5px;padding:2px 9px;border-radius:5px;cursor:pointer;border:1px solid ${v===uiLayer?'var(--gold2)':'var(--bd)'};background:${v===uiLayer?'rgba(214,162,58,.15)':'transparent'};color:${v===uiLayer?'var(--gold2)':'var(--tx2)'};font-weight:${v===uiLayer?700:400}">${v}</button>`).join(' ');
-  const _html=`<h2 class="sec" style="margin:0 0 12px">파동 분석 <span class="sub">- 주체 평단(파동선) 지도 · 종가 이탈=힘 약화 기준(통계 용어로 파동 사망) (3코인 검증·케빈 하니스 1:1 대조)</span> <span style="margin-left:8px">${lyBtnW}</span></h2>
+  const _html=`<h2 class="sec" style="margin:0 0 12px">파동 분석 <span class="sub">- 주체 평단(파동선) 지도 · 종가 이탈=힘 약화 신호(사망은 뿌리 함락뿐) (3코인 검증·케빈 하니스 1:1 대조)</span> <span style="margin-left:8px">${lyBtnW}</span></h2>
     <div class="panel" style="border:1px solid ${badge[1]}"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:${badge[1]};font-size:14px">${badge[0]}</b><span class="sub" style="font-size:11.5px">${badge[2]}</span></div></div>
     ${(function(){const yp=wvYoPhase();if(!yp)return '';
       const YO_N={BTC:'+2.6% (N476)',ETH:'+2.8% (N867)',SOL:'+3.7% (N426)'};
@@ -9949,7 +9949,7 @@ function viewToday(){
       :wsSub;
     let vwL=null;try{vwL=(_asofD&&_asofD.dir===ws.dir&&_asofD.vw)?_asofD.vw:waveVW(A,ws);}catch(e){}
     let _wbk=null;try{_wbk=waveBook('d1');if(_wbk&&_wbk.sitga)vwL=_wbk.sitga;}catch(e){}   // [2026-07-12 이사] 실존가=정본 장부   // 실존가도 전일 마감 기준(이사 확정 2026-07-07) - waveVW 단일 소스(전 봉 v>0 가드)
-    const earlyNote=(typeof _wbk!=='undefined'&&_wbk)?' · <b style="color:var(--gold2)">현 파동 장부 기준(7/1생 · 생존 '+_wbk.nInc+'봉'+(_wbk.nDead>0?'·종가 사망 '+_wbk.nDead+'봉 제외':'')+' · 부활 재가중)</b>':(ws.days<=3?' · <b style="color:var(--gold2)">형성 초기('+ws.days+'일차) - 실존가가 기준</b>':'');
+    const earlyNote=(typeof _wbk!=='undefined'&&_wbk)?' · <b style="color:var(--gold2)">현 파동 장부 기준(7/1생 · 생존 '+_wbk.nInc+'봉'+(_wbk.nDead>0?'·이탈 '+_wbk.nDead+'봉(층은 보존)':'')+' · 전 층 보존)</b>':(ws.days<=3?' · <b style="color:var(--gold2)">형성 초기('+ws.days+'일차) - 실존가가 기준</b>':'');
     const hnR=hn&&hn.risk?hn.risk:null;
     const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>실존가(전일 마감) ${f1(vwL)}</b> - 표면가 아래 완충 눈금(자체 산출)${vwL<ws.line?`. 표면가와의 사이 [${f1(vwL)}~${f1(ws.line)}]는 <b>휩쏘 존</b>(실존가 사수 시 재회복 ${STAT('mp_recover','raw')} vs 이탈 51~58% - 실측 검증·4자 서명. 단 격차엔 이탈 깊이 효과가 섞여 있으며 순수 실존가 효과는 별도 측정 불가(미식별)로 종결 - 사실 기술로만)`:''}${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>`:''}. 통계 정본은 표면가 기준.</span>`:wsSub2;
     {
@@ -11492,7 +11492,7 @@ function gongOpinion(){
     let wvLine='';
     try{const ws2=waveState();
       if(ws2&&ws2.mode!=='none'){const wc=ws2.dir>0?'var(--buy)':'var(--sell)';
-        wvLine=`<br>&nbsp;&nbsp;· <b style="color:${wc}">${waveWord('d1',ws2.dir,ws2.mode,ws2.days)}</b> - 주체 평단 <b style="color:var(--gold2)">${f1(ws2.line)}</b> ${ws2.mode==='form'?'사수가 승부':'사수가 승부'}. 장대 음봉이 나와도 <b>종가가 이 선 위면 흔들기(회복 65%)·이탈 마감이면 힘 약화 기준 충족</b> - 상세는 파동 분석 탭.`;}
+        wvLine=`<br>&nbsp;&nbsp;· <b style="color:${wc}">${waveWord('d1',ws2.dir,ws2.mode,ws2.days)}</b> - 주체 평단 <b style="color:var(--gold2)">${f1(ws2.line)}</b> ${ws2.mode==='form'?'사수가 승부':'사수가 승부'}. 장대 음봉이 나와도 <b>종가가 이 선 위면 흔들기(회복 65%)·이탈 마감이면 힘 약화 신호</b> - 상세는 파동 분석 탭.`;}
       else if(ws2)wvLine=`<br>&nbsp;&nbsp;· 무파동 - 방향 주체 없음, 박스 문법(받침) 기본값.`;
       const cs=waveConsensus();
       if(cs.sig==='pullback')wvLine+=`<br>&nbsp;&nbsp;· <b style="color:var(--buy)">파동 눌림 - 최상 신호</b>: 긴 호흡(일·주·월) 파동은 살아있는데 짧은 호흡(30분~4시간)만 과매도 = 눌림 받는 자리. 실측 다음 캔들 +0.50~0.71%(3코인).`;
@@ -11931,7 +11931,7 @@ function pxRow(px,f0){return '<div style="display:flex;align-items:center;gap:10
 function decisiveAxis(){
   try{
     var asof=asofWaveDisp('d1'); var siljon=(asof&&asof.vw)?asof.vw:waveVW(E.d1,waveState('d1'));
-    try{var _wbA=waveBook('d1');if(_wbA&&_wbA.sitga)siljon=_wbA.sitga;}catch(e){}   // [2026-07-12 이사] 앵커=정본 장부(소멸 제외·부활 재가중)
+    try{var _wbA=waveBook('d1');if(_wbA&&_wbA.sitga)siljon=_wbA.sitga;}catch(e){}   // [2026-07-12 이사 · 08-10 조문 29조로 갱신] 앵커=정본 장부(전 층 v가중 · 사망=뿌리 함락뿐)
     var vb=vbBand('M1'); if(!siljon||!vb)return '';
     var wsM=waveState('M1'); var mdir=(wsM&&wsM.mode!=='none')?wsM.dir:-1;
     var px=E.d1[E.d1.length-1].c, f0=function(x){return x==null?'없음':'$'+Math.round(x).toLocaleString('en-US');};
@@ -11942,7 +11942,7 @@ function decisiveAxis(){
     var lv=[{n:'월봉 '+(mdir>0?'하단':'상단')+'전투존 (상위 한계)',v:상단전투존,c:'var(--tx2)',d:'월봉 변동폭 밴드 '+(mdir>0?'하단':'상단') },
       {n:'결전축',v:결전축,c:'var(--gold2)',d:'실존가 ↔ 상위 한계의 전투포인트'},
       {n:'미세축',v:미세축,c:'#c084fc',d:'실존가 ↔ 결전축 한 층 더(프랙탈)'},
-      {n:'실존가 (파동 평단·기준)',v:siljon,c:'var(--buy)',d:'현 파동 장부 평단(생사=종가·부활 재가중) - 이 축의 앵커'}];
+      {n:'실존가 (파동 평단·기준)',v:siljon,c:'var(--buy)',d:'현 파동 장부 평단(전 층 v가중) - 이 축의 앵커'}];
     lv.sort(function(a,b){return b.v-a.v;});
     var rows='', pxDone=false;
     for(var i=0;i<lv.length;i++){
@@ -12414,7 +12414,7 @@ function waveBookPanel(){try{
   var moFlip=null;try{var mb2=E.M1[E.M1.length-1];moFlip=(mb2.o+mb2.h+mb2.l)/3;}catch(e){}
   var conflTxt=conflOk?('뿌리 본진(합치 폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) '+f(cLo)+'~'+f(cHi))
     :('<b style="color:var(--gold2)">합치 풀림</b>(폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) - 주봉 실존가 '+f(gW)+' · 월봉 기준가 '+f(gM)+(ua!=null?' · 미확인 평균 '+f(ua):'')+' 각자 지지');
-  var banner='<b style="color:var(--gold2)">현 파동 장부(정본: 공격 소멸분 제외·생존+부활 가중 · 매 갱신 자동 재계산)</b> - '
+  var banner='<b style="color:var(--gold2)">현 파동 장부(정본: 전 층 v가중 · 매 갱신 자동 재계산)</b> - '
     +'일봉 실존가 <b>'+f(bd.sitga)+'</b>'+(bw?' · 주봉 실존가 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
     +' → <b>싸우는 곳</b>: 위 매도 파동선 '+(fightUp?f(fightUp):'없음')+foeTxt+' vs 아래 실존가 진지 '+f(bd.sitga)+' · '+conflTxt+' · 최종 뿌리 '+f(bd.root)+'.'
     +(moFlip!=null?'<br><b style="color:var(--gold2)">월봉 성격 전환 라인 '+f(moFlip)+'</b> - 현재가가 이 '+(px>=moFlip?'<b style="color:var(--buy)">위</b>(이번 달이 매수 성격으로 바뀌는 중)':'<b style="color:var(--sell)">아래</b>(매도 성격 유지)')+' · 자체 산식 · 실시간 이동':'');
@@ -12454,7 +12454,7 @@ function waveBookPanel(){try{
   var arM=0;try{var MM=E.M1;var nm4=Math.min(24,MM.length-1),s4=0;for(var i4=MM.length-1-nm4;i4<MM.length-1;i4++)s4+=MM[i4].h-MM[i4].l;arM=s4/nm4;}catch(e){}
   var moO=E.M1[E.M1.length-1].o, posAR=arM>0?(px-moO)/arM:null;
   var prob='';   // [케인 R5 검증 2026-07-12: 위상 특이성 미식별(perm p0.26~0.96·기준일 민감) - 통계 수치 비게시(미식별=비게시 정본). 관찰 서사만 유지.
-  return '<div class="panel" style="border:1px solid rgba(0,229,160,.35)"><div class="hd" style="color:#00e5a0">🌱 현 파동 장부 - 뿌리·실존가·전투존 <span class="sub">정본 산식(생사=종가·wick=전투·부활 재가중) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?(sigBadge('전략','R1·H2·R2 4자 통과')+sigBadge('가설','H1·bin 민감도 진행')):'')+'</div>'
+  return '<div class="panel" style="border:1px solid rgba(0,229,160,.35)"><div class="hd" style="color:#00e5a0">🌱 현 파동 장부 - 뿌리·실존가·전투존 <span class="sub">정본 산식(전 층 보존·wick=전투·사망=뿌리 함락) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?(sigBadge('전략','R1·H2·R2 4자 통과')+sigBadge('가설','H1·bin 민감도 진행')):'')+'</div>'
     +'<div style="padding:10px 15px 12px">'
     +'<div style="padding:10px 13px;margin-bottom:9px;background:rgba(0,229,160,.06);border-left:3px solid #00e5a0;border-radius:9px;font-size:12.5px;line-height:1.85">'+banner+duel+'</div>'
     +tbl+strip+wbProfileBars(bd.s0,px,cLo,cHi)+prob
@@ -14833,7 +14833,7 @@ function rootBranchStrip(){try{
     if(dDir<0){
       const sd=sellBook('d1'), sw=sellBook('w1');
       waveChain=`<div class="spaced" style="padding:8px 14px;font-size:11.5px;line-height:2.0;border-bottom:1px solid var(--bd);background:rgba(239,83,80,.06)">
-      <b style="color:var(--gold2)">현재 시점 - 매도 지속 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=소멸 제외 재가중)</span><br>
+      <b style="color:var(--gold2)">현재 시점 - 매도 지속 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=전 층 v가중)</span><br>
       <b style="color:var(--sell)">일봉 매도 시그널${dS?'('+dS+')':''}</b> 숏 파동 시작 - 실존가(위 방어선) <b>${sd&&sd.sitga?f1(sd.sitga):'없음'}</b><br>
       <b style="color:var(--sell)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 실존가 <b>${sw&&sw.sitga?f1(sw.sitga):'형성 중'}</b><br>
       <b style="color:${px<monInfl?'var(--sell)':'var(--buy)'}">월봉 성격 ${px<monInfl?'매도 굳히는 중':'매수로 전환 시도'}</b> - 전환 라인 ${f1(monInfl)} ${px<monInfl?'아래':'위'}<br>
@@ -14841,7 +14841,7 @@ function rootBranchStrip(){try{
       <b style="color:var(--gold2)">⚔ 전투존</b> ${buyLo?f1(buyLo):'없음'} ~ ${sd&&sd.sitga?f1(sd.sitga):'없음'} · 하프존 ${half?f1(half):'없음'} · 현재가 ${posPct!=null?'존 '+posPct+'%'+(px>half?'(상단부·매수 우위 위치)':'(하단부·매도 우위 위치)'):''}</div>`;
     } else {
     waveChain=`<div class="spaced" style="padding:8px 14px;font-size:11.5px;line-height:2.0;border-bottom:1px solid var(--bd);background:rgba(35,211,158,.06)">
-      <b style="color:var(--gold2)">현재 시점 - 매수 반전 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=소멸 제외 재가중)</span><br>
+      <b style="color:var(--gold2)">현재 시점 - 매수 반전 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=전 층 v가중)</span><br>
       <b style="color:var(--buy)">일봉 반전 시그널${dS?'('+dS+')':''}</b> 롱 파동 시작 - 실존가 <b>${bd?f1(bd.sitga):'없음'}</b> · 굴림 ${bd?f1(bd.roll):'없음'}<br>
       <b style="color:var(--buy)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 실존가 <b>${bw&&bw.sitga?f1(bw.sitga):'형성 중(새 주 초입)'}</b>${bw&&bw.sitga&&bd&&bd.sitga?(Math.abs(bw.sitga-bd.sitga)/px<=0.0015?` <span class="sub">(일봉 ${f1(bd.sitga)}와 수렴)</span>`:` <span class="sub">(일봉 ${f1(bd.sitga)}와 ${((bw.sitga-bd.sitga)/px*100).toFixed(1)}% 차)</span>`):''}<br>
       <b style="color:${px>monInfl?'var(--buy)':'var(--sell)'}">월봉 성격 ${px>monInfl?'바꾸는 중':'매도'}</b> - 전환 라인 ${f1(monInfl)} ${px>monInfl?'위':'아래'}<br>
@@ -14860,7 +14860,7 @@ function rootBranchStrip(){try{
       <span class="sub">상승 한계 <b style="color:var(--tx)">${f1(wUp)}</b> · 상승 50% ${f1(wUp50)} ▲ 현재가 ${f1(px)} ▼ 회귀 50% <b style="color:var(--tx)">${f1(wDn50)}</b> · 반락 한계 ${f1(wDn)} · 월 잔여 보폭 ${f1(mRemain)}(상단 ${f1(cm2.h+mRemain)}·하단 ${f1(cm2.l-mRemain)})<br>
       ★이정표이지 벽 아님 - 이 선에서 튕긴다가 아니라 "여기까지가 보통 걸음"(터치 방어율=무작위 수준·케빈 검증) · 한계=평균이지 절대 아님(꼬리 병기)</span></div>`;
   }catch(e){}
-  return `<div class="panel" style="border:1px solid rgba(214,162,58,.3)"><div class="hd">🌳 현재 BTC 국면 - 판정 · 파동 · 관문 <span class="sub">(현재 시점 · 실존가=소멸 제외 재가중 · 판정 검증 z4.8~6.6)</span></div>
+  return `<div class="panel" style="border:1px solid rgba(214,162,58,.3)"><div class="hd">🌳 현재 BTC 국면 - 판정 · 파동 · 관문 <span class="sub">(현재 시점 · 실존가=전 층 v가중 · 판정 검증 z4.8~6.6)</span></div>
     <div style="padding:10px 14px;border-bottom:1px solid var(--bd);background:rgba(214,162,58,.06)">
       <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><b style="font-size:21px;color:var(--gold2)">${f1(px)}</b><span style="font-size:12.5px">${regimeLine}</span></div></div>
     ${charStrip}
@@ -16727,7 +16727,7 @@ function whaleSupply(){
         프랙탈 투영(시나리오·확정 아님): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
         <span class="sub">현재 = 매도 고래가 −25% 물린 자리에서 매수가 전투포인트를 탈환한 <b>교두보</b> - 84,920을 회복하기 전까지 고래가 항복한 것은 아닙니다.</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
-      <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식(케빈 하니스 잠금값)(bp_drift_fractal.py) · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
+      <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식 · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
     }
   }catch(e){}
   let pDelta='';
