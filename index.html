@@ -13285,7 +13285,7 @@ function waveBook(tf,ax){try{
     steps.push({t:A[k3].t,vw:u3/v3});
   }
   
-  var deadT=[],stepsAll=[];   
+  var stepsAll=[];   
   for(var q2=s0;q2<n-1;q2++){
     var u4=0,v4=0;for(var t4=s0;t4<=q2;t4++){u4+=g(A[t4])*A[t4].v;v4+=A[t4].v;}
     
@@ -13308,7 +13308,7 @@ function waveBook(tf,ax){try{
     var alive4=(_av4==null)||(_cx4>=_av4);                  
     var f4=0;if(v4>0){var av4=u4/v4;for(var j4=q2+1;j4<n-1;j4++){if(A[j4].c<av4)break;if(A[j4].l<av4)f4++;}}
     stepsAll.push({t:A[q2].t,vw:v4>0?u4/v4:null,alive:alive4,fights:f4});
-    if(!alive4)deadT.push(A[q2].t);}
+    }
   
   
   
@@ -13328,7 +13328,7 @@ function waveBook(tf,ax){try{
   var _sv=stepsAll.filter(function(st){return st.alive;});      
   var rep=_sv.length?_sv[_sv.length-1].vw:null;                 
   var repAlive=_sv.length;
-  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
+  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
 }catch(e){return null;}}
 
 
