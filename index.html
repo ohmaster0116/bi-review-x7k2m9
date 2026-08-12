@@ -10316,8 +10316,7 @@ function viewWaveInner(){
     
     
     const vw2=(a2&&a2.dir===s2.dir&&a2.vw)?sitgaCanonVW(x.k,a2.vw):waveVW(E[x.k],s2);
-    const rl2=(function(){try{return vwRollDisp(x.k)}catch(e){return null}})();
-    return `<b style="color:${c2}">${waveWord(x.k,s2.dir,s2.mode,s2.days)}</b> <span class="sub">${vw2?`실존 <b>${f1(vw2)}</b>·표면 ${f1(s2.line)}${rl2?`·굴림 ${f1(rl2)}`:''}`:`표면 ${f1(s2.line)}`}</span>`;}).join(' · ');
+    return `<b style="color:${c2}">${waveWord(x.k,s2.dir,s2.mode,s2.days)}</b> <span class="sub">${vw2?`실존 <b>${f1(vw2)}</b>·표면 ${f1(s2.line)}`:`표면 ${f1(s2.line)}`}</span>`;}).join(' · ');
   const shortSt=['m30','h1','h4'].map(k2=>({k:k2,s:waveState(k2)})).filter(x=>x.s);
   const sDirs=shortSt.map(x=>x.s.mode==='none'?0:x.s.dir);
   const sBuy=sDirs.filter(d2=>d2>0).length, sSell=sDirs.filter(d2=>d2<0).length;
@@ -10327,14 +10326,13 @@ function viewWaveInner(){
   const shortLines=shortSt.map(x=>{const s2=x.s;
     if(s2.mode==='none'){
       const nas2=vwNascent(x.k);   
-      return `<td class="l">${NAME[x.k]}</td><td class="l" style="color:var(--tx2)">무파동${nas2?` <span class="sub">· 새 ${nas2.dir>0?'매수':'매도'} 흐름 ${nas2.days}봉째(형성 미확정)</span>`:''}</td><td class="num">${nas2?`<b style="color:var(--tx)">${f1(nas2.vw)}</b><br><span class="sub">표면 ${f1(nas2.surf)} · 굴림=위 값(실시간)</span>`:''}</td>`;
+      return `<td class="l">${NAME[x.k]}</td><td class="l" style="color:var(--tx2)">무파동${nas2?` <span class="sub">· 새 ${nas2.dir>0?'매수':'매도'} 흐름 ${nas2.days}봉째(형성 미확정)</span>`:''}</td><td class="num">${nas2?`<b style="color:var(--tx)">${f1(nas2.vw)}</b><br><span class="sub">표면 ${f1(nas2.surf)}</span>`:''}</td>`;
     }
     const c2=s2.dir>0?'var(--buy)':'var(--sell)';
     const vw3=waveVW(E[x.k],s2);
-    const rl3=(function(){try{return vwRollDisp(x.k)}catch(e){return null}})();
     
     const matur=(x.k==='h1'&&_matTrack&&_matTrack.active===true)?`<br><span class="sub" style="color:var(--gold2)">${s2.days}봉째 성숙 - <b>성숙 파동일수록 추세 지속 (방향)</b> <span style="opacity:.75">BTC 정본 · ETH 방향 동조(독립확증 아님·최약) · 방향 효과도 축소 중(최근 0 근접·특히 ETH)</span></span>`:'';
-    return `<td class="l">${NAME[x.k]}</td><td class="l"><b style="color:${c2}">${s2.dir>0?'매수':'매도'} ${s2.mode==='form'?'연속':'생존'} ${s2.days}봉째</b>${matur}</td><td class="num">${vw3?`<b>${f1(vw3)}</b><br><span class="sub">표면 ${f1(s2.line)}${rl3?` · 굴림 ${f1(rl3)}`:''}</span>`:f1(s2.line)}</td>`;}).map(r2=>`<tr>${r2}</tr>`).join('');
+    return `<td class="l">${NAME[x.k]}</td><td class="l"><b style="color:${c2}">${s2.dir>0?'매수':'매도'} ${s2.mode==='form'?'연속':'생존'} ${s2.days}봉째</b>${matur}</td><td class="num">${vw3?`<b>${f1(vw3)}</b><br><span class="sub">표면 ${f1(s2.line)}</span>`:f1(s2.line)}</td>`;}).map(r2=>`<tr>${r2}</tr>`).join('');
   
   const cons=waveConsensus(), P=cons.P, S=cons.S;
   const pTxt=consPlain(cons); 
@@ -10498,7 +10496,10 @@ function viewToday(){
     const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>실존가(전일 마감) ${f1(vwL)}</b> - 표면가 아래 완충 눈금(자체 산출)${vwL<ws.line?`. 표면가와의 사이 [${f1(vwL)}~${f1(ws.line)}]는 <b>휩쏘 존</b>(실존가 사수 시 재회복 ${STAT('mp_recover','raw')} vs 이탈 51~58% - 실측 검증·4자 서명. 단 격차엔 이탈 깊이 효과가 섞여 있으며 순수 실존가 효과는 별도 측정 불가(미식별)로 종결 - 사실 기술로만)`:''}${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>`:''}. 통계 정본은 표면가 기준.</span>`:wsSub2;
     {
       
-      const vwRoll=(function(){try{if(_wbk&&_wbk.roll)return _wbk.roll;return vwRollDisp('d1')}catch(e){return null}})();
+      
+
+
+      const vwRoll=(function(){try{return (_wbk&&_wbk.rep!=null)?_wbk.rep:((_wbk&&_wbk.sitga)?_wbk.sitga:null)}catch(e){return null}})();
       const dual=`<span style="font-size:10.5px;color:var(--tx2)">표면가</span> ${f1((_wbk&&_wbk.surf)?_wbk.surf:ws.line)}<br><span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${vwL?f1(vwL):'<span style="font-size:11px;color:var(--tx2)">수집 중</span>'}${vwRoll?`<br><span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${f1(vwRoll)}`:''}`;
       const wsSub4=`표면가 = 겉으로 보이는 평균선 · 실존가 = 주체 실제 평단(자체 산식) · 실존가 = 생존 최전방 층까지 형성된 주체 평단 · 전부 ★완성봉 기준${earlyNote}`;
       watch.push(['생명선 - 표면가(휩쏘 유발가) / 실존가(주체 실제 평단)',dual,dirC,wsSub4]);
