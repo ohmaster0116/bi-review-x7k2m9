@@ -16350,32 +16350,50 @@ function sellBook(tf){try{
   
   
   
-  tf=tf||'d1';
-  var A=E[tf]; if(!A||!A.length)return _wbFB('sell',tf); var px=A[A.length-1].c; var n=A.length;
-  var g=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
-  var L=waveLedger(tf); if(!L)return _wbFB('sell',tf);
-  var mkSteps=function(w){var steps=[],cu=0,cv=0;
-    for(var k=w.s;k<=w.e;k++){cu+=g(A[k])*A[k].v;cv+=A[k].v;
-      var asof=cv>0?cu/cv:null;
-      var dead=false,fights=0;
-      for(var j=w.e+1;j<n;j++){if(A[j].c>asof){dead=true;break;} if(A[j].h>asof)fights++;}
-      steps.push({t:A[k].t,vw:asof,alive:!dead,fights:fights});}
-    return steps;};
-  var sellsW=L.waves.filter(function(w){return w.dir<0&&!w.open;}).slice(-8);
-  var best=null;
-  sellsW.forEach(function(w){
-    var steps=mkSteps(w);
-    var aliveUp=steps.filter(function(st){return st.alive&&st.vw>px;});
-    if(!aliveUp.length)return;
-    var lo=Math.min.apply(null,aliveUp.map(function(st){return st.vw;}));
-    if(!best||lo<best.lo)best={w:w,steps:steps,lo:lo};
-  });
-  if(!best)return _wbFB('sell',tf);   
-  var fw=best.w,fv=best.lo;
   
-  var su=0,sv=0;for(var k2=fw.s;k2<=fw.e;k2++){if(best.steps[k2-fw.s]&&best.steps[k2-fw.s].alive){su+=g(A[k2])*A[k2].v;sv+=A[k2].v;}}
-  var sitga=sv>0?su/sv:fv;
-  return {s:fw.s,e:fw.e,w:fw,steps:best.steps,rep:fv,sitga:sitga,life:n-1-fw.e};
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  tf=tf||'d1';
+  var A=E[tf]; if(!A||!A.length)return _wbFB('sell',tf); var n=A.length, px=A[n-1].c;
+  var g=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+  var V=function(b){return (b.o+b.h+b.l)/3;};
+  var cands=[];
+  for(var i=Math.max(1,n-90);i<n-2;i++){
+    if(A[i-1].c>V(A[i-1])&&A[i].c<V(A[i])&&A[i+1].c<V(A[i+1])){
+      var root=g(A[i]),ok=true;
+      for(var j=i+1;j<n;j++){if(A[j].c>root){ok=false;break;}}
+      if(ok)cands.push(i);
+    }
+  }
+  if(!cands.length)return _wbFB('sell',tf);
+  var build=function(s0){
+    var steps=[],cu=0,cv=0;
+    for(var k=s0;k<n-1;k++){
+      cu+=g(A[k])*A[k].v; cv+=A[k].v;
+      var asof=cv>0?cu/cv:null; if(asof==null)continue;
+      var dead=false,fights=0;
+      for(var j2=k+1;j2<n;j2++){ if(A[j2].c>asof){dead=true;break;} if(A[j2].h>asof)fights++; }
+      steps.push({t:A[k].t,vw:asof,alive:!dead,fights:fights});   
+    }
+    var u=0,v=0; for(var k2=s0;k2<n-1;k2++){u+=g(A[k2])*A[k2].v; v+=A[k2].v;}
+    var sitga=v>0?u/v:null;
+    var up=steps.filter(function(st){return st.alive&&st.vw>px;}).map(function(st){return st.vw;});
+    return {s:s0,e:n-2,s0:s0,root:g(A[s0]),steps:steps,sitga:sitga,roll:sitga,
+            rep:up.length?Math.min.apply(null,up):null,
+            nInc:steps.length,nAlive:steps.filter(function(st){return st.alive;}).length,
+            life:n-1-s0,cands:cands.length};
+  };
+  for(var q=cands.length-1;q>=0;q--){ var b=build(cands[q]); if(b.rep!=null)return b; }   
+  var last=build(cands[cands.length-1]);
+  if(last.rep==null&&last.sitga!=null)last.rep=last.sitga;   
+  return last;
 }catch(e){return _wbFB('sell',tf);}}
 
 function sellRes(){
