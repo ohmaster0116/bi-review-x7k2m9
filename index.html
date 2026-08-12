@@ -9896,7 +9896,7 @@ function waveDetailPanel(){try{
       var ladder=(!w.open&&w.death==null)?(stAlive+'/'+stTot+' 생존'):'없음';
       return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
     }).join('');
-    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부 + 최근 사망 3개(흐림·부활 관찰 대상)</span></div><div class="scroll"><table><thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부 + 최근 소멸 3개(흐림 · 이력)</span></div><div class="scroll"><table><thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   };
   
   
