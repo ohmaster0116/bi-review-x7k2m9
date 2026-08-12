@@ -10440,7 +10440,7 @@ function viewToday(){
     let vwL=null;try{vwL=(_asofD&&_asofD.dir===ws.dir&&_asofD.vw)?_asofD.vw:waveVW(A,ws);}catch(e){}
     let _wbk=null;try{_wbk=waveBook('d1');if(_wbk&&_wbk.sitga)vwL=_wbk.sitga;}catch(e){}   
     
-    const earlyNote=(typeof _wbk!=='undefined'&&_wbk)?' · <b style="color:var(--gold2)">현 파동 장부 기준(7/1생 · 생존 '+_wbk.nInc+'봉'+(_wbk.nDead>0?'·이탈 '+_wbk.nDead+'봉(층은 보존)':'')+' · 전 층 보존)</b>':(ws.days<=3?' · <b style="color:var(--gold2)">형성 초기('+ws.days+'일차) - 실존가가 기준</b>':'');
+    const earlyNote=(typeof _wbk!=='undefined'&&_wbk)?' · <b style="color:var(--gold2)">현 파동 장부 기준(7/1생 · 생존 '+_wbk.nInc+'봉'+' · 전 층 보존)</b>':(ws.days<=3?' · <b style="color:var(--gold2)">형성 초기('+ws.days+'일차) - 실존가가 기준</b>':'');
     const hnR=hn&&hn.risk?hn.risk:null;
     const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>실존가(전일 마감) ${f1(vwL)}</b> - 표면가 아래 완충 눈금(자체 산출)${vwL<ws.line?`. 표면가와의 사이 [${f1(vwL)}~${f1(ws.line)}]는 <b>휩쏘 존</b>(실존가 사수 시 재회복 ${STAT('mp_recover','raw')} vs 이탈 51~58% - 실측 검증·4자 서명. 단 격차엔 이탈 깊이 효과가 섞여 있으며 순수 실존가 효과는 별도 측정 불가(미식별)로 종결 - 사실 기술로만)`:''}${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>`:''}. 통계 정본은 표면가 기준.</span>`:wsSub2;
     {
@@ -13172,7 +13172,7 @@ function waveBook(tf){try{
     var f4=0;if(v4>0){var av4=u4/v4;for(var j4=q2+1;j4<n;j4++){if(A[j4].c<av4)break;if(A[j4].l<av4)f4++;}}
     stepsAll.push({t:A[q2].t,vw:v4>0?u4/v4:null,alive:alive4,rev:rev4,fights:f4});
     if(!alive4)deadT.push(A[q2].t);else if(rev4)revT.push(A[q2].t);}
-  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,nDead:(n-1-s0)-inc.length,deadT:deadT,revT:revT,stepsAll:stepsAll};
+  return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,revT:revT,stepsAll:stepsAll};
 }catch(e){return null;}}
 
 
@@ -13281,7 +13281,7 @@ function waveBookPanel(){try{
           +'<br><span class="sub">판정선 종가 이탈이 대립각(하락 연장) 신호 · 장중 이탈은 흔들기</span></div>';}}
   }catch(e){}
   var rw=function(nm,b){if(!b)return '';
-    return '<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="font-size:8.5px">'+dl(b.s0)+'생·생존 '+b.nInc+'봉'+(b.nDead>0?'·소멸 '+b.nDead:'')+'</span></td>'
+    return '<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="font-size:8.5px">'+dl(b.s0)+'생·생존 '+b.nInc+'봉'+'</span></td>'
       +'<td class="num">'+f(b.surf)+'</td>'
       +'<td class="num" style="font-weight:800;color:var(--buy)">'+f(b.sitga)+'</td>'
       +'<td class="num">'+f(b.roll)+' <span class="sub" style="font-size:8px">실시간</span></td>'
@@ -13430,7 +13430,7 @@ function hierPanel(){try{
     +row('단기','월봉',mDir+' · 기준가 '+f1(gM),'국면 3층 - 전환은 월봉이 바뀌어야(매도 파동선 위 마감)',wsM&&wsM.dir>0?'var(--buy)':'var(--sell)')
     +(function(){var wb=null,ww=null;try{wb=waveBook('d1');ww=waveBook('w1');}catch(e){}
       var st5=(wAlive?'주봉 생명선 생존':'생명선 이탈')+(wb?' · 일 실존가(정본) '+f1(wb.sitga)+(ww?' · 주 '+f1(ww.sitga):''):' · 일봉 '+((rgD?({trend:'추세',warn:'경계',box:'박스'})[rgD.state]:'없음')));
-      var rd5=wb?('현 파동: 생존 '+wb.nInc+'봉'+(wb.nDead>0?'·가지 소멸 '+wb.nDead:'')+' · 뿌리 '+f1(wb.root)+' 생존 - 가지는 공격 허용 범주, 뿌리만 살면 재생(4자 R계열)'):'반전 시그널 층 - 국면은 못 바꿈(사다리 1칸)';
+      var rd5=wb?('현 파동: 생존 '+wb.nInc+'봉'+' · 뿌리 '+f1(wb.root)+' 생존 - 가지는 공격 허용 범주, 뿌리만 살면 재생(4자 R계열)'):'반전 시그널 층 - 국면은 못 바꿈(사다리 1칸)';
       return row('시그널','일·주',st5,rd5,wAlive?'var(--buy)':'var(--sell)');})()
     +row('포착','시간·30분','1h '+(s1?s1.dirScore:'없음')+' · 4h '+(s4?s4.dirScore:'없음')+' · 미확인 중심 '+(pin?f1(pin):'없음'),'진입 타이밍 - 위 '+(fUp?f1(fUp):'없음')+' / 아래 '+(fDn?f1(fDn):'없음')+' 먼저 딛는 쪽이 결','var(--tx)')
     
