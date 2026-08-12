@@ -15538,7 +15538,11 @@ function subjectClashPanel(){try{
   var rollDir=(roll!=null&&life!=null)?(roll>=life?' <span style="color:var(--buy)">↑매집</span>':' <span style="color:var(--sell)">↓이탈</span>'):'';
   var gldTxt=gld!=null?(' · 골든 '+(isLong?'위':'아래')+' <b style="color:var(--tx)">'+gld+'%</b>'):'';
   var bigFacts='뿌리 '+B(root)+' → '+targetLab+' '+B(target)+' <span style="color:var(--tx3)">(반대 주체가 방어)</span>'
-    +'<br>힘 누적: 굴림 '+f(roll)+rollDir+gldTxt
+    
+
+
+
+    +gldTxt
     +'<br>'+guardLab+' '+B(guard);
   
   var posHead='큰 방향 '+M.stance.word+' 없음 '+_posZone;
