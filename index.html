@@ -12713,7 +12713,16 @@ function pxRow(px,f0){return '<div style="display:flex;align-items:center;gap:10
 function decisiveAxis(){
   try{
     var asof=asofWaveDisp('d1'); var siljon=(asof&&asof.vw)?asof.vw:waveVW(E.d1,waveState('d1'));
-    try{var _wbA=waveBook('d1');if(_wbA&&_wbA.sitga)siljon=_wbA.sitga;}catch(e){}   
+    
+    
+    
+    
+    
+    var _repSrc='';
+    try{var _wbA=waveBook('d1');
+      if(_wbA){ if(_wbA.rep!=null){siljon=_wbA.rep; _repSrc=' <span class="sub" style="font-size:9.5px">층 승계 '+(_wbA.nAlive||0)+'층</span>';}
+                else if(_wbA.sitga){siljon=_wbA.sitga;} }
+    }catch(e){}   
     var vb=vbBand('M1'); if(!siljon||!vb)return '';
     var wsM=waveState('M1'); var mdir=(wsM&&wsM.mode!=='none')?wsM.dir:-1;
     var px=E.d1[E.d1.length-1].c, f0=function(x){return x==null?'없음':'$'+Math.round(x).toLocaleString('en-US');};
@@ -12724,7 +12733,7 @@ function decisiveAxis(){
     var lv=[{n:'월봉 '+(mdir>0?'하단':'상단')+'전투존 (상위 한계)',v:상단전투존,c:'var(--tx2)',d:'월봉 변동폭 밴드 '+(mdir>0?'하단':'상단') },
       {n:'결전축',v:결전축,c:'var(--gold2)',d:'실존가 ↔ 상위 한계의 전투포인트'},
       {n:'미세축',v:미세축,c:'#c084fc',d:'실존가 ↔ 결전축 한 층 더(프랙탈)'},
-      {n:'실존가 (파동 평단·기준)',v:siljon,c:'var(--buy)',d:'현 파동 장부 평단(전 층 v가중) - 이 축의 앵커'}];
+      {n:'실존가 (파동 평단·기준)'+_repSrc,v:siljon,c:'var(--buy)',d:'생존 층 중 최전방 - 층이 먹히면 다음 생존 층으로 승계됩니다'}];
     lv.sort(function(a,b){return b.v-a.v;});
     var rows='', pxDone=false;
     for(var i=0;i<lv.length;i++){
