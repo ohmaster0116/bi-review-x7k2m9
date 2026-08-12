@@ -10299,7 +10299,7 @@ function viewWaveInner(){
     if(s2.mode==='none'){
       
       const nas=vwNascent(x.k);
-      return `${WUNIT[x.k][0]} <span class="sub">무파동${nas?` · 새 ${nas.dir>0?'매수':'매도'} 흐름 ${nas.days}${WUNIT[x.k][2]} - 표면 ${f1(nas.surf)}·굴림 실존가 <b>${f1(nas.vw)}</b><span style="opacity:.7">(형성 미확정·실시간)</span>`:''}</span>`;
+      return `${WUNIT[x.k][0]} <span class="sub">무파동${nas?` · 새 ${nas.dir>0?'매수':'매도'} 흐름 ${nas.days}${WUNIT[x.k][2]} - 표면 ${f1(nas.surf)}·실존가 <b>${f1(nas.vw)}</b><span style="opacity:.7">(형성 미확정·실시간)</span>`:''}</span>`;
     }
     const c2=s2.dir>0?'var(--buy)':'var(--sell)';
     
@@ -10499,12 +10499,12 @@ function viewToday(){
     {
       
       const vwRoll=(function(){try{if(_wbk&&_wbk.roll)return _wbk.roll;return vwRollDisp('d1')}catch(e){return null}})();
-      const dual=`<span style="font-size:10.5px;color:var(--tx2)">표면가</span> ${f1((_wbk&&_wbk.surf)?_wbk.surf:ws.line)}<br><span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${vwL?f1(vwL):'<span style="font-size:11px;color:var(--tx2)">수집 중</span>'}${vwRoll?`<br><span style="font-size:10.5px;color:var(--tx2)">굴림 실존가</span> ${f1(vwRoll)}`:''}`;
-      const wsSub4=`표면가 = 겉으로 보이는 평균선 · 실존가 = 주체 실제 평단(자체 산식) · 굴림 = 오늘 진행분까지 반영한 실시간 평단 · 표면·실존가 기준 = 전일 마감까지${earlyNote}`;
+      const dual=`<span style="font-size:10.5px;color:var(--tx2)">표면가</span> ${f1((_wbk&&_wbk.surf)?_wbk.surf:ws.line)}<br><span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${vwL?f1(vwL):'<span style="font-size:11px;color:var(--tx2)">수집 중</span>'}${vwRoll?`<br><span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${f1(vwRoll)}`:''}`;
+      const wsSub4=`표면가 = 겉으로 보이는 평균선 · 실존가 = 주체 실제 평단(자체 산식) · 실존가 = 생존 최전방 층까지 형성된 주체 평단 · 전부 ★완성봉 기준${earlyNote}`;
       watch.push(['생명선 - 표면가(휩쏘 유발가) / 실존가(주체 실제 평단)',dual,dirC,wsSub4]);
     }
     const _defTxt=w2=>{try{if(w2._stepVW)return '';const r=defenseRec(E.d1,w2);if(!r)return '';return r.touch?` 지금까지 종가 기준 <b>${r.touch}회 터치 중 ${r.def}회 방어</b> - 과거 기록이며 예측 아님.`:' 아직 종가로 시험된 적 없는 선.';}catch(e){return ''}};
-    const _vwTxt=w2=>{try{if(w2._stepVW)return ` 매도 실존가(생존 계단) <b>${f1(w2._stepVW)}</b> · 종가가 아직 이 선을 넘지 못한 최전방 저항.`;const vw=vwOfWave(E.d1,w2);if(!vw)return '';const rl=vwRollWave(E.d1,w2);return ` 실존가 <b>${f1(vw)}</b> · 표면가 ${f1(w2.line)}${rl?` · 굴림 실존가(오늘까지 누적·실시간) ${f1(rl)}`:''}.`;}catch(e){return ''}};
+    const _vwTxt=w2=>{try{if(w2._stepVW)return ` 매도 실존가(생존 계단) <b>${f1(w2._stepVW)}</b> · 종가가 아직 이 선을 넘지 못한 최전방 저항.`;const vw=vwOfWave(E.d1,w2);if(!vw)return '';const rl=vwRollWave(E.d1,w2);return ` 실존가 <b>${f1(vw)}</b> · 표면가 ${f1(w2.line)}${rl?` · 실존가(오늘까지 누적·실시간) ${f1(rl)}`:''}.`;}catch(e){return ''}};
     if(ws.dir>0&&gateUp){
       const _surv=(E.d1.length-1)-gateUp.e;
       const _lin=(function(){try{const L2=wbLindy('d1',_surv);return L2&&L2.label?` · ${L2.label}`:'';}catch(e){return ''}})();
@@ -10865,10 +10865,10 @@ setTimeout(integCheck,12000); setInterval(integCheck,600000);
 
 const STRAT_HUB=[
  {nm:'굴림 트레일링 스윙',bong:'주·일·4시간',stat:['페이퍼 가동','var(--gold2)'],
-  en:'파동 확정(기준가 2연속) 다음 봉 시가',st:'굴림 실존가 종가 이탈',tp:'승자보유(파동 사망까지)',
+  en:'파동 확정(기준가 2연속) 다음 봉 시가',st:'실존가 종가 이탈',tp:'승자보유(파동 사망까지)',
   m:'승률 25~38% · 손익비 6.4~10.8 · N60~2,591'},
  {nm:'반복형(회전+재진입)',bong:'주·일·4시간',stat:['페이퍼 가동','var(--gold2)'],
-  en:'파동 확정 + 굴림 실존가 재진입',st:'굴림 사망(종가 이탈)',tp:'표면가 회전 청산',
+  en:'파동 확정 + 실존가 재진입',st:'굴림 사망(종가 이탈)',tp:'표면가 회전 청산',
   m:'승률 25~40% · 손익비 6.3~10.1 · 최악 절반'},
  {nm:'프랙탈 받침',bong:'일·주봉',stat:['4자 서명 진행','var(--buy)'],
   en:'진행 중 고가−0.3AR 되돌림 지정가',st:'진입−0.8AR(프랙탈 예산 초과)',tp:'+1.5~2AR',
@@ -11016,7 +11016,7 @@ function viewSkillRevival(){
         ① <b>구도</b>: 매집 파동 후 저항 전환일(장부 동결) - 현재 ${dl(A[fl].t)} 구도.<br>
         ② <b>압박 확인</b>: 매도 물량 ÷ 동결 매집 물량 = 배율 <b>116%+</b>(현재 ${ratio.toFixed(0)}%) + 반락이 동결 실존가 <b>${f1(sitga)}</b> 하부 도달.<br>
         ③ <b>진입</b>: 계단 위 <b>종가 재탈환 확정</b> 다음 봉 시가 롱 · <b>손절</b>: 이탈 구간 최저 저가(현재 ${f1(lowmin)}) wick 즉시.<br>
-        ④ <b>보유 구간</b>: 굴림 실존가가 따라 올라오며 이익보존 래칫이 걸립니다. 사망 구도에서는 이 셋업 자체가 성립하지 않습니다.</div></div>
+        ④ <b>보유 구간</b>: 실존가가 따라 올라오며 이익보존 래칫이 걸립니다. 사망 구도에서는 이 셋업 자체가 성립하지 않습니다.</div></div>
       <div class="panel"><div class="hd">전략 근거 <span class="sub">P5 부활=수명 연장 · 4자 검증 진행</span></div><div style="padding:10px 15px;font-size:11.5px;line-height:1.9;color:var(--tx2)">
         1회 이탈 후 재탈환(부활)한 파동은 무이탈 파동보다 오래 산다 - 일봉·1h 양쪽에서 확인(1h N585 케빈)·30m 1.7배, 방향 전 TF 지지. 배율은 총량 회계 근사(테이커 분리 후 재보정 예정). 대회에서 레빗 계좌가 이 전략의 라이브 검증, 폭스가 반대편.</div></div>`;
   }catch(e){return '<div class="loading">계산 오류</div>';}
@@ -12893,7 +12893,7 @@ function waveDeltaGrid(){
       <div style="padding:9px 14px 11px">
         ${row('진입 표면가',lSurf,sSurf)}
         ${row('진입 실존가',lSil,sSil)}
-        ${row('굴림 실존가',lRoll,sRoll)}
+        ${row('실존가',lRoll,sRoll)}
         <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-top:7px">
           <span>전투포인트 진입축 <b style="color:var(--gold2)">${bpE?f1(bpE):'없음'}</b> · 굴림축 <b style="color:var(--gold2)">${bpR?f1(bpR):'없음'}</b></span>
           <span class="sub">동비중 진행 <b style="color:${ratio>=70?'var(--sell)':'var(--tx)'}">${ratio.toFixed(0)}%</b> (100%=동률)</span></div>
@@ -12910,13 +12910,13 @@ function battleBalance(){
     const alive=L.waves.filter(w=>!w.open&&w.death==null);
     const _sr=sellRes();
     const gate=_sr?(_sr.w||{s:_sr.s,e:_sr.e,line:_sr.v,dir:-1}):alive.filter(w=>w.dir<0&&w.line>px).sort((a,b)=>a.line-b.line)[0];
-    const _bbNote=function(msg){return '<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 평단(굴림 실존가) ↔ 주요 저항(매도 평단) <span class="sub">위치 표기 · 예측 아님</span></div><div style="padding:10px 15px;font-size:11.5px;color:var(--tx2);line-height:1.75">'+msg+'</div></div>';};   
+    const _bbNote=function(msg){return '<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 평단(실존가) ↔ 주요 저항(매도 평단) <span class="sub">위치 표기 · 예측 아님</span></div><div style="padding:10px 15px;font-size:11.5px;color:var(--tx2);line-height:1.75">'+msg+'</div></div>';};   
     if(!gate)return _bbNote('현재가 위에 살아 있는 <b>매도 파동이 없습니다</b> - 저항 축 부재 상태. 위 매도 파동이 생기면 자동 복원됩니다.');
     let roll=null, rollSrc='현재 매수 파동';
     const ws=waveState('d1');
     if(ws&&ws.mode!=='none'&&ws.dir>0)roll=vwRollDisp('d1');
     if(!roll){const sup=alive.filter(w=>w.dir>0&&w.line<px).sort((a,b)=>b.line-a.line)[0];if(sup){roll=vwRollWave(A,sup)||sup.line;rollSrc='아래 첫 지지 파동';}}
-    if(!roll)return _bbNote('<b>매수 평단 축 부재</b> - 아래 매수 파동이 급락으로 사망해 굴림 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 저항 축: '+f1(vwOfWave(A,gate)||gate.line)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 자동 복원.');
+    if(!roll)return _bbNote('<b>매수 평단 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 저항 축: '+f1(vwOfWave(A,gate)||gate.line)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 자동 복원.');
     const gv=_sr?_sr.v:(vwOfWave(A,gate)||gate.line);   
     if(!(gv>roll))return _bbNote('축 역전(지지 '+f1(roll)+' ≥ 저항 '+f1(gv)+') - 균형 게이지 정의 불가 구간. 상태만 표기합니다.');
     const pos=Math.max(0,Math.min(100,(px-roll)/(gv-roll)*100));
@@ -12936,7 +12936,7 @@ function battleBalance(){
         </div>
         <span style="color:var(--sell);white-space:nowrap">매도 ${Math.round(vSell).toLocaleString()}</span>
         <span class="sub" style="white-space:nowrap">(매수=형성~현재 · 매도=저항 형성기)</span></div>`;}
-    return `<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 평단(굴림 실존가) ↔ 주요 저항(매도 평단) <span class="sub">위치 표기 · 예측 아님</span></div>
+    return `<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 평단(실존가) ↔ 주요 저항(매도 평단) <span class="sub">위치 표기 · 예측 아님</span></div>
       <div style="padding:10px 14px 12px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
           <span style="color:var(--buy)">매수 평단 <b>${f1(roll)}</b> <span class="sub">(${rollSrc}·실시간)</span></span>
@@ -13459,7 +13459,7 @@ function waveBookPanel(){try{
   var conflTxt=conflOk?('뿌리 본진(합치 폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) '+f(cLo)+'~'+f(cHi))
     :('<b style="color:var(--gold2)">합치 풀림</b>(폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) - 주봉 실존가 '+f(gW)+' · 월봉 기준가 '+f(gM)+(ua!=null?' · 미확인 평균 '+f(ua):'')+' 각자 지지');
   var banner='<b style="color:var(--gold2)">현 파동 장부(정본: 전 층 v가중 · 매 갱신 자동 재계산)</b> - '
-    +'일봉 굴림(전 캔들 평단) <b>'+f(bd.sitga)+'</b>'+(bd.rep!=null?' <span class="sub">· 실존가 '+f(bd.rep)+' (생존 '+(bd.nAlive||0)+'층)</span>':'')+(bw?' · 주봉 굴림 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
+    +'일봉 실존가 <b>'+f(bd.sitga)+'</b>'+(bd.rep!=null?' <span class="sub">· 실존가 '+f(bd.rep)+' (생존 '+(bd.nAlive||0)+'층)</span>':'')+(bw?' · 주봉 실존가 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
     +' → <b>싸우는 곳</b>: 위 매도 파동선 '+(fightUp?f(fightUp):'없음')+foeTxt+' vs 아래 실존가 진지 '+f(bd.sitga)+' · '+conflTxt+' · 최종 뿌리 '+f(bd.root)+'.'
     +(moFlip!=null?'<br><b style="color:var(--gold2)">월봉 성격 전환 라인 '+f(moFlip)+'</b> - 현재가가 이 '+(px>=moFlip?'<b style="color:var(--buy)">위</b>(이번 달이 매수 성격으로 바뀌는 중)':'<b style="color:var(--sell)">아래</b>(매도 성격 유지)')+' · 자체 산식 · 실시간 이동':'');
   
@@ -13469,7 +13469,7 @@ function waveBookPanel(){try{
     if(s5!=null){var pk=s5;for(var i5=s5;i5<n5;i5++)if(A5[i5].h>A5[pk].h)pk=i5;
       var vU=0,vD=0;for(var i5=s5;i5<=pk;i5++)vU+=A5[i5].v;for(var i5=pk+1;i5<n5;i5++)vD+=A5[i5].v;
       if(vU>0&&pk<n5-1){var rat=vD/vU*100;
-        duel='<div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--bd)"><b style="color:var(--gold2)">이번 파동과 대립각</b> - 판정선(일봉 굴림) <b>'+f(bd.sitga)+'</b> '
+        duel='<div style="margin-top:7px;padding-top:7px;border-top:1px dashed var(--bd)"><b style="color:var(--gold2)">이번 파동과 대립각</b> - 판정선(일봉 실존가) <b>'+f(bd.sitga)+'</b> '
           
           
           
@@ -13485,11 +13485,10 @@ function waveBookPanel(){try{
     return '<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="font-size:8.5px">'+dl(b.s0)+'생·생존 '+b.nInc+'봉'+'</span></td>'
       +'<td class="num">'+f(b.surf)+'</td>'
       +'<td class="num" style="font-weight:800;color:var(--buy)">'+f(b.sitga)+'</td>'
-      +'<td class="num">'+f(b.roll)+' <span class="sub" style="font-size:8px">실시간</span></td>'
       +'<td class="num" style="color:var(--tx2)">'+f(b.root)+'</td></tr>';};
-  var tbl='<div class="scroll"><table><thead><tr><th class="l">파동</th><th>표면가</th><th>실존가(정본)</th><th>굴림</th><th>뿌리(1차)</th></tr></thead><tbody>'
+  var tbl='<div class="scroll"><table><thead><tr><th class="l">파동</th><th>표면가</th><th>실존가(정본)</th><th>뿌리(1차)</th></tr></thead><tbody>'
     +rw('일봉',bd)+rw('주봉',bw)
-    +'<tr><td class="l" style="font-weight:700;color:var(--gold2)">월봉</td><td class="num" colspan="3" style="color:var(--gold2)">월 기준가(진행봉) <b>'+f(gM)+'</b> <span class="sub" style="font-size:9px">'+pc(gM)+' · 실시간 이동 - 월 마감 때 확정 · 프랙탈 반등 최대 요건</span></td><td class="num sub">-</td></tr>'
+    +'<tr><td class="l" style="font-weight:700;color:var(--gold2)">월봉</td><td class="num" colspan="3" style="color:var(--gold2)">월 기준가 <b>'+f(gM)+'</b> <span class="sub" style="font-size:9px">'+pc(gM)+' · 실시간 이동 - 월 마감 때 확정 · 프랙탈 반등 최대 요건</span></td><td class="num sub">-</td></tr>'
     +'</tbody></table></div>';
   
   var marks=[{v:bd.root,n:'최종 뿌리',c:'#2bb3a3'},{v:cLo,n:'뿌리 본진',c:'var(--buy)'},{v:bd.sitga,n:'일 실존가',c:'#00e5a0'}];
@@ -13573,7 +13572,7 @@ function marketReadPanel(mode){try{
   var oD=E.d1[E.d1.length-1].o, arD=avgRangePct(E.d1), ub2=oD+arD, db2=oD-arD;  
   var bandDetail='<details style="margin-top:9px"><summary style="cursor:pointer;font-size:11.5px;font-weight:700;color:var(--tx2)">📊 밴드 읽는 법 - 지금 값과 함께 (펼치기)</summary>'
     +'<div style="padding:8px 4px;font-size:11px;line-height:1.9;color:var(--tx2)">'
-    +'· <b style="color:var(--tx)">구도 3선</b> - 표면가(겉 평균선)/실존가(주체 실평단·자체 산식)/굴림(진행봉 포함 실시간). 셋이 벌어질수록 주체 개입 큼. 실존가가 방어선.<br>'
+    +'· <b style="color:var(--tx)">구도 3선</b> - 표면가(겉 평균선)/실존가(주체 실평단·자체 산식)/실존가(완성봉 기준). 둘이 벌어질수록 주체 개입 큼. 실존가가 방어선.<br>'
     +'· <b style="color:var(--tx)">경계 구도</b> - 롱 실존가('+f(netVW)+')/숏 실존가('+f(sellRef)+')/경계선('+f(dv.netBP)+'). 현재가가 셋 중 어디냐로 매수·매도 우위.<br>'
     +'· <b style="color:var(--tx)">다차원 전투존</b> - 일·주·월 전투포인트+밴드 겹친 자리. 겹수=모인 축 수(식별용·반응 강도 예측력은 실측 미확인).<br>'
     +'· <b style="color:var(--tx)">평균변동폭 밴드</b> - 오늘 시가±평균변동폭('+f(arD)+') = <b>상단 '+f(ub2)+' / 하단 '+f(db2)+'</b>. 오늘 정상 도달 범위, 넘으면 오버슈팅.<br>'
@@ -15709,7 +15708,7 @@ function _scRow(s){
       +'<div style="font-size:11.5px;color:var(--gold2,#d6a23a);margin-top:3px">'+(jg.read||'')+'</div>'
       +(_split?('<div style="font-size:11.5px;color:var(--tx2);margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.08)">'+_split+'</div>'):'')
       +(jg.gap_note?('<div style="font-size:10.5px;color:var(--tx3);margin-top:5px;line-height:1.5">'+jg.gap_note+'</div>'):'')   
-      +'<div style="font-size:9.5px;color:var(--tx3);margin-top:4px">라이브 판단 · 체력·굴림은 실시간 이동(뼈대 시나리오는 발행 고정)</div></div>';
+      +'<div style="font-size:9.5px;color:var(--tx3);margin-top:4px">라이브 판단 · 체력은 실시간 · 실존가는 완성봉 기준(뼈대 시나리오는 발행 고정)</div></div>';
     seqHtml=jHtml+seqHtml;
   }
   
@@ -15725,7 +15724,7 @@ function _scRow(s){
     seqHtml+='<div style="margin-top:7px;padding:8px 11px;background:rgba(139,148,168,.08);border:1px dashed rgba(139,148,168,.42);border-radius:9px;font-size:11.5px;line-height:1.7">'
       +'<b style="color:var(--tx2)">굴림가</b> <span style="color:var(--tx3);font-size:10.5px">· 전투포인트·밴드 · <b>현재가 따라 움직이는 자리(고정 아님)</b></span>'
       +'<div style="margin-top:3px">위 마찰 '+(_rr||'없음')+' &nbsp;/&nbsp; 아래 '+(_rs||'없음')+'</div>'
-      +'<div style="color:var(--tx3);font-size:10px;margin-top:2px">실존가·기준가【고정】은 봉 마감 전까지 안 움직이고, 이 굴림가는 실시간으로 이동합니다.</div></div>';
+      +'<div style="color:var(--tx3);font-size:10px;margin-top:2px">실존가·기준가【고정】은 봉 마감 전까지 안 움직입니다.</div></div>';
   }
   var tfs=d.tf_scenarios, scWeekly='', scMonthly='';
   if(tfs&&tfs.weekly&&tfs.weekly.scenarios){ var wk=tfs.weekly; scWeekly=_scCard('이번 주봉 시나리오', wk.scenarios, wk.issued, wk.note, false); }
@@ -16194,7 +16193,7 @@ function m30Panel(){try{
   var half=(bw&&bw.sitga&&sell)?(bw.sitga+sell)/2:null;
   var side=half!=null?(px>=half?'매수':'매도'):null;
   return '<div class="panel"><div class="hd">30분봉 대응 <span class="sub">- 단타 층 · 실시간</span></div><div style="padding:9px 14px;font-size:12px;line-height:2">'
-    +'<div>30분 실존가 <b>'+f(b.sitga)+'</b> · 굴림 <b>'+f(b.roll)+'</b> <span class="sub">- 현재가가 '+(px>=(b.roll||b.sitga)?'위(단기 매수 진지 위)':'아래(단기 진지 이탈 시험)')+'</span></div>'
+    +'<div>30분 실존가 <b>'+f(b.sitga)+'</b> <span class="sub">- 현재가가 '+(px>=(b.roll||b.sitga)?'위(단기 매수 진지 위)':'아래(단기 진지 이탈 시험)')+'</span></div>'
     +(half!=null?'<div>전투존 하프 <b>'+f(half)+'</b> 기준 지금은 <b style="color:'+(side==='매수'?'var(--buy)':'var(--sell)')+'">'+side+' 우위 구간</b></div>':'')
     +'<div class="sub">최소 30분봉 기준 0.2% 이상 손익이 나오는 자리입니다 - 매매 신호가 아니라 국면을 읽어주는 내용입니다</div>'
     +'</div></div>';
@@ -17162,7 +17161,7 @@ function viewDash(){
         +'<div class="scroll"><table><thead><tr><th class="l">선</th><th style="color:var(--buy)">매수 장부'+(hasB?'(동결 '+dlab(A[bEnd].t)+')':'(라이브)')+'</th><th style="color:var(--gold2)">경계(중간)</th><th style="color:var(--sell)">매도 장부(라이브)</th></tr></thead><tbody>'
         +duelRow('표면가',surfL,surfS,hasB?'동결':'라이브',hasB?'확정':'없음')
         +duelRow('실존가',vwL,vwS,hasB?'동결=본전':'전일',hasB?'확정':'없음')
-        +duelRow('굴림 실존가',rollL,rollS,hasB?'굳힘(전환 전일)':'실시간',hasB?'실시간':'없음')
+        +duelRow('실존가',rollL,rollS,hasB?'굳힘(전환 전일)':'실시간',hasB?'실시간':'없음')
         +(function(){ 
           try{
             var sB=A[s0], eB=A[hasB?fl-1:eC];        
@@ -19312,7 +19311,7 @@ function viewSign(){
     how:'반등/반락 프랙탈에서 기준가 전환 자리를 되돌림 진입점으로. 같은 주체의 프랙탈이라 양방향 대칭.',num:'BTC+ETH p=0.022 · 양방향 대칭 +0.73R · 최근창 양수(성숙도와 대조)',
     say:'같은 주체의 프랙탈이라 양방향이 대칭 - 4자 검증 중.',ver:'4자 검증 진행'},
    {nm:'스윙 추세추종(4h 10배 조건부)',st:'가설',def:'스윙 엣지가 4시간봉에서 발현하는 추세추종 - 새 알파가 아닌 조건부 통과.',
-    how:'기준가 스트릭 확정 진입 · 굴림 실존가 트레일 · 승자 보유. 레버 캡 10.',num:'월 median +7.4% · 청산 1 · MDD 18.5% (감사관 독립검증+헤븐 재현·OOS 미검)',
+    how:'기준가 스트릭 확정 진입 · 실존가 트레일 · 승자 보유. 레버 캡 10.',num:'월 median +7.4% · 청산 1 · MDD 18.5% (감사관 독립검증+헤븐 재현·OOS 미검)',
     say:'저빈도 승자 보유가 수명을 먹는다 - 단 새 엣지는 아니다.',ver:'조건부 통과 · _verify_trend_4h'},
    {nm:'저항 전환일(단기 하방)',st:'가설',def:'약세 반등 중 기준가가 저항으로 뜬 첫날 = 주체 차익 개시 마커.',
     how:'반등 파동 종료 후 첫 이탈(자체 판정). 회계상 장부 동결 마커로는 유효, 방향 엣지는 우연 미배제.',num:'표본 부족 · 수치 비공개 · 전기간 permutation p=0.148 · 4h 미재현',
