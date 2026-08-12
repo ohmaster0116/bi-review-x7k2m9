@@ -207,7 +207,7 @@ const TABGROUPS=MENU_V2?TABGROUPS_V2:TABGROUPS_V1;
 const TABSHORT={'투자 리포트':'리포트','종합 밴드':'종합밴드','포지션 진단':'진단','고래 추적':'고래','상관계수':'상관','추세전환가':'추세전환','성격전환가':'성격전환','수급 분석':'수급','전투포인트':'전투','지지·저항':'지지저항','미확인값밴드':'미확인값','함정 분석':'함정'};
 const TABS=TABGROUPS.reduce((a,x)=>a.concat(x.tabs),[]);
 
-const TABIMP={'투자 리포트':'#ffd24a','승률 매매':'#ffd24a','패닉 반등':'#ffd24a','매매 프로토콜':'#ffd24a','9층 트레일':'#ffd24a','부활 롱':'#ffd24a','차트':'#ffd24a','LIVE':'#ffd24a','종합 밴드':'#ffd24a','파동 분석':'#2bb3a3','파동 현황':'#2bb3a3','파동 전투존':'#2bb3a3','파동 차트':'#2bb3a3','과거 사례':'#2bb3a3','전략':'#46c2ff','포지션 진단':'#ffd24a','고래 추적':'#ffd24a','상관계수':'#ff8a3c','알고리즘':'#ff8a3c','추세전환가':'#ff8a3c',
+const TABIMP={'투자 리포트':'#ffd24a','승률 매매':'#ffd24a','패닉 반등':'#ffd24a','매매 프로토콜':'#ffd24a','9층 트레일':'#ffd24a','롱의 역공':'#ffd24a','차트':'#ffd24a','LIVE':'#ffd24a','종합 밴드':'#ffd24a','파동 분석':'#2bb3a3','파동 현황':'#2bb3a3','파동 전투존':'#2bb3a3','파동 차트':'#2bb3a3','과거 사례':'#2bb3a3','전략':'#46c2ff','포지션 진단':'#ffd24a','고래 추적':'#ffd24a','상관계수':'#ff8a3c','알고리즘':'#ff8a3c','추세전환가':'#ff8a3c',
   '전투포인트':'#46c2ff',
   '지지·저항':'#5fcf8f','변동폭':'#5fcf8f','성격전환가':'#5fcf8f','미확인값밴드':'#8a93a0',
   '기준가':'#8a93a0'};
@@ -1566,7 +1566,7 @@ function viewLedger(){
    {t:'경계 구도(주체 장부 대치)',lv:'전략',who:'헤븐 실측·레빗 교차(값 0괴리)',num:'실존가 도달 90%·바닥 11일/−6.9%(종가)·wick 관통 −5.7%',say:'반등·반락은 한 주체의 장부 앞뒷면 - 전환일부터 동결·헤지·압박·언와인드로 읽는다.'},
    {t:'압박 깊이 함수(돈→깊이)',lv:'전략',who:'P7 시대검증(ρ0.45~0.53·워크포워드)',num:'배율 0~100%→계단 ~58% 제거 · 200%+→전량권·바닥 중앙 278%',say:'어디까지 내려올지는 가격이 아니라 상대가 쓴 돈이 정한다 - 화력 증감이 깊이 예보.'},
    {t:'트랜치 원장·넷 회계',lv:'전략',who:'회계 분해·현 파동 실측(헤지 매칭 P8 4자 진행)',num:'마지막 트랜치=매도 장부와 규모·단가 ±0.5% 일치(현 파동)',say:'실존가는 평균의 가면 - 페이지별 장부를 열면 마지막 돈의 위치와 헤지 보험이 보인다.'},
-   {t:'부활=수명 연장',lv:'전략',who:'헤븐 실측',num:'사이클: 무이탈 3일 vs 부활 23일',say:'1회 이탈은 죽음이 아니라 휩쏘 - 흔들리고 살아난 파동이 오래 간다.'},
+   {t:'이탈 후 실존가 위 마감 = 수명 연장',lv:'전략',who:'헤븐 실측',num:'사이클: 무이탈 3일 vs 23일',say:'1회 이탈은 죽음이 아니라 휩쏘 - 흔들리고 살아난 파동이 오래 간다.'},
    {t:'합산 캔들(파동=한 캔들)',lv:'전략',who:'항등(좌표 변환)·이사 정본',num:'좌표 변환 항등(자체 정본) - 현 파동=월봉 파동 0.1차 좌표',say:'파동을 접으면 상위 봉 좌표가 나온다 - 위치 도구이지 방어선 약속이 아니다.'},
    {t:'저항 전환일(단기 하방)',lv:'가설',who:'사이클 특성 · 전기간 우연 미배제(p0.148) · 4h 미재현',num:'+1일 62%·꼬리 −3.1%(사이클)',say:'이 사이클에선 잘 맞아왔으나 우연 배제 미완 - 특성 참고, 확신 금지.'},
    {t:'급락 익일 반등 매수',lv:'전략',who:'경고 도구',num:'표본 부족 · 수치 비공개',say:'이 사이클 최악의 자리 - 물타기 반등 베팅 경고.'},
@@ -11011,7 +11011,7 @@ function viewSkillRevival(){
     let fl=null,ws=null;
     for(let i=n-1;i>30;i--){let s2=0,k=i-1;while(k>=1&&G[k]>G[k-1]){s2++;k--;}
       if(s2>=2&&A[i].c<G[i]&&A[i-1].c>=G[i-1]){fl=i;ws=i-1-s2;break;}}
-    if(fl===null||n-1-fl>40)return `<h2 class="sec" style="margin:0 0 10px">부활 롱 (모듈B) <span class="sub">- 반락 후 실존가 재탈환 = 수명 3배(P5)에 베팅</span></h2><div style="padding:13px 16px;background:rgba(139,148,168,.06);border-left:4px solid var(--bd2);border-radius:10px;font-size:13.5px;line-height:1.9"><b style="color:var(--tx2)">지금은 대기 - 구도 없음</b><br>최근 40일 내 저항 전환일(경계 구도)이 없습니다. 이 스킬은 매집→전환→압박→재탈환의 구도가 서야만 발동하는 저빈도 전략입니다.</div>`;
+    if(fl===null||n-1-fl>40)return `<h2 class="sec" style="margin:0 0 10px">롱의 역공 (모듈B) <span class="sub">- 반락 후 종가가 실존가 위로 마감 = 수명 3배(P5)에 베팅</span></h2><div style="padding:13px 16px;background:rgba(139,148,168,.06);border-left:4px solid var(--bd2);border-radius:10px;font-size:13.5px;line-height:1.9"><b style="color:var(--tx2)">지금은 대기 - 구도 없음</b><br>최근 40일 내 저항 전환일(경계 구도)이 없습니다. 이 스킬은 매집→전환→압박→실존가 위 마감의 구도가 서야만 발동하는 저빈도 전략입니다.</div>`;
     let segv=0,pv=0; for(let t=ws;t<fl;t++){segv+=A[t].v;pv+=G[t]*A[t].v;}
     const sitga=pv/segv;
     let sellv=0; for(let t=fl;t<n;t++)if(A[t].c<A[t-1].c)sellv+=A[t].v;
@@ -11022,17 +11022,17 @@ function viewSkillRevival(){
     const dl=t=>new Date(t).toISOString().slice(5,10).replace('-','/');
     const chk=(ok,txt)=>`<span style="color:${ok?'var(--buy)':'var(--tx3)'}">${ok?'✔':'✖'} ${txt}</span>`;
     const banner=fire
-      ?`<div style="padding:13px 16px;background:rgba(35,211,158,.08);border-left:4px solid var(--buy);border-radius:10px;font-size:13.5px;line-height:1.9"><b style="color:var(--buy)">🚨 지금 발동 - 부활 확정</b><br>반락이 실존가 ${f1(sitga)} 하부까지 눌렸고(배율 ${ratio.toFixed(0)}%) 어제 종가가 재탈환 - <b>다음 봉 시가 롱 · 손절 ${f1(lowmin)}(이탈 최저 wick) · 승자보유(굴림 트레일)</b>.</div>`
-      :`<div style="padding:13px 16px;background:rgba(139,148,168,.06);border-left:4px solid var(--bd2);border-radius:10px;font-size:13.5px;line-height:1.9"><b style="color:var(--tx2)">지금은 대기 - 조건 ${[reached,retake,ratio>=116].filter(Boolean).length}/3</b><br>${chk(true,'저항 전환일 '+dl(A[fl].t)+' 구도')} · ${chk(ratio>=116,'동비중 배율 '+ratio.toFixed(0)+'%(문턱 116)')} · ${chk(reached,'실존가 '+f1(sitga)+' 하부 도달')} · ${chk(retake,'종가 재탈환 확정')}<br><span class="sub">부활은 기다림의 전략 - 압박이 끝까지 가야 재탈환의 의미가 생깁니다.</span></div>`;
-    return `<h2 class="sec" style="margin:0 0 10px">부활 롱 (모듈B) <span class="sub">- 반락 후 실존가 재탈환 = 수명 3배(P5)에 베팅 · 경계 구도 기반</span></h2>`
+      ?`<div style="padding:13px 16px;background:rgba(35,211,158,.08);border-left:4px solid var(--buy);border-radius:10px;font-size:13.5px;line-height:1.9"><b style="color:var(--buy)">🚨 지금 발동 - 조건 충족</b><br>반락이 실존가 ${f1(sitga)} 하부까지 눌렸고(배율 ${ratio.toFixed(0)}%) 어제 종가가 실존가 위 마감 - <b>다음 봉 시가 롱 · 손절 ${f1(lowmin)}(이탈 최저 wick) · 승자보유(굴림 트레일)</b>.</div>`
+      :`<div style="padding:13px 16px;background:rgba(139,148,168,.06);border-left:4px solid var(--bd2);border-radius:10px;font-size:13.5px;line-height:1.9"><b style="color:var(--tx2)">지금은 대기 - 조건 ${[reached,retake,ratio>=116].filter(Boolean).length}/3</b><br>${chk(true,'저항 전환일 '+dl(A[fl].t)+' 구도')} · ${chk(ratio>=116,'동비중 배율 '+ratio.toFixed(0)+'%(문턱 116)')} · ${chk(reached,'실존가 '+f1(sitga)+' 하부 도달')} · ${chk(retake,'종가가 실존가 위 마감')}<br><span class="sub">기다림의 전략 - 압박이 끝까지 가야 그 마감의 의미가 생깁니다.</span></div>`;
+    return `<h2 class="sec" style="margin:0 0 10px">롱의 역공 (모듈B) <span class="sub">- 반락 후 종가가 실존가 위로 마감 = 수명 3배(P5)에 베팅 · 경계 구도 기반</span></h2>`
       +banner
       +`<div class="panel" style="margin-top:12px"><div class="hd">규칙</div><div style="padding:10px 15px;font-size:12px;line-height:2">
         ① <b>구도</b>: 매집 파동 후 저항 전환일(장부 동결) - 현재 ${dl(A[fl].t)} 구도.<br>
         ② <b>압박 확인</b>: 매도 물량 ÷ 동결 매집 물량 = 배율 <b>116%+</b>(현재 ${ratio.toFixed(0)}%) + 반락이 동결 실존가 <b>${f1(sitga)}</b> 하부 도달.<br>
         ③ <b>진입</b>: 계단 위 <b>종가 재탈환 확정</b> 다음 봉 시가 롱 · <b>손절</b>: 이탈 구간 최저 저가(현재 ${f1(lowmin)}) wick 즉시.<br>
         ④ <b>보유 구간</b>: 실존가가 따라 올라오며 이익보존 래칫이 걸립니다. 사망 구도에서는 이 셋업 자체가 성립하지 않습니다.</div></div>
-      <div class="panel"><div class="hd">전략 근거 <span class="sub">P5 부활=수명 연장 · 4자 검증 진행</span></div><div style="padding:10px 15px;font-size:11.5px;line-height:1.9;color:var(--tx2)">
-        1회 이탈 후 재탈환(부활)한 파동은 무이탈 파동보다 오래 산다 - 일봉·1h 양쪽에서 확인(1h N585 케빈)·30m 1.7배, 방향 전 TF 지지. 배율은 총량 회계 근사(테이커 분리 후 재보정 예정). 대회에서 레빗 계좌가 이 전략의 라이브 검증, 폭스가 반대편.</div></div>`;
+      <div class="panel"><div class="hd">전략 근거 <span class="sub">P5 이탈 후 실존가 위 마감 = 수명 연장 · 4자 검증 진행</span></div><div style="padding:10px 15px;font-size:11.5px;line-height:1.9;color:var(--tx2)">
+        1회 이탈 후 종가가 실존가 위로 마감한 파동은 무이탈 파동보다 오래 산다 - 일봉·1h 양쪽에서 확인(1h N585 케빈)·30m 1.7배, 방향 전 TF 지지. 배율은 총량 회계 근사(테이커 분리 후 재보정 예정). 대회에서 레빗 계좌가 이 전략의 라이브 검증, 폭스가 반대편.</div></div>`;
   }catch(e){return '<div class="loading">계산 오류</div>';}
 }
 function viewOpenTrade(){
@@ -14619,7 +14619,7 @@ var card=function(nm,stat,desc,tab,key){return '<div class="panel" style="margin
     
     +card('기준가 회귀 (좌표)','5봉 내 회귀 65~66% <span class="sub" style="font-size:9.5px">측정 2026-08-03 · 거리 효과</span>','닿는 비율은 거리와 국면에 따라 달라집니다 - 다만 이 좌표라서 더 닿는 것은 아닙니다(같은 거리 아무 가격과 동률). 목표·되돌림 진입 좌표로만 씀','기준가','vf_gijun')
     +card('수급 신뢰 등급','<span style="color:var(--tx3)">기록판, 엣지 아님</span>','이 자리를 누가 만들고 지키나, 高신뢰=실수요 · 低신뢰=훼이크 경계','수급 분석','vf_trust')
-    +card('서명 전략 모음','받침 매매 · 부활 롱 · 급락 반등','각 전략의 승률·성과표·국면 처방, 국면이 전략 ON/OFF를 정함','전략','vf_sign')
+    +card('서명 전략 모음','받침 매매 · 롱의 역공 · 급락 반등','각 전략의 승률·성과표·국면 처방, 국면이 전략 ON/OFF를 정함','전략','vf_sign')
     +'<div class="sub" style="font-size:10px;padding:6px 4px">편입 기준=서명 관문(EV>0 · OOS 양수 · 슬립 후 생존) · 포워드 성적 미달 시 강등(성적표와 연동) · 손절 없는 전략은 없습니다</div>';
 }catch(e){return '<div class="sub" style="padding:20px">검증 완료 렌더 오류: '+e.message+'</div>';}}
 let __scoreSec='원장';   
@@ -17402,7 +17402,7 @@ function viewDash(){
       if(chg<=-3)card('🚨','급락 다음날 - 반등 베팅 경고','전일 '+chg.toFixed(1)+'%. 급락 익일 반등 매수는 이 사이클에서 <b>손실 우위</b>였습니다(표본 부족 · 수치 비공개). 계단 방어 확인이 먼저입니다.','var(--sell)');
       if(chg>=3)card('⚖','급등 다음날 - 정보 없음 구간','전일 +'+chg.toFixed(1)+'%. 추격도 역행도 우위가 안 갈립니다 - <b>판단 유보</b>(표본 부족).','var(--tx2)');
       if(st>=2&&y.c<y.gijun&&y2.c>=y2.gijun)card('⚔','저항 전환일 - 주체 차익 개시','반등 중 기준가가 저항으로 전환. 사이클 <b>+1일 하방 우위</b>(표본 부족 · 수치 비공개). 단 3일 넘기면 역전 - 장부 동결·경계 구도 개시.','var(--gold2)');
-      if(y.c>y.gijun&&y2.c<=y2.gijun&&(function(){var s2=0,k2=n2-4;while(k2>=1&&A2[k2].gijun<A2[k2-1].gijun){s2++;k2--;}return s2>=2;})())card('🪤','지지 전환일 - 미끼 주의','하락 중 기준가가 지지로 전환. 반등 개시 신호로는 <b>미끼가 더 많았습니다</b>(표본 부족 · 수치 비공개). 계단·부활 확인 전 추격 금지.','var(--sell)');
+      if(y.c>y.gijun&&y2.c<=y2.gijun&&(function(){var s2=0,k2=n2-4;while(k2>=1&&A2[k2].gijun<A2[k2-1].gijun){s2++;k2--;}return s2>=2;})())card('🪤','지지 전환일 - 미끼 주의','하락 중 기준가가 지지로 전환. 반등 개시 신호로는 <b>미끼가 더 많았습니다</b>(표본 부족 · 수치 비공개). 계단 확인 전 추격 금지.','var(--sell)');
       if(y.c>hi20)card('📈','20일 신고 종가 - 추격 경고','신고가 추격 롱은 이 사이클에서 <b>손실 우위</b>였습니다(표본 부족) - 리테스트 확인 후가 정석.','var(--sell)');
       if(y.c<lo20)card('📉','20일 신저 종가 - 추세 지속형','신저 이탈 숏은 <b>손익비형</b>입니다(표본 부족 · 수치 비공개). 꼬리 −10%, 손절 없이는 못 씁니다.','var(--buy)');
       if(!cards.length)return '';
@@ -19325,7 +19325,7 @@ function viewSign(){
     num:'wick 관통 중앙 −5.7% · 전환 후 ~11일 바닥',
     say:'하락이 시작되면 "누가 파나"부터 본다 - 같은 주체의 차익이면 계단과 본전이 하한을 그려준다.',ver:'헤븐 실측 · 레빗 교차검증(값 0괴리) · P8 4자 진행'},
    {nm:'실존가 계단',st:'전략',def:'실존가는 단일선이 아니라 날마다 쌓인 계단 - 내려갈 때도 윗단부터 하나씩 제거된다.',
-    how:'기준일별 주체 평단을 계단으로 보존(자체 산식). 1회 이탈=휩쏘 후보, 연속 이탈+전 단 제거+부활 실패만 종료.',
+    how:'기준일별 주체 평단을 계단으로 보존(자체 산식). 1회 이탈=휩쏘 후보, 연속 이탈+전 단 제거+실존가 위 마감 실패만 종료.',
     num:'저가의 58~66%가 wick 관통 후 종가 방어(기존 서명) · 한 번에 무너지는 파동은 드묾',
     say:'한 번 깨졌다고 도망가지 마라 - 어느 단까지 깨졌는지를 세라.',ver:'정본 산식 · 경계 구도 패널 상설'},
    {nm:'트랜치 원장 · 넷 회계',st:'전략',def:'평균(실존가) 뒤에 숨은 페이지별 장부 - 날짜별 투입 단가·금액과 헤지로 전환된 몫.',
@@ -19336,8 +19336,8 @@ function viewSign(){
     how:'매도 구간 금액 ÷ 매수 생성 금액 배율 → 역대 계단 제거율·관통 깊이 매핑(사이클 파라미터).',
     num:'0~100%→~58% 제거 · 200~400%→전량권 · 사이클 바닥 배율 중앙 278% · 시대 통용성 검증(ρ0.45~0.53·워크포워드 예측력)',
     say:'"어디까지 떨어질까"의 답은 가격이 아니라 상대의 지갑에 있다 - 지금 얼마 썼는지 여기 보인다.',ver:'P7 시대검증 완료 · _theory_depth1~2'},
-   {nm:'부활 = 수명 연장',st:'전략',def:'1일 이탈 후 재탈환(부활)한 파동은 무이탈 파동보다 훨씬 오래 산다.',
-    how:'종가<굴림 1일 → 익일 재탈환=부활 / 2일 연속 이탈=종료. 부활 여부로 파동 수명 국면 구분.',
+   {nm:'이탈 후 실존가 위 마감 = 수명 연장',st:'전략',def:'1일 이탈 후 종가가 실존가 위로 마감한 파동은 무이탈 파동보다 훨씬 오래 산다.',
+    how:'종가<실존가 1일 → 익일 실존가 위 마감 / 2일 연속 이탈=종료. 그 여부로 파동 수명 국면 구분.',
     num:'표본 부족 · 수치 비공개',
     say:'흔들리고 살아난 파동이 진짜다 - 부활 확인 후의 보유가 수명을 먹는다.',ver:'헤븐 실측 · 표본 확대(하위 TF)=성공 몫'},
    {nm:'합산 캔들',st:'전략',def:'파동 전체를 캔들 하나로 접는 좌표 변환 - 시가·저가=시작 캔들, 고가·종가=마무리 캔들.',
@@ -19402,9 +19402,9 @@ function viewSign(){
     +cards;
 }
 function render(){if(!E)return;
-  var GONE={'종합 평가':'LIVE','승률 매매':'전략','패닉 반등':'전략','부활 롱':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','지지저항밴드':'지지·저항','시가저항지지':'지지·저항','평균변동폭밴드':'변동폭','예상마감가':'변동폭','검증 성적표':'전략 검증','성적표':'전략 검증','주체형성가':'파동 현황','밴드 통합':'종합 밴드','평가·후기':'LIVE','판단 근거':'정렬·대치','심층 분석':'정렬·대치','고래 추적':'BTC','파동 분석':'파동 현황','이벤트 정합 원장':'정합 원장','판단 원장':'정합 원장','한장':'LIVE','위계·레벨':'심층 근거','참고 판독':'심층 근거'};   
+  var GONE={'종합 평가':'LIVE','승률 매매':'전략','패닉 반등':'전략','롱의 역공':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','지지저항밴드':'지지·저항','시가저항지지':'지지·저항','평균변동폭밴드':'변동폭','예상마감가':'변동폭','검증 성적표':'전략 검증','성적표':'전략 검증','주체형성가':'파동 현황','밴드 통합':'종합 밴드','평가·후기':'LIVE','판단 근거':'정렬·대치','심층 분석':'정렬·대치','고래 추적':'BTC','파동 분석':'파동 현황','이벤트 정합 원장':'정합 원장','판단 원장':'정합 원장','한장':'LIVE','위계·레벨':'심층 근거','참고 판독':'심층 근거'};   
   if(MENU_V2)delete GONE['평가·후기'];  
-  if(!MENU_V2){delete GONE['파동 분석'];GONE['부활 롱']='파동 분석';GONE['주체형성가']='파동 분석';}   
+  if(!MENU_V2){delete GONE['파동 분석'];GONE['롱의 역공']='파동 분석';GONE['주체형성가']='파동 분석';}   
   
   
   
@@ -19459,7 +19459,7 @@ function render(){if(!E)return;
   else if(active==='BTC'||active==='ETH'||active==='SOL'||active==='XRP'){
     if(whaleSym!==active){whaleSym=active;whaleData=null;whaleKrw=0;whaleDaily=null;whaleWeekly=null;whaleLoading=false;}
     v.innerHTML=viewWhale();}
-  else if(active==='파동 현황'){wvSec='현황';v.innerHTML=viewWave()+waveDetailPanel()+waveLifecycle()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">주체형성가 - 주체 평단(실존가)·본전 (사수 시 재회복 '+STAT('mp_recover','raw')+' · 4자 서명)</summary>'+viewMP()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 부활 롱(파동 재생)</summary>'+viewSkillRevival()+'</details>';}
+  else if(active==='파동 현황'){wvSec='현황';v.innerHTML=viewWave()+waveDetailPanel()+waveLifecycle()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">주체형성가 - 주체 평단(실존가)·본전 (사수 시 재회복 '+STAT('mp_recover','raw')+' · 4자 서명)</summary>'+viewMP()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 롱의 역공(파동 재생)</summary>'+viewSkillRevival()+'</details>';}
   else if(active==='파동 전투존'){wvSec='전투';v.innerHTML=viewWave();}
   else if(active==='파동 차트'){wvSec='차트';v.innerHTML=viewWave();}
   else if(active==='과거 사례'){wvSec='사례';v.innerHTML=viewWave();setTimeout(function(){var el=document.getElementById('wvCases');if(el)el.scrollIntoView({block:'start'});},80);}
@@ -19554,7 +19554,7 @@ try{
   if(_h==='시가저항지지')srSec='시가';
   if(_h==='예상마감가')vbSec='마감가';
   if(_h==='검증 성적표')stSec='성적표';
-  var _re={'종합 평가':'LIVE','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','승률 매매':'전략','패닉 반등':'전략','부활 롱':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트'};
+  var _re={'종합 평가':'LIVE','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','승률 매매':'전략','패닉 반등':'전략','롱의 역공':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트'};
   if(_re[_h])_h=_re[_h];
   if(_h&&_h!=='snapshot'){var _all=[];TABGROUPS.forEach(function(g2){g2.tabs.forEach(function(t2){_all.push(t2);});});if(_all.indexOf(_h)>=0)active=_h;}
 }catch(e){}
