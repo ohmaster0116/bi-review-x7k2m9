@@ -13339,6 +13339,12 @@ function waveBook(tf,ax){try{
   var _sv=stepsAll.filter(function(st){return st.alive;});      
   var rep=_sv.length?_sv[_sv.length-1].vw:null;                 
   var repAlive=_sv.length;
+  
+  
+  
+  
+  
+  if(rep!=null){ sitga=rep; roll=rep; }
   return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
 }catch(e){return null;}}
 
@@ -13408,15 +13414,15 @@ function waveNineTable(){try{
   for(var i=0;i<TF.length;i++){
     var nm=TF[i][0], tf=TF[i][1], b=null;
     try{ b=waveBook(tf); }catch(e){ b=null; }
-    if(!b){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="3">산출 대기</td></tr>'; continue; }
-    var same=(b.rep!=null&&b.sitga!=null&&Math.abs(b.rep-b.sitga)<0.5);
+    if(!b){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="2">산출 대기</td></tr>'; continue; }
+    
+    
     rows+='<tr><td class="l" style="font-weight:700">'+nm+'</td>'
        +'<td class="num" style="color:var(--gold2);font-weight:700">'+f0(b.rep!=null?b.rep:b.sitga)+'</td>'
-       +'<td class="num">'+f0(b.sitga)+(same?' <span class="sub" style="font-size:9.5px">전 층 생존</span>':'')+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(b.root)+'</td></tr>';
   }
-  return '<div class="panel" id="waveNine"><div class="hd">파동 <span class="sub">- 일·주·월 · 실존가는 생존 층 중 최전방</span></div>'
-    +'<div class="scroll"><table class="tw"><thead><tr><th class="l">TF</th><th>실존가</th><th>굴림</th><th>뿌리</th></tr></thead>'
+  return '<div class="panel" id="waveNine"><div class="hd">파동 <span class="sub">- 일·주·월 · 실존가는 생존 최전방 층까지 형성된 값</span></div>'
+    +'<div class="scroll"><table class="tw"><thead><tr><th class="l">TF</th><th>실존가</th><th>뿌리</th></tr></thead>'
     +'<tbody>'+rows+'</tbody></table></div></div>';
 }catch(e){ return ''; }}
 
