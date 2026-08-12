@@ -11771,9 +11771,20 @@ function gyeopGroup(items, win){
   }catch(e){ return (items||[]).map(function(x){return {v:x.v,n:x.n,겹:false,members:[x.n]};}); }
 }
 
+
+
+
+
+var _GY_SEQ = 0;
 function gyeopText(g, f){
   f = f || function(v){return '$'+Math.round(v).toLocaleString('en-US');};
-  return g.겹 ? ('겹 '+f(g.v)+' <span class="sub">('+g.label+')</span>') : (g.n+' '+f(g.v));
+  if(!g.겹) return g.n+' '+f(g.v);
+  
+  var OC = 'var e=this.nextElementSibling;if(e)e.style.display=(e.style.display===&quot;none&quot;?&quot;inline&quot;:&quot;none&quot;);';
+  return '겹 '+f(g.v)
+    +' <span class="sub" style="cursor:pointer;text-decoration:underline dotted" onclick="'+OC+'">'
+    + g.count + '겹</span>'
+    +'<span class="sub" style="display:none;font-size:10.5px"> · '+g.label+'</span>';
 }
 function collectLevels(){const out=[],ks=['m30','h1','h4','d1','w1','M1','y1'];
   ks.forEach(k=>{const a=E[k];if(!a||a.length<2)return;const b=a[a.length-1];
@@ -15428,7 +15439,7 @@ function twoBreathPanel(){try{
           var _dg=(pxx-_gy.v)/pxx*100;
           line=(_dg<=0.3?('지금 겹 '+fx(_gy.v)+' <span class="sub">('+_gy.label+')</span>이(가) 공격받는 중')
                         :('발밑 겹 '+fx(_gy.v)+' <span class="sub">('+_gy.label+')</span>이(가) 받치는 중('+_dg.toFixed(1)+'% 아래)'))
-            +' · 두 자리가 <b>'+Math.round(Math.abs(dns[0][1]-dns[1][1]))+'달러</b> 차라 한 대역으로 봅니다'
+            
             +(Mx.life&&pxx>=Mx.life?' · 종가로 깨지면 큰 틀이 바뀝니다':'')
             +(Mx.up?' · 반전 조건=승부처 '+fx(Mx.up)+' 종가 돌파':'');
         }else if(dns.length){
