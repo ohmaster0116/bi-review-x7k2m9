@@ -17497,6 +17497,24 @@ function viewPositionDx(){
   const head2=`<h2 class="sec" style="margin:0 0 12px">포지션 진단 - 내 포지션을 넣으면 저항·지지·대응을 가격으로</h2>`;
   if(posEntry<=0||posSize<=0)return head2+form+`<div class="verdict" style="border-left:4px solid var(--gold2)"><div class="s" style="font-size:13px;line-height:1.7"><b>진입단가</b>와 <b>보유비중(%)</b>을 입력하면 - 추세 진단, 저항·지지 사다리, 단계별 대응(추가·손절·목표)을 가격으로 보여드립니다.${posCapital>0?'':'<br>투자자금까지 넣으면 손익·추가금도 금액으로 환산됩니다.'}</div></div>`;
   const entry=posEntry, cap=posCapital;
+  
+  
+  
+  
+  
+  
+  
+  
+  var _plLine = null;
+  try{ var _PD = window.__DAILYPLAN;
+    if(isLong && _PD && _PD.lines) _plLine = _PD.lines
+      .filter(function(l){ return l && l['무효좌표'] != null && l['좌표'] != null; })
+      .sort(function(a,b){ return Math.abs(a['좌표']-entry) - Math.abs(b['좌표']-entry); })[0] || null;
+  }catch(e){ _plLine = null; }
+  const planNear = !!(_plLine && Math.abs(_plLine['좌표']-entry)/entry <= 0.005);   
+  const stopSrc  = planNear ? ('오늘 계획 · ' + (_plLine['무효계열'] || '무효좌표')) : '지지 사다리';
+  const stopOf   = function(fb){ return planNear ? _plLine['무효좌표'] : fb; };
+  const srcTag   = '<span class="sub" style="font-size:10px;font-weight:400">(' + stopSrc + ')</span>';
   const lad=posLadder(px), trend=overallScore().total;
   const trendTxt=trend>=40?'강한 매수 우위':trend>=15?'매수 우위':trend<=-40?'강한 매도 우위':trend<=-15?'매도 우위':'중립';
   const trendC=trend>=15?'var(--buy)':trend<=-15?'var(--sell)':'#46c2ff';
@@ -17519,21 +17537,21 @@ function viewPositionDx(){
   if(isLong&&counter){const na=(entry+d1top)/2;
     plan=`<b style="color:var(--sell)">① 지금 (물린 롱)</b> - 추세가 매도라 <b>물타기 금지</b>. 반등이 1차 저항 <b>${f0(R1)}</b>에 닿으면 비중을 줄여(예 ${posSize}%→${Math.max(0,posSize-2)}%) 손실부터 막습니다.<br>
     <b style="color:var(--buy)">② 반등·새 매수 기준가 형성 시 → 추가 5%${addTxt}</b> - 현재가가 <b>${f0(d1top)}(일봉 상단 돌파 방어)</b>를 <b>종가로 회복</b>하면 일봉 매수주체 장악 = 새 매수 기준가. 추가 5% → 평단 ${f0(entry)} → <b>약 ${f0(na)}</b>로 개선.<br>
-    &nbsp;&nbsp;· <b style="color:var(--sell)">손절값 ${f0(S1)}</b> 종가 이탈 시 전량 정리. · 목표 ${f0(R1)} → ${f0(R2)} 순 분할.<br>
+    &nbsp;&nbsp;· <b style="color:var(--sell)">손절값 ${f0(stopOf(S1))}</b>${srcTag} 종가 이탈 시 전량 정리. · 목표 ${f0(R1)} → ${f0(R2)} 순 분할.<br>
     <b>③ ${f0(d1top)} 회복 못 하고 ${f0(S2||S1)} 깨면</b> - 추세 매도 지속(일봉 지속률 63%+). 추가 진입 금지, 기존 롱도 손절.`;
   } else if(isLong&&aligned){
     plan=`<b style="color:var(--buy)">① 추세 순행(매수)</b> - 추세 편이니 <b>눌림에서 분할</b>. 1차 지지 <b>${f0(S1)}</b> 도달 + 매수 기준가 유지 시 추가 5%${addTxt}.<br>
-    &nbsp;&nbsp;· <b style="color:var(--sell)">손절값 ${f0(S2||S1)}</b> 종가 이탈 시 정리.<br>
+    &nbsp;&nbsp;· <b style="color:var(--sell)">손절값 ${f0(stopOf(S2||S1))}</b>${srcTag} 종가 이탈 시 정리.<br>
     <b>② 목표</b> - 위 저항 ${f0(R1)} → ${f0(R2)} 순으로 분할 익절.<br>
     <b>③ 관점전환선 ${f0(d1cen)}</b> 종가 이탈 시 추세 의심 → 비중 축소.`;
   } else if(!isLong&&counter){const na=(entry+d1bot)/2;
     plan=`<b style="color:var(--buy)">① 지금 (물린 숏)</b> - 추세가 매수라 <b>불타기 금지</b>. 눌림이 1차 지지 <b>${f0(S1)}</b>에 닿으면 비중을 줄여 손실부터 막습니다.<br>
     <b style="color:var(--sell)">② 눌림·새 매도 기준가 형성 시 → 추가 5%${addTxt}</b> - 현재가가 <b>${f0(d1bot)}(일봉 하단 이탈 방어)</b>를 <b>종가로 이탈</b>하면 일봉 매도주체 장악 = 새 매도 기준가. 추가 5% → 평단 ${f0(entry)} → <b>약 ${f0(na)}</b>로 개선.<br>
-    &nbsp;&nbsp;· <b style="color:var(--buy)">손절값 ${f0(R1)}</b> 종가 회복 시 전량 정리. · 목표 ${f0(S1)} → ${f0(S2)} 순 분할.<br>
+    &nbsp;&nbsp;· <b style="color:var(--buy)">손절값 ${f0(stopOf(R1))}</b>${srcTag} 종가 회복 시 전량 정리. · 목표 ${f0(S1)} → ${f0(S2)} 순 분할.<br>
     <b>③ ${f0(d1bot)} 이탈 못 하고 ${f0(R2||R1)} 뚫리면</b> - 추세 매수 지속. 추가 진입 금지, 기존 숏도 손절.`;
   } else if(!isLong&&aligned){
     plan=`<b style="color:var(--sell)">① 추세 순행(매도)</b> - 추세 편이니 <b>반등에서 분할</b>. 1차 저항 <b>${f0(R1)}</b> 도달 + 매도 기준가 유지 시 추가 5%${addTxt}.<br>
-    &nbsp;&nbsp;· <b style="color:var(--buy)">손절값 ${f0(R2||R1)}</b> 종가 회복 시 정리.<br>
+    &nbsp;&nbsp;· <b style="color:var(--buy)">손절값 ${f0(stopOf(R2||R1))}</b>${srcTag} 종가 회복 시 정리.<br>
     <b>② 목표</b> - 아래 지지 ${f0(S1)} → ${f0(S2)} 순으로 분할 익절.<br>
     <b>③ 관점전환선 ${f0(d1cen)}</b> 위로 종가 회복 시 추세 의심 → 비중 축소.`;
   } else {
