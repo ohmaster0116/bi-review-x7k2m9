@@ -12926,6 +12926,11 @@ function battleBalance(){
     if(!(gv>roll))return _bbNote('축 역전(매수 실존가 '+f1(roll)+' ≥ 매도 실존가 '+f1(gv)+') - 균형 게이지 정의 불가 구간. 상태만 표기합니다.');
     const pos=Math.max(0,Math.min(100,(px-roll)/(gv-roll)*100));
     const upGap=gv-px, dnGap=px-roll;
+    
+
+
+
+    const cen=(roll+gv)/2;
     let vBuy=null;
     
 
@@ -12952,7 +12957,11 @@ function battleBalance(){
           <span style="color:var(--buy)">매수 실존가 <b>${f1(roll)}</b>${rollSrc?` <span class="sub">(${rollSrc})</span>`:''}</span>
           <span style="color:var(--sell)">매도 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
         <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
+          <div style="position:absolute;left:50%;top:-3px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>
           <div style="position:absolute;left:${pos}%;top:-4px;width:3px;height:22px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>
+        </div>
+        <div style="position:relative;height:13px;margin-top:1px">
+          <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--tx3);white-space:nowrap">중심 ${f1(cen)}${px>=cen?' <span style="color:var(--sell)">위</span>':' <span style="color:var(--buy)">아래</span>'}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--tx2);margin-top:4px">
           <span>매수 실존가까지 −${f1(dnGap)} (${(dnGap/px*100).toFixed(1)}%)</span>
@@ -13162,9 +13171,11 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   
   var lo=zLo, hi=zHi;
   var longs=[];
-  if(bw&&bw.sitga)longs.push({v:bw.sitga,n:'롱 평단(주)'});
-  if(bd&&bd.sitga)longs.push({v:bd.sitga,n:'롱 평단(일)'});
-  if(bd&&bd.roll)longs.push({v:bd.roll,n:'굴림'});
+  
+
+
+  if(bw&&(bw.rep!=null||bw.sitga))longs.push({v:(bw.rep!=null?bw.rep:bw.sitga),n:'롱 실존가(주)'});
+  if(bd&&(bd.rep!=null||bd.sitga))longs.push({v:(bd.rep!=null?bd.rep:bd.sitga),n:'롱 실존가(일)'});
   longs.forEach(function(o){if(o.v<lo)lo=o.v;});
   var pad=(hi-lo)*0.06; lo-=pad; hi+=pad;
   var X=function(v){return Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));};
