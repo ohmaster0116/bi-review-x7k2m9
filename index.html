@@ -12905,7 +12905,6 @@ function waveDeltaGrid(){
     const lay=layers.map((v,i)=>{const broken=px<v&&i===layers.length-1;return `<span style="color:${px>=v?'var(--buy)':'var(--tx2)'};${broken?'text-decoration:line-through;opacity:.6':''}">L${i+1} ${f1(v)}</span>`;}).join(' <span class="sub">→</span> ');
     return `<div class="panel" style="margin-top:10px"><div class="hd">파동 내부 델타 구도 - 매수 주체 차익 vs 동비중 매도 <span class="sub">위치 표기 · 예측 아님</span></div>
       <div style="padding:9px 14px 11px">
-        ${row('진입 표면가',lSurf,sSurf)}
         ${row('진입 실존가',lSil,sSil)}
         ${row('실존가',lRoll,sRoll)}
         <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-top:7px">
@@ -15762,7 +15761,7 @@ function _scRow(s){
     var _rr=(rl.res||[]).map(function(v){return '<span style="color:#ff5a6e">'+v.toLocaleString()+'</span>';}).join(' · ');
     var _rs=(rl.sup||[]).map(function(v){return '<span style="color:#3fb37f">'+v.toLocaleString()+'</span>';}).join(' · ');
     seqHtml+='<div style="margin-top:7px;padding:8px 11px;background:rgba(139,148,168,.08);border:1px dashed rgba(139,148,168,.42);border-radius:9px;font-size:11.5px;line-height:1.7">'
-      +'<b style="color:var(--tx2)">굴림가</b> <span style="color:var(--tx3);font-size:10.5px">· 전투포인트·밴드 · <b>현재가 따라 움직이는 자리(고정 아님)</b></span>'
+      +'<b style="color:var(--tx2)">이동 자리</b> <span style="color:var(--tx3);font-size:10.5px">· 전투포인트·밴드 · <b>현재가 따라 움직이는 자리(고정 아님)</b></span>'
       +'<div style="margin-top:3px">위 마찰 '+(_rr||'없음')+' &nbsp;/&nbsp; 아래 '+(_rs||'없음')+'</div>'
       +'<div style="color:var(--tx3);font-size:10px;margin-top:2px">실존가·기준가【고정】은 봉 마감 전까지 안 움직입니다.</div></div>';
   }
@@ -17088,15 +17087,14 @@ function viewDash(){
         return '<div style="display:flex;gap:13px;flex-wrap:wrap;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(28,36,51,.6);font-size:12px">'
           +'<b style="width:40px">'+nm+'</b>'
           +'<span class="tag" style="font-size:9.5px;background:rgba(139,148,168,.12);color:'+cc+'">'+chip+(hasB?' · 전환 '+dlab(A[fl].t):'')+'</span>'
-          +'<span>표면가 '+pair(surfL,surfS)+'</span>'
+          
           +'<span>실존가 '+pair(vwL,vwS)+(hasB?'<span class="sub" style="font-size:8.5px"> 동결=본전</span>':'')+'</span>'
-          +'<span>굴림 '+pair(rollL,rollS)+(hasB?'<span class="sub" style="font-size:8.5px"> 굳힘↔라이브</span>':'')+'</span>'
           +'<span class="sub" style="font-size:10px">현재가 '+rel+'</span>'
         +'</div>';
       };
       var r1=row('d1','일봉'), r2=row('w1','주봉');
       if(!r1&&!r2)return '';
-      return '<div class="panel" style="margin-top:10px"><div class="hd">구도 3선 - 매수 장부 <span style="color:var(--buy)">청</span> ↔ 매도 장부 <span style="color:var(--sell)">적</span> <span class="sub">표면가·실존가·굴림 각각 양측 대치 · 상세는 아래 경계 구도 패널</span></div>'
+      return '<div class="panel" style="margin-top:10px"><div class="hd">장부 구도 - 매수 장부 <span style="color:var(--buy)">청</span> ↔ 매도 장부 <span style="color:var(--sell)">적</span> <span class="sub">실존가 양측 대치 · 상세는 아래 경계 구도 패널</span></div>'
         +'<div style="padding:2px 15px 8px">'+r1+r2
         +'<div class="sub" style="font-size:9.5px;margin-top:5px;color:var(--tx3)">단선 표기 폐기(2026-07-08 정본) - 같은 주체의 두 장부 대치로 읽는다 · 매수측=전환일 동결(본전) · 매도측=라이브 · 1회 이탈=휩쏘, 계단 순차 제거로 종료</div>'
         +'</div></div>';
@@ -17193,15 +17191,15 @@ function viewDash(){
         ?('저항 전환일 <b>'+dlab(A[fl].t)+'</b> - 이날부터 매수 장부 동결(돈 더 안 들어옴), <b>같은 주체</b>가 차익+동비중 매도로 전환. '
           +'명목 본전 '+f0c(vwL)+' · <b style="color:#00e5a0">넷 본전(헤지 차감) '+(netVW!=null?f0c(netVW):'없음')+'</b>이 실효 하단 축, '
           +'여기서 <b>종가가 롱 실존가 위</b>면 수명 급증 국면. 계단 '+steps.length+'단 중 '+aliveN+'단 생존.'+sellVerdict)
-        :'아직 저항 전환일 없음 - 매수 장부 진행 중(굴림 라이브). 전환일이 서면 경계 구도로 전환됩니다.';
-      return '<div class="panel" style="margin-top:10px"><div class="hd" style="color:var(--gold2)">경계 구도 - 한 주체의 장부: 동결 매수 3선 ↔ 라이브 매도 3선 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰 · 매매 명령 아님</span>'+sigBadge('전략','헤븐 실측·레빗 교차')+sigBadge('가설','P8 4자 진행')+'</div>'
+        :'아직 저항 전환일 없음 - 매수 장부 진행 중. 전환일이 서면 경계 구도로 전환됩니다.';
+      return '<div class="panel" style="margin-top:10px"><div class="hd" style="color:var(--gold2)">경계 구도 - 한 주체의 장부: 동결 매수 실존가 ↔ 라이브 매도 실존가 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰 · 매매 명령 아님</span>'+sigBadge('전략','헤븐 실측·레빗 교차')+sigBadge('가설','P8 4자 진행')+'</div>'
         +'<div style="padding:9px 15px 12px">'
         +'<div style="padding:11px 15px;margin-bottom:10px;background:rgba(214,162,58,.07);border-left:3px solid var(--gold2);border-radius:9px;font-size:13px;line-height:1.9;color:var(--tx)"><b style="color:var(--gold2);font-size:12px">지금 이 구도가 말하는 것</b><br>'+read+'</div>'
         +'<div class="sub" style="font-size:10.5px;line-height:1.7;margin-bottom:6px"><b>반등 프랙탈과 반락 프랙탈의 주체는 같다</b> - 매집 후 기준가가 저항으로 뜬 날부터 돈을 더 넣지 않고(장부 동결·굴림 굳힘) 차익+동비중 매도로 자기 본전 부근까지 눌렀다가, 언와인드(재반등)하거나 철수한다. 실존가는 계단 - 내려갈 때도 윗단부터 하나씩.</div>'
         +'<div class="scroll"><table><thead><tr><th class="l">선</th><th style="color:var(--buy)">매수 장부'+(hasB?'(동결 '+dlab(A[bEnd].t)+')':'(라이브)')+'</th><th style="color:var(--gold2)">경계(중간)</th><th style="color:var(--sell)">매도 장부(라이브)</th></tr></thead><tbody>'
-        +duelRow('표면가',surfL,surfS,hasB?'동결':'라이브',hasB?'확정':'없음')
+        
+
         +duelRow('실존가',vwL,vwS,hasB?'동결=본전':'전일',hasB?'확정':'없음')
-        +duelRow('실존가',rollL,rollS,hasB?'굳힘(전환 전일)':'실시간',hasB?'실시간':'없음')
         +(function(){ 
           try{
             var sB=A[s0], eB=A[hasB?fl-1:eC];        
@@ -17273,14 +17271,14 @@ function viewDash(){
         +(function(){ 
           try{
             var marks=[];
-            if(surfL!=null)marks.push({v:surfL,n:'매수 표면가',c:'#2ea3ff',w:1});
+            
             if(vwL!=null)marks.push({v:vwL,n:'동결 본전(명목)',c:'var(--buy)',w:2});
             if(typeof netVW!=='undefined'&&netVW!=null)marks.push({v:netVW,n:'넷 본전(헤지 차감)',c:'#00e5a0',w:3});
             if(typeof netBP!=='undefined'&&netBP!=null)marks.push({v:netBP,n:'넷 전투축',c:'var(--gold2)',w:3});
             if(wgj!=null)marks.push({v:wgj,n:'합산 기준가(파동 캔들)',c:'#7ec8ff',w:2});
             if(wavg!=null)marks.push({v:wavg,n:'합산 평균',c:'#7ec8ff',w:2});
             steps.forEach(function(x,ii){if(ii>0)marks.push({v:x.vw,n:x.d+' 계단',c:x.alive?'rgba(35,211,158,.55)':'rgba(139,148,168,.35)',w:1});});
-            if(surfS!=null)marks.push({v:surfS,n:'매도 표면가',c:'#ff9f43',w:1});
+            
             if(vwS!=null)marks.push({v:vwS,n:'매도 실존가',c:'var(--sell)',w:2});
             if(rollS!=null)marks.push({v:rollS,n:'매도 굴림(라이브)',c:'#ff5a6e',w:3});
             
@@ -19120,8 +19118,8 @@ function viewWhale(){
   // ⚔ 결전 3선 - 상승기준(매도평단)/전투지역(전투포인트)/하락기준(매수평단)
   const postTp=(bGj+newSellAvg)/2;   // 동률 후 새 전투포인트(매수·블렌드매도 중간)
   // 결전 3선 칸: 평균가(크게) + 최대/최소 예상가(기준가·중심가 중 큰/작은 것). 평균이 어떻게 나왔는지 보이게.
-  const col3=(lbl,cv,g,c,sub,bg,last,roll)=>`<div style="flex:${bg?1.18:1};padding:7px 5px;${last?'':'border-right:1px solid var(--bd);'}${bg?'background:rgba(214,162,58,.1);':''}"><div style="color:${cv};font-weight:700">${lbl}</div><div style="font-size:16px;font-weight:800;color:${cv};margin:1px 0 0">${f0((g+c)/2)}</div><div style="font-size:8.5px;color:${cv};opacity:.85">표면가</div>${roll?`<div style="font-size:13.5px;font-weight:800;color:${cv};margin-top:3px">${f0(roll)}</div>`:`<div style="font-size:13.5px;font-weight:800;color:${cv};opacity:.5;margin-top:3px">—</div>`}<div style="font-size:8.5px;color:${cv};opacity:.85;margin-bottom:3px">굴림실존가</div><div class="sub" style="font-size:9px;line-height:1.55">최대 예상가(${g>=c?'기준가':'중심가'}) <b>${f0(Math.max(g,c))}</b><br>최소 예상가(${g>=c?'중심가':'기준가'}) <b>${f0(Math.min(g,c))}</b><br>${sub}</div></div>`;
-  
+  const col3=(lbl,cv,g,c,sub,bg,last,roll)=>`<div style="flex:${bg?1.18:1};padding:7px 5px;${last?'':'border-right:1px solid var(--bd);'}${bg?'background:rgba(214,162,58,.1);':''}"><div style="color:${cv};font-weight:700">${lbl}</div><div style="font-size:16px;font-weight:800;color:${cv};margin:1px 0 0">${f0((g+c)/2)}</div><div style="font-size:8.5px;color:${cv};opacity:.85">중앙</div><div class="sub" style="font-size:9px;line-height:1.55">최대 예상가(${g>=c?'기준가':'중심가'}) <b>${f0(Math.max(g,c))}</b><br>최소 예상가(${g>=c?'중심가':'기준가'}) <b>${f0(Math.min(g,c))}</b><br>${sub}</div></div>`;
+  // 위치 막대바 - 왼쪽=하락기준(bAvg) / 중심=전투지역(tpAvg) / 오른쪽=상승기준(sAvg), 현재가 실시간 마커
   const posBar=(lo,mid,hi,cur)=>{const span=(hi-lo)||1,pos=v=>Math.max(0,Math.min(100,(v-lo)/span*100)),pp=pos(cur),mp=pos(mid),off=cur<lo?'⚠ 하락기준 아래 이탈':cur>hi?'⚠ 상승기준 위 돌파':'';return `<div style="padding:26px 18px 8px;position:relative">
       <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(239,83,80,.5),rgba(214,162,58,.35) 50%,rgba(45,212,150,.5))">
         <div style="position:absolute;left:${mp.toFixed(1)}%;top:-4px;width:2px;height:22px;background:var(--gold2);transform:translateX(-50%);box-shadow:0 0 4px var(--gold2)"></div>
