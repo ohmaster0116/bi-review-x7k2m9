@@ -13246,10 +13246,17 @@ function waveBook(tf,ax){try{
   
   
   
-  var _px=A[n-1].c;
-  var _dn=stepsAll.filter(function(st){return st.alive&&st.vw!=null&&st.vw<=_px;}).map(function(st){return st.vw;});
-  var rep=_dn.length?Math.max.apply(null,_dn):null;
-  var repAlive=stepsAll.filter(function(st){return st.alive;}).length;
+  
+  
+  
+  
+  
+  
+  
+  var _px=A[n-2]!=null?A[n-2].c:A[n-1].c;                       
+  var _sv=stepsAll.filter(function(st){return st.vw!=null&&st.vw<=_px;});   
+  var rep=_sv.length?_sv[_sv.length-1].vw:null;                 
+  var repAlive=_sv.length;
   return {s0:A[s0].t,root:g(A[s0]),surf:surf,sitga:sitga,roll:roll,steps:steps,nInc:inc.length,deadT:deadT,revT:revT,stepsAll:stepsAll,rep:rep,nAlive:repAlive};
 }catch(e){return null;}}
 
@@ -16464,10 +16471,12 @@ function sellBook(tf,ax){try{
     }
     var u=0,v=0; for(var k2=s0;k2<n-1;k2++){u+=g(A[k2])*A[k2].v; v+=A[k2].v;}
     var sitga=v>0?u/v:null;
-    var up=steps.filter(function(st){return st.alive&&st.vw>px;}).map(function(st){return st.vw;});
+    
+    var _cx2=A[n-2]!=null?A[n-2].c:px;
+    var _sv2=steps.filter(function(st){return st.vw!=null&&st.vw>=_cx2;});
     return {s:s0,e:n-2,s0:s0,root:g(A[s0]),steps:steps,sitga:sitga,roll:sitga,
-            rep:up.length?Math.min.apply(null,up):null,
-            nInc:steps.length,nAlive:steps.filter(function(st){return st.alive;}).length,
+            rep:_sv2.length?_sv2[_sv2.length-1].vw:null,
+            nInc:steps.length,nAlive:_sv2.length,
             life:n-1-s0,cands:cands.length};
   };
   for(var q=cands.length-1;q>=0;q--){ var b=build(cands[q]); if(b.rep!=null)return b; }   
