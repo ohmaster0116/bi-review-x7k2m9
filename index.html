@@ -9941,17 +9941,44 @@ function waveDetailPanel(){try{
 
 
 
+
+
+var waveAx='기준값';
+function setWaveAx(a){ waveAx=a; try{render();}catch(e){} }
 function viewWave(){
   const btn=['BTC','ETH','SOL'].map(c=>`<button onclick="setWaveCoin('${c}')" style="font-size:11.5px;padding:3px 12px;border-radius:6px;cursor:pointer;border:1px solid ${c===waveCoin?'var(--gold2)':'var(--bd)'};background:${c===waveCoin?'rgba(214,162,58,.15)':'transparent'};color:${c===waveCoin?'var(--gold2)':'var(--tx2)'};font-weight:${c===waveCoin?700:400}">${c}</button>`).join(' ');
+  
+  
+  const axBtn=['기준값','중심값'].map(a=>`<button onclick="setWaveAx('${a}')" style="font-size:12.5px;font-weight:${a===waveAx?700:400};padding:6px 16px;border:none;border-bottom:2px solid ${a===waveAx?'var(--gold2)':'transparent'};background:none;color:${a===waveAx?'var(--gold2)':'var(--tx2)'};cursor:pointer">${a} 축</button>`).join('');
+  const axTab=`<div style="display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:0 0 10px">${axBtn}<span class="sub" style="margin-left:auto;align-self:center;font-size:10.5px">${waveAx==='중심값'?'저항·지지의 한가운데로 잰 축':'봉 전체의 무게중심으로 잰 축'}</span></div>`;
   
   const head=`<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">코인 테스트기:</span>${btn}${waveCoin!=='BTC'?`<span class="sub" style="color:var(--gold2)">- ${waveCoin} · 3코인 검증 통과 엔진(파동·국면·미확인·합의)만 이식 · 받침/벽/고래는 BTC 전용</span>`:''}</div>`;
   if(waveCoin!=='BTC'&&!COINE[waveCoin])return head+`<div class="loading">${waveCoin} 데이터 수신 중… (바이낸스 직접 · 최초 1회 ~10초)</div>`;
   const _E0=E; if(waveCoin!=='BTC')E=COINE[waveCoin];
+  const _AX0=window.__WAVE_AX; window.__WAVE_AX=(waveAx==='중심값')?'중심값':null;
+  
+  
+  
+  
+  
+  
+  if(waveAx==='중심값'){
+    try{
+      if(!window.__AXE||window.__AXE._src!==E){
+        var _cE={_src:E};
+        for(var _k in E){ if(!Array.isArray(E[_k]))continue;
+          _cE[_k]=E[_k].map(function(bb){ var o2={}; for(var f in bb)o2[f]=bb[f];
+            o2.gijun=(bb.h+bb.l+2*bb.c)/4; return o2; }); }
+        window.__AXE=_cE;
+      }
+      E=window.__AXE;
+    }catch(e){}
+  }
   try{
-    if(wvSec==='전투')return head+viewWaveBattle();
-    if(wvSec==='차트')return head+wvSecHtml();
-    return head+viewWaveInner();
-  }finally{E=_E0;}
+    if(wvSec==='전투')return axTab+head+viewWaveBattle();
+    if(wvSec==='차트')return axTab+head+wvSecHtml();
+    return axTab+head+viewWaveInner();
+  }finally{E=_E0; window.__WAVE_AX=_AX0;}
 }
 
 function viewWaveBattle(){
@@ -13091,9 +13118,22 @@ function _wbFB(kind,tf){try{
   if(kind==='frameSellVW')return wb.frameSellVW3||null;
   return null;
 }catch(e){return null;}}
-function waveBook(tf){try{
+function waveBook(tf,ax){try{
+  
+  
+  
+  
+  
+  
+  
+  
   var A=E[tf]; if(!A||A.length<10)return _wbFB('wb',tf);
-  var g=function(b){return b.gijun!=null?b.gijun:((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+  
+  
+  ax=ax||window.__WAVE_AX;
+  var _cx=(ax==='중심값');
+  var g=_cx?function(b){return (b.h+b.l+2*b.c)/4;}
+          :function(b){return b.gijun!=null?b.gijun:((b.o+b.c)/2+(b.h+b.l)/2)/2;};
   var n=A.length;                       
   
   
@@ -16346,7 +16386,7 @@ function volPanel(){try{
 
 
 
-function sellBook(tf){try{
+function sellBook(tf,ax){try{   
   
   
   
@@ -16362,7 +16402,9 @@ function sellBook(tf){try{
   
   tf=tf||'d1';
   var A=E[tf]; if(!A||!A.length)return _wbFB('sell',tf); var n=A.length, px=A[n-1].c;
-  var g=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+  ax=ax||window.__WAVE_AX;
+  var g=(ax==='중심값')?function(b){return (b.h+b.l+2*b.c)/4;}
+                      :function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
   var V=function(b){return (b.o+b.h+b.l)/3;};
   var cands=[];
   for(var i=Math.max(1,n-90);i<n-2;i++){
