@@ -10287,26 +10287,33 @@ function wgTier1(tfs){
     });
     if(!out)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
     
-    var items=[];
+    
+
+    var mkSeg=function(arr,nm,c){
+      if(!arr.length)return '';
+      arr.sort(function(a,b){ return b.v-a.v; });
+      var rows=arr.map(function(it){
+        var gp=(it.v-px)/px*100;
+        return '<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:10.5px">'
+          +'<span style="color:'+it.c+'">'+it.n+'</span>'
+          +'<span class="num" style="color:'+it.c+'">'+f(it.v)
+          +' <span class="sub" style="font-size:9px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span></span></div>';
+      }).join('');
+      return '<div style="margin-top:5px"><b style="font-size:10.5px;color:'+c+'">'+nm+'</b>'+rows+'</div>';
+    };
+    var Lg=[], Sh=[], Cm=[];
     tfs.forEach(function(tf){
       var L=gkWb(tf,'buy'), S=gkWb(tf,'sell'), n2=NM[tf];
-      if(S){ items.push({v:S.root,n:n2+' 숏 뿌리',c:'var(--sell)'}); items.push({v:S.rep,n:n2+' 숏 실존가',c:'var(--sell)'}); }
+      if(L){ Lg.push({v:L.rep,n:n2+' 롱 실존가',c:'var(--buy)'}); Lg.push({v:L.root,n:n2+' 롱 뿌리',c:'var(--buy)'}); }
+      if(S){ Sh.push({v:S.rep,n:n2+' 숏 실존가',c:'var(--sell)'}); Sh.push({v:S.root,n:n2+' 숏 뿌리',c:'var(--sell)'}); }
       if(L&&S){ var cen=(L.root+S.root)/2;
-        items.push({v:(S.root+cen)/2,n:n2+' 하프(숏측)',c:'var(--tx2)'});
-        items.push({v:cen,n:n2+' 뿌리 중심',c:'var(--gold2)'});
-        items.push({v:(cen+L.root)/2,n:n2+' 하프(롱측)',c:'var(--tx2)'}); }
-      if(L){ items.push({v:L.rep,n:n2+' 롱 실존가',c:'var(--buy)'}); items.push({v:L.root,n:n2+' 롱 뿌리',c:'var(--buy)'}); }
+        Cm.push({v:(S.root+cen)/2,n:n2+' 하프(숏측)',c:'var(--tx2)'});
+        Cm.push({v:cen,n:n2+' 뿌리 중심',c:'var(--gold2)'});
+        Cm.push({v:(cen+L.root)/2,n:n2+' 하프(롱측)',c:'var(--tx2)'}); }
     });
-    items.push({v:px,n:'현재가',c:'#ff6d00',px:1});
-    items.sort(function(a,b){ return b.v-a.v; });
-    var det=items.map(function(it){
-      var gp=it.px?null:(it.v-px)/px*100;
-      return '<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:10.5px'
-        +(it.px?';background:rgba(255,109,0,.10);border-radius:4px;padding-left:5px;padding-right:5px':'')+'">'
-        +'<span style="color:'+it.c+'">'+it.n+'</span>'
-        +'<span class="num" style="color:'+it.c+'">'+f(it.v)
-        +(gp==null?'':' <span class="sub" style="font-size:9px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span>')+'</span></div>';
-    }).join('');
+    var det='<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:10.5px;background:rgba(255,109,0,.10);border-radius:4px;padding-left:5px;padding-right:5px">'
+      +'<span style="color:#ff6d00">현재가</span><span class="num" style="color:#ff6d00">'+f(px)+'</span></div>'
+      +mkSeg(Sh,'숏','var(--sell)')+mkSeg(Cm,'축 공용','var(--gold2)')+mkSeg(Lg,'롱','var(--buy)');
     return '<div style="padding:4px 14px 11px">'+out
       +'<div class="sub" style="font-size:10px;margin-top:6px">갈림의 사실 서술이며 매매 지시가 아닙니다.</div>'
       +'<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">값 전체 보기</summary>'
@@ -13927,9 +13934,17 @@ function waveNineTable(){try{
     if(!b||b.rep==null){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="2">산출 대기</td></tr>'; continue; }
     
     
-    rows+='<tr><td class="l" style="font-weight:700">'+nm+'</td>'
-       +'<td class="num" style="color:var(--gold2);font-weight:700">'+f0(b.rep!=null?b.rep:b.sitga)+'</td>'
+    
+
+
+    var sb=null; try{ sb=(((((window.__CRON||{}).verdict_live||{}).data||{})['파동']||{}).wb||{})['sell_'+tf]||null; }catch(e){ sb=null; }
+    rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--buy);font-weight:400">롱</span></td>'
+       +'<td class="num" style="color:var(--buy);font-weight:700">'+f0(b.rep!=null?b.rep:b.sitga)+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(b.root)+'</td></tr>';
+    if(sb&&sb.rep!=null)
+      rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--sell);font-weight:400">숏</span></td>'
+       +'<td class="num" style="color:var(--sell);font-weight:700">'+f0(sb.rep)+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(sb.root)+'</td></tr>';
   }
   return '<div class="panel" id="waveNine"><div class="hd">파동 <span class="sub">- 일·주·월 · 실존가는 생존 최전방 층까지 형성된 값</span></div>'
     +'<div class="scroll"><table class="tw"><thead><tr><th class="l">TF</th><th>실존가</th><th>뿌리</th></tr></thead>'
