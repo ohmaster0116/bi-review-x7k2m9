@@ -1701,21 +1701,10 @@ let wvTf='d1', wvChart=null, wvCs=null, wvBs=null, wvSs=null, _wvKey='';
 function setWvTf(k){wvTf=k;_wvKey='';render();}
 
 
-function wvYoPhase(){
-  try{
-    if(waveCoin==='BTC'&&typeof wbFull==='function'&&!wbFull('d1'))return null;   
-    const A=E.d1;if(!A||A.length<10)return null;
-    const px=A[A.length-2].c;   
-    const ls=waveLinesAll('d1');
-    const above=ls.filter(L=>L.dir<0&&L.W>px).sort((x,y)=>x.W-y.W).slice(0,4);
-    const below=ls.filter(L=>L.dir>0&&L.W<px).sort((x,y)=>y.W-x.W).slice(0,4);
-    if(above.length<2||below.length<2)return {phase:'none'};
-    const med=g=>{const xs=g.map(L=>L.surv-1).sort((a,b)=>a-b);return xs[xs.length>>1];};   
-    const supM=med(below), resM=med(above);
-    const supY=supM<=250, resO=resM>150;
-    return {phase:supY&&resO?'YO':(supY?'YY':(resO?'OO':'OY')),supM,resM};
-  }catch(e){return null;}
-}
+
+
+
+
 
 function wvHistory(A2,upto){
   const out=[]; const st={'1':[0,null,0,[],null],'-1':[0,null,0,[],null]}; const dirs=[0];
@@ -10849,10 +10838,7 @@ function viewWaveInner(){
   const lyBtnW=['입문','숙련','운용'].map(v=>`<button onclick="setLayer('${v}')" style="font-size:10.5px;padding:2px 9px;border-radius:5px;cursor:pointer;border:1px solid ${v===uiLayer?'var(--gold2)':'var(--bd)'};background:${v===uiLayer?'rgba(214,162,58,.15)':'transparent'};color:${v===uiLayer?'var(--gold2)':'var(--tx2)'};font-weight:${v===uiLayer?700:400}">${v}</button>`).join(' ');
   const _html=`<h2 class="sec" style="margin:0 0 12px">파동 분석 <span class="sub">- 주체 평단(파동선) 지도 · 종가 이탈=힘 약화 신호(사망은 뿌리 이탈뿐) (3코인 검증·케빈 하니스 1:1 대조)</span> <span style="margin-left:8px">${lyBtnW}</span></h2>
     <div class="panel" style="border:1px solid ${badge[1]}"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:${badge[1]};font-size:14px">${badge[0]}</b><span class="sub" style="font-size:11.5px">${badge[2]}</span></div></div>
-    ${(function(){const yp=wvYoPhase();if(!yp)return '';
-      const YO_N={BTC:'+2.6% (N476)',ETH:'+2.8% (N867)',SOL:'+3.7% (N426)'};
-      if(yp.phase==='YO')return `<div class="panel" style="border:1px solid var(--buy)"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:var(--buy);font-size:14px">⏳ 생명기한 국면 = 늙은 벽 아래 어린 바닥</b><span class="sub" style="font-size:11.5px">실측 10일 ${YO_N[waveCoin]||YO_N.BTC} · 지지축 나이 ${yp.supM}일·저항축 ${yp.resM}일 - 국면 판독기(진입 신호 아님, 3자 검증·명세 c06bbe4)</span></div></div>`;
-      return `<div class="panel"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:var(--tx2);font-size:13px">⏳ 생명기한 국면 - 방향 중립</b><span class="sub" style="font-size:11.5px">${yp.phase==='none'?'지도 없음(근접 파동선 부족)':'지지축 나이 '+yp.supM+'일 · 저항축 '+yp.resM+'일 - YO(늙은 벽 아래 어린 바닥) 아님'} · 국면 판독기(진입 신호 아님)</span></div></div>`;})()}
+
     ${tzSidePanel()}${tzClusterPanel()}
 
     <div class="panel" style="border:1px solid ${ws.mode==='none'?'var(--bd)':dirC}"><div style="padding:13px 16px;font-size:14px;line-height:1.8">${saga}<div style="font-size:12px;color:var(--tx2);margin-top:6px">${perLine}</div>
