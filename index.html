@@ -10120,14 +10120,16 @@ function setWvSec(s){wvSec=s;render();if(s==='사례')setTimeout(()=>{const el=d
 function waveDetailPanel(){try{
   var px=E.d1[E.d1.length-1].c;
   var f=function(v){return v==null?'없음':'$'+Math.round(v).toLocaleString('en-US');};
-  var mk=function(tf,label,maxN){
+  
+
+  var mk=function(tf,label,maxN,side){
     var A=E[tf]; var L=waveLedger(tf); if(!L||!A)return '';
     var dl=function(i){var d=new Date(A[i].t);return dlY(d);};
     var g2=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
     var n=A.length-1;
-    var alive=L.waves.filter(function(w){return w.open||w.death==null;});
-    var dead=L.waves.filter(function(w){return !w.open&&w.death!=null;}).slice(-3);
-    var ws=alive.concat(dead).sort(function(a,b){return b.s-a.s;}).slice(0,maxN)
+    
+    var alive=L.waves.filter(function(w){return (w.open||w.death==null)&&(side==null||(side>0?w.dir>0:w.dir<0));});
+    var ws=alive.sort(function(a,b){return b.s-a.s;}).slice(0,maxN)
       .map(function(w){var vw=null;try{vw=vwOfWave(A,w)||w.line;}catch(e){vw=w.line;}return {w:w,vw:vw};})
       .sort(function(a,b){return (b.vw||0)-(a.vw||0);});   
     var rows=ws.map(function(o){
@@ -10146,7 +10148,7 @@ function waveDetailPanel(){try{
       var ladder=(!w.open&&w.death==null)?(stAlive+'/'+stTot+' 생존'):'없음';
       return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
     }).join('');
-    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부 + 최근 소멸 3개(흐림 · 이력)</span></div><div class="scroll"><table><thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부</span></div><div class="scroll"><table><thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   };
   
   
@@ -10157,10 +10159,17 @@ function waveDetailPanel(){try{
   
   var wStat='<div class="sub" style="font-size:11px;line-height:1.9;margin-top:6px">주봉 판정은 <b>종가</b>로 봅니다 - 장중 이탈은 흔들기, 종가 이탈이 실제 이탈입니다.</div>';
   
-  var ltBtn=[['d1','일봉'],['w1','주봉']].map(function(x){return '<button onclick="setWvLT(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:4px 16px;border-radius:7px;cursor:pointer;border:1px solid '+(wvLT===x[0]?'var(--gold2)':'var(--bd)')+';background:'+(wvLT===x[0]?'rgba(214,162,58,.15)':'transparent')+';color:'+(wvLT===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(wvLT===x[0]?800:400)+'">'+x[1]+'</button>';}).join(' ');
-  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':'주봉')+' 파동 상세 <span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
+  
+
+  var ltBtn=[['d1','일봉'],['w1','주봉'],['M1','월봉']].map(function(x){return '<button onclick="setWvLT(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:4px 16px;border-radius:7px;cursor:pointer;border:1px solid '+(wvLT===x[0]?'var(--gold2)':'var(--bd)')+';background:'+(wvLT===x[0]?'rgba(214,162,58,.15)':'transparent')+';color:'+(wvLT===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(wvLT===x[0]?800:400)+'">'+x[1]+'</button>';}).join(' ');
+  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세 <span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
     +'<div style="padding:8px 15px 0;display:flex;gap:8px">'+ltBtn+'</div>'
-    +'<div style="padding:8px 15px 12px">'+(wvLT==='d1'?mk('d1','일봉 파동',12):mk('w1','주봉 파동',10)+wStat)
+    
+
+    +'<div style="padding:8px 15px 12px">'+(function(){
+        var tf=wvLT, nm=(tf==='d1'?'일봉':tf==='w1'?'주봉':'월봉'), N=(tf==='d1'?12:tf==='w1'?10:8);
+        return mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+(tf==='w1'?wStat:'');
+      })()
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
 }catch(e){return '';}}
 
@@ -10322,8 +10331,10 @@ function wgTier2(tfs){
       var dead=all.filter(function(x){return !x.alive;}).map(function(x){return x.vw;});
       var alive=all.filter(function(x){return x.alive;}).map(function(x){return x.vw;});
       var rep=b.rep;
-      var nb=alive.filter(function(v){return v!==rep&&Math.abs(v-b.root)>0.5;}).sort(function(x,y){return Math.abs(x-rep)-Math.abs(y-rep);}).slice(0,3)
-                  .sort(function(x,y){return y-x;});
+      
+
+      var nb=alive.filter(function(v){return v!==rep&&Math.abs(v-b.root)>0.5;})
+                  .sort(function(x,y){return Math.abs(x-rep)-Math.abs(y-rep);}).slice(0,3);
       var s1=dead.length?('<div style="font-size:10.5px;color:var(--tx3)">소멸 '+dead.length+'층 <span class="num">('
               +f(Math.max.apply(null,dead))+' … '+f(Math.min.apply(null,dead))+')</span></div>'):'';
       var s2='<div style="font-size:11.5px;margin:2px 0"><b style="color:'+c+'">실존가 '+f(rep)+'</b>'
@@ -10465,7 +10476,9 @@ function viewWave(){
     
     
     
-    var _wbp=''; try{_wbp=waveBookPanel()||'';}catch(e){_wbp='';}
+    
+
+
     if(wvSec==='전투')return axTab+head+viewWaveBattle();
     if(wvSec==='차트')return axTab+head+wvSecHtml();
     return axTab+head+viewWaveInner();
@@ -10809,7 +10822,7 @@ function viewWaveInner(){
       :['역풍 합의 - 롱 금지','var(--sell)',`긴 호흡(${at.sells.join('·')})도 짧은 호흡(30분~4시간)도 전부 매도 - 롱 금지·관망. 실측 다음 캔들 −0.08~−0.27%.`];}
   else badge=['혼조 - 교차 신호 없음','var(--tx2)',`지금은 ${pTxt}로 엇갈려 있어 방향 신호가 없습니다 - 파동선 사수 여부만 보세요. <span class="sub">(단기 과열 상태의 숏 합의는 신호로 게시하지 않습니다)</span>`];
   const lyBtnW=['입문','숙련','운용'].map(v=>`<button onclick="setLayer('${v}')" style="font-size:10.5px;padding:2px 9px;border-radius:5px;cursor:pointer;border:1px solid ${v===uiLayer?'var(--gold2)':'var(--bd)'};background:${v===uiLayer?'rgba(214,162,58,.15)':'transparent'};color:${v===uiLayer?'var(--gold2)':'var(--tx2)'};font-weight:${v===uiLayer?700:400}">${v}</button>`).join(' ');
-  const _html=`<h2 class="sec" style="margin:0 0 12px">파동 분석 <span class="sub">- 주체 평단(파동선) 지도 · 종가 이탈=힘 약화 신호(사망은 뿌리 함락뿐) (3코인 검증·케빈 하니스 1:1 대조)</span> <span style="margin-left:8px">${lyBtnW}</span></h2>
+  const _html=`<h2 class="sec" style="margin:0 0 12px">파동 분석 <span class="sub">- 주체 평단(파동선) 지도 · 종가 이탈=힘 약화 신호(사망은 뿌리 이탈뿐) (3코인 검증·케빈 하니스 1:1 대조)</span> <span style="margin-left:8px">${lyBtnW}</span></h2>
     <div class="panel" style="border:1px solid ${badge[1]}"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:${badge[1]};font-size:14px">${badge[0]}</b><span class="sub" style="font-size:11.5px">${badge[2]}</span></div></div>
     ${(function(){const yp=wvYoPhase();if(!yp)return '';
       const YO_N={BTC:'+2.6% (N476)',ETH:'+2.8% (N867)',SOL:'+3.7% (N426)'};
@@ -13999,7 +14012,7 @@ function waveBookPanel(){try{
   var arM=0;try{var MM=E.M1;var nm4=Math.min(24,MM.length-1),s4=0;for(var i4=MM.length-1-nm4;i4<MM.length-1;i4++)s4+=MM[i4].h-MM[i4].l;arM=s4/nm4;}catch(e){}
   var moO=E.M1[E.M1.length-1].o, posAR=arM>0?(px-moO)/arM:null;
   var prob='';   
-  return '<div class="panel" style="border:1px solid rgba(0,229,160,.35)"><div class="hd" style="color:#00e5a0">🌱 현 파동 장부 - 뿌리·실존가·전투존 <span class="sub">정본 산식(전 층 보존·wick=전투·사망=뿌리 함락) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?(sigBadge('전략','R1·H2·R2 4자 통과')+sigBadge('가설','H1·bin 민감도 진행')):'')+'</div>'
+  return '<div class="panel" style="border:1px solid rgba(0,229,160,.35)"><div class="hd" style="color:#00e5a0">🌱 현 파동 장부 - 뿌리·실존가·전투존 <span class="sub">정본 산식(전 층 보존·wick=전투·사망=뿌리 아래 마감) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?(sigBadge('전략','R1·H2·R2 4자 통과')+sigBadge('가설','H1·bin 민감도 진행')):'')+'</div>'
     +'<div style="padding:10px 15px 12px">'
     +'<div style="padding:10px 13px;margin-bottom:9px;background:rgba(0,229,160,.06);border-left:3px solid #00e5a0;border-radius:9px;font-size:12.5px;line-height:1.85">'+banner+duel+'</div>'
     +tbl+strip+wbProfileBars(bd.s0,px,cLo,cHi)+prob
