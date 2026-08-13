@@ -10223,60 +10223,115 @@ function gkPx(){ try{ var v=(((window.__CRON||{}).verdict_live||{}).data)||{}; r
 
 
 function wgTier1(tfs){
+  
+
+
+
+
+
   try{
     var px=gkPx(); if(px==null)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
     var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
-    var NM={d1:'일',w1:'주',M1:'월'};
-    var items=[];
+    var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
+    var nx=function(b,up){
+      try{
+        var st=(b.stepsAll||[]).filter(function(x){return x.alive;});
+        var c=st.map(function(x){return x.vw;}).filter(function(v){ return up?(v>b.rep):(v<b.rep); });
+        if(!c.length)return null;
+        return up?Math.min.apply(null,c):Math.max.apply(null,c);
+      }catch(e){ return null; }
+    };
+    var out='';
     tfs.forEach(function(tf){
       var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
-      if(L){ items.push({v:L.root,n:NM[tf]+' 롱 뿌리',c:'var(--buy)',o:.55});
-             items.push({v:L.rep,n:NM[tf]+' 롱 실존가',c:'var(--buy)',o:1,b:1}); }
-      if(S){ items.push({v:S.rep,n:NM[tf]+' 숏 실존가',c:'var(--sell)',o:1,b:1});
-             items.push({v:S.root,n:NM[tf]+' 숏 뿌리',c:'var(--sell)',o:.55}); }
-      if(L&&S) items.push({v:(L.root+S.root)/2,n:NM[tf]+' 중심',c:'var(--gold2)',o:.8});
+      if(!L&&!S)return;
+      var nm=NM[tf];
+      
+      var l1='<div style="font-size:12.5px;line-height:1.85;padding:2px 0">'
+        +'<b style="color:#ff6d00">현재가 '+f(px)+'</b>'
+        +(L?' <span class="sub">·</span> 아래 받침 <b style="color:var(--buy)">'+f(L.rep)+'</b>'
+            +' <span class="sub" style="font-size:10px">('+nm+' 롱 실존가 · '+(L.nAlive||0)+'층이 버팀)</span>':'')
+        +(S?' <span class="sub">·</span> 위 벽 <b style="color:var(--sell)">'+f(S.rep)+'</b>'
+            +' <span class="sub" style="font-size:10px">('+nm+' 숏 실존가 · '+(S.nAlive||0)+'층이 누름)</span>':'')
+        +'</div>';
+      
+      var l2='', l3='';
+      if(S){ var w2=nx(S,true);
+        l2='<div style="font-size:11.5px;line-height:1.8;color:var(--tx2);padding:1px 0">'
+          +'위 벽을 종가로 넘으면 <span class="sub">:</span> 매도 층 1 소멸 · 벽이 '
+          +'<b style="color:var(--sell)">'+(w2!=null?f(w2):f(S.root)+' (뿌리)')+'</b> 로 물러납니다</div>'; }
+      if(L){ var s2=nx(L,false);
+        l3='<div style="font-size:11.5px;line-height:1.8;color:var(--tx2);padding:1px 0">'
+          +'아래 받침을 종가로 잃으면 <span class="sub">:</span> 매수 층 1 소멸 · 받침이 '
+          +'<b style="color:var(--buy)">'+(s2!=null?f(s2):f(L.root)+' (뿌리)')+'</b> 로 물러납니다'
+          +' <span class="sub" style="font-size:10px">· 뿌리 '+f(L.root)+' 아래 마감이면 파동 소멸</span></div>'; }
+      out+='<div style="padding:7px 0;border-top:1px solid rgba(28,36,51,.55)">'+l1+l2+l3+'</div>';
     });
-    if(!items.length)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
-    items.push({v:px,n:'현재가',c:'#ff6d00',o:1,b:1,px:1});
+    if(!out)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
+    
+    var items=[];
+    tfs.forEach(function(tf){
+      var L=gkWb(tf,'buy'), S=gkWb(tf,'sell'), n2=NM[tf];
+      if(S){ items.push({v:S.root,n:n2+' 숏 뿌리',c:'var(--sell)'}); items.push({v:S.rep,n:n2+' 숏 실존가',c:'var(--sell)'}); }
+      if(L&&S){ var cen=(L.root+S.root)/2;
+        items.push({v:(S.root+cen)/2,n:n2+' 하프(숏측)',c:'var(--tx2)'});
+        items.push({v:cen,n:n2+' 뿌리 중심',c:'var(--gold2)'});
+        items.push({v:(cen+L.root)/2,n:n2+' 하프(롱측)',c:'var(--tx2)'}); }
+      if(L){ items.push({v:L.rep,n:n2+' 롱 실존가',c:'var(--buy)'}); items.push({v:L.root,n:n2+' 롱 뿌리',c:'var(--buy)'}); }
+    });
+    items.push({v:px,n:'현재가',c:'#ff6d00',px:1});
     items.sort(function(a,b){ return b.v-a.v; });
-    var rows=items.map(function(it){
+    var det=items.map(function(it){
       var gp=it.px?null:(it.v-px)/px*100;
-      return '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;'
-        +(it.px?'background:rgba(255,109,0,.10);border-radius:5px;padding-left:6px;padding-right:6px;':'')+'">'
-        +'<span style="font-size:'+(it.b?'11.5px':'10.5px')+';color:'+it.c+';opacity:'+it.o+';'+(it.b?'font-weight:700':'')+'">'+it.n+'</span>'
-        +'<span class="num" style="font-size:'+(it.b?'12px':'11px')+';color:'+it.c+';opacity:'+it.o+';'+(it.b?'font-weight:800':'')+'">'+f(it.v)
+      return '<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:10.5px'
+        +(it.px?';background:rgba(255,109,0,.10);border-radius:4px;padding-left:5px;padding-right:5px':'')+'">'
+        +'<span style="color:'+it.c+'">'+it.n+'</span>'
+        +'<span class="num" style="color:'+it.c+'">'+f(it.v)
         +(gp==null?'':' <span class="sub" style="font-size:9px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span>')+'</span></div>';
     }).join('');
-    var above=items.filter(function(x){ return !x.px&&x.b&&x.v>px; }).length;
-    var below=items.filter(function(x){ return !x.px&&x.b&&x.v<px; }).length;
-    return '<div style="padding:9px 14px 11px">'+rows
-      +'<div class="sub" style="font-size:10.5px;margin-top:7px;line-height:1.7">현재가 '+f(px)+' 는 실존가 '+below+'개 위 · '+above+'개 아래에 있습니다.'
-      +'<br>값 순서 그대로입니다. 자리 관계만 표기하며 방향을 정하지 않습니다.</div></div>';
+    return '<div style="padding:4px 14px 11px">'+out
+      +'<div class="sub" style="font-size:10px;margin-top:6px">갈림의 사실 서술이며 매매 지시가 아닙니다.</div>'
+      +'<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">값 전체 보기</summary>'
+      +'<div style="padding:5px 0 2px">'+det+'</div></details></div>';
   }catch(e){ return '<div class="sub" style="padding:9px 14px">산출 대기</div>'; }
 }
 
 
 function wgTier2(tfs){
+  
+
+
+
+
+
   try{
     var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
     var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
+    var mk=function(b,nm,c){
+      if(!b)return '';
+      var all=(b.stepsAll||[]);
+      var dead=all.filter(function(x){return !x.alive;}).map(function(x){return x.vw;});
+      var alive=all.filter(function(x){return x.alive;}).map(function(x){return x.vw;});
+      var rep=b.rep;
+      var nb=alive.filter(function(v){return v!==rep&&Math.abs(v-b.root)>0.5;}).sort(function(x,y){return Math.abs(x-rep)-Math.abs(y-rep);}).slice(0,3)
+                  .sort(function(x,y){return y-x;});
+      var s1=dead.length?('<div style="font-size:10.5px;color:var(--tx3)">소멸 '+dead.length+'층 <span class="num">('
+              +f(Math.max.apply(null,dead))+' … '+f(Math.min.apply(null,dead))+')</span></div>'):'';
+      var s2='<div style="font-size:11.5px;margin:2px 0"><b style="color:'+c+'">실존가 '+f(rep)+'</b>'
+             +' <span class="sub" style="font-size:10px">(생존 '+(b.nAlive||0)+'층 중 최전방)</span></div>';
+      var s3=nb.length?('<div style="font-size:10.5px;color:var(--tx2)">이웃 생존 층 <span class="num">'
+              +nb.map(f).join(' · ')+'</span></div>'):'';
+      var s4='<div style="font-size:10.5px;color:var(--tx3)">뿌리(사망선) <span class="num">'+f(b.root)+'</span></div>';
+      return '<div style="margin-top:6px"><b style="color:'+c+';font-size:11px">'+nm+'</b>'+s1+s2+s3+s4+'</div>';
+    };
     var out=tfs.map(function(tf){
-      var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
-      var mk=function(b,nm,c){
-        if(!b)return '';
-        var st=(b.steps||[]).slice(-5);
-        var cells=st.map(function(x,i){ return '<span style="color:'+c+';opacity:'+(i===st.length-1?1:.6)+'">'+f(x.vw)+'</span>'; }).join(' <span class="sub">→</span> ');
-        return '<div style="margin-top:5px;font-size:10.5px"><b style="color:'+c+'">'+nm+'</b> '
-          +'<span class="sub">'+(b.nAlive||0)+'/'+(b.nInc||0)+'층 생존 · 뿌리 '+f(b.root)+'</span><br>'
-          +'<span style="font-size:10px">'+cells+'</span></div>';
-      };
-      var body=mk(L,'롱','var(--buy)')+mk(S,'숏','var(--sell)');
+      var body=mk(gkWb(tf,'buy'),'롱','var(--buy)')+mk(gkWb(tf,'sell'),'숏','var(--sell)');
       if(!body)return '';
-      return '<div style="padding:6px 0;border-top:1px solid rgba(28,36,51,.6)"><b style="font-size:11px">'+NM[tf]+'</b>'+body+'</div>';
+      return '<div style="padding:6px 0;border-top:1px solid rgba(28,36,51,.55)"><b style="font-size:11px">'+NM[tf]+'</b>'+body+'</div>';
     }).join('');
     if(!out)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
     return '<div style="padding:5px 14px 11px">'+out
-      +'<div class="sub" style="font-size:10px;margin-top:6px">최근 5층만 표시합니다. 층은 형성 순서대로 쌓인 평단이며, 생존 최전방이 실존가입니다.</div></div>';
+      +'<div class="sub" style="font-size:10px;margin-top:6px">실존가 = 계단에서 살아남은 맨 앞 층입니다. 층이 하나 소멸하면 실존가는 이웃 생존 층으로 물러납니다.</div></div>';
   }catch(e){ return '<div class="sub" style="padding:9px 14px">산출 대기</div>'; }
 }
 
@@ -10338,8 +10393,8 @@ function waveSkeleton(){
     return '<div class="panel" style="margin-top:12px">'
       +'<div style="display:flex;gap:6px;padding:9px 12px 4px;flex-wrap:wrap">'+btn+'</div>'
       +(wvTF==='all'?'<div class="sub" style="padding:0 14px 6px;font-size:10px">일·주·월을 한 화면에 겹쳐 놓습니다. 합쳐서 새 값을 만들지 않습니다.</div>':'')
-      +hd('현재 파동 대치','· 값 순서 그대로')+wgTier1(tfs)
-      +hd('파동이 구성되어온 값들','· 계단 최근 5층')+wgTier2(tfs)
+      +hd('지금 자리','· 받침과 벽')+wgTier1(tfs)
+      +hd('파동이 구성되어온 값들','· 계단')+wgTier2(tfs)
       +hd('무엇을 보나','· 가격 조건')+wgTier3(tfs)
       +wgTier4(tfs)
       +'</div>';
@@ -10402,9 +10457,9 @@ function viewWave(){
     
     
     var _wbp=''; try{_wbp=waveBookPanel()||'';}catch(e){_wbp='';}
-    if(wvSec==='전투')return axTab+ax5+head+_wbp+viewWaveBattle();
+    if(wvSec==='전투')return axTab+head+viewWaveBattle();
     if(wvSec==='차트')return axTab+head+wvSecHtml();
-    return axTab+ax5+head+_wbp+viewWaveInner();
+    return axTab+head+viewWaveInner();
   }finally{E=_E0; window.__WAVE_AX=_AX0;}
 }
 
