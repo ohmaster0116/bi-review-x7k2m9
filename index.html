@@ -13691,8 +13691,16 @@ function waveNineTable(){try{
   var rows='';
   for(var i=0;i<TF.length;i++){
     var nm=TF[i][0], tf=TF[i][1], b=null;
-    try{ b=waveBook(tf); }catch(e){ b=null; }
-    if(!b){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="2">산출 대기</td></tr>'; continue; }
+    
+
+
+
+
+
+
+
+    try{ b=(((((window.__CRON||{}).verdict_live||{}).data||{})['파동']||{}).wb||{})[tf]||null; }catch(e){ b=null; }
+    if(!b||b.rep==null){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="2">산출 대기</td></tr>'; continue; }
     
     
     rows+='<tr><td class="l" style="font-weight:700">'+nm+'</td>'
