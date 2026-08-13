@@ -10752,7 +10752,7 @@ function viewWaveInner(){
       if(yp.phase==='YO')return `<div class="panel" style="border:1px solid var(--buy)"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:var(--buy);font-size:14px">⏳ 생명기한 국면 = 늙은 벽 아래 어린 바닥</b><span class="sub" style="font-size:11.5px">실측 10일 ${YO_N[waveCoin]||YO_N.BTC} · 지지축 나이 ${yp.supM}일·저항축 ${yp.resM}일 - 국면 판독기(진입 신호 아님, 3자 검증·명세 c06bbe4)</span></div></div>`;
       return `<div class="panel"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:var(--tx2);font-size:13px">⏳ 생명기한 국면 - 방향 중립</b><span class="sub" style="font-size:11.5px">${yp.phase==='none'?'지도 없음(근접 파동선 부족)':'지지축 나이 '+yp.supM+'일 · 저항축 '+yp.resM+'일 - YO(늙은 벽 아래 어린 바닥) 아님'} · 국면 판독기(진입 신호 아님)</span></div></div>`;})()}
     ${tzSidePanel()}${tzClusterPanel()}
-    <h2 class="sec" style="margin:14px 0 10px;font-size:15px">① 기간 파동 (일·주·월) <span class="sub">- 주력 · 파동 방향이 수익 드리프트(순방향, 3코인 검증)</span></h2>
+    /* ★[헤븐 08-13] H2 "① 기간 파동" = ★중복 (골격 TF4 버튼이 대체) */
     <div class="panel" style="border:1px solid ${ws.mode==='none'?'var(--bd)':dirC}"><div style="padding:13px 16px;font-size:14px;line-height:1.8">${saga}<div style="font-size:12px;color:var(--tx2);margin-top:6px">${perLine}</div>
     ${(function(){
       try{if(ws.dir>0&&above.length){const g=above[0];const confirmed=px>g.line;
@@ -10760,9 +10760,8 @@ function viewWaveInner(){
       }catch(e){}return '';})()}
     </div></div>
     ${bigBanner}
-    <div class="panel"><div class="hd">🪜 살아있는 파동선 지도 <span class="sub">- 위=주체 숏 진입가(저항층) / 아래=주체 롱 진입가(지지층) · 사망한 선은 반대 역할로 전환</span></div>
-      <div class="scroll"><table><thead><tr><th class="l">역할</th><th>파동선</th><th class="l">이력 (완전 서술)</th><th>층간</th></tr></thead><tbody>${ladder}</tbody></table></div>
-      <div class="note" style="padding:8px 14px;font-size:11px;color:var(--tx2);border-top:1px solid var(--bd);line-height:1.7">· 파동선 = 그 파동 형성기 기준가들의 평균 = <b>주체가 물량을 모은 평단</b>. 터치-반등은 동전(51%·3코인)이라 <b>레벨(터치 매매)이 아니라 경계(누구 영역인가)</b>로 쓰세요. 여러 시간대 평단이 <b>겹친</b> 자리(파동 전투존)는 위치를 별도 표기합니다 - 겹침은 측정 사실로만 표시하며, 방어 확률·강도 주장은 검증 통과 전 게시하지 않습니다.<br>· <b style="color:var(--gold2)">★ 주요 파동선</b> = 형성 5캔들+ 또는 생존 30캔들+ - 이 선들만 힘이 있습니다(지지 방어 후 5일 생존: 대형 24~28% vs 소형 4~14%, 3코인). 흐린 선(소형)은 노이즈에 가까우니 참고만.<br>· <b>종가 방어(기록)</b> = 저가/고가가 선을 건드렸으나 그 날 <b>종가가 선 안쪽으로 되돌아온 횟수</b>(이탈·돌파 판정은 종가 기준). 여러 번 방어된 선일수록 시장이 실제로 시험해본 선이라는 <b>과거 기록</b>이며, 미래에도 지켜진다는 예측이 아닙니다(전체 평균 방어율은 지지 54%·저항 48%로 동전 근처 - 기록으로만 읽으세요).<br>· 계산은 마감 캔들만 사용(당일 진행 캔들 제외) - 데이터 정합 경보(자동)가 뜨면 이 지도를 신뢰하지 마세요.</div></div>
+    /* ★[헤븐 08-13 · 케인 13:15] ★살아있는 파동선 지도 = ★철거 9 (★이사 승인분) ★제거.
+       ★골격 ④단이 ★같은 축이다. ★④단 상세화(사망 이력 등)는 ★다음 단계 */
     ${cases}
     ${uncEta}
     ${mfill}
