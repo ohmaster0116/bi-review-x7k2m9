@@ -216,8 +216,8 @@ const TABIMP={'승률 매매':'#ffd24a','패닉 반등':'#ffd24a','매매 프로
 const TABBOLD={'전략':1,'승률 매매':1,'차트':1,'LIVE':1,'종합 밴드':1,'파동 분석':1,'포지션 진단':1,'고래 추적':1,'상관계수':1,'알고리즘':1,'추세전환가':1};
 
 const BANDMENU={
- '주체형성가':{c:'주체·본전',s:_=>'사수 시 재회복 <b>'+STAT('mp_recover','raw')+'</b>(4자 서명) · 이탈의 8~10%만 가짜(A층)',
-   u:'🔧 <b>주체 평단 방어선</b>, 사수하면 재회복. 이탈해도 8~10%는 가짜(휩쏘)라 종가 확정 전엔 손절 서두르지 말 것. 용도=본전 방어·재진입 기준.'},
+ '주체형성가':{c:'주체·본전',s:_=>'주체가 실제로 잡고 있는 자리 · 종가가 이 선을 잃으면 힘 약화 기준',
+   u:'🔧 <b>주체 평단 방어선</b>, 종가가 이 선 아래로 마감하면 지금까지의 힘이 약해졌다는 기준입니다. 용도=본전 방어·재진입 기준.'},
  
  
  
@@ -1582,7 +1582,7 @@ function viewLedger(){
    {t:'변동폭 확대 창(세션)',lv:'전략',who:'4자 재현·주말 플라시보·기간 생존(창폭 조문 1건 대기)',num:'스퀴즈 기각(압축 0.2~0.5배)·나스닥 개장 점화 11.3% vs 주말 0%',say:'점프는 조용한 뒤가 아니라 이미 움직이는 시장·세션 창에서 - 방향 아님, 손절 슬립 관리용.'},
    {t:'변동폭 보폭 좌표(보폭 예산)',lv:'전략',who:'5자 수렴(한계 5·회귀 3자 byte)·기간 3분할·AR 고유성·벽 기각',num:'range 79~86% AR 안 소진(꼬리 병기)·고점 후 반락 중앙 0.5AR·창=2024~(주 8,093)',say:'평균 변동폭은 봉의 보폭 예산 - 좌표는 이정표이지 벽이 아니다(이 선에서 튕긴다는 뜻 아님). 반락 알고리즘 조문화·앵커(파동 고점) 정밀화 진행 중.'},
    {t:'변동폭 확대 속도 게이지',lv:'전략',who:'p0.000·4시대 OOS 무감쇠',num:'앞 25%서 1.5배속→최종 확대 3배(f^0.45)',say:'봉 마감 전 확대 임박을 규모로 예보 - 방향이 아니라 크기, 진입 타이밍 보조.'},
-   {t:'종가 이탈→재회복',lv:'전략',who:'헤븐 실측',num:'재회복률 '+STAT('mp_recover','raw'),say:'상승봉 평균가를 잠깐 이탈해도 대부분 되돌아온다 - 1회 이탈에 털리지 말 것.'},
+   {t:'종가 이탈→재회복',lv:'전략',who:'헤븐 실측',num:'대조군 미산출',say:'상승봉 평균가를 잠깐 이탈해도 대부분 되돌아온다 - 1회 이탈에 털리지 말 것.'},
    {t:'파동 델타 항등식(순장부)',lv:'전략',who:'회계 항등·P4 실측 정합',num:'Vb(P−B)−Vs(P−S) 상태변수(<100/=100/>100%)',say:'롱·숏 장부의 순차익이 상태를 정한다 - 잠금·수확·언와인드를 한 식으로.'},
    {t:'실존가 괴리 등급',lv:'전략',who:'헤븐 실측(반전 방향)',num:'저괴리(평단 근접)=사망 임박·저가 58~66% wick 관통',say:'현재가가 실존가에서 얼마나 떨어져 있느냐가 등급 - 붙을수록 위태롭고, 실존가는 마감으로 지켜야 하는 선.'},
    {t:'프랙탈 되돌림(약세숏/강세롱)',lv:'가설',who:'BTC+ETH p0.022·4자 검증 중',num:'양방향 대칭 +0.73R·최근창 양수',say:'약세 반등 기준가 저항=숏, 강세 반락 기준가 지지=롱 - 주체가 만든 프랙탈 되돌림.'},
@@ -9859,8 +9859,12 @@ var STAT_CANON={
     note:'강봉 기준가 손절 롱, 케빈 발제·케인 방법론·테리 byte EXACT·성공 심사(4자 수렴)·look-ahead 청정·포워드 원장 가동'},
   golden_bt_days:{v:GOLDEN_BT.Ntot.toLocaleString('en-US')+'일', n:null, asof:'2026-07-15', src:'백테스트', audit:'clean',
     note:'골든 유지율 백테스트 표본 일수, 유지율과 감사 운명 공유(테리 CLEAN 07-30)'},
-  mp_recover:{v:'73~79%', n:null, asof:'2026-07-06', src:'서명(4자 독립 재현)', audit:'clean',
-    note:'종가 이탈 후 실존가(주체 본전) 사수 시 재회복, 이탈 시 51~58%·격차엔 이탈 깊이 효과 혼재(순효과 미식별=게시 제외)'},
+  
+
+
+
+  mp_recover:{v:'대조군 미산출', n:null, asof:'2026-07-06', src:'서명(4자 독립 재현)', audit:'clean',
+    note:'종가 이탈 후 실존가(주체 본전) 사수 여부로 갈리는 성향. 격차엔 이탈 깊이 효과 혼재(순효과 미식별=게시 제외)'},
   gijun_fill:{v:'97.6%', n:null, asof:'2026-08-03', src:'백테스트+거리매칭 대조(케빈 재감사)', audit:'interpretation_fixed',
     note:'미확인 기준가 채움율, ★거리 효과(같은 거리 아무 가격과 동률·순리프트 0.0%p·케빈 재감사 08-03)'},
   golden_x_filter:{v:'X 위 5일 +1.2% vs 아래 +0.2%', n:3216, asof:'2026-07-14', src:'백테스트', audit:'pending',
@@ -10381,7 +10385,7 @@ function viewWaveInner(){
   
   
   const _vwW=(_asofW&&_asofW.dir===ws.dir&&_asofW.vw)?sitgaCanonVW('d1',_asofW.vw):waveVW(E.d1,ws), _bufW=_vwW&&ws.dir>0&&_vwW<ws.line;
-  if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'탈환 저지'}</b>${above.length&&ws.dir>0?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:''}.`;
+  if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${above.length&&ws.dir>0?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:''}.`;
   else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
   else{const hn0=hierNote();
     saga=`<b>무파동</b> - 활성 파동 없음. 박스 문법(받침·되돌림)이 기본값인 구간.`
@@ -13286,7 +13290,7 @@ function bandCharPanel(){
     const cn=BANDCHAR.capNext[rg];
     
     const ws2=waveState('d1');
-    const subj=ws2&&ws2.mode!=='none'?`파동선 ${f1(ws2.line)} - 사수 시 재회복 <b>${STAT('mp_recover','raw')}</b>(서명)`:'무파동 - 주체 축 공석';
+    const subj=ws2&&ws2.mode!=='none'?`파동선 ${f1(ws2.line)} - 주체 평단 자리`:'무파동 - 주체 축 공석';
     return `<div class="panel" style="margin-top:10px"><div class="hd">밴드 성격 지도 - 국면 가중 <span class="sub">(현재 국면: ${RGK} · 실측 확률=조건부 통계·확정 아님)</span></div>
       <div style="padding:10px 14px;font-size:12px;line-height:1.9">
       <b style="color:var(--gold2)">힘의 균형(편 자체 합산)</b>: ${balTxt} <span class="sub">(N${(BANDCHAR.fadeN[rg]||0).toLocaleString()} - 소폭 우위·단독 매매 근거 아님)</span><br>
@@ -14643,7 +14647,7 @@ var LW_PICK={
        ['conf','겹침 지도','여러 축이 모인 좌표 지도, 자리 식별용(강도 예측력은 실측 미확인)']],
   warn:[['flip','추세전환가 9층','전환 경계에선 손절선이 먼저, 이탈 0%(항등식) 고정 기준'],
         ['sr','지지·저항','경계 국면에서 지지가 지켜지는지 확인용'],
-        ['mp','주체형성가','사수 시 재회복 '+STAT('mp_recover','raw')+', 주체 본전 방어 확인']],
+        ['mp','주체형성가','주체 본전 방어 자리']],
   trend:[['flip','추세전환가 9층','추세 추종의 손절 기준(고정 전환가), 되돌림 진입은 재검증 중'],
          ['sr','지지·저항','눌림에서 받침이 나오는지 확인용'],
          ['tp','전투포인트','두 봉이 합의한 자리, 목표·재진입 좌표로 확인']]};   
@@ -17617,7 +17621,7 @@ function viewDash(){
             else zread='<b style="color:var(--buy)">현재가 '+f0c(px)+'는 숏 실존가를 장중 크게 이탈(돌파)</b> - 숏 커버 연료 구간, 단 종가 확정·재진입 저항 확인.';
             var flow=(recovV>0||resumeV>0)?('<br><span class="sub" style="font-size:10.5px">🔄 살아있는 장부 - 매수봉이 매도 물량 <b>'+Math.round(recovV).toLocaleString()+' BTC 회수</b>(커버)'+(resumeV>0?(' · 잔여 <b>'+Math.round(resumeV).toLocaleString()+' BTC 매수 재개</b>(실존가 상향 반영)'):'')+' - 매 봉 갱신, 멈춘 값 아님.</span>'):'';
             try{window._duelVals={netVW:netVW,netBP:netBP,rollS:sellRef,px:px,zread:zread};}catch(e){}
-            return '<div style="margin-top:11px;padding:12px 15px;background:rgba(70,194,255,.05);border:1px solid var(--bd);border-radius:9px;font-size:11.5px;line-height:1.95"><b style="color:var(--gold2)">롱 실존가 · 숏 실존가 · 경계선</b> - 매수 주체가 마지막 물량을 <b>매도해 차익 내고 동비중 숏</b>을 걸면, 장부가 셋으로 갈린다:<br>· <b style="color:#00e5a0">롱 실제 실존가 '+f0c(netVW)+'</b> = 헤지로 판 몫 차감 + 재개 매수 반영한 <b>남은 롱의 진짜 평단</b>(넷 본전)<br>· <b style="color:var(--sell)">숏 실제 실존가 '+f0c(sellRef)+'</b> = 회수(커버) 차감 후 <b>잔여 숏의 평단</b>'+(vwSe!=null?'':'(굴림 근사)')+'<br>· <b style="color:var(--gold2)">경계선 '+f0c(netBP)+'</b> = 둘의 중간(넷 전투축)'+flow+deadNote+'<br><div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--bd)">📍 '+zread+'</div></div>';
+            return '<div style="margin-top:11px;padding:12px 15px;background:rgba(70,194,255,.05);border:1px solid var(--bd);border-radius:9px;font-size:11.5px;line-height:1.95"><b style="color:var(--gold2)">롱 실존가 · 숏 실존가 · 경계선</b> - 매수 주체가 마지막 물량을 <b>매도해 차익 내고 동비중 숏</b>을 걸면, 장부가 셋으로 갈린다:<br>· <b style="color:#00e5a0">롱 실제 실존가 '+f0c(netVW)+'</b> = 헤지로 판 몫 차감 + 재개 매수 반영한 <b>남은 롱의 진짜 평단</b>(넷 본전)<br>· <b style="color:var(--sell)">숏 실제 실존가 '+f0c(sellRef)+'</b> = 회수(커버) 차감 후 <b>잔여 숏의 평단</b>'+(vwSe!=null?'':'(근사)')+'<br>· <b style="color:var(--gold2)">경계선 '+f0c(netBP)+'</b> = 둘의 중간(넷 전투축)'+flow+deadNote+'<br><div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--bd)">📍 '+zread+'</div></div>';
           })():'')
         +'<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:7px;font-size:12px"><span>현재가 <b style="color:var(--gold2)">'+f0c(px)+'</b></span></div>'
         +'<div class="sub" style="margin-top:5px;font-size:9.5px;color:var(--tx3)">판정=일봉 종가 · 실측 마커=2026-07-08 백테스트(N80~81·전 구간) · 구도 판독이며 방향 예측 아님 · 동비중=총량 회계 근사(테이커 분리 시 재보정)</div>'
@@ -18763,7 +18767,7 @@ function whaleSupply(){
   const cum30=cumS.length>31?cumNow-cumS[cumS.length-31].cum:cumNow;
   const acc=cum30>0;                                     
   let phase, phaseC;
-  if(gap<0&&acc){phase='고래 방어선 아래 · 누적 매수 우세 - 되찾기 밀당(뺏은 뒤 다시 담는 중)';phaseC='var(--buy)';}
+  if(gap<0&&acc){phase='고래 방어선 아래 · 누적 매수 우세';phaseC='var(--buy)';}
   else if(gap<0&&!acc){phase='고래 방어선 아래 · 누적 매도 우세 - 아직 뺏는 중(하방 이격 유지)';phaseC='var(--sell)';}
   else if(gap>=0&&acc){phase='고래 방어선 위 · 누적 매수 우세 - 상방 주도 유지';phaseC='var(--buy)';}
   else{phase='고래 방어선 위 · 누적 매도 우세 - 줄 때 주는 중(차익 실현·상방 내주기)';phaseC='var(--gold2)';}
@@ -18953,7 +18957,7 @@ function whaleSupply(){
         <b style="color:var(--gold2)">이번 파동 판독</b> - 저점 ${cn.current.low_date} ${f0(cn.current.low)}에서 ${liveRise!=null?`현재 <b>+${liveRise.toFixed(1)}%</b>`:''} <span class="sub">(과거 방어 성공 반등폭의 하위 ${cn.current.pct}% 지점 = 아직 초반)</span><br>
         발밑 전투포인트 <b>${f0(_bpNow)}</b> 사수 중 · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b><br>
         프랙탈 투영(시나리오·확정 아님): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
-        <span class="sub">현재 = 매도 고래가 −25% 물린 자리에서 매수가 전투포인트를 탈환한 <b>교두보</b> - 84,920을 회복하기 전까지 고래가 항복한 것은 아닙니다.</span></div>`:''}
+        <span class="sub">현재 = 매도 고래가 −25% 물린 자리에서 매수가 전투포인트 위에 서 있는 <b>자리</b> - 84,920을 회복하기 전까지 고래가 항복한 것은 아닙니다.</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식 · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
     }
@@ -19540,7 +19544,7 @@ function viewWhale(){
       ${levs.slice().reverse().map(x=>{const ab=x.v>px,role=ab?'저항':'지지',c=ab?'var(--sell)':'var(--buy)';return `<tr><td class="l">${x.n} <span class="sub">${x.m}</span></td><td class="num">${f0(x.v)}</td><td class="num" style="color:${c};font-weight:700">${role}</td><td class="num" style="color:${c}">${ab?'+':''}${((x.v/px-1)*100).toFixed(0)}%</td></tr>`;}).join('')}
       </tbody></table>
       <div style="margin-top:9px">지금 ${whaleSym} <b>${f0(px)}</b>는 ${supp?'바로 아래 지지 <b style="color:var(--buy)">'+supp.n+' '+f0(supp.v)+'</b>('+((supp.v/px-1)*100).toFixed(0)+'%)':'모든 지지 아래'}, ${resi?'바로 위 저항 <b style="color:var(--sell)">'+resi.n+' '+f0(resi.v)+'</b>(+'+((resi.v/px-1)*100).toFixed(0)+'%)':'모든 저항 위'} 사이입니다.</div>
-      <div class="sub" style="margin-top:6px">고래 방어선은 매수·매도 고래 평단의 중심입니다. 현재가가 그 아래라 지금은 방어선이 아니라 <b>되찾을 저항</b>입니다. 되찾으면 고래 균형선 위로 복귀 = 구조 복원의 시작입니다.</div>
+      <div class="sub" style="margin-top:6px">고래 방어선은 매수·매도 고래 평단의 중심입니다. 현재가가 그 아래라 지금은 방어선이 아니라 <b>위쪽 저항</b>입니다. 그 위로 마감하면 고래 균형선 위로 복귀 = 구조 복원의 시작입니다.</div>
       ${leadMo!=null&&leadMo>0?`<div class="sub" style="margin-top:6px;color:#d6a23a">백테스트 - 이 코인은 BTC보다 <b>${leadMo}개월 먼저</b> 고점을 찍고 낙폭 <b>−${altDD}%</b>(BTC −${btcDD}%)로 더 깊이 빠졌습니다. 하락 목적을 먼저·더 크게 달성했습니다.</div>`:''}
     </div></div>
   <div class="panel"><div class="spaced" style="padding:11px 14px;font-size:12px;color:var(--tx2);line-height:1.9">
@@ -19588,8 +19592,8 @@ function viewSign(){
     how:'봉 앞 25%에서 1.5배속이면 최종 확대 ~3배(f^0.45 근사).',num:'p=0.000 · 4시대 OOS 무감쇠(기존 서명 유지)',
     say:'커질 판인지 아닌지는 초반 속도가 말해준다 - 방향은 다른 도구에 물어라.',ver:'기존 서명 · velExp 패널'},
    {nm:'종가 이탈→재회복',st:'전략',def:'종가 이탈 사건 중 실존가를 지킨 가짜 이탈의 재회복 성향.',
-    how:'종가 이탈=1차 경고, 실존가 사수 시 재회복 '+STAT('mp_recover','raw')+'(이탈 시 51~58%).',num:'전 TF 수렴 · 4자 독립 재현(2026-07-06 서명)',
-    say:'이탈의 8~10%만 가짜지만, 가짜는 돌아온다 - 어느 선을 지켰는지가 판별한다.',ver:'4자 재현 완료'},
+    how:'종가 이탈=1차 경고, 실존가 사수 여부로 이후 성향이 갈립니다.',num:'전 TF 수렴 · 4자 독립 재현(2026-07-06 서명)',
+    say:'가짜 이탈은 돌아온다 - 어느 선을 지켰는지가 판별한다.',ver:'4자 재현 완료'},
    {nm:'패닉 반등 롱',st:'전략',def:'긴 흐름이 아래쪽일 때 짧은 구간이 급하게 밀린 직후의 되돌림 자리.',
     how:'긴 흐름이 아래쪽일 때 짧은 구간 급락 → 다음 봉이 열릴 때 삽니다 · 손절=요즘 흔들림 폭 · 목표=잃을 폭의 두 배.',num:'3벌 permutation p=0.000 · 최근창 강화 · 더 짧은 봉에서도 무결',
     say:'첫 정밀 서명 - 패닉은 자리를 만든다, 잃을 폭의 두 배를 노릴 때만.',ver:'서명 1호(§V-2)'},
