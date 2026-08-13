@@ -16894,6 +16894,14 @@ function sellBook(tf,ax){try{
   var cands=[];
   for(var i=Math.max(1,n-90);i<n-2;i++){
     if(A[i-1].c>V(A[i-1])&&A[i].c<V(A[i])&&A[i+1].c<V(A[i+1])){
+      
+
+
+
+
+
+      var _hold=0; for(var _h=Math.max(0,i-6);_h<i;_h++){ if(A[_h].c>V(A[_h]))_hold++; }
+      if(_hold<4)continue;
       var root=g(A[i]),ok=true;
       for(var j=i+1;j<n-1;j++){if(A[j].c>root){ok=false;break;}}   
       if(ok)cands.push(i);
