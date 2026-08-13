@@ -10263,10 +10263,10 @@ function wgTier1(tfs){
 
       var l1='<div style="font-size:12.5px;line-height:1.85;padding:2px 0">'
         +'<b style="color:#ff6d00">현재가 '+f(px)+'</b>'
-        +' <span class="sub">·</span> 아래 받침 '+(L
+        +' <span class="sub">·</span> 1차 실존 지지 '+(L
             ? '<b style="color:var(--buy)">'+f(L.rep)+'</b> <span class="sub" style="font-size:10px">('+nm+' 롱 실존가 · '+(L.nAlive||0)+'층이 버팀)</span>'
             : '<b style="color:var(--tx3)">없음</b> <span class="sub" style="font-size:10px">('+nm+' 롱 파동 소멸)</span>')
-        +' <span class="sub">·</span> 위 벽 '+(S
+        +' <span class="sub">·</span> 1차 실존 저항 '+(S
             ? '<b style="color:var(--sell)">'+f(S.rep)+'</b> <span class="sub" style="font-size:10px">('+nm+' 숏 실존가 · '+(S.nAlive||0)+'층이 누름)</span>'
             : '<b style="color:var(--tx3)">없음</b> <span class="sub" style="font-size:10px">('+nm+' 숏 파동 소멸)</span>')
         +'</div>';
@@ -10278,11 +10278,11 @@ function wgTier1(tfs){
         +nm+' 롱 파동 없음 <span class="sub">·</span> 재형성 대기</div>';
       if(S){ var w2=nx(S,true);
         l2='<div style="font-size:11.5px;line-height:1.8;color:var(--tx2);padding:1px 0">'
-          +'위 벽을 종가로 넘으면 <span class="sub">:</span> 매도 층 1 소멸 · 벽이 '
+          +'1차 실존 저항을 종가로 넘으면 <span class="sub">:</span> 매도 층 1 소멸 · 저항이 '
           +'<b style="color:var(--sell)">'+(w2!=null?f(w2):f(S.root)+' (뿌리)')+'</b> 로 물러납니다</div>'; }
       if(L){ var s2=nx(L,false);
         l3='<div style="font-size:11.5px;line-height:1.8;color:var(--tx2);padding:1px 0">'
-          +'아래 받침을 종가로 잃으면 <span class="sub">:</span> 매수 층 1 소멸 · 받침이 '
+          +'1차 실존 지지를 종가로 잃으면 <span class="sub">:</span> 매수 층 1 소멸 · 지지가 '
           +'<b style="color:var(--buy)">'+(s2!=null?f(s2):f(L.root)+' (뿌리)')+'</b> 로 물러납니다'
           +' <span class="sub" style="font-size:10px">· 뿌리 '+f(L.root)+' 아래 마감이면 파동 소멸</span></div>'; }
       out+='<div style="padding:7px 0;border-top:1px solid rgba(28,36,51,.55)">'+l1+l2+l3+'</div>';
@@ -10427,7 +10427,7 @@ function waveSkeleton(){
     return '<div class="panel" style="margin-top:12px">'
       +'<div style="display:flex;gap:6px;padding:9px 12px 4px;flex-wrap:wrap">'+btn+'</div>'
       +(wvTF==='all'?'<div class="sub" style="padding:0 14px 6px;font-size:10px">일·주·월을 한 화면에 겹쳐 놓습니다. 합쳐서 새 값을 만들지 않습니다.</div>':'')
-      +hd('지금 자리','· 받침과 벽')+wgTier1(tfs)
+      +hd('지금 자리','· 1차 실존 지지와 저항')+wgTier1(tfs)
       +hd('파동이 구성되어온 값들','· 계단')+wgTier2(tfs)
       +hd('무엇을 보나','· 가격 조건')+wgTier3(tfs)
       +wgTier4(tfs)
@@ -10463,7 +10463,7 @@ function viewWave(){
   }catch(e){return '';}})();
   const axTab=`<div style="display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:0 0 10px">${axBtn}<span class="sub" style="margin-left:auto;align-self:center;font-size:10.5px">${waveAx==='중심값'?'저항·지지의 한가운데로 잰 축':'봉 전체의 무게중심으로 잰 축'}</span></div>`;
   
-  const head=`<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">코인 테스트기:</span>${btn}${waveCoin!=='BTC'?`<span class="sub" style="color:var(--gold2)">- ${waveCoin} · 3코인 검증 통과 엔진(파동·국면·미확인·합의)만 이식 · 받침/벽/고래는 BTC 전용</span>`:''}</div>`;
+  const head=`<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">코인 테스트기:</span>${btn}${waveCoin!=='BTC'?`<span class="sub" style="color:var(--gold2)">- ${waveCoin} · 3코인 검증 통과 엔진(파동·국면·미확인·합의)만 이식 · 실존 지지·저항·고래는 BTC 전용</span>`:''}</div>`;
   if(waveCoin!=='BTC'&&!COINE[waveCoin])return head+`<div class="loading">${waveCoin} 데이터 수신 중… (바이낸스 직접 · 최초 1회 ~10초)</div>`;
   const _E0=E; if(waveCoin!=='BTC')E=COINE[waveCoin];
   const _AX0=window.__WAVE_AX; window.__WAVE_AX=(waveAx==='중심값')?'중심값':null;
@@ -10519,9 +10519,9 @@ function viewWaveBattle(){
   const stC2=stR==='성립'?'var(--buy)':stR==='근접'?'#f0a83c':'var(--tx2)';
   
   const card3=`<div style="display:flex;text-align:center;font-size:10.5px;border-bottom:1px solid var(--bd)">
-    <div style="flex:1;padding:8px 5px;border-right:1px solid var(--bd)"><div style="color:var(--buy);font-weight:700">아래 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매수 지지선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--sell);margin:1px 0">${m.S4?f1(m.S4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매수선 ${m.nS}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvS))}<br>${m.maxSurvS?wbLindy('m30',sv(m.maxSurvS)).label:''}<br>1시간 ${h.S4?f1(h.S4):'없음'}${gS!=null?' · 격차 '+gS.toFixed(2)+'%':''}</div></div>
+    <div style="flex:1;padding:8px 5px;border-right:1px solid var(--bd)"><div style="color:var(--buy);font-weight:700">아래 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매수 지지선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--buy);margin:1px 0">${m.S4?f1(m.S4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매수선 ${m.nS}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvS))}<br>${m.maxSurvS?wbLindy('m30',sv(m.maxSurvS)).label:''}<br>1시간 ${h.S4?f1(h.S4):'없음'}${gS!=null?' · 격차 '+gS.toFixed(2)+'%':''}</div></div>
     <div style="flex:1.18;padding:8px 5px;border-right:1px solid var(--bd);background:rgba(192,132,252,.09)"><div style="color:#c084fc;font-weight:700">⚔ 전투존 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 두 평단의 중간</span></div><div style="font-size:17px;font-weight:800;color:#c084fc;margin:1px 0">${m.R4&&m.S4?f1((m.R4+m.S4)/2):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">${m.R4&&m.S4?`현재가가 <b style="color:${px>=(m.R4+m.S4)/2?'var(--buy)':'var(--sell)'}">${px>=(m.R4+m.S4)/2?'위 = 매수 우위':'아래 = 매도 우위'}</b> · 1시간 전투존 ${h.R4&&h.S4?f1((h.R4+h.S4)/2):'없음'}`:''}<br>위 평단 합류(30분↔1시간) 격차 ${gR!=null?gR.toFixed(2)+'%':'없음'} → <b style="color:${stC2}">${stR}</b> <span style="opacity:.7">(성립 0.3%·근접 0.6%)</span></div>${stR==='성립'?'<div style="margin-top:3px">'+badge+'</div>':''}</div>
-    <div style="flex:1;padding:8px 5px"><div style="color:var(--sell);font-weight:700">위 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매도 저항선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--buy);margin:1px 0">${m.R4?f1(m.R4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매도선 ${m.nR}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvR))}<br>${m.maxSurvR?wbLindy('m30',sv(m.maxSurvR)).label:''}</div></div></div>`;
+    <div style="flex:1;padding:8px 5px"><div style="color:var(--sell);font-weight:700">위 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매도 저항선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--sell);margin:1px 0">${m.R4?f1(m.R4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매도선 ${m.nR}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvR))}<br>${m.maxSurvR?wbLindy('m30',sv(m.maxSurvR)).label:''}</div></div></div>`;
   
 
 
@@ -10573,7 +10573,7 @@ function viewWaveBattle(){
   const preview=`<div style="padding:10px 14px;font-size:12px;color:var(--tx2);line-height:1.95;border-top:1px solid var(--bd)">
     ${pct!=null?`현재가 <b style="color:var(--gold2)">${f1(px)}</b>는 아래 물량 ${f1(m.S4)} ~ 위 물량 ${f1(m.R4)} 사이 <b>${pct}%</b> 위치입니다.<br>위 ${f1(m.R4)}를 시험하면 - ${stR==='성립'?'<b style="color:#c084fc">지금 합류 성립</b>: ':stR==='근접'?'합류 근접(격차 '+gR.toFixed(2)+'%) - 성립 시 ':'합류 시 '}여러 시간대 물량 평단이 같은 가격에 겹친 상태입니다(측정 사실 - 방어 확률은 검증 통과 전 게시하지 않습니다). 항상 있는 게 아니라 물량이 겹칠 때만 나타나는 자리입니다 <span class="sub">(한 선 터치는 동전 51% - 파동 현황 참조)</span>.<br>`:''}
     <span class="sub">🕰 <b>가까운 벽은 젊어서 먼저 무너지고, 뒤의 벽일수록 오래 버팁니다</b> - 오래 산 선이 더 오래 삽니다: 30일 넘긴 선은 92%가 한 주 이상 더 갑니다(실측·사망 파동 793개 룩업, 각 선의 "나이→잔여"는 카드·상세 표에).</span><br>
-    <span class="sub"><b style="color:#f0a83c">⚠ 참조선 - 진입 신호가 아닙니다.</b> 아래측 합류는 실측 표본 부족(N=3)이라 방어율을 붙이지 않습니다. 숏·받침 결합·일봉 터치 활용은 검증 기각(검증원장 §K). 가정치 포함 · 30분봉 마감마다 갱신 · 성립 시 종합 평가 차트에 라인.</span></div>`;
+    <span class="sub"><b style="color:#f0a83c">⚠ 참조선 - 진입 신호가 아닙니다.</b> 아래측 합류는 실측 표본 부족(N=3)이라 방어율을 붙이지 않습니다. 숏·실존 지지 결합·일봉 터치 활용은 검증 기각(검증원장 §K). 가정치 포함 · 30분봉 마감마다 갱신 · 성립 시 종합 평가 차트에 라인.</span></div>`;
   const gauge=`<div class="panel"><div class="hd" style="color:#c084fc">⚔ 파동 전투존 - 캔들별 물량 무게중심 <span class="sub">좌=아래 물량 평단(S*4) · 우=위 물량 평단(R*4) · 흰 점=현재가</span></div>
     <div style="padding:6px 14px;font-size:10.5px;color:var(--tx2);border-bottom:1px solid var(--bd)">※ 전투포인트 밴드(주체·전투 탭)와는 <b>별개 개념</b> - 여러 시간대 파동 평단(물량 무게중심)이 겹친 자리입니다.<br>※ 존 이름(매수존·매도존)은 '가격이 그리로 가면 유리한 <b>방향</b>', 물량 평단(매수·매도)은 '그 자리에 물량을 쌓은 <b>주체</b>' - 다른 축입니다. 위 물량(매도 주체 평단)을 넘어서면 매수존(상방 유리).</div>${card3}${bars}${alBar}${preview}</div>`;
   
@@ -10633,7 +10633,7 @@ function viewWaveInner(){
   if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${above.length&&ws.dir>0?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:''}.`;
   else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
   else{const hn0=hierNote();
-    saga=`<b>무파동</b> - 활성 파동 없음. 박스 문법(받침·되돌림)이 기본값인 구간.`
+    saga=`<b>무파동</b> - 활성 파동 없음. 박스 문법(실존 지지·되돌림)이 기본값인 구간.`
       +(hn0&&hn0.mandate?` <span class="sub">단 주봉 명목 생존(${hn0.wAlive?'주봉 매수파동 유지':'파동 위험선 '+f1(hn0.risk)+' 위'}) - 일봉 이탈은 트리거일 뿐(주봉 전이 실측 기준 1.1%·정의 확정 중), 일봉 재발아 감시 구간.</span>`:'');}
   
   try{const CA=E.d1,cm=CA.length-2;let cst=0,cdr=0;const cacc=[];
