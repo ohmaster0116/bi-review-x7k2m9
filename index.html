@@ -10195,6 +10195,157 @@ function waveDetailPanel(){try{
 
 var waveAx='기준값';
 function setWaveAx(a){ waveAx=a; try{render();}catch(e){} }
+
+
+
+
+
+
+
+
+
+
+var wvTF='d1';
+function setWvTF(x){ wvTF=x; try{render();}catch(e){} }
+
+function gkWb(tf, side){
+  try{
+    var wb=(((((window.__CRON||{}).verdict_live||{}).data||{})['파동']||{}).wb)||{};
+    var cx=(waveAx==='중심값');
+    var key=(side==='sell')?((cx?'c_sell_':'sell_')+tf):((cx?'c_':'')+tf);
+    var b=wb[key];
+    return (b&&b.rep!=null)?b:null;
+  }catch(e){ return null; }
+}
+function gkPx(){ try{ var v=(((window.__CRON||{}).verdict_live||{}).data)||{}; return (v['파동']||{}).px||(E.d1[E.d1.length-1].c); }catch(e){ return null; } }
+
+
+
+
+function wgTier1(tfs){
+  try{
+    var px=gkPx(); if(px==null)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
+    var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
+    var NM={d1:'일',w1:'주',M1:'월'};
+    var items=[];
+    tfs.forEach(function(tf){
+      var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
+      if(L){ items.push({v:L.root,n:NM[tf]+' 롱 뿌리',c:'var(--buy)',o:.55});
+             items.push({v:L.rep,n:NM[tf]+' 롱 실존가',c:'var(--buy)',o:1,b:1}); }
+      if(S){ items.push({v:S.rep,n:NM[tf]+' 숏 실존가',c:'var(--sell)',o:1,b:1});
+             items.push({v:S.root,n:NM[tf]+' 숏 뿌리',c:'var(--sell)',o:.55}); }
+      if(L&&S) items.push({v:(L.root+S.root)/2,n:NM[tf]+' 중심',c:'var(--gold2)',o:.8});
+    });
+    if(!items.length)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
+    items.push({v:px,n:'현재가',c:'#ff6d00',o:1,b:1,px:1});
+    items.sort(function(a,b){ return b.v-a.v; });
+    var rows=items.map(function(it){
+      var gp=it.px?null:(it.v-px)/px*100;
+      return '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;'
+        +(it.px?'background:rgba(255,109,0,.10);border-radius:5px;padding-left:6px;padding-right:6px;':'')+'">'
+        +'<span style="font-size:'+(it.b?'11.5px':'10.5px')+';color:'+it.c+';opacity:'+it.o+';'+(it.b?'font-weight:700':'')+'">'+it.n+'</span>'
+        +'<span class="num" style="font-size:'+(it.b?'12px':'11px')+';color:'+it.c+';opacity:'+it.o+';'+(it.b?'font-weight:800':'')+'">'+f(it.v)
+        +(gp==null?'':' <span class="sub" style="font-size:9px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span>')+'</span></div>';
+    }).join('');
+    var above=items.filter(function(x){ return !x.px&&x.b&&x.v>px; }).length;
+    var below=items.filter(function(x){ return !x.px&&x.b&&x.v<px; }).length;
+    return '<div style="padding:9px 14px 11px">'+rows
+      +'<div class="sub" style="font-size:10.5px;margin-top:7px;line-height:1.7">현재가 '+f(px)+' 는 실존가 '+below+'개 위 · '+above+'개 아래에 있습니다.'
+      +'<br>값 순서 그대로입니다. 자리 관계만 표기하며 방향을 정하지 않습니다.</div></div>';
+  }catch(e){ return '<div class="sub" style="padding:9px 14px">산출 대기</div>'; }
+}
+
+
+function wgTier2(tfs){
+  try{
+    var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
+    var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
+    var out=tfs.map(function(tf){
+      var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
+      var mk=function(b,nm,c){
+        if(!b)return '';
+        var st=(b.steps||[]).slice(-5);
+        var cells=st.map(function(x,i){ return '<span style="color:'+c+';opacity:'+(i===st.length-1?1:.6)+'">'+f(x.vw)+'</span>'; }).join(' <span class="sub">→</span> ');
+        return '<div style="margin-top:5px;font-size:10.5px"><b style="color:'+c+'">'+nm+'</b> '
+          +'<span class="sub">'+(b.nAlive||0)+'/'+(b.nInc||0)+'층 생존 · 뿌리 '+f(b.root)+'</span><br>'
+          +'<span style="font-size:10px">'+cells+'</span></div>';
+      };
+      var body=mk(L,'롱','var(--buy)')+mk(S,'숏','var(--sell)');
+      if(!body)return '';
+      return '<div style="padding:6px 0;border-top:1px solid rgba(28,36,51,.6)"><b style="font-size:11px">'+NM[tf]+'</b>'+body+'</div>';
+    }).join('');
+    if(!out)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
+    return '<div style="padding:5px 14px 11px">'+out
+      +'<div class="sub" style="font-size:10px;margin-top:6px">최근 5층만 표시합니다. 층은 형성 순서대로 쌓인 평단이며, 생존 최전방이 실존가입니다.</div></div>';
+  }catch(e){ return '<div class="sub" style="padding:9px 14px">산출 대기</div>'; }
+}
+
+
+function wgTier3(tfs){
+  try{
+    var px=gkPx(); if(px==null)return '';
+    var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
+    var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
+    var L=[];
+    tfs.forEach(function(tf){
+      var B=gkWb(tf,'buy'), S=gkWb(tf,'sell');
+      if(B)L.push({v:B.rep,t:NM[tf]+' 롱 실존가 '+f(B.rep)+' 를 종가로 잃으면 그 축의 생존 층이 하나 줄고, 실존가는 아래 층으로 승계됩니다.'});
+      if(S)L.push({v:S.rep,t:NM[tf]+' 숏 실존가 '+f(S.rep)+' 를 종가로 넘기면 그 축의 매도 층이 하나 줄고, 실존가는 위 층으로 승계됩니다.'});
+      if(B)L.push({v:B.root,t:NM[tf]+' 롱 뿌리 '+f(B.root)+' 는 사망선입니다. 종가가 이 아래로 마감하면 그 파동은 소멸합니다.'});
+    });
+    L.sort(function(a,b){ return Math.abs(a.v-px)-Math.abs(b.v-px); });
+    var rows=L.slice(0,5).map(function(x){ return '<div style="padding:3px 0;font-size:10.5px;line-height:1.75;color:var(--tx2)">· '+x.t+'</div>'; }).join('');
+    return '<div style="padding:7px 14px 11px">'+rows
+      +'<div class="sub" style="font-size:10px;margin-top:5px">현재가에서 가까운 순입니다. 사실 서술이며 매매 지시가 아닙니다.</div></div>';
+  }catch(e){ return ''; }
+}
+
+
+function wgTier4(tfs){
+  try{
+    var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
+    var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
+    var rows='';
+    tfs.forEach(function(tf){
+      [['buy','롱','var(--buy)'],['sell','숏','var(--sell)']].forEach(function(sd){
+        var b=gkWb(tf,sd[0]); if(!b)return;
+        var st=(b.nAlive===0)?'층 0 생존':(b.nAlive+'층 생존');
+        rows+='<tr><td class="l" style="font-size:10.5px">'+NM[tf]+' <b style="color:'+sd[2]+'">'+sd[1]+'</b></td>'
+          +'<td class="num" style="font-size:10.5px;color:'+sd[2]+'">'+f(b.rep)+'</td>'
+          +'<td class="num sub" style="font-size:10px">'+f(b.root)+'</td>'
+          +'<td class="l sub" style="font-size:10px">'+st+'</td></tr>';
+      });
+    });
+    if(!rows)return '';
+    return '<details style="margin-top:8px"><summary style="cursor:pointer;padding:8px 14px;font-size:11.5px;color:var(--tx2)">현재 살아있는 파동들</summary>'
+      +'<div class="scroll" style="padding:0 8px 10px"><table><thead><tr><th class="l">축</th><th>실존가</th><th>뿌리</th><th class="l">상태</th></tr></thead><tbody>'
+      +rows+'</tbody></table></div></details>';
+  }catch(e){ return ''; }
+}
+
+
+function waveSkeleton(){
+  try{
+    var TFB=[['d1','일봉'],['w1','주봉'],['M1','월봉'],['all','종합']];
+    var btn=TFB.map(function(x){
+      var on=(wvTF===x[0]);
+      return '<button onclick="setWvTF(&quot;'+x[0]+'&quot;)" style="font-size:12px;font-weight:'+(on?700:400)
+        +';padding:5px 15px;border-radius:7px;cursor:pointer;border:1px solid '+(on?'var(--gold2)':'var(--bd)')
+        +';background:'+(on?'rgba(214,162,58,.14)':'transparent')+';color:'+(on?'var(--gold2)':'var(--tx2)')+'">'+x[1]+'</button>';
+    }).join(' ');
+    var tfs=(wvTF==='all')?['d1','w1','M1']:[wvTF];
+    var hd=function(t,sub){ return '<div class="hd" style="font-size:11.5px">'+t+(sub?' <span class="sub" style="font-weight:400">'+sub+'</span>':'')+'</div>'; };
+    return '<div class="panel" style="margin-top:12px">'
+      +'<div style="display:flex;gap:6px;padding:9px 12px 4px;flex-wrap:wrap">'+btn+'</div>'
+      +(wvTF==='all'?'<div class="sub" style="padding:0 14px 6px;font-size:10px">일·주·월을 한 화면에 겹쳐 놓습니다. 합쳐서 새 값을 만들지 않습니다.</div>':'')
+      +hd('현재 파동 대치','· 값 순서 그대로')+wgTier1(tfs)
+      +hd('파동이 구성되어온 값들','· 계단 최근 5층')+wgTier2(tfs)
+      +hd('무엇을 보나','· 가격 조건')+wgTier3(tfs)
+      +wgTier4(tfs)
+      +'</div>';
+  }catch(e){ return ''; }
+}
+
 function viewWave(){
   const btn=['BTC','ETH','SOL'].map(c=>`<button onclick="setWaveCoin('${c}')" style="font-size:11.5px;padding:3px 12px;border-radius:6px;cursor:pointer;border:1px solid ${c===waveCoin?'var(--gold2)':'var(--bd)'};background:${c===waveCoin?'rgba(214,162,58,.15)':'transparent'};color:${c===waveCoin?'var(--gold2)':'var(--tx2)'};font-weight:${c===waveCoin?700:400}">${c}</button>`).join(' ');
   
@@ -19717,7 +19868,7 @@ function render(){if(!E)return;
   else if(active==='BTC'||active==='ETH'||active==='SOL'||active==='XRP'){
     if(whaleSym!==active){whaleSym=active;whaleData=null;whaleKrw=0;whaleDaily=null;whaleWeekly=null;whaleLoading=false;}
     v.innerHTML=viewWhale();}
-  else if(active==='파동 현황'){wvSec='현황';v.innerHTML=viewWave()+waveDetailPanel()+waveLifecycle()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">주체형성가 - 주체 평단(실존가)·본전</summary>'+viewMP()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 롱의 역공(파동 재생)</summary>'+viewSkillRevival()+'</details>';}
+  else if(active==='파동 현황'){wvSec='현황';v.innerHTML=waveSkeleton()+viewWave()+waveDetailPanel()+waveLifecycle()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">주체형성가 - 주체 평단(실존가)·본전</summary>'+viewMP()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 롱의 역공(파동 재생)</summary>'+viewSkillRevival()+'</details>';}
   else if(active==='파동 전투존'){wvSec='전투';v.innerHTML=viewWave();}
   else if(active==='파동 차트'){wvSec='차트';v.innerHTML=viewWave();}
   else if(active==='과거 사례'){wvSec='사례';v.innerHTML=viewWave();setTimeout(function(){var el=document.getElementById('wvCases');if(el)el.scrollIntoView({block:'start'});},80);}
