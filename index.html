@@ -10519,10 +10519,13 @@ function viewWaveBattle(){
   const stC2=stR==='성립'?'var(--buy)':stR==='근접'?'#f0a83c':'var(--tx2)';
   
   const card3=`<div style="display:flex;text-align:center;font-size:10.5px;border-bottom:1px solid var(--bd)">
-    <div style="flex:1;padding:8px 5px;border-right:1px solid var(--bd)"><div style="color:var(--sell);font-weight:700">아래 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매수 지지선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--sell);margin:1px 0">${m.S4?f1(m.S4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매수선 ${m.nS}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvS))}<br>${m.maxSurvS?wbLindy('m30',sv(m.maxSurvS)).label:''}<br>1시간 ${h.S4?f1(h.S4):'없음'}${gS!=null?' · 격차 '+gS.toFixed(2)+'%':''}</div></div>
+    <div style="flex:1;padding:8px 5px;border-right:1px solid var(--bd)"><div style="color:var(--buy);font-weight:700">아래 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매수 지지선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--sell);margin:1px 0">${m.S4?f1(m.S4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매수선 ${m.nS}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvS))}<br>${m.maxSurvS?wbLindy('m30',sv(m.maxSurvS)).label:''}<br>1시간 ${h.S4?f1(h.S4):'없음'}${gS!=null?' · 격차 '+gS.toFixed(2)+'%':''}</div></div>
     <div style="flex:1.18;padding:8px 5px;border-right:1px solid var(--bd);background:rgba(192,132,252,.09)"><div style="color:#c084fc;font-weight:700">⚔ 전투존 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 두 평단의 중간</span></div><div style="font-size:17px;font-weight:800;color:#c084fc;margin:1px 0">${m.R4&&m.S4?f1((m.R4+m.S4)/2):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">${m.R4&&m.S4?`현재가가 <b style="color:${px>=(m.R4+m.S4)/2?'var(--buy)':'var(--sell)'}">${px>=(m.R4+m.S4)/2?'위 = 매수 우위':'아래 = 매도 우위'}</b> · 1시간 전투존 ${h.R4&&h.S4?f1((h.R4+h.S4)/2):'없음'}`:''}<br>위 평단 합류(30분↔1시간) 격차 ${gR!=null?gR.toFixed(2)+'%':'없음'} → <b style="color:${stC2}">${stR}</b> <span style="opacity:.7">(성립 0.3%·근접 0.6%)</span></div>${stR==='성립'?'<div style="margin-top:3px">'+badge+'</div>':''}</div>
-    <div style="flex:1;padding:8px 5px"><div style="color:var(--buy);font-weight:700">위 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매도 저항선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--buy);margin:1px 0">${m.R4?f1(m.R4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매도선 ${m.nR}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvR))}<br>${m.maxSurvR?wbLindy('m30',sv(m.maxSurvR)).label:''}</div></div></div>`;
+    <div style="flex:1;padding:8px 5px"><div style="color:var(--sell);font-weight:700">위 물량 평단 <span style="font-weight:400;font-size:8.5px;opacity:.85">= 매도 저항선 평단</span></div><div style="font-size:16px;font-weight:800;color:var(--buy);margin:1px 0">${m.R4?f1(m.R4):'없음'}</div><div class="sub" style="font-size:9px;line-height:1.55">30분 기준 · 매도선 ${m.nR}개 평균 · 최장 ${wbSurvFmt('m30',sv(m.maxSurvR))}<br>${m.maxSurvR?wbLindy('m30',sv(m.maxSurvR)).label:''}</div></div></div>`;
   
+
+
+
   const wbBar=k=>{
     const r=waveRS4(k);
     if(!(r.R4&&r.S4))return `<div style="padding:8px 14px;font-size:11px" class="sub">${NAME[k]} - 위/아래 물량 부족(위 ${r.nR}선·아래 ${r.nS}선)</div>`;
@@ -10532,15 +10535,15 @@ function viewWaveBattle(){
     const isConf=stR==='성립'&&(k==='m30'||k==='h1');
     return `<div style="padding:25px 14px 8px;${isConf?'background:rgba(192,132,252,.05);':''}">
       <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:3px"><span style="font-weight:700">${NAME[k]}${isConf?' <span style="color:#c084fc">합류</span>':''} <span style="color:${wC};font-weight:700">- ${up?'매수 우위':'매도 우위'}</span> <span class="sub">(현재가가 물량 전투존 ${up?'위':'아래'} - 위·아래 물량 평단의 중간)</span></span><span class="sub">최근접 선 생존 - 아래 ${wbSurvFmt(k,sv(r.maxSurvS))} · 위 ${wbSurvFmt(k,sv(r.maxSurvR))}</span></div>
-      <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(239,83,80,.5),rgba(214,162,58,.3) 50%,rgba(45,212,150,.5))">
+      <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(45,212,150,.5),rgba(214,162,58,.3) 50%,rgba(239,83,80,.5))">
         <div style="position:absolute;left:50%;top:-3px;width:2px;height:18px;background:#c084fc;transform:translateX(-50%)"></div>
         <div style="position:absolute;left:${pp.toFixed(1)}%;top:-19px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:10.5px;color:#fff;font-weight:800">${f1(px)}</span></div>
         <div style="position:absolute;left:${pp.toFixed(1)}%;top:0;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #0b1220;transform:translateX(-50%)"></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px">
-        <span style="color:var(--sell)">◀ 아래 물량 평단 ${f1(lo)} <span class="sub">(${r.nS}선)</span></span>
+        <span style="color:var(--buy)">◀ 아래 물량 평단 ${f1(lo)} <span class="sub">(${r.nS}선)</span></span>
         <span style="color:#c084fc;font-weight:700">⚔ 전투존 ${f1(mid)} <span class="sub" style="font-weight:400">(두 평단의 중간)</span></span>
-        <span style="color:var(--buy)"><span class="sub">(${r.nR}선)</span> 위 물량 평단 ${f1(hi)} ▶</span></div></div>`;};
+        <span style="color:var(--sell)"><span class="sub">(${r.nR}선)</span> 위 물량 평단 ${f1(hi)} ▶</span></div></div>`;};
   const bars=['m30','h1','h4','d1','w1','M1'].map(wbBar).join('');
   
   const alBar=(function(){try{
@@ -10556,7 +10559,7 @@ function viewWaveBattle(){
     const tick=(v,lbl,c,up)=>`<div style="position:absolute;left:${P(v)}%;top:${up?'-4px':'0'};width:2px;height:${up?'20px':'12px'};background:${c};transform:translateX(-50%)"></div><div style="position:absolute;left:${P(v)}%;top:14px;transform:translateX(-50%);font-size:9px;color:${c};white-space:nowrap">${lbl}<br>${f1(v)}</div>`;
     return `<div style="padding:24px 14px 34px;border-top:1px solid var(--bd)">
       <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:3px"><span style="font-weight:700">주봉 할애 밴드 <span class="sub">(주봉 평균변동폭(52주) 기준·주 시작 갱신 · <b style="color:var(--gold2)">§M 4자 서명</b>)</span></span><span style="font-size:10px;color:${act?'var(--buy)':'var(--tx2)'};font-weight:700">${act?'● 조건 활성(일봉 매수파동 생존·시가>전주 기준가)':'○ 조건 비활성 - 참고 표시'}</span></div>
-      <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(239,83,80,.55),rgba(214,162,58,.3) 41%,rgba(45,212,150,.35))">
+      <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(45,212,150,.55),rgba(214,162,58,.3) 41%,rgba(239,83,80,.35))">
         <div style="position:absolute;left:${P(g1)}%;width:${(P(g2)-P(g1)).toFixed(1)}%;top:0;height:12px;background:rgba(35,211,158,.25);border-left:1px dashed var(--buy);border-right:1px dashed var(--buy)"></div>
         ${tick(maxAl,'최대 할애 −30% = 파동 위험선','var(--sell)',true)}${tick(weak,'약 할애 −15%','#f0a83c',true)}${tick(wo,'주봉 시가','var(--gold2)',true)}
         <div style="position:absolute;left:${((+P(g1)+ +P(g2))/2).toFixed(1)}%;top:14px;transform:translateX(-50%);font-size:9px;color:var(--buy);white-space:nowrap">관문 +33~45%<br>도달 시 83% 관통(N217)</div>
