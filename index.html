@@ -1630,10 +1630,18 @@ function waveRS4(k){
   const ls=waveLinesAll(k);
   const above=ls.filter(L=>L.dir<0&&L.W>px).sort((x,y)=>x.W-y.W).slice(0,4);   
   const below=ls.filter(L=>L.dir>0&&L.W<px).sort((x,y)=>y.W-x.W).slice(0,4);   
-  const wavg=g=>{const sv=g.reduce((x,L)=>x+L.surv,0);return sv?g.reduce((x,L)=>x+L.W*L.surv,0)/sv:null;};
-  const mx=g=>g.length?Math.max(...g.map(L=>L.surv)):0;
-  return {R4:above.length?wavg(above):null,S4:below.length?wavg(below):null,nR:above.length,nS:below.length,
-          maxSurvR:mx(above),maxSurvS:mx(below),linesR:above,linesS:below};   
+  
+
+
+
+
+
+
+
+  const near=g=>g.length?g[0].W:null;                 
+  const nearSurv=g=>g.length?g[0].surv:0;             
+  return {R4:near(above),S4:near(below),nR:above.length,nS:below.length,
+          maxSurvR:nearSurv(above),maxSurvS:nearSurv(below),linesR:above,linesS:below};
 }
 
 
@@ -10534,7 +10542,7 @@ function viewWaveBattle(){
     const mid=(lo+hi)/2, up=px>=mid, wC=up?'var(--buy)':'var(--sell)';
     const isConf=stR==='성립'&&(k==='m30'||k==='h1');
     return `<div style="padding:25px 14px 8px;${isConf?'background:rgba(192,132,252,.05);':''}">
-      <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:3px"><span style="font-weight:700">${NAME[k]}${isConf?' <span style="color:#c084fc">합류</span>':''} <span style="color:${wC};font-weight:700">- ${up?'매수 우위':'매도 우위'}</span> <span class="sub">(현재가가 물량 전투존 ${up?'위':'아래'} - 위·아래 물량 평단의 중간)</span></span><span class="sub">최장 생존 - 아래 ${wbSurvFmt(k,sv(r.maxSurvS))} · 위 ${wbSurvFmt(k,sv(r.maxSurvR))}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:3px"><span style="font-weight:700">${NAME[k]}${isConf?' <span style="color:#c084fc">합류</span>':''} <span style="color:${wC};font-weight:700">- ${up?'매수 우위':'매도 우위'}</span> <span class="sub">(현재가가 물량 전투존 ${up?'위':'아래'} - 위·아래 물량 평단의 중간)</span></span><span class="sub">최근접 선 생존 - 아래 ${wbSurvFmt(k,sv(r.maxSurvS))} · 위 ${wbSurvFmt(k,sv(r.maxSurvR))}</span></div>
       <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(239,83,80,.5),rgba(214,162,58,.3) 50%,rgba(45,212,150,.5))">
         <div style="position:absolute;left:50%;top:-3px;width:2px;height:18px;background:#c084fc;transform:translateX(-50%)"></div>
         <div style="position:absolute;left:${pp.toFixed(1)}%;top:-19px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:10.5px;color:#fff;font-weight:800">${f1(px)}</span></div>
@@ -10598,7 +10606,7 @@ function viewWaveBattle(){
     const det=(r.linesR.length||r.linesS.length)?`<tr><td></td><td colspan="2" class="l" style="font-size:10px;line-height:1.8;vertical-align:top">${consti(r.linesR,'var(--buy)')}</td><td colspan="2" class="l" style="font-size:10px;line-height:1.8;vertical-align:top">${consti(r.linesS,'var(--sell)')}</td></tr>`:'';
     return main+det;}).join('');
   
-  const tbl=`<details class="panel" style="padding:0"${window._wbTblOpen?' open':''} ontoggle="window._wbTblOpen=this.open"><summary style="cursor:pointer;padding:9px 14px;font-size:12px;color:var(--tx2)">상세 숫자 표 (캔들별 위/아래 물량 평단·거리·구성·최장 생존)</summary>
+  const tbl=`<details class="panel" style="padding:0"${window._wbTblOpen?' open':''} ontoggle="window._wbTblOpen=this.open"><summary style="cursor:pointer;padding:9px 14px;font-size:12px;color:var(--tx2)">상세 숫자 표 (캔들별 위/아래 물량 평단·거리·구성·최근접 선 생존)</summary>
     <div class="scroll"><table><thead><tr><th class="l">캔들</th><th>위 물량 평단(R*4)</th><th class="l">거리</th><th>아래 물량 평단(S*4)</th><th class="l">거리</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
   return nonCanonBanner+gauge+convPanel+tbl+`<div class="sub" style="font-size:11px">파동선=자체 산식(확정선·완성봉만)·사망=종가 이탈. R*4=현재가 위 최근접 매도선 4개 Σ(W×생존봉)/Σ생존봉, S*4 대칭. 합류=|R*4(30m)−R*4(1h)|/R*4(30m)≤0.3%(근접 0.6%). 가격 정본=30분 R*4. 왜 생존일수 가중? - 오래 버틴 선일수록 큰 물량이 지킨 자리라서요(사망 793개 실측).</div>`;
 }
