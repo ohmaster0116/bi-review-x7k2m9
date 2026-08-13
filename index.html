@@ -10752,7 +10752,7 @@ function viewWaveInner(){
       if(yp.phase==='YO')return `<div class="panel" style="border:1px solid var(--buy)"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:var(--buy);font-size:14px">⏳ 생명기한 국면 = 늙은 벽 아래 어린 바닥</b><span class="sub" style="font-size:11.5px">실측 10일 ${YO_N[waveCoin]||YO_N.BTC} · 지지축 나이 ${yp.supM}일·저항축 ${yp.resM}일 - 국면 판독기(진입 신호 아님, 3자 검증·명세 c06bbe4)</span></div></div>`;
       return `<div class="panel"><div style="padding:9px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="color:var(--tx2);font-size:13px">⏳ 생명기한 국면 - 방향 중립</b><span class="sub" style="font-size:11.5px">${yp.phase==='none'?'지도 없음(근접 파동선 부족)':'지지축 나이 '+yp.supM+'일 · 저항축 '+yp.resM+'일 - YO(늙은 벽 아래 어린 바닥) 아님'} · 국면 판독기(진입 신호 아님)</span></div></div>`;})()}
     ${tzSidePanel()}${tzClusterPanel()}
-    /* ★[헤븐 08-13] H2 "① 기간 파동" = ★중복 (골격 TF4 버튼이 대체) */
+
     <div class="panel" style="border:1px solid ${ws.mode==='none'?'var(--bd)':dirC}"><div style="padding:13px 16px;font-size:14px;line-height:1.8">${saga}<div style="font-size:12px;color:var(--tx2);margin-top:6px">${perLine}</div>
     ${(function(){
       try{if(ws.dir>0&&above.length){const g=above[0];const confirmed=px>g.line;
@@ -10760,13 +10760,9 @@ function viewWaveInner(){
       }catch(e){}return '';})()}
     </div></div>
     ${bigBanner}
-    /* ★[헤븐 08-13 · 케인 13:15] ★살아있는 파동선 지도 = ★철거 9 (★이사 승인분) ★제거.
-       ★골격 ④단이 ★같은 축이다. ★④단 상세화(사망 이력 등)는 ★다음 단계 */
     ${cases}
     ${uncEta}
-    /* ★[헤븐 08-13 · 케인 13:15] mfill·costCross = 철거 9 (이사 승인분) */
-    /* ★[헤븐 08-13 · 케인 11:06 판정 (2)-(가)] ★단기 파동 온도계 ★골격 미포함.
-       ★이사 "하위 TF는 없애자 · 양을 줄이자" · ★다른 탭도 만들지 않는다 (산출은 보관 트랙) */
+
     ${addiction}`;
   return applyLayer(_html);
 }
