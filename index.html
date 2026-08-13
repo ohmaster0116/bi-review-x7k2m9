@@ -815,7 +815,12 @@ function waveLedger(tf,arr){
     let s=0;for(let i=r.s;i<=r.e;i++)s+=G(i);
     const line=s/(r.e-r.s+1);
     let death=null;
-    if(!r.open){for(let k=r.e+1;k<=n;k++){if(r.dir>0?A[k].c<line:A[k].c>line){death=k;break;}}}
+    
+
+
+
+
+    if(!r.open){for(let k=r.e+1;k<n;k++){if(r.dir>0?A[k].c<line:A[k].c>line){death=k;break;}}}
     return {dir:r.dir,s:r.s,e:r.e,line,death,open:!!r.open,formDays:r.e-r.s+1};
   });
   return {waves,n};
@@ -10162,7 +10167,7 @@ function waveDetailPanel(){try{
   
 
   var ltBtn=[['d1','일봉'],['w1','주봉'],['M1','월봉']].map(function(x){return '<button onclick="setWvLT(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:4px 16px;border-radius:7px;cursor:pointer;border:1px solid '+(wvLT===x[0]?'var(--gold2)':'var(--bd)')+';background:'+(wvLT===x[0]?'rgba(214,162,58,.15)':'transparent')+';color:'+(wvLT===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(wvLT===x[0]?800:400)+'">'+x[1]+'</button>';}).join(' ');
-  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세 <span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
+  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세<div class="sub" style="font-size:10.5px;font-weight:400;margin-top:3px;line-height:1.6">이 표는 방향이 이어진 구간을 파동 하나로 셉니다. 골격의 실존가·뿌리와는 계산 기준이 다른 별도 원장입니다.</div><span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
     +'<div style="padding:8px 15px 0;display:flex;gap:8px">'+ltBtn+'</div>'
     
 
