@@ -18362,6 +18362,48 @@ function viewRecords(){
       <span class="sub" style="margin-right:4px">봉 선택</span>${btns}
       <span class="sub" style="margin-left:auto">${NAME[tfSel]} · 최근 40개 캔들</span></div>`;
   return sel+viewTF(tfSel);}
+
+
+
+
+
+
+
+
+function _recRow(k, b, cur){
+  const last=cur?(LONG.includes(k)?roleTag(b.role):'<span class="sub">조율</span>')
+    :(b.upU?'<span class="tag u">상단</span>':b.dnU?'<span class="tag u">하단</span>':'<span class="sub">-</span>');
+  return `<tr class="${cur?'cur':''}"><td class="l mono">${dstr(b.t,HASTIME[k])}</td><td class="l">${dirTag(b.dir)}</td>
+    <td class="num">${f1(b.o)}</td><td class="num">${f1(b.h)}</td><td class="num">${f1(b.l)}</td><td class="num">${f1(b.c)}</td>
+    <td class="num" style="color:#8fd0ff">${f1(b.sj)}</td><td class="num" style="color:#ffb98a">${f1(b.gj)}</td>
+    <td class="num" style="color:var(--gold2);font-weight:600">${f1(b.gijun)}</td><td class="num">${f1(b.tp1)}</td>
+    <td class="num" style="color:var(--res)">${f1(b.res)}</td><td class="num" style="color:var(--sup)">${f1(b.sup)}</td>
+    <td class="num">${f1(b.center)}</td><td class="num">${f1(b.tp2)}</td><td class="num">${f1(b.byeong)}</td>
+    <td class="l">${last}</td></tr>`;
+}
+const _RECHEAD=`<thead><tr><th class="l">날짜</th><th class="l">방향</th><th>시</th><th>고</th><th>저</th><th>종</th>
+  <th style="color:#8fd0ff">기준가<br>시종</th><th style="color:#ffb98a">기준가<br>고저</th><th style="color:var(--gold2)">평균<br>기준가</th><th>전투1</th><th>저항</th><th>지지</th><th>중심</th><th>전투2</th><th>변곡</th><th class="l">미확인/역할</th></tr></thead>`;
+
+function recMore(k, from, to){
+  try{
+    const a=E[k]; if(!a||!a.length)return '<div class="sub" style="padding:8px">데이터 없음</div>';
+    const n=a.length;
+    const s0=Math.max(0, n-1-to), s1=n-1-from;          
+    if(s1<s0)return '<div class="sub" style="padding:8px">더 오래된 캔들이 없습니다</div>';
+    const seg=a.slice(s0, s1+1).reverse();
+    const rows=seg.map(b=>_recRow(k,b,false)).join('');
+    const f=dstr(seg[seg.length-1].t,HASTIME[k]), l=dstr(seg[0].t,HASTIME[k]);
+    let out=`<div class="sub" style="padding:6px 2px;font-size:10.5px">${f} ~ ${l} · ${seg.length}봉</div>`
+      +`<div class="scroll"><table class="tw">${_RECHEAD}<tbody>${rows}</tbody></table></div>`;
+    if(s0>0){                                            
+      const rest=s0;
+      out+=`<details style="margin-top:8px" ontoggle="if(this.open&&!this._d){this._d=1;this.querySelector('.recBox').innerHTML=recMore('${k}',${to+1},${to+1+Math.max(rest,1)});}">`
+        +`<summary style="cursor:pointer;font-size:11px;color:var(--gold2);padding:5px 2px">▾ 더 오래된 캔들 ${rest}봉 펼치기</summary>`
+        +`<div class="recBox"></div></details>`;
+    }
+    return out;
+  }catch(e){ return '<div class="sub" style="padding:8px">불러오기 실패</div>'; }
+}
 function viewTF(k){const a=E[k],show=a.slice(-40).reverse();
   const rows=show.map((b,i)=>{const cur=(i===0);
     const last=cur?(LONG.includes(k)?roleTag(b.role):'<span class="sub">조율</span>')
@@ -18376,7 +18418,16 @@ function viewTF(k){const a=E[k],show=a.slice(-40).reverse();
   return `<div class="panel"><div class="hd">${NAME[k]} · 최신이 맨 위 · 노란 줄=현재 형성중 봉(조율봉)</div><div class="scroll"><table class="tw">
     <thead><tr><th class="l">날짜</th><th class="l">방향</th><th>시</th><th>고</th><th>저</th><th>종</th>
     <th style="color:#8fd0ff">기준가<br>시종</th><th style="color:#ffb98a">기준가<br>고저</th><th style="color:var(--gold2)">평균<br>기준가</th><th>전투1</th><th>저항</th><th>지지</th><th>중심</th><th>전투2</th><th>변곡</th><th class="l">미확인/역할</th></tr></thead>
-    <tbody>${rows}</tbody></table></div></div>`;
+    <tbody>${rows}</tbody></table></div>
+    ${(function(){try{
+      const n=(E[k]||[]).length, rest=Math.max(0,n-40);
+      if(!rest)return '';
+      const step=Math.min(200,rest);
+      return `<div style="padding:4px 12px 10px"><details ontoggle="if(this.open&&!this._d){this._d=1;this.querySelector('.recBox').innerHTML=recMore('${k}',40,${40+step-1});}">`
+        +`<summary style="cursor:pointer;font-size:11.5px;color:var(--gold2);padding:6px 2px">▾ 이전 캔들 더 보기 <span class="sub" style="font-weight:400">(남은 ${rest}봉 · ${step}봉씩)</span></summary>`
+        +`<div class="recBox" style="margin-top:6px"></div></details></div>`;
+    }catch(e){return '';}})()}
+    </div>`;
 }
 
 const LBLB=['상단 돌파 방어','전투','저항','전투','주요전투구간','전투','지지','전투','하단 이탈 방어'];
