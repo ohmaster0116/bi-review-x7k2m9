@@ -10390,9 +10390,17 @@ function waveDetailPanel(){try{
       else if(w.death==null)stat='<b style="color:var(--buy)">생존 '+(n-w.e)+'봉</b>'+(fights>0?' · wick 전투 '+fights+'회':'');
       else stat='<span style="color:var(--tx3)">사망 '+dl(w.death)+' ('+(w.death-w.e)+'봉 버팀)</span>';
       var ladder=(!w.open&&w.death==null)?(stAlive+'/'+stTot+' 생존'):'없음';
-      return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
+      return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
     }).join('');
-    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부</span></div><div class="scroll"><table><thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    
+
+
+
+
+
+    var CG='<colgroup><col style="width:23%"><col style="width:8%"><col style="width:15%">'
+      +'<col style="width:10%"><col style="width:11%"><col style="width:15%"><col style="width:18%"></colgroup>';
+    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부</span></div><div class="scroll"><table style="table-layout:fixed;width:100%">'+CG+'<thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th>뿌리</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   };
   
   
