@@ -10519,38 +10519,57 @@ function wgTier1(tfs){
     var px=gkPx(); if(px==null)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
     var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
     var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
-    var lay=function(b,up){                     
+    
+
+
+
+
+
+
+
+    var pick=function(b,up){                    
       if(!b)return [];
-      var all=(b.stepsAll||b.steps||[]).filter(function(x){ return x.alive&&x.vw!=null; });
-      var c=all.filter(function(x){ return up?(x.vw>px):(x.vw<px); });
+      var c=(b.stepsAll||b.steps||[]).filter(function(x){ return x.alive&&x.vw!=null&&(up?(x.vw>px):(x.vw<px)); });
       c.sort(function(m,n){ return up?(m.vw-n.vw):(n.vw-m.vw); });   
-      return c.slice(0,4);
+      return c;
     };
+    var lay=function(b,up){ return pick(b,up).slice(0,4); };
     var out='';
     tfs.forEach(function(tf){
       var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
       if(!L&&!S)return;
       var sup=lay(L,false), res=lay(S,true);
-      if(!sup.length&&!res.length)return;
-      var mx=1; sup.concat(res).forEach(function(x){ if((x.v||0)>mx)mx=x.v; });
-      var row=function(x,i,up){
-        var col=up?'var(--sell)':'var(--buy)';
+      
+      var head=pick(L,true).slice(0,4), foot=pick(S,false).slice(0,4);
+      if(!sup.length&&!res.length&&!head.length&&!foot.length)return;
+      var mx=1; sup.concat(res,head,foot).forEach(function(x){ if((x.v||0)>mx)mx=x.v; });
+      var row=function(x,lbl,col){
         var w=Math.max(3,Math.round((x.v||0)/mx*100));
         return '<div style="display:flex;align-items:center;gap:7px;padding:1.5px 0;font-size:11px">'
-          +'<span style="width:52px;color:'+col+';flex:none">'+(up?'저항 ':'지지 ')+(i+1)+'차</span>'
+          +'<span style="width:52px;color:'+col+';flex:none;font-size:'+(lbl.length>5?'9.5px':'11px')+'">'+lbl+'</span>'
           +'<span class="num" style="width:62px;text-align:right;color:'+col+';flex:none">'+f(x.vw)+'</span>'
           +'<span class="sub" style="width:26px;font-size:9px;flex:none">'+(x.fights||0)+'전</span>'
           +'<span style="flex:1;height:7px;background:rgba(120,130,150,.13);border-radius:2px;overflow:hidden">'
           +'<span style="display:block;height:100%;width:'+w+'%;background:'+col+';opacity:.5"></span></span></div>';
       };
+      
+      var upList=res.map(function(x,i){ return {x:x,lbl:'저항 '+(i+1)+'차',col:'var(--sell)'}; })
+        .concat(head.map(function(x,i){ return {x:x,lbl:(i===0?'롱 실존가':''),col:'var(--buy)',tag:(i===0?'머리 위':'')}; }));
+      upList.sort(function(m,n){ return n.x.vw-m.x.vw; });
       var body='';
-      res.slice().reverse().forEach(function(x,i){ body+=row(x,res.length-1-i,true); });
+      upList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
+        .replace('전</span>', '전'+(o.tag?' <b style="color:var(--buy)">'+o.tag+'</b>':'')+'</span>'); });
       body+='<div style="display:flex;align-items:center;gap:7px;padding:3px 0;margin:2px 0;'
         +'border-top:1px solid rgba(255,109,0,.45);border-bottom:1px solid rgba(255,109,0,.45)">'
         +'<span style="width:52px;color:#ff6d00;font-weight:700;font-size:11px;flex:none">현재가</span>'
         +'<span class="num" style="width:62px;text-align:right;color:#ff6d00;font-weight:700;font-size:11px;flex:none">'+f(px)+'</span>'
         +'<span class="sub" style="flex:1;font-size:9.5px">막대 = 그 층에 쌓인 거래량</span></div>';
-      sup.forEach(function(x,i){ body+=row(x,i,false); });
+      
+      var dnList=sup.map(function(x,i){ return {x:x,lbl:'지지 '+(i+1)+'차',col:'var(--buy)'}; })
+        .concat(foot.map(function(x,i){ return {x:x,lbl:(i===0?'숏 실존가':''),col:'var(--sell)',tag:(i===0?'발밑':'')}; }));
+      dnList.sort(function(m,n){ return n.x.vw-m.x.vw; });
+      dnList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
+        .replace('전</span>', '전'+(o.tag?' <b style="color:var(--sell)">'+o.tag+'</b>':'')+'</span>'); });
       
       var rt='';
       if(L||S){
