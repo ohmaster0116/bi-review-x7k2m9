@@ -10498,7 +10498,21 @@ function gkWb(tf, side){
     return (b&&b.rep!=null)?b:null;
   }catch(e){ return null; }
 }
-function gkPx(){ try{ return (gkSrc()['파동']||{}).px||(E.d1[E.d1.length-1].c); }catch(e){ return null; } }
+
+
+
+
+
+
+
+function gkPx(){
+  try{
+    var rt=(typeof E!=='undefined'&&E.d1&&E.d1.length)?E.d1[E.d1.length-1].c:null;
+    if(rt!=null&&isFinite(rt))return rt;                 
+    var sv=(gkSrc()['파동']||{}).px;                      
+    return (sv!=null&&isFinite(sv))?sv:null;
+  }catch(e){ return null; }
+}
 
 
 
