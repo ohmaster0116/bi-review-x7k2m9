@@ -18386,8 +18386,9 @@ const _RECHEAD=`<thead><tr><th class="l">날짜</th><th class="l">방향</th><th
 
 
 
-const RECYEAR={m30:365*48, h1:365*24, h4:365*6, d1:365, w1:104, M1:36, y1:3};
-const RECSPAN={d1:'1년', w1:'2년', M1:'3년', m30:'1년', h1:'1년', h4:'1년', y1:'3년'};
+
+const RECYEAR={m30:365*48, h1:365*24, h4:365*6, d1:365, w1:104, M1:40, y1:3};
+const RECSPAN={d1:'1년', w1:'2년', M1:'40개', m30:'1년', h1:'1년', h4:'1년', y1:'3년'};
 function _recCap(k){ const n=(E[k]||[]).length; return Math.min(n, RECYEAR[k]||365); }
 
 function recMore(k, from, to){
