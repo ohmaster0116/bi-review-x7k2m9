@@ -10533,14 +10533,27 @@ function wgTier1(tfs){
       c.sort(function(m,n){ return up?(m.vw-n.vw):(n.vw-m.vw); });   
       return c;
     };
-    var lay=function(b,up){ return pick(b,up).slice(0,4); };
+    
+
+
+
+
+    var keepRep=function(list, all, b){
+      if(!b||b.rep==null)return list;
+      var has=list.some(function(x){ return Math.abs(x.vw-b.rep)<0.01; });
+      if(has)return list;
+      var rr=all.filter(function(x){ return Math.abs(x.vw-b.rep)<0.01; })[0];
+      return rr?list.slice(0,3).concat([rr]):list;
+    };
+    var lay=function(b,up){ var all=pick(b,up); return keepRep(all.slice(0,4), all, b); };
     var out='';
     tfs.forEach(function(tf){
       var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
       if(!L&&!S)return;
       var sup=lay(L,false), res=lay(S,true);
       
-      var head=pick(L,true).slice(0,4), foot=pick(S,false).slice(0,4);
+      var _hAll=pick(L,true), _fAll=pick(S,false);
+      var head=keepRep(_hAll.slice(0,4),_hAll,L), foot=keepRep(_fAll.slice(0,4),_fAll,S);
       if(!sup.length&&!res.length&&!head.length&&!foot.length)return;
       var mx=1; sup.concat(res,head,foot).forEach(function(x){ if((x.v||0)>mx)mx=x.v; });
       var row=function(x,lbl,col){
