@@ -334,7 +334,13 @@ function _updStamp(){
         var _wa=(Date.now()-new Date(_wsx.generated).getTime())/3600000;
         if(!isFinite(_wa)) s+=' · ★갱신 감시 없음';
         else if(_wa>4.5) s+=' · ★갱신 감시가 '+_ageTxt(_wa)+' 멈춤';
-        else if((_wsx.anomalies||0)>0) s+=' · ★갱신 지연 감지';
+        
+
+
+
+
+
+        else if((_wsx.publish_lag_min||0)>30) s+=' · ★발행 '+Math.round(_wsx.publish_lag_min)+'분 지연';
         else s+=' · 갱신 감시 정상';
       }
     }catch(e){}
@@ -20706,7 +20712,11 @@ async function load(){try{
   
   try{const _rp=await fetch('prob_profile.json',{cache:'no-store'});if(_rp.ok){const _pj=await _rp.json();if(_pj&&_pj.px)window.__PROB=_pj;}}catch(_){}
   
-  try{const _rv=await fetch('verdict_live.json',{cache:'no-store'});if(_rv.ok){const _vj=await _rv.json();if(_vj&&_vj.data)window.__VERDICT=_vj;}}catch(_){}
+  try{const _rv=await fetch('verdict_live.json',{cache:'no-store'});if(_rv.ok){const _vj=await _rv.json();if(_vj&&_vj.data){window.__VERDICT=_vj;
+    
+
+
+    if(_vj.generated){window.__DATA_ASOF=_vj.generated;try{_updStamp();}catch(__){}}}}}catch(_){}
   if((!window.__VERDICT||!window.__VERDICT.data)&&window.__CRON&&window.__CRON.verdict_live&&window.__CRON.verdict_live.data)window.__VERDICT=window.__CRON.verdict_live;   
   
   try{const _sb=await fetch('scenario_board.json',{cache:'no-store'});if(_sb.ok){const _sbj=await _sb.json();if(_sbj&&_sbj.entries)window.__SCBOARD=_sbj;}}catch(_){}
