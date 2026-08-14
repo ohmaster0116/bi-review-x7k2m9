@@ -10803,7 +10803,9 @@ function waveSkeleton(){
     return '<div class="panel" style="margin-top:12px">'
       +'<div style="display:flex;gap:6px;padding:9px 12px 4px;flex-wrap:wrap">'+btn+'</div>'
       +(wvTF==='all'?'<div class="sub" style="padding:0 14px 6px;font-size:10px">일·주·월을 한 화면에 겹쳐 놓습니다. 합쳐서 새 값을 만들지 않습니다.</div>':'')
-      +hd('지금 자리','· 1차 실존 지지와 저항')+wgTier1(tfs)
+      +hd('지금 자리','· 1차 실존 지지와 저항')
+      
+      +'<div id="gkT1" data-tfs="'+tfs.join(',')+'">'+wgTier1(tfs)+'</div>'
       +hd('파동이 구성되어온 값들','· 계단')+wgTier2(tfs)
       +hd('무엇을 보나','· 가격 조건')+wgTier3(tfs)
       +wgTier4(tfs)
@@ -20976,6 +20978,24 @@ async function priceTick(){
       var ch=(p-prev.c)/prev.c*100;
       chg.className='chip '+(ch>=0?'up':'dn');chg.textContent=(ch>=0?'▲ ':'▼ ')+Math.abs(ch).toFixed(2)+'%';
       _updStamp();
+      
+
+
+
+
+
+
+
+
+
+      try{
+        var _t1=document.getElementById('gkT1');
+        if(_t1){
+          var _tf=(_t1.getAttribute('data-tfs')||'d1').split(',');
+          var _nh=wgTier1(_tf);
+          if(_nh && _nh!==_t1.innerHTML) _t1.innerHTML=_nh;   
+        }
+      }catch(_e1){}
     }
     if(elStatus.textContent!=='실시간'){elStatus.textContent='실시간';dot.style.background='var(--buy)';}
     
