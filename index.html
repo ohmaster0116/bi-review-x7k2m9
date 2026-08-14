@@ -1607,13 +1607,17 @@ function waveLinesAll(k){
   const a=E[k]; if(!a||a.length<10)return [];
   const n=a.length-1;                       
   
-  const sufMin=new Array(n+1).fill(1e18), sufMax=new Array(n+1).fill(-1e18);
-  for(let i=n-1;i>=0;i--){sufMin[i]=Math.min(a[i].c,sufMin[i+1]);sufMax[i]=Math.max(a[i].c,sufMax[i+1]);}
+
+
+
+
+
+  const _cxL=a[n-1].c;                      
   const lines=[];
   const confirm=(dir,s,acc,tEnd)=>{ 
     if(dir===0||s<2)return;
     const W=acc.reduce((x,y)=>x+y,0)/acc.length, birth=tEnd-1;
-    const alive=dir>0?(sufMin[tEnd]>=W):(sufMax[tEnd]<=W);
+    const alive=dir>0?(_cxL>=W):(_cxL<=W);   
     if(alive)lines.push({W,dir,surv:(n-1)-birth+1});
   };
   let dir=0,s=0,acc=[];
