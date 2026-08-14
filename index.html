@@ -10472,86 +10472,75 @@ function wgTier1(tfs){
 
 
 
+
+
+
+
+
   try{
     var px=gkPx(); if(px==null)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
     var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
     var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
-    var nx=function(b,up){
-      try{
-        var st=(b.stepsAll||[]).filter(function(x){return x.alive;});
-        var c=st.map(function(x){return x.vw;}).filter(function(v){ return up?(v>b.rep):(v<b.rep); });
-        if(!c.length)return null;
-        return up?Math.min.apply(null,c):Math.max.apply(null,c);
-      }catch(e){ return null; }
+    var lay=function(b,up){                     
+      if(!b)return [];
+      var all=(b.stepsAll||b.steps||[]).filter(function(x){ return x.alive&&x.vw!=null; });
+      var c=all.filter(function(x){ return up?(x.vw>px):(x.vw<px); });
+      c.sort(function(m,n){ return up?(m.vw-n.vw):(n.vw-m.vw); });   
+      return c.slice(0,4);
     };
     var out='';
     tfs.forEach(function(tf){
       var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
+      if(!L&&!S)return;
+      var sup=lay(L,false), res=lay(S,true);
+      if(!sup.length&&!res.length)return;
+      var mx=1; sup.concat(res).forEach(function(x){ if((x.v||0)>mx)mx=x.v; });
+      var row=function(x,i,up){
+        var col=up?'var(--sell)':'var(--buy)';
+        var w=Math.max(3,Math.round((x.v||0)/mx*100));
+        return '<div style="display:flex;align-items:center;gap:7px;padding:1.5px 0;font-size:11px">'
+          +'<span style="width:52px;color:'+col+';flex:none">'+(up?'저항 ':'지지 ')+(i+1)+'차</span>'
+          +'<span class="num" style="width:62px;text-align:right;color:'+col+';flex:none">'+f(x.vw)+'</span>'
+          +'<span class="sub" style="width:26px;font-size:9px;flex:none">'+(x.fights||0)+'전</span>'
+          +'<span style="flex:1;height:7px;background:rgba(120,130,150,.13);border-radius:2px;overflow:hidden">'
+          +'<span style="display:block;height:100%;width:'+w+'%;background:'+col+';opacity:.5"></span></span></div>';
+      };
+      var body='';
+      res.slice().reverse().forEach(function(x,i){ body+=row(x,res.length-1-i,true); });
+      body+='<div style="display:flex;align-items:center;gap:7px;padding:3px 0;margin:2px 0;'
+        +'border-top:1px solid rgba(255,109,0,.45);border-bottom:1px solid rgba(255,109,0,.45)">'
+        +'<span style="width:52px;color:#ff6d00;font-weight:700;font-size:11px;flex:none">현재가</span>'
+        +'<span class="num" style="width:62px;text-align:right;color:#ff6d00;font-weight:700;font-size:11px;flex:none">'+f(px)+'</span>'
+        +'<span class="sub" style="flex:1;font-size:9.5px">막대 = 그 층에 쌓인 거래량</span></div>';
+      sup.forEach(function(x,i){ body+=row(x,i,false); });
       
-      var nm=NM[tf];
+      var rt='';
+      if(L||S){
+        var cen=(L&&S)?((L.root+S.root)/2):null;
+        rt='<div class="sub" style="font-size:9.5px;margin-top:4px;display:flex;gap:9px;flex-wrap:wrap">'
+          +(S?'<span>숏 뿌리 <span class="num">'+f(S.root)+'</span></span>':'')
+          +(cen!=null?'<span style="color:var(--gold2)">뿌리 중심 <span class="num">'+f(cen)+'</span></span>':'')
+          +(L?'<span>롱 뿌리 <span class="num">'+f(L.root)+'</span></span>':'')+'</div>';
+      }
       
-      
-
-
-      var l1='<div style="font-size:12.5px;line-height:1.85;padding:2px 0">'
-        +'<b style="color:#ff6d00">현재가 '+f(px)+'</b>'
-        +' <span class="sub">·</span> 1차 실존 지지 '+(L
-            ? '<b style="color:var(--buy)">'+f(L.rep)+'</b> <span class="sub" style="font-size:10px">('+nm+' 롱 실존가 · '+(L.nAlive||0)+'층이 버팀)</span>'
-            : '<b style="color:var(--tx3)">없음</b> <span class="sub" style="font-size:10px">('+nm+' 롱 파동 소멸)</span>')
-        +' <span class="sub">·</span> 1차 실존 저항 '+(S
-            ? '<b style="color:var(--sell)">'+f(S.rep)+'</b> <span class="sub" style="font-size:10px">('+nm+' 숏 실존가 · '+(S.nAlive||0)+'층이 누름)</span>'
-            : '<b style="color:var(--tx3)">없음</b> <span class="sub" style="font-size:10px">('+nm+' 숏 파동 소멸)</span>')
-        +'</div>';
-      
-      var l2='', l3='';
-      if(!S) l2='<div style="font-size:11.5px;line-height:1.8;color:var(--tx3);padding:1px 0">'
-        +nm+' 숏 파동 없음 <span class="sub">·</span> 재형성 대기</div>';
-      if(!L) l3='<div style="font-size:11.5px;line-height:1.8;color:var(--tx3);padding:1px 0">'
-        +nm+' 롱 파동 없음 <span class="sub">·</span> 재형성 대기</div>';
-      if(S){ var w2=nx(S,true);
-        l2='<div style="font-size:11.5px;line-height:1.8;color:var(--tx2);padding:1px 0">'
-          +'1차 실존 저항을 종가로 넘으면 <span class="sub">:</span> 매도 층 1 소멸 · 저항이 '
-          +'<b style="color:var(--sell)">'+(w2!=null?f(w2):f(S.root)+' (뿌리)')+'</b> 로 물러납니다</div>'; }
-      if(L){ var s2=nx(L,false);
-        l3='<div style="font-size:11.5px;line-height:1.8;color:var(--tx2);padding:1px 0">'
-          +'1차 실존 지지를 종가로 잃으면 <span class="sub">:</span> 매수 층 1 소멸 · 지지가 '
-          +'<b style="color:var(--buy)">'+(s2!=null?f(s2):f(L.root)+' (뿌리)')+'</b> 로 물러납니다'
-          +' <span class="sub" style="font-size:10px">· 뿌리 '+f(L.root)+' 아래 마감이면 파동 소멸</span></div>'; }
-      out+='<div style="padding:7px 0;border-top:1px solid rgba(28,36,51,.55)">'+l1+l2+l3+'</div>';
+      var nr='';
+      var d1v=sup.length?(px-sup[0].vw):null, d2v=res.length?(res[0].vw-px):null;
+      if(d1v!=null||d2v!=null){
+        var near=(d2v==null||(d1v!=null&&d1v<=d2v));
+        var t=near?sup[0]:res[0], nx=near?(sup[1]?sup[1].vw:(L?L.root:null)):(res[1]?res[1].vw:(S?S.root:null));
+        nr='<div style="font-size:10.5px;color:var(--tx2);margin-top:4px">'
+          +'가장 가까운 자리 <b style="color:'+(near?'var(--buy)':'var(--sell)')+'">'+f(t.vw)+'</b>'
+          +' <span class="sub">('+(near?'아래':'위')+' '+Math.abs(near?d1v:d2v).toFixed(0)+' 떨어짐)</span>'
+          +' · 종가로 '+(near?'잃으면':'넘으면')+' 다음은 <b>'+f(nx)+'</b></div>';
+      }
+      var hd='<div style="display:flex;justify-content:space-between;align-items:baseline">'
+        +'<b style="font-size:11.5px">'+NM[tf]+'</b>'
+        +'<span class="sub" style="font-size:9.5px">생존 지지 '+((L&&L.nAlive)||0)+'층 · 저항 '+((S&&S.nAlive)||0)+'층</span></div>';
+      out+='<div style="padding:7px 0;border-top:1px solid rgba(28,36,51,.55)">'+hd+body+rt+nr+'</div>';
     });
     if(!out)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
-    
-    
-
-    var mkSeg=function(arr,nm,c){
-      if(!arr.length)return '';
-      arr.sort(function(a,b){ return b.v-a.v; });
-      var rows=arr.map(function(it){
-        var gp=(it.v-px)/px*100;
-        return '<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:10.5px">'
-          +'<span style="color:'+it.c+'">'+it.n+'</span>'
-          +'<span class="num" style="color:'+it.c+'">'+f(it.v)
-          +' <span class="sub" style="font-size:9px">'+(gp>=0?'+':'')+gp.toFixed(1)+'%</span></span></div>';
-      }).join('');
-      return '<div style="margin-top:5px"><b style="font-size:10.5px;color:'+c+'">'+nm+'</b>'+rows+'</div>';
-    };
-    var Lg=[], Sh=[], Cm=[];
-    tfs.forEach(function(tf){
-      var L=gkWb(tf,'buy'), S=gkWb(tf,'sell'), n2=NM[tf];
-      if(L){ Lg.push({v:L.rep,n:n2+' 롱 실존가',c:'var(--buy)'}); Lg.push({v:L.root,n:n2+' 롱 뿌리',c:'var(--buy)'}); }
-      if(S){ Sh.push({v:S.rep,n:n2+' 숏 실존가',c:'var(--sell)'}); Sh.push({v:S.root,n:n2+' 숏 뿌리',c:'var(--sell)'}); }
-      if(L&&S){ var cen=(L.root+S.root)/2;
-        Cm.push({v:(S.root+cen)/2,n:n2+' 하프(숏측)',c:'var(--tx2)'});
-        Cm.push({v:cen,n:n2+' 뿌리 중심',c:'var(--gold2)'});
-        Cm.push({v:(cen+L.root)/2,n:n2+' 하프(롱측)',c:'var(--tx2)'}); }
-    });
-    var det='<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:10.5px;background:rgba(255,109,0,.10);border-radius:4px;padding-left:5px;padding-right:5px">'
-      +'<span style="color:#ff6d00">현재가</span><span class="num" style="color:#ff6d00">'+f(px)+'</span></div>'
-      +mkSeg(Sh,'숏','var(--sell)')+mkSeg(Cm,'축 공용','var(--gold2)')+mkSeg(Lg,'롱','var(--buy)');
     return '<div style="padding:4px 14px 11px">'+out
-      +'<div class="sub" style="font-size:10px;margin-top:6px">갈림의 사실 서술이며 매매 지시가 아닙니다.</div>'
-      +'<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">값 전체 보기</summary>'
-      +'<div style="padding:5px 0 2px">'+det+'</div></details></div>';
+      +'<div class="sub" style="font-size:10px;margin-top:6px">갈림의 사실 서술이며 매매 지시가 아닙니다.</div></div>';
   }catch(e){ return '<div class="sub" style="padding:9px 14px">산출 대기</div>'; }
 }
 
