@@ -12736,12 +12736,39 @@ function viewMP(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1',
 
 const _EC={};   
 function build(){const M=DATA.M1.slice(),e={};
+  
+
+
+
+
+
+
+
+
+
+
+  const _pv = (typeof E !== 'undefined' && E) ? E : null;
+  const _carry = function(arr0, k){
+    try{
+      if(!_pv || !arr0 || !arr0.length) return arr0;
+      const ob = (_pv[k] && _pv[k].length) ? _pv[k][_pv[k].length - 1] : null;
+      const nb = arr0[arr0.length - 1];
+      if(!ob || !nb || ob.t !== nb.t) return arr0;          
+      if(!(ob.c > 0) || !isFinite(ob.c)) return arr0;
+      arr0[arr0.length - 1] = Object.assign({}, nb, {
+        c: ob.c,
+        h: (ob.h > nb.h ? ob.h : nb.h),                      
+        l: (ob.l < nb.l ? ob.l : nb.l)
+      });
+    }catch(_){}
+    return arr0;
+  };
   for(const k of ['m30','h1','h4','d1','w1','M1']){
     const src=DATA[k]||[];
     let c=_EC[k];
     const firstT=src.length?src[0].t:0;
     if(!c||c.src!==src||c.firstT!==firstT||src.length<c.n||c.n===0){
-      const arr=enrich(src.slice());
+      const arr=enrich(_carry(src.slice(), k));
       const n2=arr.length, ma=new Array(n2), mi=new Array(n2);
       if(n2){ma[n2-1]=-Infinity;mi[n2-1]=Infinity;
         for(let i=n2-2;i>=0;i--){ma[i]=Math.max(arr[i+1].h,ma[i+1]);mi[i]=Math.min(arr[i+1].l,mi[i+1]);}}
@@ -12749,6 +12776,7 @@ function build(){const M=DATA.M1.slice(),e={};
     }else{
       const arr=c.arr,oldN=arr.length;
       for(let i=oldN-1;i<src.length;i++)arr[i]=src[i];   
+      _carry(arr, k);                                    
       enrichTail(arr,oldN-1,c.ma,c.mi);
       c.n=src.length;
     }
