@@ -10561,7 +10561,7 @@ function wgTier1(tfs){
         return '<div style="display:flex;align-items:center;gap:7px;padding:1.5px 0;font-size:11px">'
           +'<span style="width:52px;color:'+col+';flex:none;font-size:'+(lbl.length>5?'9.5px':'11px')+'">'+lbl+'</span>'
           +'<span class="num" style="width:62px;text-align:right;color:'+col+';flex:none">'+f(x.vw)+'</span>'
-          +'<span class="sub" style="width:26px;font-size:9px;flex:none">'+(x.fights||0)+'전</span>'
+          +'<span class="sub" style="width:26px;font-size:9px;flex:none;white-space:nowrap">'+(x.fights||0)+'전</span>'
           +'<span style="flex:1;height:7px;background:rgba(120,130,150,.13);border-radius:2px;overflow:hidden">'
           +'<span style="display:block;height:100%;width:'+w+'%;background:'+col+';opacity:.5"></span></span></div>';
       };
@@ -10576,8 +10576,11 @@ function wgTier1(tfs){
         .concat(head.map(function(x){ var r=isRep(x,L); return {x:x,lbl:(r?'롱 실존가':''),col:'var(--buy)',tag:(r?'머리 위':'')}; }));
       upList.sort(function(m,n){ return n.x.vw-m.x.vw; });
       var body='';
+      
+
+      var tagS=function(t,c){ return t?'<span style="flex:none;font-size:9px;font-weight:700;color:'+c+';white-space:nowrap">'+t+'</span>':''; };
       upList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
-        .replace('전</span>', '전'+(o.tag?' <b style="color:var(--buy)">'+o.tag+'</b>':'')+'</span>'); });
+        .replace('<span style="flex:1;height:7px', tagS(o.tag,'var(--buy)')+'<span style="flex:1;height:7px'); });
       body+='<div style="display:flex;align-items:center;gap:7px;padding:3px 0;margin:2px 0;'
         +'border-top:1px solid rgba(255,109,0,.45);border-bottom:1px solid rgba(255,109,0,.45)">'
         +'<span style="width:52px;color:#ff6d00;font-weight:700;font-size:11px;flex:none">현재가</span>'
@@ -10588,7 +10591,7 @@ function wgTier1(tfs){
         .concat(foot.map(function(x){ var r=isRep(x,S); return {x:x,lbl:(r?'숏 실존가':''),col:'var(--sell)',tag:(r?'발밑':'')}; }));
       dnList.sort(function(m,n){ return n.x.vw-m.x.vw; });
       dnList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
-        .replace('전</span>', '전'+(o.tag?' <b style="color:var(--sell)">'+o.tag+'</b>':'')+'</span>'); });
+        .replace('<span style="flex:1;height:7px', tagS(o.tag,'var(--sell)')+'<span style="flex:1;height:7px'); });
       
       var rt='';
       if(L||S){
