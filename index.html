@@ -10455,16 +10455,29 @@ function setWaveAx(a){ waveAx=a; try{render();}catch(e){} }
 var wvTF='d1';
 function setWvTF(x){ wvTF=x; try{render();}catch(e){} }
 
+
+
+
+
+
+
+function gkSrc(){
+  try{
+    var f=((window.__VERDICT||{}).data)||null;
+    if(f&&f['파동'])return f;                       
+    return (((window.__CRON||{}).verdict_live||{}).data)||{};   
+  }catch(e){ return {}; }
+}
 function gkWb(tf, side){
   try{
-    var wb=(((((window.__CRON||{}).verdict_live||{}).data||{})['파동']||{}).wb)||{};
+    var wb=((gkSrc()['파동']||{}).wb)||{};
     var cx=(waveAx==='중심값');
     var key=(side==='sell')?((cx?'c_sell_':'sell_')+tf):((cx?'c_':'')+tf);
     var b=wb[key];
     return (b&&b.rep!=null)?b:null;
   }catch(e){ return null; }
 }
-function gkPx(){ try{ var v=(((window.__CRON||{}).verdict_live||{}).data)||{}; return (v['파동']||{}).px||(E.d1[E.d1.length-1].c); }catch(e){ return null; } }
+function gkPx(){ try{ return (gkSrc()['파동']||{}).px||(E.d1[E.d1.length-1].c); }catch(e){ return null; } }
 
 
 
