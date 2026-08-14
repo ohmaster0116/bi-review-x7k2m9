@@ -306,7 +306,14 @@ function dstr(t,tm){const d=new Date(t),p=x=>String(x).padStart(2,'0');
 function _updStamp(){
   try{
     var s='갱신 '+dstr(Date.now(),true);
+    
+
+
+
+
+
     var a=window.__DATA_ASOF;
+    try{ var _fv=(window.__VERDICT||{}).generated; if(_fv)a=_fv; }catch(e){}
     if(a){
       var t=new Date(a).getTime();
       if(!isNaN(t)){
