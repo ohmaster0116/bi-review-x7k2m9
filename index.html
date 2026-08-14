@@ -12775,8 +12775,24 @@ function build(){const M=DATA.M1.slice(),e={};
       c=_EC[k]={src,firstT,n:n2,arr,ma,mi};
     }else{
       const arr=c.arr,oldN=arr.length;
+      
+
+
+
+
+      const _kp = (arr.length && arr[arr.length-1] && arr[arr.length-1].c > 0)
+        ? {t:arr[arr.length-1].t, c:arr[arr.length-1].c, h:arr[arr.length-1].h, l:arr[arr.length-1].l} : null;
       for(let i=oldN-1;i<src.length;i++)arr[i]=src[i];   
-      _carry(arr, k);                                    
+      if(_kp){
+        const _nb=arr[arr.length-1];
+        if(_nb && _nb.t===_kp.t){                         
+          arr[arr.length-1]=Object.assign({}, _nb, {
+            c:_kp.c,
+            h:(_kp.h>_nb.h?_kp.h:_nb.h),
+            l:(_kp.l<_nb.l?_kp.l:_nb.l)
+          });
+        }
+      }
       enrichTail(arr,oldN-1,c.ma,c.mi);
       c.n=src.length;
     }
