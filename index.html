@@ -18384,24 +18384,24 @@ function _recRow(k, b, cur){
 const _RECHEAD=`<thead><tr><th class="l">날짜</th><th class="l">방향</th><th>시</th><th>고</th><th>저</th><th>종</th>
   <th style="color:#8fd0ff">기준가<br>시종</th><th style="color:#ffb98a">기준가<br>고저</th><th style="color:var(--gold2)">평균<br>기준가</th><th>전투1</th><th>저항</th><th>지지</th><th>중심</th><th>전투2</th><th>변곡</th><th class="l">미확인/역할</th></tr></thead>`;
 
+
+
+const RECYEAR={m30:365*48, h1:365*24, h4:365*6, d1:365, w1:104, M1:36, y1:3};
+const RECSPAN={d1:'1년', w1:'2년', M1:'3년', m30:'1년', h1:'1년', h4:'1년', y1:'3년'};
+function _recCap(k){ const n=(E[k]||[]).length; return Math.min(n, RECYEAR[k]||365); }
+
 function recMore(k, from, to){
   try{
     const a=E[k]; if(!a||!a.length)return '<div class="sub" style="padding:8px">데이터 없음</div>';
-    const n=a.length;
-    const s0=Math.max(0, n-1-to), s1=n-1-from;          
+    const n=a.length, cap=_recCap(k);
+    to=Math.min(to, cap-1);                              
+    const s0=Math.max(0, n-1-to), s1=n-1-from;
     if(s1<s0)return '<div class="sub" style="padding:8px">더 오래된 캔들이 없습니다</div>';
     const seg=a.slice(s0, s1+1).reverse();
     const rows=seg.map(b=>_recRow(k,b,false)).join('');
     const f=dstr(seg[seg.length-1].t,HASTIME[k]), l=dstr(seg[0].t,HASTIME[k]);
-    let out=`<div class="sub" style="padding:6px 2px;font-size:10.5px">${f} ~ ${l} · ${seg.length}봉</div>`
+    return `<div class="sub" style="padding:6px 2px;font-size:10.5px">${f} ~ ${l} · ${seg.length}봉</div>`
       +`<div class="scroll"><table class="tw">${_RECHEAD}<tbody>${rows}</tbody></table></div>`;
-    if(s0>0){                                            
-      const rest=s0;
-      out+=`<details style="margin-top:8px" ontoggle="if(this.open&&!this._d){this._d=1;this.querySelector('.recBox').innerHTML=recMore('${k}',${to+1},${to+1+Math.max(rest,1)});}">`
-        +`<summary style="cursor:pointer;font-size:11px;color:var(--gold2);padding:5px 2px">▾ 더 오래된 캔들 ${rest}봉 펼치기</summary>`
-        +`<div class="recBox"></div></details>`;
-    }
-    return out;
   }catch(e){ return '<div class="sub" style="padding:8px">불러오기 실패</div>'; }
 }
 function viewTF(k){const a=E[k],show=a.slice(-40).reverse();
@@ -18420,11 +18420,11 @@ function viewTF(k){const a=E[k],show=a.slice(-40).reverse();
     <th style="color:#8fd0ff">기준가<br>시종</th><th style="color:#ffb98a">기준가<br>고저</th><th style="color:var(--gold2)">평균<br>기준가</th><th>전투1</th><th>저항</th><th>지지</th><th>중심</th><th>전투2</th><th>변곡</th><th class="l">미확인/역할</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     ${(function(){try{
-      const n=(E[k]||[]).length, rest=Math.max(0,n-40);
+      
+      const cap=_recCap(k), rest=Math.max(0,cap-40);
       if(!rest)return '';
-      const step=Math.min(200,rest);
-      return `<div style="padding:4px 12px 10px"><details ontoggle="if(this.open&&!this._d){this._d=1;this.querySelector('.recBox').innerHTML=recMore('${k}',40,${40+step-1});}">`
-        +`<summary style="cursor:pointer;font-size:11.5px;color:var(--gold2);padding:6px 2px">▾ 이전 캔들 더 보기 <span class="sub" style="font-weight:400">(남은 ${rest}봉 · ${step}봉씩)</span></summary>`
+      return `<div style="padding:4px 12px 10px"><details ontoggle="if(this.open&&!this._d){this._d=1;this.querySelector('.recBox').innerHTML=recMore('${k}',40,${cap-1});}">`
+        +`<summary style="cursor:pointer;font-size:11.5px;color:var(--gold2);padding:6px 2px">▾ 과거 더 보기 <span class="sub" style="font-weight:400">(${rest}봉 · ${RECSPAN[k]||'1년'}치까지)</span></summary>`
         +`<div class="recBox" style="margin-top:6px"></div></details></div>`;
     }catch(e){return '';}})()}
     </div>`;
