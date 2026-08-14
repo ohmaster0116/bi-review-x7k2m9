@@ -11385,7 +11385,7 @@ function regimePanel(){
     else condTxt='지금은 <b>일봉이 전날 일봉의 기준가를 매일 딛는 판</b>입니다(=그날 고~저 범위 안에 전날 기준가가 들어옴, 회귀 정상'+(!d.liveTouch?' - 오늘 캔들은 아직 미터치, 진행 중':'')+'). 실측(일봉 9년): 오늘 일봉이 딛었으면 <b>다음 일봉도</b> 딛을 확률 <b>70%</b>(N2,318), 떠난 기준가도 <b>5일(일봉 5개) 안에</b> <b>55%</b>(N922)는 다시 딛습니다 → <b>지지(되돌림 받아서 사고팔기)이 통하는 구간</b>. 단 일봉이 그 기준가를 딛는 순간의 방향은 동전(위에서 내려와 지지로 마감 54%)이라, <b>딛고 난 일봉 종가</b>를 보고 확정하세요 - 기준가 위 마감=지지 인정, 아래 마감=이탈.';
   }
   else if(d.state==='warn')condTxt=d.streak>=2
-    ?'<b>일봉이</b> 2연속 <b>전날 일봉 기준가를 안 딛고 '+(d.dir>0?'위로':'아래로')+' 떠났습니다</b>(그날 고~저가 전날 기준가를 안 건드림). 같은 상황 과거 <b>152번</b>: 다음 5개 일봉이 떠난 방향으로 더 간 경우 <b>56%</b>·평균 <b>+1.4%</b>, <b>장대(하루 변동폭 평소 1.5배↑) 확률 26%</b>(평소 18%) → 박스 문법이 약해지는 초입. 지지은 줄이고, 아래 눌림목 지정가를 확인하세요. 일봉 1개 더 떠나면 추세 확정.'
+    ?'<b>일봉이</b> 2연속 <b>전날 일봉 기준가를 안 딛고 '+(d.dir>0?'위로':'아래로')+' 떠났습니다</b>(그날 고~저가 전날 기준가를 안 건드림). 같은 상황 과거 <b>152번</b>: 다음 5개 일봉이 떠난 방향으로 더 간 경우 <b>56%</b>·평균 <b>+1.4%</b>, <b>장대(하루 변동폭 평소 1.5배↑) 확률 26%</b>(평소 18%) → 박스 문법이 약해지는 초입. 회귀매매는 줄이고, 아래 눌림목 지정가를 확인하세요. 일봉 1개 더 떠나면 추세 확정.'
     :'<b>일봉</b> 회귀율이 평소보다 꺾이는 중인데 아직 방향은 미확정입니다. 이럴 땐 <b>비중 축소</b>가 정답 - 일봉이 2연속 미회귀 되는지(그때 방향 나옴)만 감시하세요.';
   else condTxt='<b>일봉이</b> 3연속 이상 <b>전날 일봉 기준가를 안 딛고 '+(d.dir>0?'위로':'아래로')+' 떠났습니다</b>. 같은 상황 과거 <b>41번</b>: 떠난 방향 지속 <b>68%</b>, 5개 일봉 평균 <b>+3.7%</b>, <b>장대 확률 32%</b>(평소의 1.8배) = <b style="color:#ef5350">변동폭 확대가 작용하는 구간</b>. 역행(반대 방향 지지) 금지 - 매매는 추세 방향 눌림목으로만.';
   
@@ -11488,7 +11488,7 @@ function regimePanel(){
       · <b>회귀율</b> = 각 캔들이 이전 캔들 기준가를 터치한 비율. <b>회귀율 ≠ 승률</b>(기준가에 닿을 확률이지 돈 벌 확률이 아님). <b>최근−평소가 음수(빨강)</b>면 요즘 기준가로 안 돌아온다 = "박스가 깨지는 중" 신호.<br>
       · <b>연속 미회귀</b> = 봉 전체가 직전 기준가를 안 건드리고 지나감. <b style="color:var(--buy)">기준가 위</b>=봉이 통째로 기준가 위에 뜸(상승 쪽 추세 진행) / <b style="color:var(--sell)">기준가 아래</b>=통째로 아래(하락 쪽). <b>행동: 일봉 2연속이면 그 방향 추세판 신호(위 눌림목 지정가 뜸), 3연속=추세 확정 배지·지지 중단.</b><br>
       · <b>국면 트리거는 일봉·주봉만</b> - 분봉 스트릭은 노이즈라 참고값.<br>
-      · <b>배율보다 손절폭이 먼저입니다</b> - 지지은 손절이 좁아 높은 배율도 버티지만, 추세판은 손절이 넓어(1.0×평균변동폭) 감당 배율을 손절폭이 역산합니다. "추세인데 고배율" 청산 사고를 구조로 차단. 배율 선택은 투자자 몫.<br>
+      · <b>배율보다 손절폭이 먼저입니다</b> - 회귀매매는 손절이 좁아 높은 배율도 버티지만, 추세판은 손절이 넓어(1.0×평균변동폭) 감당 배율을 손절폭이 역산합니다. "추세인데 고배율" 청산 사고를 구조로 차단. 배율 선택은 투자자 몫.<br>
       · 국면 감지는 <b>확인이지 예측이 아닙니다</b>(신호 시점엔 추세 절반 경과). 감지=관망/전환 근거, 진입은 규칙(지정가)대로만.</div></div>`;
 }
 
@@ -11819,9 +11819,9 @@ function viewOpenTrade(){
       <b style="color:var(--gold2)">핵심 - 방향을 맞추는 게 아니다.</b> 전투평균은 자주 되돌아오는 자리다 - 왜 이 산식이냐면, <b>어제의 균형(기준가·중심가)과 오늘의 출발(시가×2)이 합의한 자리</b>라서다. 거기서 <b>지정가로 기다렸다 받는다.</b> 우위는 방향이 아니라 <b>위치</b>다.<br>
       <b style="color:#46c2ff">이건 승률형 트레이딩이다.</b> 목표보다 손절 폭이 커서 손익비는 일부러 나쁘다 - 대신 <b>승률 약 70%가 엣지</b>다. 목표를 키워 손익비를 좋게 만들면 승률이 더 깎여 오히려 손해(검증됨). <b>승률이 밥줄이니 규칙을 어겨 승률을 깎는 순간 시스템이 죽는다.</b><br>
       <b>같은 자금이어야 하는 이유</b> - 승률형은 이길 때 조금씩 쌓고 질 때 크게 잃는 구조라, 자금을 늘렸다 줄였다 하면 <b>큰 손실이 큰 베팅에 걸리는 순간 누적이 무너진다.</b> 성적표(승률·최대 낙폭)도 전부 고정 자금 기준이다.<br>
-      <b>매물대는 목표가 아니라 피하는 용도</b> - 앞에 매물 뭉치가 있으면 목표를 못 먹으니 안 한다. 저항은 관점 따라 둘 다입니다 - <b>내 진행 방향의 저항=장애물</b>(지지은 관망), <b>내 아래의 저항=방어선</b>. 같은 저항, 다른 자리.<br>
+      <b>매물대는 목표가 아니라 피하는 용도</b> - 앞에 매물 뭉치가 있으면 목표를 못 먹으니 안 한다. 저항은 관점 따라 둘 다입니다 - <b>내 진행 방향의 저항=장애물</b>(회귀매매는 관망), <b>내 아래의 저항=방어선</b>. 같은 저항, 다른 자리.<br>
       <b>이미 달린 뒤 체결은 버린다</b> - 자리로 안 오고 이미 움직인 날은 자리가 아니다.<br>
-      <b>연속 매도 국면은 쉰다</b> - 기준가가 이틀 연속 꺾인 날은 지지이 밀린다(4개 코인 공통 검증).</div></div>`;
+      <b>연속 매도 국면은 쉰다</b> - 기준가가 이틀 연속 꺾인 날은 지지가 밀린다(4개 코인 공통 검증).</div></div>`;
   const cav=`<div class="panel" style="border-left:3px solid var(--sell)"><div class="spaced" style="padding:11px 14px;font-size:12px;color:var(--tx2);line-height:1.9">
       <b style="color:var(--sell)">⚠ 주의</b><br>
       · 규칙(매물대·30%·연속매도 국면·1일 1회·같은 자금)을 어기면 성적이 무너집니다. <b>Cross 마진 · 비중 5%</b> 기준.</div></div>`;
@@ -11881,7 +11881,7 @@ function viewOpenTrade(){
   })();
   return `<h2 class="sec" style="margin:0 0 12px">승률 매매 (지지) <span class="sub">- 일봉 시가 전략 · 5년 검증 + 라이브 전진검증</span>${alBtn('skill','신호')}</h2>`+lyNote(
     '눌림목에서 지정가로 받는 전략입니다. 추격하지 않고 자리에 오면 받고, 안 오면 쉽니다. 박스 구간에서 유효하고 추세 구간에서는 자제로 보시면 됩니다.',
-    '지지(눌림목 지정가) - 진입·목표·손절이 미리 정해지는 구조입니다. 국면이 박스일 때 유효하고, 추세 전환 시 지지은 중단이 정석이라는 판단입니다.',
+    '지지(눌림목 지정가) - 진입·목표·손절이 미리 정해지는 구조입니다. 국면이 박스일 때 유효하고, 추세 전환 시 회귀매매는 중단이 정석이라는 판단입니다.',
     '')+stratHub()+rgBanner+cardA+liveFwd+perf+btNoteA+fixedPanel+panicBounceCard()+fwd+rules+why+cav;
 }
 
@@ -14653,7 +14653,7 @@ function reportPayload(){try{
   const rebasis=monDir!==0?'월봉 방향 전환 시 재판정':'월 파동 형성 시 갱신';
   
   let gyeol='';
-  if(monDir<0&&rev)gyeol='지금은 확인이 먼저인 자리 - 돌파는 종가로, 지지은 평단 방어로 확인 후 대응';
+  if(monDir<0&&rev)gyeol='지금은 확인이 먼저인 자리 - 돌파는 종가로, 지지는 평단 방어로 확인 후 대응';
   else if(monDir<0&&!rev)gyeol='지금은 관망이 기본인 자리 - 반전 시그널이 켜질 때까지';
   else if(monDir>0&&rev)gyeol='추세 결을 따라가는 자리 - 과열 이정표(보폭 한계)만 확인';
   else if(monDir>0&&!rev)gyeol='눌림 확인이 먼저인 자리 - 되돌림 자리 도달 여부';
@@ -15130,7 +15130,7 @@ var LW_PICK={
         ['sr','지지·저항','경계 국면에서 지지가 지켜지는지 확인용'],
         ['mp','주체형성가','주체 본전 방어 자리']],
   trend:[['flip','추세전환가 9층','추세 추종의 손절 기준(고정 전환가), 되돌림 진입은 재검증 중'],
-         ['sr','지지·저항','눌림에서 지지이 나오는지 확인용'],
+         ['sr','지지·저항','눌림에서 지지가 나오는지 확인용'],
          ['tp','전투포인트','두 봉이 합의한 자리, 목표·재진입 좌표로 확인']]};   
 function lwPickHTML(){try{
   var rg='box'; try{var g=regimeCalc('d1'); if(g&&g.state)rg=g.state;}catch(e){}
@@ -15342,7 +15342,7 @@ var card=function(nm,stat,desc,tab,key){return '<div class="panel" style="margin
     
     +card('기준가 회귀 (좌표)','5봉 내 회귀 65~66% <span class="sub" style="font-size:9.5px">측정 2026-08-03 · 거리 효과</span>','닿는 비율은 거리와 국면에 따라 달라집니다 - 다만 이 좌표라서 더 닿는 것은 아닙니다(같은 거리 아무 가격과 동률). 목표·되돌림 진입 좌표로만 씀','기준가','vf_gijun')
     +card('수급 신뢰 등급','<span style="color:var(--tx3)">기록판, 엣지 아님</span>','이 자리를 누가 만들고 지키나, 高신뢰=실수요 · 低신뢰=훼이크 경계','수급 분석','vf_trust')
-    +card('서명 전략 모음','지지 매매 · 롱의 역공 · 급락 반등','각 전략의 승률·성과표·국면 처방, 국면이 전략 ON/OFF를 정함','전략','vf_sign')
+    +card('서명 전략 모음','회귀매매 · 롱의 역공 · 급락 반등','각 전략의 승률·성과표·국면 처방, 국면이 전략 ON/OFF를 정함','전략','vf_sign')
     +'<div class="sub" style="font-size:10px;padding:6px 4px">편입 기준=서명 관문(EV>0 · OOS 양수 · 슬립 후 생존) · 포워드 성적 미달 시 강등(성적표와 연동) · 손절 없는 전략은 없습니다</div>';
 }catch(e){return '<div class="sub" style="padding:20px">검증 완료 렌더 오류: '+e.message+'</div>';}}
 let __scoreSec='원장';   
@@ -20200,7 +20200,7 @@ function render(){if(!E)return;
   else if(active==='파동 전투존'){wvSec='전투';v.innerHTML=viewWave();}
   else if(active==='파동 차트'){wvSec='차트';v.innerHTML=viewWave();}
   else if(active==='과거 사례'){wvSec='사례';v.innerHTML=viewWave();setTimeout(function(){var el=document.getElementById('wvCases');if(el)el.scrollIntoView({block:'start'});},80);}
-  else if(active==='전략'){v.innerHTML=viewSign()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 지지 매매(승률·성과표·국면 처방)</summary>'+(viewOpenTrade()+regimePanel())+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 급락 반등</summary>'+viewSkillPanic()+'</details>';}
+  else if(active==='전략'){v.innerHTML=viewSign()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 회귀매매(승률·성과표·국면 처방)</summary>'+(viewOpenTrade()+regimePanel())+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 급락 반등</summary>'+viewSkillPanic()+'</details>';}
   else if(active==='정합 원장')v.innerHTML=viewVerdictLedger();
   else if(active==='구독'){v.innerHTML='<div class="sub" style="padding:18px">구독 안내 페이지로 이동합니다…</div>'; location.href='subscribe.html';}   
   else if(active==='전략 검증')v.innerHTML=viewScoreHub();   
