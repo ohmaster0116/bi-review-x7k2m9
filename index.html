@@ -10572,7 +10572,30 @@ function wgTier2(tfs){
       var s3=nb.length?('<div style="font-size:10.5px;color:var(--tx2)">이웃 생존 층 <span class="num">'
               +nb.map(f).join(' · ')+'</span></div>'):'';
       var s4='<div style="font-size:10.5px;color:var(--tx3)">뿌리(사망선) <span class="num">'+f(b.root)+'</span></div>';
-      return '<div style="margin-top:6px"><b style="color:'+c+';font-size:11px">'+nm+'</b>'+s1+s2+s3+s4+'</div>';
+      
+
+
+
+
+      var alv=all.filter(function(x){return x.alive&&x.vw!=null;})
+                 .sort(function(x,y){return y.vw-x.vw;});
+      var s5='';
+      if(alv.length>1){
+        var mv=1; alv.forEach(function(x){ if((x.v||0)>mv)mv=x.v; });
+        var rows=alv.map(function(x){
+          var w=Math.max(3,Math.round((x.v||0)/mv*100));
+          var isRep=(Math.abs(x.vw-rep)<0.01);
+          return '<div style="display:flex;align-items:center;gap:6px;padding:1px 0;font-size:10px'
+            +(isRep?';background:rgba(255,109,0,.10);border-radius:3px':'')+'">'
+            +'<span class="num" style="width:60px;text-align:right;color:'+c+';flex:none">'+f(x.vw)+'</span>'
+            +'<span class="sub" style="width:38px;font-size:9px;flex:none">'+(x.fights||0)+'전'+(isRep?' ◀':'')+'</span>'
+            +'<span style="flex:1;height:6px;background:rgba(120,130,150,.13);border-radius:2px;overflow:hidden">'
+            +'<span style="display:block;height:100%;width:'+w+'%;background:'+c+';opacity:.45"></span></span></div>';
+        }).join('');
+        s5='<details style="margin-top:3px"><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">'
+          +'생존 '+alv.length+'층 전부 보기</summary><div style="padding:3px 0 2px">'+rows+'</div></details>';
+      }
+      return '<div style="margin-top:6px"><b style="color:'+c+';font-size:11px">'+nm+'</b>'+s1+s2+s3+s4+s5+'</div>';
     };
     
 
