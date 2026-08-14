@@ -10527,9 +10527,23 @@ function wgTier1(tfs){
 
 
 
-    var pick=function(b,up){                    
+    
+
+
+
+
+
+
+    var pick=function(b,up,repDown){            
       if(!b)return [];
-      var c=(b.stepsAll||b.steps||[]).filter(function(x){ return x.alive&&x.vw!=null&&(up?(x.vw>px):(x.vw<px)); });
+      var c=(b.stepsAll||b.steps||[]).filter(function(x){
+        if(!x.alive||x.vw==null)return false;
+        if(Math.abs(x.vw-px)<1e-9){
+          if(!(b.rep!=null&&Math.abs(x.vw-b.rep)<0.01))return false;   
+          return up?(!repDown):(!!repDown);                            
+        }
+        return up?(x.vw>px):(x.vw<px);
+      });
       c.sort(function(m,n){ return up?(m.vw-n.vw):(n.vw-m.vw); });   
       return c;
     };
@@ -10545,14 +10559,14 @@ function wgTier1(tfs){
       var rr=all.filter(function(x){ return Math.abs(x.vw-b.rep)<0.01; })[0];
       return rr?list.slice(0,3).concat([rr]):list;
     };
-    var lay=function(b,up){ var all=pick(b,up); return keepRep(all.slice(0,4), all, b); };
+    var lay=function(b,up,repDown){ var all=pick(b,up,repDown); return keepRep(all.slice(0,4), all, b); };
     var out='';
     tfs.forEach(function(tf){
       var L=gkWb(tf,'buy'), S=gkWb(tf,'sell');
       if(!L&&!S)return;
-      var sup=lay(L,false), res=lay(S,true);
+      var sup=lay(L,false,true), res=lay(S,true,false);   
       
-      var _hAll=pick(L,true), _fAll=pick(S,false);
+      var _hAll=pick(L,true,true), _fAll=pick(S,false,false);
       var head=keepRep(_hAll.slice(0,4),_hAll,L), foot=keepRep(_fAll.slice(0,4),_fAll,S);
       if(!sup.length&&!res.length&&!head.length&&!foot.length)return;
       var mx=1; sup.concat(res,head,foot).forEach(function(x){ if((x.v||0)>mx)mx=x.v; });
