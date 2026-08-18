@@ -11518,15 +11518,32 @@ function wgTier1(tfs){
         .map(function(x){ return {vw:x.vw,v:x.v,fights:x.fights,n:1,lo:x.vw,hi:x.vw,
                                   rep:!!(b.rep!=null&&Math.abs(x.vw-b.rep)<0.01)}; });
     };
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    var edg=function(c,isSup){ var e=isSup?c.hi:c.lo; return (e!=null)?e:c.vw; };
     var pick=function(b,up,repDown){            
       if(!b)return [];
       var c=src(b).filter(function(x){
         if(x.vw==null)return false;
+        var _lo=edg(x,false), _hi=edg(x,true);
+        if(_lo>px)return up;                                           
+        if(_hi<px)return !up;                                          
         if(Math.abs(x.vw-px)<1e-9){
           if(!x.rep)return false;                                      
           return up?(!repDown):(!!repDown);                            
         }
-        return up?(x.vw>px):(x.vw<px);
+        return up?(x.vw>px):(x.vw<px);                                 
       });
       c.sort(function(m,n){ return up?(m.vw-n.vw):(n.vw-m.vw); });   
       return c;
@@ -11628,7 +11645,8 @@ function wgTier1(tfs){
 
 
 
-      var edg=function(c,isSup){ var e=isSup?c.hi:c.lo; return (e!=null)?e:c.vw; };
+      
+
       var d1v=sup.length?(px-edg(sup[0],true)):null, d2v=res.length?(edg(res[0],false)-px):null;
       if(d1v!=null||d2v!=null){
         var near=(d2v==null||(d1v!=null&&d1v<=d2v));
