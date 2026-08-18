@@ -11556,8 +11556,15 @@ function wgTier1(tfs){
 
 
 
-      var upList=res.map(function(x,i){ return {x:x,lbl:'저항 '+(i+1)+'차',col:'var(--sell)',tag:(isRep(x,S)?'숏 실존가':'')}; })
-        .concat(head.map(function(x){ var r=isRep(x,L); return {x:x,lbl:(r?'롱 실존가':''),col:'var(--buy)',tag:(r?'머리 위':'')}; }));
+      
+
+
+
+
+
+      var vsuf=function(b,x){ return (b&&b.rep!=null&&Math.abs(x.vw-b.rep)>=1)?(' '+f(b.rep)):''; };
+      var upList=res.map(function(x,i){ return {x:x,lbl:'저항 '+(i+1)+'차',col:'var(--sell)',tag:(isRep(x,S)?('숏 실존가'+vsuf(S,x)):'')}; })
+        .concat(head.map(function(x){ var r=isRep(x,L); return {x:x,lbl:(r?'롱 실존가':''),col:'var(--buy)',tag:(r?('머리 위'+vsuf(L,x)):'')}; }));
       upList.sort(function(m,n){ return n.x.vw-m.x.vw; });
       var body='';
       
@@ -11571,8 +11578,8 @@ function wgTier1(tfs){
         +'<span class="num" style="width:62px;text-align:right;color:#ff6d00;font-weight:700;font-size:11px;flex:none">'+f(px)+'</span>'
         +'<span class="sub" style="flex:1;font-size:9.5px">막대 = 그 자리에 쌓인 거래량 · 30달러 안은 한 자리로 묶어 평균으로 적습니다</span></div>';
       
-      var dnList=sup.map(function(x,i){ return {x:x,lbl:'지지 '+(i+1)+'차',col:'var(--buy)',tag:(isRep(x,L)?'롱 실존가':'')}; })
-        .concat(foot.map(function(x){ var r=isRep(x,S); return {x:x,lbl:(r?'숏 실존가':''),col:'var(--sell)',tag:(r?'발밑':'')}; }));
+      var dnList=sup.map(function(x,i){ return {x:x,lbl:'지지 '+(i+1)+'차',col:'var(--buy)',tag:(isRep(x,L)?('롱 실존가'+vsuf(L,x)):'')}; })
+        .concat(foot.map(function(x){ var r=isRep(x,S); return {x:x,lbl:(r?'숏 실존가':''),col:'var(--sell)',tag:(r?('발밑'+vsuf(S,x)):'')}; }));
       dnList.sort(function(m,n){ return n.x.vw-m.x.vw; });
       dnList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
         .replace('<span style="flex:1;height:7px', tagS(o.tag,'var(--sell)')+'<span style="flex:1;height:7px'); });
