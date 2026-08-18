@@ -1131,8 +1131,14 @@ function sitgaGradePanel(){try{
 
 
       let vw=null, _vwSrc='';
-      try{ var _lg=((gkSrc()['파동']||{}).wb||{})['ledger_'+k];
-           if(_lg&&_lg.length){ var _lw=_lg[_lg.length-1]; if(_lw&&_lw.vw>0){ vw=_lw.vw; _vwSrc='서버'; } } }catch(e){}
+      
+
+
+
+
+      try{ var _lg=((gkSrc()['파동']||{}).wb||{})['ledger_'+k], _lw=null;
+           if(_lg&&_lg.length){ for(var _li=_lg.length-1;_li>=0;_li--){ if(_lg[_li]&&!_lg[_li].death){ _lw=_lg[_li]; break; } } }
+           if(_lw&&_lw.vw>0){ vw=_lw.vw; _vwSrc='서버'; } }catch(e){}
       if(vw==null){ try{const _ws=waveState(k); if(_ws&&_ws.mode!=='none'&&_ws.dir>0){const _lv=waveVW(E[k],_ws); if(_lv){vw=_lv;_vwSrc='폴백';}}}catch(e){} }
       if(vw==null)continue;
     const gap=(px-vw)/vw*100,q=Q[k];
@@ -11477,7 +11483,8 @@ function wgTier1(tfs){
 
   try{
     var px=gkPx(); if(px==null)return '<div class="sub" style="padding:9px 14px">산출 대기</div>';
-    var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };
+    var f=function(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); };   
+    var fv=function(v){ v=v||0; return v>=1e6?(v/1e6).toFixed(1)+'M':(v>=1e3?Math.round(v/1e3)+'K':Math.round(v)); };
     var NM={d1:'일봉',w1:'주봉',M1:'월봉'};
     
 
@@ -11548,7 +11555,10 @@ function wgTier1(tfs){
           +'<span class="sub" style="width:46px;font-size:9px;flex:none;white-space:nowrap">'
             +((x.n>1)?(x.n+'층 '):'')+(x.fights||0)+'전</span>'
           +'<span style="flex:1;height:7px;background:rgba(120,130,150,.13);border-radius:2px;overflow:hidden">'
-          +'<span style="display:block;height:100%;width:'+w+'%;background:'+col+';opacity:.5"></span></span></div>';
+          +'<span style="display:block;height:100%;width:'+w+'%;background:'+col+';opacity:.5"></span></span>'
+          
+
+          +'<span class="sub num" style="width:32px;text-align:right;font-size:9px;flex:none">'+fv(x.v)+'</span></div>';
       };
       
       
@@ -12346,7 +12356,10 @@ function viewToday(){
       
 
       const dual=`<span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${vwL?f1(vwL):(vwRoll?f1(vwRoll):'<span style="font-size:11px;color:var(--tx2)">수집 중</span>')}`;
-      const wsSub4=`잔파동 실존가 = 해당 구간 거래량 가중 평단 · 확정봉만${earlyNote}`;
+      
+
+
+      const wsSub4=`잔파동 실존가 = 해당 구간 거래량 가중 평단 · 확정봉만 · 생존 최전방${earlyNote}`;
       watch.push(['생명선 - 주봉 잔파동 실존가',dual,dirC,wsSub4]);
     }
     const _defTxt=w2=>{try{if(w2._stepVW)return '';const r=defenseRec(E.d1,w2);if(!r)return '';return r.touch?` 지금까지 종가 기준 <b>${r.touch}회 터치 중 ${r.def}회 방어</b> - 과거 기록이며 예측 아님.`:' 아직 종가로 시험된 적 없는 선.';}catch(e){return ''}};
@@ -14853,9 +14866,9 @@ function battleBalance(){
           <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--tx3);white-space:nowrap">중심 ${f1(cen)}${px>=cen?' <span style="color:var(--sell)">위</span>':' <span style="color:var(--buy)">아래</span>'}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--tx2);margin-top:4px">
-          <span>매수 실존가까지 −${f1(dnGap)} (${(dnGap/px*100).toFixed(1)}%)</span>
+          <span>일봉 롱 실존가까지 −${f1(dnGap)} (${(dnGap/px*100).toFixed(1)}%)</span>
           <span style="color:var(--gold2);font-weight:700">현재가 ${f1(px)} - 구간 ${Math.round(pos)}% 지점</span>
-          <span>매도 실존가까지 +${f1(upGap)} (${(upGap/px*100).toFixed(1)}%)</span></div>
+          <span>일봉 숏 실존가까지 +${f1(upGap)} (${(upGap/px*100).toFixed(1)}%)</span></div>
         ${volBar}
       </div></div>`;
   }catch(e){return ''}
