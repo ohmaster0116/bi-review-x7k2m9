@@ -1149,7 +1149,7 @@ function sitgaGradePanel(){try{
   
   
   return `<div class="panel"><div class="hd">실존가 등급 - 현재가 vs 주체 평단 <span class="sub">(현재가 실시간 · 실존가=현재 파동 평단 · 등급=역사 분위 · 판독이지 예측 아님)</span></div>
-    <div class="scroll"><table><thead><tr><th class="l">봉</th><th>실존가(파동 평단)</th><th>괴리</th><th class="l">등급</th><th class="l">행동 지침</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="scroll"><table><thead><tr><th class="l">봉</th><th>잔파동 실존가</th><th>괴리</th><th class="l">등급</th><th class="l">행동 지침</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="sub" style="padding:6px 12px;font-size:10px;border-top:1px solid var(--bd)">★저괴리(평단 근접)=위험·이탈 근접 / 고괴리=강하나 추격 위험. 매수 파동 진행 중만 표기. 등급별 통계는 참고(과거 봉 기준·검증 중).</div></div>`;
 }catch(e){return '';}}
 
@@ -11945,8 +11945,8 @@ function viewWaveInner(){
   
   
   const _vwW=(_asofW&&_asofW.dir===ws.dir&&_asofW.vw)?sitgaCanonVW('d1',_asofW.vw):waveVW(E.d1,ws), _bufW=_vwW&&ws.dir>0&&_vwW<ws.line;
-  if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${above.length&&ws.dir>0?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:''}.`;
-  else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 실존가(주체 실제 평단) <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
+  if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${above.length&&ws.dir>0?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:''}.`;
+  else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
   else{const hn0=hierNote();
     saga=`<b>무파동</b> - 활성 파동 없음. 박스 문법(실존 지지·되돌림)이 기본값인 구간.`
       +(hn0&&hn0.mandate?` <span class="sub">단 주봉 명목 생존(${hn0.wAlive?'주봉 매수파동 유지':'파동 위험선 '+f1(hn0.risk)+' 위'}) - 일봉 이탈은 트리거일 뿐(주봉 전이 실측 기준 1.1%·정의 확정 중), 일봉 재발아 감시 구간.</span>`:'');}
@@ -12269,7 +12269,7 @@ function viewToday(){
         :`스트릭 종료 · 앞으로 5캔들 −0.5~3% 눌림 흔함 · 파동선 <b style="color:var(--gold2)">${f1(ws.line)}</b> 위에서 받아지는지가 생사${hClause}`;
     } else if(ws.mode==='form'){
       saga=LY==='입문'?`${dirK} 흐름 만드는 중 (${ws.days}일째) - 주체 평단선 <b style="color:var(--gold2)">${f1(ws.line)}</b> ${ws.dir>0?'위':'아래'}${buf?` (실제 물량이 모인 값은 ${f1(vwF)} - 그 위까지는 흔들림일 수 있어요)`:''}${hClauseE}`
-        :LY==='운용'?`${waveWord('d1',ws.dir,'form',ws.days)} · ${ws.days>=3?'곧 종료 눌림 · ':''}<b style="color:var(--gold2)">실존가(주체 실제 평단) ${f1(buf?vwF:ws.line)}</b> 이탈=<b>지금까지의 상승 힘이 약해진다는 기준 확정</b>${hClause}`
+        :LY==='운용'?`${waveWord('d1',ws.dir,'form',ws.days)} · ${ws.days>=3?'곧 종료 눌림 · ':''}<b style="color:var(--gold2)">일봉 잔파동 실존가 ${f1(buf?vwF:ws.line)}</b> 이탈=<b>지금까지의 상승 힘이 약해진다는 기준 확정</b>${hClause}`
         :`${waveWord('d1',ws.dir,'form',ws.days)} · 파동선 <b style="color:var(--gold2)">${f1(ws.line)}</b> · 승부는 ${f1(ws.line)} 사수${bonjeon}${hClause}`;
     } else {
       saga=LY==='입문'?`${dirK} 흐름 유지 - <b style="color:var(--gold2)">${f1(ws.line)}</b> 지키는 한 유효, 이탈 시 역할 전환 확인 필요${hClauseE}`
@@ -12305,7 +12305,7 @@ function viewToday(){
 
       const dual=`<span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${vwL?f1(vwL):(vwRoll?f1(vwRoll):'<span style="font-size:11px;color:var(--tx2)">수집 중</span>')}`;
       const wsSub4=`실존가 = 주체 실제 평단(자체 산식) · 생존 최전방 층까지 형성된 값 · ★완성봉 기준${earlyNote}`;
-      watch.push(['생명선 - 실존가(주체 실제 평단)',dual,dirC,wsSub4]);
+      watch.push(['생명선 - 주봉 잔파동 실존가',dual,dirC,wsSub4]);
     }
     const _defTxt=w2=>{try{if(w2._stepVW)return '';const r=defenseRec(E.d1,w2);if(!r)return '';return r.touch?` 지금까지 종가 기준 <b>${r.touch}회 터치 중 ${r.def}회 방어</b> - 과거 기록이며 예측 아님.`:' 아직 종가로 시험된 적 없는 선.';}catch(e){return ''}};
     const _vwTxt=w2=>{try{if(w2._stepVW)return ` 매도 실존가(생존 계단) <b>${f1(w2._stepVW)}</b> · 종가가 아직 이 선을 넘지 못한 최전방 저항.`;const vw=vwOfWave(E.d1,w2);if(!vw)return '';const rl=vwRollWave(E.d1,w2);return ` 실존가 <b>${f1(vw)}</b>.`;}catch(e){return ''}};
@@ -14343,7 +14343,7 @@ function support2Axis(){
         +'<div style="font-size:12.5px;font-weight:700;color:var(--gold2);margin-bottom:7px">'+(S.read||'')+'</div>'
         +'<div style="font-size:11.5px;color:var(--tx2);margin-bottom:5px"><b>축1 · 저항/지지</b> <span class="sub">캔들 종가 vs 기준가·중심가 - 한 캔들로 즉시 · TF 높을수록 신뢰(주봉&gt;30분)</span> - 종합 <b>'+A1.summary+'</b>(위 '+A1.weighted_up+' / 아래 '+A1.weighted_dn+', 신뢰가중)</div>'
         +'<div class="scroll"><table><thead><tr><th class="l">TF</th><th>종가</th><th class="l">기준가/지지저항 중심</th><th class="l">판정</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
-        +'<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tx2);line-height:1.7"><b>축2 · 파동 생사</b> <span class="sub">실존가(주체 실제 평단) - 구조·누적</span><br>'
+        +'<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tx2);line-height:1.7"><b>축2 · 파동 생사</b> <span class="sub">일봉 잔파동 실존가 - 구조·누적</span><br>'
           +'파동 실존가 <b style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+f0(A2.siljon)+'</b> · 현재가 '+f0(A2.price)+' <b class="'+(alive?'up':'dn')+'" style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+(alive?'생존 (+'+A2.edge_pct+'%)':'이탈=반등 종료')+'</b> <span class="sub">- 나이 '+A2.born_days+'일 · 지키면 생존, 1회 이탈=휩쏘 후보(주체가 이익 보존하며 물량을 뺏는 수법 - 정본 2026-07-08) · 연속 이탈+계단 순차 제거 시 종료</span></div>'
         +_sellHtml
         +'<div class="sub" style="margin-top:8px;font-size:11px;line-height:1.7;color:var(--tx3)"><b>'+(S.note||'')+'</b><br>단기(축1)와 구조(축2)는 갈릴 수 있습니다 - 한 캔들 이탈이 곧 파동 사망은 아닙니다. 관찰 언어(확정 아님).</div>'
