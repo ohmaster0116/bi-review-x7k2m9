@@ -11488,12 +11488,25 @@ function wgTier1(tfs){
 
 
 
+    
+
+
+
+
+
+    var src=function(b){
+      if(!b)return [];
+      if(b.cl&&b.cl.length)return b.cl;
+      return (b.stepsAll||b.steps||[]).filter(function(x){ return x.alive&&x.vw!=null; })
+        .map(function(x){ return {vw:x.vw,v:x.v,fights:x.fights,n:1,lo:x.vw,hi:x.vw,
+                                  rep:!!(b.rep!=null&&Math.abs(x.vw-b.rep)<0.01)}; });
+    };
     var pick=function(b,up,repDown){            
       if(!b)return [];
-      var c=(b.stepsAll||b.steps||[]).filter(function(x){
-        if(!x.alive||x.vw==null)return false;
+      var c=src(b).filter(function(x){
+        if(x.vw==null)return false;
         if(Math.abs(x.vw-px)<1e-9){
-          if(!(b.rep!=null&&Math.abs(x.vw-b.rep)<0.01))return false;   
+          if(!x.rep)return false;                                      
           return up?(!repDown):(!!repDown);                            
         }
         return up?(x.vw>px):(x.vw<px);
@@ -11505,9 +11518,8 @@ function wgTier1(tfs){
 
     var keepRep=function(list, all, b){
       if(!b||b.rep==null)return list;
-      var has=list.some(function(x){ return Math.abs(x.vw-b.rep)<0.01; });
-      if(has)return list;
-      var rr=all.filter(function(x){ return Math.abs(x.vw-b.rep)<0.01; })[0];
+      if(list.some(function(x){ return !!x.rep; }))return list;   
+      var rr=all.filter(function(x){ return !!x.rep; })[0];
       return rr?list.slice(0,3).concat([rr]):list;
     };
     var lay=function(b,up,repDown){ var all=pick(b,up,repDown); return keepRep(all.slice(0,4), all, b); };
@@ -11526,7 +11538,9 @@ function wgTier1(tfs){
         return '<div style="display:flex;align-items:center;gap:7px;padding:1.5px 0;font-size:11px">'
           +'<span style="width:52px;color:'+col+';flex:none;font-size:'+(lbl.length>5?'9.5px':'11px')+'">'+lbl+'</span>'
           +'<span class="num" style="width:62px;text-align:right;color:'+col+';flex:none">'+f(x.vw)+'</span>'
-          +'<span class="sub" style="width:26px;font-size:9px;flex:none;white-space:nowrap">'+(x.fights||0)+'전</span>'
+          
+          +'<span class="sub" style="width:46px;font-size:9px;flex:none;white-space:nowrap">'
+            +((x.n>1)?(x.n+'층 '):'')+(x.fights||0)+'전</span>'
           +'<span style="flex:1;height:7px;background:rgba(120,130,150,.13);border-radius:2px;overflow:hidden">'
           +'<span style="display:block;height:100%;width:'+w+'%;background:'+col+';opacity:.5"></span></span></div>';
       };
@@ -11536,7 +11550,7 @@ function wgTier1(tfs){
 
 
 
-      var isRep=function(x,b){ return !!(b&&b.rep!=null&&Math.abs(x.vw-b.rep)<0.01); };
+      var isRep=function(x,b){ return !!(x&&x.rep); };   
       
 
 
@@ -11555,7 +11569,7 @@ function wgTier1(tfs){
         +'border-top:1px solid rgba(255,109,0,.45);border-bottom:1px solid rgba(255,109,0,.45)">'
         +'<span style="width:52px;color:#ff6d00;font-weight:700;font-size:11px;flex:none">현재가</span>'
         +'<span class="num" style="width:62px;text-align:right;color:#ff6d00;font-weight:700;font-size:11px;flex:none">'+f(px)+'</span>'
-        +'<span class="sub" style="flex:1;font-size:9.5px">막대 = 그 층에 쌓인 거래량</span></div>';
+        +'<span class="sub" style="flex:1;font-size:9.5px">막대 = 그 자리에 쌓인 거래량 · 30달러 안은 한 자리로 묶어 평균으로 적습니다</span></div>';
       
       var dnList=sup.map(function(x,i){ return {x:x,lbl:'지지 '+(i+1)+'차',col:'var(--buy)',tag:(isRep(x,L)?'롱 실존가':'')}; })
         .concat(foot.map(function(x){ var r=isRep(x,S); return {x:x,lbl:(r?'숏 실존가':''),col:'var(--sell)',tag:(r?'발밑':'')}; }));
@@ -11584,7 +11598,9 @@ function wgTier1(tfs){
       }
       var hd='<div style="display:flex;justify-content:space-between;align-items:baseline">'
         +'<b style="font-size:11.5px">'+NM[tf]+'</b>'
-        +'<span class="sub" style="font-size:9.5px">생존 지지 '+((L&&L.nAlive)||0)+'층 · 저항 '+((S&&S.nAlive)||0)+'층</span></div>';
+        
+        +'<span class="sub" style="font-size:9.5px">생존 지지 '+((L&&L.nAlive)||0)+'층('+src(L).length+'묶음)'
+        +' · 저항 '+((S&&S.nAlive)||0)+'층('+src(S).length+'묶음)</span></div>';
       
 
 
@@ -11632,14 +11648,22 @@ function wgTier2(tfs){
       var rep=b.rep;
       
 
-      var nb=alive.filter(function(v){return v!==rep&&Math.abs(v-b.root)>0.5;})
-                  .sort(function(x,y){return Math.abs(x-rep)-Math.abs(y-rep);}).slice(0,3);
+      
+
+
+      var _cl=(b.cl&&b.cl.length)?b.cl:null;
+      var nb=_cl
+        ? _cl.filter(function(c){return !c.rep&&Math.abs(c.vw-b.root)>0.5;})
+             .sort(function(x,y){return Math.abs(x.vw-rep)-Math.abs(y.vw-rep);}).slice(0,3)
+             .map(function(c){return f(c.vw)+(c.n>1?('<span class="sub" style="font-size:9px">('+c.n+'층)</span>'):'');})
+        : alive.filter(function(v){return v!==rep&&Math.abs(v-b.root)>0.5;})
+               .sort(function(x,y){return Math.abs(x-rep)-Math.abs(y-rep);}).slice(0,3).map(f);
       var s1=dead.length?('<div style="font-size:10.5px;color:var(--tx3)">소멸 '+dead.length+'층 <span class="num">('
               +f(Math.max.apply(null,dead))+' … '+f(Math.min.apply(null,dead))+')</span></div>'):'';
       var s2='<div style="font-size:11.5px;margin:2px 0"><b style="color:'+c+'">실존가 '+f(rep)+'</b>'
              +' <span class="sub" style="font-size:10px">(생존 '+(b.nAlive||0)+'층 중 최전방)</span></div>';
-      var s3=nb.length?('<div style="font-size:10.5px;color:var(--tx2)">이웃 생존 층 <span class="num">'
-              +nb.map(f).join(' · ')+'</span></div>'):'';
+      var s3=nb.length?('<div style="font-size:10.5px;color:var(--tx2)">이웃 생존 자리 <span class="num">'
+              +nb.join(' · ')+'</span></div>'):'';
       var s4='<div style="font-size:10.5px;color:var(--tx3)">뿌리(사망선) <span class="num">'+f(b.root)+'</span></div>';
       
 
