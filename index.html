@@ -11634,10 +11634,16 @@ function wgTier1(tfs){
         var near=(d2v==null||(d1v!=null&&d1v<=d2v));
         var t=near?sup[0]:res[0], nx=near?(sup[1]?sup[1].vw:(L?L.root:null)):(res[1]?res[1].vw:(S?S.root:null));
         var te=edg(t,near), tMulti=(t.n>1&&Math.abs(te-t.vw)>=1);
+        
+
+
+
+
+        var _C=(near?'var(--buy)':'var(--sell)'), _dst=(near?'아래':'위')+' '+Math.abs(near?d1v:d2v).toFixed(0);
         nr='<div style="font-size:10.5px;color:var(--tx2);margin-top:4px">'
-          +'가장 가까운 자리 <b style="color:'+(near?'var(--buy)':'var(--sell)')+'">'+f(t.vw)+'</b>'
-          +(tMulti?(' <span class="sub">(첫 접촉 '+f(te)+')</span>'):'')
-          +' <span class="sub">('+(near?'아래':'위')+' '+Math.abs(near?d1v:d2v).toFixed(0)+' 떨어짐)</span>'
+          +'가장 가까운 자리 <b style="color:'+_C+'">'+f(t.vw)+'</b>'
+          +(tMulti?(' · <span class="sub">첫 접촉</span> <b style="color:'+_C+'">'+f(te)+'</b> 까지 '+_dst)
+                  :(' 까지 '+_dst))
           +' · 종가로 '+(near?'잃으면':'넘으면')+' 다음은 <b>'+f(nx)+'</b></div>';
       }
       var hd='<div style="display:flex;justify-content:space-between;align-items:baseline">'
