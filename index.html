@@ -1134,7 +1134,8 @@ function sitgaGradePanel(){try{
     
     if(!isFinite(gap)||Math.abs(gap)>40)continue;
     const g=gap<=q[0]?0:gap<=q[1]?1:gap<=q[2]?2:gap<=q[3]?3:4,G=GR[g];
-    rows+=`<tr><td class="l">${KO[k]}</td><td class="num">${f1(vw)}</td><td class="num" style="color:${gap>=0?'var(--buy)':'var(--sell)'}">${gap>=0?'+':''}${gap.toFixed(2)}%</td><td class="l"><b style="color:${G[1]}">${G[0]}</b></td><td class="l" style="font-size:11px;line-height:1.5">${G[2]}</td></tr>`;}
+    
+      rows+=`<tr><td class="l">${KO[k]} 잔파동 실존가${_vwSrc==='폴백'?' <span class="sub" style="font-size:9px">(서버 산출 대기)</span>':''}</td><td class="num">${f1(vw)}</td><td class="num" style="color:${gap>=0?'var(--buy)':'var(--sell)'}">${gap>=0?'+':''}${gap.toFixed(2)}%</td><td class="l"><b style="color:${G[1]}">${G[0]}</b></td><td class="l" style="font-size:11px;line-height:1.5">${G[2]}</td></tr>`;}
   if(!rows)return '';
   
   
