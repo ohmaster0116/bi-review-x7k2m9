@@ -1118,9 +1118,17 @@ function sitgaGradePanel(){try{
     
     
     
-    let vw=null;
-    try{const _ws=waveState(k); if(_ws&&_ws.mode!=='none'&&_ws.dir>0){const _lv=waveVW(E[k],_ws); if(_lv)vw=_lv;}}catch(e){}
-    if(vw==null)continue;
+    
+
+
+
+
+
+      let vw=null, _vwSrc='';
+      try{ var _lg=((gkSrc()['파동']||{}).wb||{})['ledger_'+k];
+           if(_lg&&_lg.length){ var _lw=_lg[_lg.length-1]; if(_lw&&_lw.vw>0){ vw=_lw.vw; _vwSrc='서버'; } } }catch(e){}
+      if(vw==null){ try{const _ws=waveState(k); if(_ws&&_ws.mode!=='none'&&_ws.dir>0){const _lv=waveVW(E[k],_ws); if(_lv){vw=_lv;_vwSrc='폴백';}}}catch(e){} }
+      if(vw==null)continue;
     const gap=(px-vw)/vw*100,q=Q[k];
     
     
