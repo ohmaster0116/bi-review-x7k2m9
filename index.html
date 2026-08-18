@@ -819,11 +819,17 @@ function waveLedger(tf,arr){
   const A=arr||E[tf||'d1']; if(!A||A.length<40)return arr?null:_wbFB('ledger',tf||'d1');
   const n=A.length-1, G=i=>A[i].gijun;                 
   const runs=[];let curDir=0,runStart=1;
-  for(let i=1;i<=n;i++){const d=G(i)>G(i-1)?1:G(i)<G(i-1)?-1:0;   
+  
+
+
+
+
+
+  for(let i=1;i<n;i++){const d=G(i)>G(i-1)?1:G(i)<G(i-1)?-1:0;   
     if(d!==0&&d===curDir)continue;
     if(curDir!==0&&i-runStart>=2)runs.push({dir:curDir,s:runStart,e:i-1});
     curDir=d;runStart=i;}
-  if(curDir!==0&&n-runStart+1>=2)runs.push({dir:curDir,s:runStart,e:n,open:true});
+  if(curDir!==0&&(n-1)-runStart+1>=2)runs.push({dir:curDir,s:runStart,e:n-1,open:true});
   const waves=runs.map(r=>{
     let s=0;for(let i=r.s;i<=r.e;i++)s+=G(i);
     const line=s/(r.e-r.s+1);
