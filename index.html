@@ -12258,7 +12258,7 @@ function viewToday(){
     
   
   const vwF=(_asofD&&_asofD.dir===ws.dir&&_asofD.vw)?sitgaCanonVW('d1',_asofD.vw):waveVW(A,ws), buf=vwF&&vwF<ws.line;
-    const bonjeon=buf?` · <b>실존가 ${f1(vwF)}</b>`:'';
+    const bonjeon=buf?` · <b>일봉 잔파동 실존가 ${f1(vwF)}</b>`:'';
     const hClause=hh&&ws.dir>0?(hh.mandate
       ?` - 이탈해도 주봉 명목 생존(위험선 ${f1(hh.risk)} 위)이면 <b>흔들기 후보</b>(주봉 전이 실측 기준 1.1%)`
       :` - <b style="color:var(--sell)">주봉 명목도 훼손 상태</b>: 이탈 시 위계 동반 위험`):'';
@@ -12294,7 +12294,7 @@ function viewToday(){
     
 
 
-    const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>실존가(전일 마감) ${f1(vwL)}</b> - 주체 실제 평단(자체 산출) · 종가가 이 선을 잃으면 지금까지의 힘이 약해졌다는 기준${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>`:''}.</span>`:wsSub2;
+    const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>일봉 잔파동 실존가(전일 기준) ${f1(vwL)}</b> - 주체 실제 평단(자체 산출) · 종가가 이 선을 잃으면 지금까지의 힘이 약해졌다는 기준${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>`:''}.</span>`:wsSub2;
     {
       
       
@@ -12304,11 +12304,11 @@ function viewToday(){
       
 
       const dual=`<span style="font-size:10.5px;color:var(--tx2)">실존가</span> ${vwL?f1(vwL):(vwRoll?f1(vwRoll):'<span style="font-size:11px;color:var(--tx2)">수집 중</span>')}`;
-      const wsSub4=`실존가 = 주체 실제 평단(자체 산식) · 생존 최전방 층까지 형성된 값 · ★완성봉 기준${earlyNote}`;
+      const wsSub4=`잔파동 실존가 = 해당 구간 거래량 가중 평단 · 확정봉만${earlyNote}`;
       watch.push(['생명선 - 주봉 잔파동 실존가',dual,dirC,wsSub4]);
     }
     const _defTxt=w2=>{try{if(w2._stepVW)return '';const r=defenseRec(E.d1,w2);if(!r)return '';return r.touch?` 지금까지 종가 기준 <b>${r.touch}회 터치 중 ${r.def}회 방어</b> - 과거 기록이며 예측 아님.`:' 아직 종가로 시험된 적 없는 선.';}catch(e){return ''}};
-    const _vwTxt=w2=>{try{if(w2._stepVW)return ` 매도 실존가(생존 계단) <b>${f1(w2._stepVW)}</b> · 종가가 아직 이 선을 넘지 못한 최전방 저항.`;const vw=vwOfWave(E.d1,w2);if(!vw)return '';const rl=vwRollWave(E.d1,w2);return ` 실존가 <b>${f1(vw)}</b>.`;}catch(e){return ''}};
+    const _vwTxt=w2=>{try{if(w2._stepVW)return ` 일봉 숏 실존가(생존 계단) <b>${f1(w2._stepVW)}</b> · 종가가 아직 이 선을 넘지 못한 최전방 저항.`;const vw=vwOfWave(E.d1,w2);if(!vw)return '';const rl=vwRollWave(E.d1,w2);return ` 실존가 <b>${f1(vw)}</b>.`;}catch(e){return ''}};
     if(ws.dir>0&&gateUp){
       const _surv=(E.d1.length-1)-gateUp.e;
       const _lin=(function(){try{const L2=wbLindy('d1',_surv);return L2&&L2.label?` · ${L2.label}`:'';}catch(e){return ''}})();
@@ -14801,8 +14801,8 @@ function battleBalance(){
     return `<div class="panel" style="margin-top:10px"><div class="hd">힘의 균형 - 매수 실존가 ↔ 매도 실존가 <span class="sub">위치 표기 · 예측 아님</span></div>
       <div style="padding:10px 14px 12px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
-          <span style="color:var(--buy)">매수 실존가 <b>${f1(roll)}</b>${rollSrc?` <span class="sub">(${rollSrc})</span>`:''}</span>
-          <span style="color:var(--sell)">매도 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
+          <span style="color:var(--buy)">일봉 롱 실존가 <b>${f1(roll)}</b>${rollSrc?` <span class="sub">(${rollSrc})</span>`:''}</span>
+          <span style="color:var(--sell)">일봉 숏 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
         <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
           <div style="position:absolute;left:50%;top:-3px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>
           <div style="position:absolute;left:${pos}%;top:-4px;width:3px;height:22px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>
@@ -18416,16 +18416,16 @@ function rootBranchStrip(){try{
       const sd=sellBook('d1'), sw=sellBook('w1');
       waveChain=`<div class="spaced" style="padding:8px 14px;font-size:11.5px;line-height:2.0;border-bottom:1px solid var(--bd);background:rgba(239,83,80,.06)">
       <b style="color:var(--gold2)">현재 시점 - 매도 지속 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=전 층 v가중)</span><br>
-      <b style="color:var(--sell)">일봉 매도 시그널${dS?'('+dS+')':''}</b> 숏 파동 시작 - 실존가(위 방어선) <b>${sd&&sd.sitga?f1(sd.sitga):'없음'}</b><br>
-      <b style="color:var(--sell)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 실존가 <b>${sw&&sw.sitga?f1(sw.sitga):'형성 중'}</b><br>
+      <b style="color:var(--sell)">일봉 매도 시그널${dS?'('+dS+')':''}</b> 숏 파동 시작 - 일봉 숏 실존가(위 방어선) <b>${sd&&sd.sitga?f1(sd.sitga):'없음'}</b><br>
+      <b style="color:var(--sell)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 주봉 숏 실존가 <b>${sw&&sw.sitga?f1(sw.sitga):'형성 중'}</b><br>
       <b style="color:${px<monInfl?'var(--sell)':'var(--buy)'}">월봉 성격 ${px<monInfl?'매도 굳히는 중':'매수로 전환 시도'}</b> - 전환 라인 ${f1(monInfl)} ${px<monInfl?'아래':'위'}<br>
       <b style="color:var(--buy)">이전 매수 파동과 싸움</b> - 상대(아래 지지) <b>${buyLo?f1(buyLo):'없음'}</b><br>
       <b style="color:var(--gold2)">⚔ 전투존</b> ${buyLo?f1(buyLo):'없음'} ~ ${sd&&sd.sitga?f1(sd.sitga):'없음'} · 하프존 ${half?f1(half):'없음'} · 현재가 ${posPct!=null?'존 '+posPct+'%'+(px>half?'(상단부·매수 우위 위치)':'(하단부·매도 우위 위치)'):''}</div>`;
     } else {
     waveChain=`<div class="spaced" style="padding:8px 14px;font-size:11.5px;line-height:2.0;border-bottom:1px solid var(--bd);background:rgba(35,211,158,.06)">
       <b style="color:var(--gold2)">현재 시점 - 매수 반전 파동</b> <span class="sub">(어디서 시작해 어디로 · 실존가=전 층 v가중)</span><br>
-      <b style="color:var(--buy)">일봉 반전 시그널${dS?'('+dS+')':''}</b> 롱 파동 시작 - 실존가 <b>${bd?f1(bd.sitga):'없음'}</b><br>
-      <b style="color:var(--buy)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 실존가 <b>${bw&&bw.sitga?f1(bw.sitga):'형성 중(새 주 초입)'}</b>${bw&&bw.sitga&&bd&&bd.sitga?(Math.abs(bw.sitga-bd.sitga)/px<=0.0015?` <span class="sub">(일봉 ${f1(bd.sitga)}와 수렴)</span>`:` <span class="sub">(일봉 ${f1(bd.sitga)}와 ${((bw.sitga-bd.sitga)/px*100).toFixed(1)}% 차)</span>`):''}<br>
+      <b style="color:var(--buy)">일봉 반전 시그널${dS?'('+dS+')':''}</b> 롱 파동 시작 - 일봉 롱 실존가 <b>${bd?f1(bd.sitga):'없음'}</b><br>
+      <b style="color:var(--buy)">주봉으로 전이</b>${wS?'(살아있음·'+wS+'~)':''} - 주봉 롱 실존가 <b>${bw&&bw.sitga?f1(bw.sitga):'형성 중(새 주 초입)'}</b>${bw&&bw.sitga&&bd&&bd.sitga?(Math.abs(bw.sitga-bd.sitga)/px<=0.0015?` <span class="sub">(일봉 ${f1(bd.sitga)}와 수렴)</span>`:` <span class="sub">(일봉 ${f1(bd.sitga)}와 ${((bw.sitga-bd.sitga)/px*100).toFixed(1)}% 차)</span>`):''}<br>
       <b style="color:${px>monInfl?'var(--buy)':'var(--sell)'}">월봉 성격 ${px>monInfl?'바꾸는 중':'매도'}</b> - 전환 라인 ${f1(monInfl)} ${px>monInfl?'위':'아래'}<br>
       <b style="color:var(--sell)">이전 매도 파동과 싸움</b> - 상대 <b>${sell?f1(sell):'없음'}</b>${sStart?' <span class="sub">('+md2(sStart)+'~'+md2(sEnd)+' 발원·'+sDays+'일 생존)</span>':''}<br>
       <b style="color:var(--gold2)">⚔ 전투존</b> ${buyLo?f1(buyLo):'없음'} ~ ${sell?f1(sell):'없음'} · 하프존 ${half?f1(half):'없음'} · 현재가 ${posPct!=null?'존 '+posPct+'%'+(px>half?'(상단부·매수 우위 위치)':'(하단부·매도 우위 위치)'):''}</div>`;
