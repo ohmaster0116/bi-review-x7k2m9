@@ -11570,8 +11570,13 @@ function wgTier1(tfs){
       
 
       var tagS=function(t,c){ return t?'<span style="flex:none;font-size:9px;font-weight:700;color:'+c+';white-space:nowrap">'+t+'</span>':''; };
+      
+
+
+
+
       upList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
-        .replace('<span style="flex:1;height:7px', tagS(o.tag,'var(--buy)')+'<span style="flex:1;height:7px'); });
+        .replace('<span style="flex:1;height:7px', tagS(o.tag,o.col)+'<span style="flex:1;height:7px'); });
       body+='<div style="display:flex;align-items:center;gap:7px;padding:3px 0;margin:2px 0;'
         +'border-top:1px solid rgba(255,109,0,.45);border-bottom:1px solid rgba(255,109,0,.45)">'
         +'<span style="width:52px;color:#ff6d00;font-weight:700;font-size:11px;flex:none">현재가</span>'
@@ -11582,7 +11587,7 @@ function wgTier1(tfs){
         .concat(foot.map(function(x){ var r=isRep(x,S); return {x:x,lbl:(r?'숏 실존가':''),col:'var(--sell)',tag:(r?('발밑'+vsuf(S,x)):'')}; }));
       dnList.sort(function(m,n){ return n.x.vw-m.x.vw; });
       dnList.forEach(function(o){ body+=row(o.x,o.lbl,o.col)
-        .replace('<span style="flex:1;height:7px', tagS(o.tag,'var(--sell)')+'<span style="flex:1;height:7px'); });
+        .replace('<span style="flex:1;height:7px', tagS(o.tag,o.col)+'<span style="flex:1;height:7px'); });
       
       var rt='';
       if(L||S){
