@@ -18859,7 +18859,7 @@ function sellBook(tf,ax){try{
 
 
       var _hold=0; for(var _h=Math.max(0,i-6);_h<i;_h++){ if(A[_h].c>V(A[_h]))_hold++; }
-      if(_hold<4)continue;
+      if(_hold<3)continue;   
       var root=g(A[i]),ok=true;
       for(var j=i+1;j<n-1;j++){if(A[j].c>root){ok=false;break;}}   
       if(ok)cands.push(i);
