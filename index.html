@@ -11898,8 +11898,15 @@ function wgTier1(tfs){
       var hd='<div style="display:flex;justify-content:space-between;align-items:baseline">'
         +'<b style="font-size:11.5px">'+NM[tf]+'</b>'
         
-        +'<span class="sub" style="font-size:9.5px">생존 지지 '+((L&&L.nAlive)||0)+'층('+src(L).length+'묶음)'
-        +' · 저항 '+((S&&S.nAlive)||0)+'층('+src(S).length+'묶음)</span></div>';
+        
+
+        +(function(){ var GG=(((gkSrc()['파동']||{}).wb||{}).gauge||{})[tf];
+           var _fc=function(n){ return (n==null)?'0':Number(n).toLocaleString('en-US'); };   
+           if(GG&&GG.aL!=null)return '<span class="sub" style="font-size:9.5px">지지 '+GG.nL+'파동 · 생존 '+_fc(GG.aL)+'층('+src(L).length+'묶음 표시)'
+             +' | 저항 '+GG.nS+'파동 · 생존 '+_fc(GG.aS)+'층('+src(S).length+'묶음 표시)</span>';
+           return '<span class="sub" style="font-size:9.5px">생존 지지 '+((L&&L.nAlive)||0)+'층('+src(L).length+'묶음·대표 파동)'
+             +' · 저항 '+((S&&S.nAlive)||0)+'층('+src(S).length+'묶음·대표 파동)</span>'; })()
+        +'</div>';
       
 
 
@@ -11908,11 +11915,26 @@ function wgTier1(tfs){
       var sumV=function(b){ try{ return (b.stepsAll||b.steps||[]).reduce(function(a,x){ return a+((x.alive&&x.v)?x.v:0); },0); }catch(e){ return 0; } };
       var vL=L?sumV(L):0, vS=S?sumV(S):0, vT=vL+vS;
       var force='';
-      if(vT>0){
+      
+
+
+      var GG2=(((gkSrc()['파동']||{}).wb||{}).gauge||{})[tf];
+      if(GG2&&GG2.pos!=null){
+        
+        var _pp=Math.max(0,Math.min(100,GG2.pos)), _ppTxt=GG2.pos.toFixed(1)+'%'+(GG2.pos>100?' ★숏 평단 돌파':(GG2.pos<0?' ★롱 평단 이탈':''));
+        force='<div style="display:flex;align-items:center;gap:7px;margin:3px 0 4px;font-size:9.5px">'
+          +'<span class="sub" style="width:52px;flex:none">힘의 세기</span>'
+          +'<span class="num sub" style="flex:none;font-size:9px;color:var(--buy)">롱 평단 '+f(GG2.lo)+'</span>'
+          +'<span style="flex:1;height:9px;border-radius:2px;position:relative;background:linear-gradient(90deg,var(--buy),var(--sell));opacity:.75">'
+          +'<span style="position:absolute;left:'+_pp.toFixed(1)+'%;top:-2px;width:2px;height:13px;background:var(--gold2)"></span></span>'
+          +'<span class="num sub" style="flex:none;font-size:9px;color:var(--sell)">숏 평단 '+f(GG2.hi)+'</span>'
+          +'<span class="num" style="flex:none;font-size:9px;color:var(--gold2)">'+_ppTxt+'</span></div>';
+      }
+      else if(vT>0){
         var pL=Math.round(vL/vT*100);
         var fmtV=function(v){ return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?Math.round(v/1e3)+'K':Math.round(v); };
         force='<div style="display:flex;align-items:center;gap:7px;margin:3px 0 4px;font-size:9.5px">'
-          +'<span class="sub" style="width:52px;flex:none">힘 대비</span>'
+          +'<span class="sub" style="width:52px;flex:none">힘 대비(대표 파동)</span>'
           +'<span style="flex:1;height:9px;border-radius:2px;overflow:hidden;display:flex">'
           +'<span style="width:'+pL+'%;background:var(--buy);opacity:.55"></span>'
           +'<span style="width:'+(100-pL)+'%;background:var(--sell);opacity:.55"></span></span>'
