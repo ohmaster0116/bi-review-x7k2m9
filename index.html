@@ -815,9 +815,12 @@ function trendResolveFwd(x){
 }
 
 
-function waveLedger(tf,arr){
+function waveLedger(tf,arr,opt){
   const A=arr||E[tf||'d1']; if(!A||A.length<40)return arr?null:_wbFB('ledger',tf||'d1');
-  const n=A.length-1, G=i=>A[i].gijun;                 
+  
+
+
+  const n=(opt&&opt.lastClosed)?A.length:A.length-1, G=i=>A[i].gijun;   
   const runs=[];let curDir=0,runStart=1;
   
 
@@ -849,14 +852,14 @@ function dlY(x){var d=(x instanceof Date)?x:new Date(x);var s=(d.getUTCMonth()+1
 function waveKDate(i,short){const d=new Date(E.d1[i].t);return short?(d.getUTCFullYear()===(new Date()).getUTCFullYear()?'':(d.getUTCFullYear()%100)+'년 ')+String(d.getUTCMonth()+1).padStart(2,'0')+'월 '+String(d.getUTCDate()).padStart(2,'0')+'일':d.getUTCFullYear()+'년 '+String(d.getUTCMonth()+1).padStart(2,'0')+'월 '+String(d.getUTCDate()).padStart(2,'0')+'일';}
 
 var _wsC={},_wsAt={};   
-function waveState(tf,arr){
-  if(arr)return _wsCalc(tf,arr);
+function waveState(tf,arr,opt){
+  if(arr)return _wsCalc(tf,arr,opt);
   var _k=tf||'d1';
   if(_wsC[_k]&&performance.now()-_wsAt[_k]<8000)return _wsC[_k];
   var _r=_wsCalc(tf,arr);_wsC[_k]=_r;_wsAt[_k]=performance.now();return _r;
 }
-function _wsCalc(tf,arr){
-  const L=waveLedger(tf,arr); if(!L)return null;
+function _wsCalc(tf,arr,opt){
+  const L=waveLedger(tf,arr,opt); if(!L)return null;
   const A=arr||E[tf||'d1'], m=A.length-1;
   let st=0,dr=0;const acc=[];
   for(let t=m;t>=1;t--){const d=A[t].gijun>A[t-1].gijun?1:A[t].gijun<A[t-1].gijun?-1:0;
@@ -1031,7 +1034,7 @@ function sitgaCanonVW(tf, fallback){
 function asofWaveDisp(tf){                                         
   try{
     const B=asofBars(tf); if(!B)return null;
-    const s=waveState(tf,B); if(!s||s.mode==='none'||s.line==null)return null;
+    const s=waveState(tf,B,{lastClosed:true}); if(!s||s.mode==='none'||s.line==null)return null;   
     let vw=null;try{vw=waveVW(B,s);}catch(e){}
     return {line:s.line,vw,days:s.days,dir:s.dir,mode:s.mode};
   }catch(e){return null;}
