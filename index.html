@@ -18543,11 +18543,11 @@ function volBalancePanel(){try{
     var pxP=P(px), midP=P(mid);
     rows+='<div style="padding:8px 15px 2px">'
       +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span><b>'+x[1]+'</b> '+rlab+'</span><span class="sub">'+stTxt+'</span></div>'
-      +'<div style="position:relative;height:20px">'
-      +'<div style="position:absolute;left:0;width:'+buyR+'%;top:6px;height:8px;background:rgba(35,211,158,.22);border-radius:4px 0 0 4px"></div>'   
-      +'<div style="position:absolute;left:'+buyR+'%;width:'+(100-buyR)+'%;top:6px;height:8px;background:rgba(255,90,110,.22);border-radius:0 4px 4px 0"></div>'
-      +'<div style="position:absolute;left:'+midP.toFixed(1)+'%;top:1px;height:18px;border-left:2px solid var(--gold2)"></div>'
-      +'<div style="position:absolute;left:'+pxP.toFixed(1)+'%;top:0;height:20px;border-left:2px solid #ff6d00"></div>'
+      +'<div style="position:relative;height:34px">'   
+      +'<div style="position:absolute;left:0;width:'+buyR+'%;top:20px;height:8px;background:rgba(35,211,158,.22);border-radius:4px 0 0 4px"></div>'   
+      +'<div style="position:absolute;left:'+buyR+'%;width:'+(100-buyR)+'%;top:20px;height:8px;background:rgba(255,90,110,.22);border-radius:0 4px 4px 0"></div>'
+      +'<div style="position:absolute;left:'+midP.toFixed(1)+'%;top:15px;height:18px;border-left:2px solid var(--gold2)"></div>'
+      +'<div class="num" style="position:absolute;left:'+pxP.toFixed(1)+'%;top:0;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:#ff6d00;line-height:10px;text-align:center;white-space:nowrap">'+f(px)+'<br>▼</div>'   
       +'</div>'
       +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--tx3)"><span>매수 끝 '+f(buyEnd)+'</span><span style="color:var(--gold2)">전투존 '+f(mid)+'</span><span>매도 끝 '+f(sellEnd)+'</span></div>'
       +'</div>';
@@ -18625,7 +18625,7 @@ function xAxisPanel(){try{
     })()
     +'<div style="position:absolute;left:'+X(x).toFixed(1)+'%;top:9px;height:18px;border-left:2px solid var(--gold2)"></div>'
     +'<div style="position:absolute;left:'+X(x).toFixed(1)+'%;top:28px;transform:translateX(-50%);font-size:9.5px;color:var(--gold2);white-space:nowrap">골든 '+f(x)+'</div>'
-    +'<div style="position:absolute;left:'+X(px).toFixed(1)+'%;top:4px;transform:translateX(-50%);font-size:12px;color:var(--gold2);text-shadow:0 0 6px rgba(214,162,58,.6)">▼</div>'   
+    +'<div class="num" style="position:absolute;left:'+X(px).toFixed(1)+'%;top:-9px;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--gold2);text-align:center;line-height:11px;white-space:nowrap;text-shadow:0 0 6px rgba(214,162,58,.6)">'+f(px)+'<br>▼</div>'   
     +'<div style="position:absolute;left:0;top:28px;font-size:9.5px;color:var(--buy)">골든 하단 '+f(dn)+'</div>'
     +'<div style="position:absolute;right:0;top:28px;font-size:9.5px;color:var(--sell);text-align:right">골든 상단 '+f(up)+'</div>'
     +'</div>'
