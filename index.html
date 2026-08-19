@@ -11926,7 +11926,7 @@ function wgTier1(tfs){
             _ppTxt=GG2.pos.toFixed(1)+'%'+(GG2.pos>100?' ★숏 평단 돌파':(GG2.pos<0?' ★롱 평단 이탈':''));
         force='<div style="display:flex;align-items:center;gap:7px;margin:3px 0 14px;font-size:9.5px">'
           +'<span class="sub" style="width:52px;flex:none">힘의 세기</span>'
-          +'<span class="num sub" style="flex:none;font-size:9px;color:var(--buy)">롱 평단 '+f(GG2.lo)+'</span>'
+          +'<span class="num sub" style="flex:none;font-size:9px;color:var(--buy)">롱 평균 실존가 '+f(GG2.lo)+'</span>'   
           +'<span style="flex:1;position:relative;padding:20px 0 11px">'
             +'<span class="num" style="position:absolute;top:0;left:'+(_pp/2).toFixed(1)+'%;transform:translateX(-50%);font-size:9px;color:var(--buy)">매수율 '+_pp.toFixed(1)+'%</span>'
             +'<span class="num" style="position:absolute;top:0;left:'+((100+_pp)/2).toFixed(1)+'%;transform:translateX(-50%);font-size:9px;color:var(--sell)">매도율 '+(100-_pp).toFixed(1)+'%</span>'
@@ -11937,7 +11937,7 @@ function wgTier1(tfs){
             +'<span style="position:absolute;top:9px;left:50%;width:1px;height:13px;background:var(--tx2);opacity:.7"></span>'
             +'<span class="num" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--tx)">중심 '+f(_mid)+'</span>'   
           +'</span>'
-          +'<span class="num sub" style="flex:none;font-size:9px;color:var(--sell)">숏 평단 '+f(GG2.hi)+'</span>'
+          +'<span class="num sub" style="flex:none;font-size:9px;color:var(--sell)">숏 평균 실존가 '+f(GG2.hi)+'</span>'
           +'<span class="num" style="flex:none;font-size:9px;color:var(--gold2)">'+_ppTxt+'</span></div>';
       }
       else if(vT>0){
