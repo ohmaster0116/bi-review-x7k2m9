@@ -11860,7 +11860,7 @@ function wgTier1(tfs){
       var rt='';
       if(L||S){
         var cen=(L&&S)?((L.root+S.root)/2):null;
-        rt='<div class="sub" style="font-size:9.5px;margin-top:4px;display:flex;gap:9px;flex-wrap:wrap">'
+        rt='<div class="sub" style="font-size:9.5px;margin-top:14px;display:flex;gap:9px;flex-wrap:wrap">'   
           +(S?'<span>숏 뿌리 <span class="num">'+f(S.root)+'</span></span>':'')
           +(cen!=null?'<span style="color:var(--gold2)">뿌리 중심 <span class="num">'+f(cen)+'</span></span>':'')
           +(L?'<span>롱 뿌리 <span class="num">'+f(L.root)+'</span></span>':'')+'</div>';
@@ -11889,7 +11889,7 @@ function wgTier1(tfs){
 
 
         var _C=(near?'var(--buy)':'var(--sell)'), _dst=(near?'아래':'위')+' '+Math.abs(near?d1v:d2v).toFixed(0);
-        nr='<div style="font-size:10.5px;color:var(--tx2);margin-top:4px">'
+        nr='<div style="font-size:10.5px;color:var(--tx2);margin-top:12px">'   
           +'가장 가까운 자리 <b style="color:'+_C+'">'+f(t.vw)+'</b>'
           +(tMulti?(' · <span class="sub">첫 접촉</span> <b style="color:'+_C+'">'+f(te)+'</b> 까지 '+_dst)
                   :(' 까지 '+_dst))
