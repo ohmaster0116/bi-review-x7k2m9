@@ -22220,7 +22220,15 @@ async function topUp(force){
         if(!filled&&confirmedEmpty)_tuSkip.add(k+':'+gap0);      
       }
       
-      while(Date.now()-cur[cur.length-1].t>2*IVMS[k]&&guard++<40){
+      
+
+
+
+
+
+
+
+      while(Date.now()-cur[cur.length-1].t>IVMS[k]&&guard++<40){
         const st=cur[cur.length-1].t;
         const r=await fetch(BURL()+BIV[k]+'&limit=1000&startTime='+(st+1),{cache:'no-store'});
         const d=await r.json();
