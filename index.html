@@ -485,7 +485,7 @@ function zoneStrength(L,px){
     <span style="flex:1;min-width:120px;max-width:260px;height:8px;background:rgba(239,83,80,.28);border-radius:4px;overflow:hidden"><span style="display:block;width:${pct}%;height:100%;background:var(--buy);opacity:.8"></span></span>
     <span><b style="color:var(--buy)">매수율(장악) ${pct}%</b> <span class="sub">:</span> <b style="color:var(--sell)">매도율(장악) ${100-pct}%</b> <span class="sub">(존 내 현재가 위치)</span></span>
     <span class="sub" style="font-size:10px">하단 ${f1(bot)} ~ 상단 ${f1(top)} 사이 현재가 위치 기준</span></div>`;}
-function tpPanel(k){const b=tpBands(E[k]);if(!b)return '';
+function tpPanel(k){const b=tpBands(E[k],tpLive);if(!b)return '';   
   const px=E.d1[E.d1.length-1].c, ref=b.hap;
   const cols=[['c1f','전1고정'],['c1v','전1유동'],['c1a','전1평균'],['c2f','전2고정'],['c2v','전2유동'],['c2a','전2평균'],['hap','합산']];
   const asc=ref[0]<ref[8], top=Math.max(ref[0],ref[8]),bot=Math.min(ref[0],ref[8]),botIdx=asc?0:8,topIdx=asc?8:0;
@@ -504,9 +504,9 @@ function tpPanel(k){const b=tpBands(E[k]);if(!b)return '';
   if(seg===9)rows+=pxRowHtml(px,cols.length,true);
   const stTxt=bandStateLine(state,k,top,bot);
   const head=cols.map(cc=>`<th>${cc[1]}</th>`).join('');
-  return `<div class="panel"><div class="hd">${NAME[k]} 전투포인트 밴드 <span class="sub">· 현재가 ${f1(px)}</span></div><div class="bandst">${stTxt}</div>${zoneStrength(ref,px)}<div class="scroll"><table class="tw">
+  return `<div class="panel"><div class="hd">${NAME[k]} 전투포인트 밴드 <span class="sub">· 현재가 ${f1(px)}</span>${tpLive?' <span style="font-size:9.5px;border:1px solid var(--gold);color:var(--gold2);border-radius:8px;padding:1px 7px">실시간 · 봉 마감 전 미확정</span>':''}</div><div class="bandst">${stTxt}</div>${zoneStrength(ref,px)}<div class="scroll"><table class="tw">
     <thead><tr><th></th><th class="l">위치</th><th class="l">현재역할</th>${head}</tr></thead><tbody>${rows}</tbody></table></div></div>`;}
-function tpCombo(keys){const bs=keys.map(k=>tpBands(E[k])).filter(Boolean);if(!bs.length)return null;
+function tpCombo(keys){const bs=keys.map(k=>tpBands(E[k],tpLive)).filter(Boolean);   if(!bs.length)return null;
   const mean=a=>a.reduce((x,y)=>x+y,0)/a.length, c1=[],c2=[],r=[];
   for(let i=0;i<9;i++){const a1=mean(bs.map(b=>b.c1a[i])),a2=mean(bs.map(b=>b.c2a[i]));c1.push(a1);c2.push(a2);r.push((a1+a2)/2);}
   return {c1,c2,r};}
@@ -22035,10 +22035,10 @@ function render(){if(!E)return;
 
 
 
-  else if(active==='전투포인트'){var _tpb=[['기간봉','기간봉 (일·주·월·연)'],['시간봉','시간봉 (30분·1시간·4시간)']].map(x=>'<button onclick="setTpSec(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(tpSec===x[0]?'#46c2ff':'var(--bd)')+';background:'+(tpSec===x[0]?'rgba(70,194,255,.13)':'transparent')+';color:'+(tpSec===x[0]?'#46c2ff':'var(--tx2)')+';font-weight:'+(tpSec===x[0]?700:400)+'">'+x[1]+'</button>').join('');
+  else if(active==='전투포인트'){var _tpl=[[false,'확정판 (시가 기준 · 하루 고정)'],[true,'실시간판 (진행봉 반영 · 미확정)']].map(x=>'<button onclick="setTpLive('+x[0]+')" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(tpLive===x[0]?'var(--gold)':'var(--bd)')+';background:'+(tpLive===x[0]?'rgba(214,162,58,.13)':'transparent')+';color:'+(tpLive===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(tpLive===x[0]?700:400)+'">'+x[1]+'</button>').join('');var _tpb=[['기간봉','기간봉 (일·주·월·연)'],['시간봉','시간봉 (30분·1시간·4시간)']].map(x=>'<button onclick="setTpSec(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(tpSec===x[0]?'#46c2ff':'var(--bd)')+';background:'+(tpSec===x[0]?'rgba(70,194,255,.13)':'transparent')+';color:'+(tpSec===x[0]?'#46c2ff':'var(--tx2)')+';font-weight:'+(tpSec===x[0]?700:400)+'">'+x[1]+'</button>').join('');
     var _tpBody=tpSec==='시간봉'?('<div class="bandgrid2">'+['m30','h1','h4'].map(k=>tpPanel(k)).join('')+tpComboPanel('30분·1시간',['m30','h1'])+tpComboPanel('30분·1시간·4시간',['m30','h1','h4'])+'</div>')
       :('<div class="bandgrid2">'+['d1','w1','M1','y1'].map(k=>tpPanel(k)).join('')+tpComboPanel('일·주',['d1','w1'])+tpComboPanel('일·주·월',['d1','w1','M1'])+tpComboPanel('일·주·월·연',['d1','w1','M1','y1'])+'</div>'+battleMap()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">청산 규칙 - 9층 트레일(전투존 눈금)</summary>'+trailStopPanel()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">청산 규칙 - 화재 3단 프로토콜</summary>'+tradeProtocol()+'</details>');
-    v.innerHTML='<h2 class="sec" style="margin:0 0 8px">전투포인트 밴드</h2><div style="display:flex;gap:8px;margin-bottom:12px">'+_tpb+'</div>'+_tpBody;}
+    v.innerHTML='<h2 class="sec" style="margin:0 0 8px">전투포인트 밴드</h2><div style="display:flex;gap:8px;margin-bottom:8px">'+_tpb+'</div><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+_tpl+'</div>'+_tpBody;}
   else if(active==='포지션 진단')v.innerHTML=viewPositionDx();
   else if(active==='비트인포 설명서')v.innerHTML=viewGuide();
   else if(active==='BTC'||active==='ETH'||active==='SOL'||active==='XRP'){
