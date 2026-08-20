@@ -11835,7 +11835,8 @@ let tpSec='기간봉';
 function setTpSec(s){tpSec=s;render();window.scrollTo(0,0);}
 
 
-let tpLive=false;
+let tpLive=true;   
+
 function setTpLive(v){tpLive=v;render();}
 let srSec='기준가';   
 function setSrSec(s){srSec=s;render();window.scrollTo(0,0);}
@@ -12220,6 +12221,11 @@ function wgTier1(tfs){
         var _pp=Math.max(4,Math.min(96,GG2.pos)), _mid=(GG2.lo+GG2.hi)/2,
             _wB=Math.max(0,Math.min(100,GG2.pos)),
             _ppTxt=(GG2.pos>100?'★'+GG2.pos.toFixed(1)+'% 숏 평단 돌파':(GG2.pos<0?'★'+GG2.pos.toFixed(1)+'% 롱 평단 이탈':''));
+        
+
+
+        var _q1=(GG2.lo+_mid)/2, _q3=(_mid+GG2.hi)/2;
+        var _div=function(pct,strong){ return '<span style="position:absolute;top:31px;left:'+pct+'%;width:1px;height:9px;background:'+(strong?'var(--tx)':'var(--tx2)')+';opacity:'+(strong?'.95':'.75')+'"></span>'; };
         force='<div style="display:flex;align-items:center;gap:7px;margin:3px 0 14px;font-size:9.5px">'
           +'<span class="sub" style="width:52px;flex:none">힘의 세기</span>'
           +'<span class="num sub" style="flex:none;font-size:9px;color:var(--buy)">롱 평균 실존가 '+f(GG2.lo)+'</span>'   
@@ -22653,6 +22659,11 @@ async function priceTick(){
           if(_nh && _nh!==_t1.innerHTML) _t1.innerHTML=_nh;   
         }
       }catch(_e1){}
+      
+
+      try{
+        if(active==='전투포인트' && tpLive){ var _sy2=window.pageYOffset; render(); window.scrollTo(0,_sy2); }
+      }catch(_e2){}
     }
     if(elStatus.textContent!=='실시간'){elStatus.textContent='실시간';dot.style.background='var(--buy)';}
     
