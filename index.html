@@ -11869,6 +11869,12 @@ function waveDetailPanel(){try{
       if(w.open)stat='<b style="color:var(--gold2)">진행 중</b>';
       else if(w.death==null)stat='<b style="color:var(--buy)">생존 '+(n-w.e)+'봉</b>'+(fights>0?' · wick 전투 '+fights+'회':'');
       else stat='<span style="color:var(--tx3)">사망 '+dl(w.death)+' ('+(w.death-w.e)+'봉 버팀)</span>';
+      
+
+
+      if(w.death==null){var _pb=A[n];
+        if(w.dir<0&&_pb&&_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">장중 돌파 · 종가 확인 대기</span>';
+        else if(w.dir>0&&_pb&&_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">장중 이탈 · 종가 확인 대기</span>';}
       var ladder=(!w.open&&w.death==null)?(stAlive+'/'+stTot+' 생존'):'없음';
       return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
     }).join('');
