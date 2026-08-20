@@ -22191,6 +22191,10 @@ function mapBars(d){const o={};for(const k in d){if(Array.isArray(d[k]))o[k]=d[k
 
 
 const IVMS={m30:1800000,h1:3600000,h4:14400000,d1:86400000,w1:604800000,M1:2592000000};
+
+
+
+const _nextBarT=(k,t)=>{ if(k!=='M1')return t+IVMS[k]; const d=new Date(t); return Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); };
 let _tuBusy=false,_tuLast=0;const _tuSkip=new Set();   
 async function topUp(force){
   if(_tuBusy||(!force&&Date.now()-_tuLast<300000))return false;
@@ -22228,7 +22232,7 @@ async function topUp(force){
 
 
 
-      while(Date.now()-cur[cur.length-1].t>IVMS[k]&&guard++<40){
+      while(Date.now()>_nextBarT(k,cur[cur.length-1].t)&&guard++<40){
         const st=cur[cur.length-1].t;
         const r=await fetch(BURL()+BIV[k]+'&limit=1000&startTime='+(st+1),{cache:'no-store'});
         const d=await r.json();
