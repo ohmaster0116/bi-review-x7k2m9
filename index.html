@@ -511,7 +511,8 @@ function tpCombo(keys){const bs=keys.map(k=>tpBands(E[k],tpLive)).filter(Boolean
   for(let i=0;i<9;i++){const a1=mean(bs.map(b=>b.c1a[i])),a2=mean(bs.map(b=>b.c2a[i]));c1.push(a1);c2.push(a2);r.push((a1+a2)/2);}
   return {c1,c2,r};}
 function tpComboPanel(title,keys){
-  const bands=keys.map(k=>{const tp=tpBands(E[k]);return tp?{k:k,hap:tp.hap}:null;}).filter(Boolean);
+  
+  const bands=keys.map(k=>{const tp=tpBands(E[k],tpLive);return tp?{k:k,hap:tp.hap}:null;}).filter(Boolean);
   if(!bands.length)return '';
   const comb=[];for(let i=0;i<9;i++){let s=0;bands.forEach(b=>s+=b.hap[i]);comb.push(s/bands.length);}
   const px=E.d1[E.d1.length-1].c;
@@ -15704,13 +15705,20 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   var pad=(hi-lo)*0.06; lo-=pad; hi+=pad;
   var X=function(v){return Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));};
   var half=(zLo+zHi)/2;
-  var ax='<div style="position:relative;height:80px;margin:4px 2px 2px">'+axTop   
+  var ax='<div style="position:relative;height:94px;margin:4px 2px 2px">'+axTop   
     
     +'<div style="position:absolute;left:'+X(zLo).toFixed(1)+'%;width:'+(X(zHi)-X(zLo)).toFixed(1)+'%;top:22px;height:20px;background:rgba(214,162,58,.10);border:1px solid rgba(214,162,58,.35);border-radius:4px"></div>'
     +'<div style="position:absolute;left:'+X(zLo).toFixed(1)+'%;width:'+(X(zHi)-X(zLo)).toFixed(1)+'%;top:58px;text-align:center;font-size:9.5px;color:var(--gold2)">전투존 '+f(zLo)+'~'+f(zHi)+'</div>'
     
     +'<div style="position:absolute;left:'+X(half).toFixed(1)+'%;top:22px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>'
-    +'<div style="position:absolute;left:'+X(half).toFixed(1)+'%;top:43px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--tx);white-space:nowrap">중심 '+f(half)+'</div>';   
+    +'<div style="position:absolute;left:'+X(half).toFixed(1)+'%;top:43px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--tx);white-space:nowrap">중심 '+f(half)+'</div>'   
+    
+
+    +(function(){ var _l=(lo+half)/2, _h=(half+hi)/2;
+      return '<div style="position:absolute;left:'+X(_l).toFixed(1)+'%;top:22px;height:20px;border-left:1px solid var(--gold2);opacity:.55"></div>'
+        +'<div style="position:absolute;left:'+X(_h).toFixed(1)+'%;top:22px;height:20px;border-left:1px solid var(--gold2);opacity:.55"></div>'
+        +'<div style="position:absolute;left:'+X(_l).toFixed(1)+'%;top:69px;transform:translateX(-50%);font-size:9px;color:var(--gold2);opacity:.9;white-space:nowrap">전투존 '+f(_l)+'</div>'
+        +'<div style="position:absolute;left:'+X(_h).toFixed(1)+'%;top:69px;transform:translateX(-50%);font-size:9px;color:var(--gold2);opacity:.9;white-space:nowrap">전투존 '+f(_h)+'</div>'; })();
   
   longs.sort(function(a,b){return a.v-b.v;});
   longs.forEach(function(o,ix){
@@ -21747,11 +21755,17 @@ function viewWhale(){
   // 결전 3선 칸: 평균가(크게) + 최대/최소 예상가(기준가·중심가 중 큰/작은 것). 평균이 어떻게 나왔는지 보이게.
   const col3=(lbl,cv,g,c,sub,bg,last,roll)=>`<div style="flex:${bg?1.18:1};padding:7px 5px;${last?'':'border-right:1px solid var(--bd);'}${bg?'background:rgba(214,162,58,.1);':''}"><div style="color:${cv};font-weight:700">${lbl}</div><div style="font-size:16px;font-weight:800;color:${cv};margin:1px 0 0">${f0((g+c)/2)}</div><div style="font-size:8.5px;color:${cv};opacity:.85">예상 평균</div><div class="sub" style="font-size:9px;line-height:1.55">최대 예상가(${g>=c?'기준가':'중심가'}) <b>${f0(Math.max(g,c))}</b><br>최소 예상가(${g>=c?'중심가':'기준가'}) <b>${f0(Math.min(g,c))}</b><br>${sub}</div></div>`;
   // 위치 막대바 - 왼쪽=하락기준(bAvg) / 중심=전투지역(tpAvg) / 오른쪽=상승기준(sAvg), 현재가 실시간 마커
-  const posBar=(lo,mid,hi,cur)=>{const span=(hi-lo)||1,pos=v=>Math.max(0,Math.min(100,(v-lo)/span*100)),pp=pos(cur),mp=pos(mid),off=cur<lo?'⚠ 하락기준 아래 이탈':cur>hi?'⚠ 상승기준 위 돌파':'';return `<div style="padding:26px 18px 8px;position:relative">
+  /* ★★[이사 08-20 지시 · 케인 시공] ⑴ 현재가 마커 = ★고래 그림. ★매수 고래 우세(방어선 위)면 ★초록 · ★매도 고래 우세(방어선 아래)면 ★빨강.
+       ⇒ 색만 판정에 연동하고 ★값·위치 산식은 무접촉. 이모지는 색을 못 바꾸므로 ★SVG 로 그린다.
+     ⑵ 4분할 — 방어선(중심)과 양 끝단 사이에 ★전투존 두 선. */
+  const whaleMk=(up)=>{const c=up?'#23d39e':'#ff5a6e';return `<svg viewBox="0 0 34 18" width="25" height="13" aria-hidden="true"><path fill="${c}" d="M3 9.5c0-4 5-6.5 11.5-6.5 5 0 8.6 1.8 10.6 4.2l5.4-3.8c.7-.5 1.6.2 1.3 1L30.4 9.5l1.4 5.1c.3.8-.6 1.5-1.3 1l-5.4-3.8C23.1 14.2 19.5 16 14.5 16 8 16 3 13.5 3 9.5Z"/><path fill="${c}" opacity=".7" d="M13 13.4c1.4 1.6 3.4 2.3 5 2.2-1.5 1-4.1.6-5-2.2Z"/><circle cx="8.5" cy="8.2" r="1.05" fill="#0b1220"/></svg>`;};
+  const posBar=(lo,mid,hi,cur)=>{const span=(hi-lo)||1,pos=v=>Math.max(0,Math.min(100,(v-lo)/span*100)),pp=pos(cur),mp=pos(mid),off=cur<lo?'⚠ 하락기준 아래 이탈':cur>hi?'⚠ 상승기준 위 돌파':'';const buyWin=cur>=mid,q1=(lo+mid)/2,q3=(mid+hi)/2;return `<div style="padding:36px 18px 8px;position:relative">
       <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(239,83,80,.5),rgba(214,162,58,.35) 50%,rgba(45,212,150,.5))">
         <div style="position:absolute;left:${mp.toFixed(1)}%;top:-4px;width:2px;height:22px;background:var(--gold2);transform:translateX(-50%);box-shadow:0 0 4px var(--gold2)"></div>
-        <div style="position:absolute;left:${pp.toFixed(1)}%;top:-22px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:11px;color:#fff;font-weight:800">현재 ${f0(cur)}</span></div>
-        <div style="position:absolute;left:${pp.toFixed(1)}%;top:-9px;transform:translateX(-50%);color:#fff;font-size:11px;line-height:1">▼</div>
+        <div style="position:absolute;left:${pos(q1).toFixed(1)}%;top:0;width:1px;height:14px;background:var(--gold2);opacity:.6"></div>
+        <div style="position:absolute;left:${pos(q3).toFixed(1)}%;top:0;width:1px;height:14px;background:var(--gold2);opacity:.6"></div>
+        <div style="position:absolute;left:${Math.max(5,Math.min(95,pp)).toFixed(1)}%;top:-32px;transform:translateX(-50%);white-space:nowrap;line-height:12px"><span style="font-size:11px;color:${buyWin?'#23d39e':'#ff5a6e'};font-weight:800">현재 ${f0(cur)}</span></div>
+        <div style="position:absolute;left:${Math.max(5,Math.min(95,pp)).toFixed(1)}%;top:-15px;transform:translateX(-50%);line-height:0">${whaleMk(buyWin)}</div>
         <div style="position:absolute;left:${pp.toFixed(1)}%;top:1px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #0b1220;transform:translateX(-50%)"></div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:10px;line-height:1.4">
@@ -21759,6 +21773,7 @@ function viewWhale(){
         <div style="text-align:center"><span style="color:var(--gold2);font-weight:700">고래 방어선 <span style="font-weight:400;font-size:9px;opacity:.8">(전투지역)</span></span><br>${f0(mid)}</div>
         <div style="text-align:right"><span style="color:var(--buy);font-weight:700">상승기준 ▶</span><br>${f0(hi)}</div>
       </div>
+      <div style="display:flex;justify-content:space-around;font-size:9px;color:var(--gold2);margin-top:3px"><span>전투존 ${f0(q1)}</span><span>전투존 ${f0(q3)}</span></div>
       ${off?`<div style="text-align:center;color:${cur>hi?'var(--buy)':'var(--sell)'};font-size:10.5px;margin-top:4px;font-weight:700">${off}</div>`:''}
     </div>`;};
   const posBarHtml=posBar(bAvg,tpAvg,sAvg,px);
@@ -22682,7 +22697,21 @@ async function priceTick(){
       
 
       try{
-        if(active==='전투포인트' && tpLive){ var _sy2=window.pageYOffset; render(); window.scrollTo(0,_sy2); }
+        if(active==='전투포인트' && tpLive){
+          
+
+          var _ks2=(tpSec==='시간봉')?['m30','h1','h4']:['d1','w1','M1','y1'];
+          var _sig2='';
+          _ks2.forEach(function(kk){ var aa=E[kk]; if(aa&&aa.length){ var bb=aa[aa.length-1]; _sig2+=kk+bb.t+':'+bb.o+':'+bb.h+':'+bb.l+':'+bb.c+';'; } });
+          if(window.__tpSig!==_sig2){
+            window.__tpSig=_sig2;
+            var _sy2=window.pageYOffset;
+            var _open2=[]; try{ document.querySelectorAll('#view details').forEach(function(d,i){ if(d.open)_open2.push(i); }); }catch(_eo){}
+            render();
+            try{ var _ds2=document.querySelectorAll('#view details'); _open2.forEach(function(i){ if(_ds2[i])_ds2[i].open=true; }); }catch(_eo2){}
+            window.scrollTo(0,_sy2);
+          }
+        }
       }catch(_e2){}
     }
     if(elStatus.textContent!=='실시간'){elStatus.textContent='실시간';dot.style.background='var(--buy)';}
