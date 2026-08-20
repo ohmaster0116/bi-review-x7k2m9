@@ -15731,7 +15731,7 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
 
 
 
-  var _pxX=X(px);
+  var _pxX=Math.max(4,Math.min(96,X(px)));   
   ax+='<div style="position:absolute;left:'+_pxX.toFixed(1)+'%;top:15px;transform:translateX(-50%);font-size:10px;color:#ff6d00;font-weight:800;line-height:10px;text-align:center;white-space:nowrap">'+f(px)+'<br>▼</div>';
   ax+='</div>';
   
