@@ -11872,9 +11872,15 @@ function waveDetailPanel(){try{
       
 
 
+
       if(w.death==null){var _pb=A[n];
-        if(w.dir<0&&_pb&&_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">장중 돌파 · 종가 확인 대기</span>';
-        else if(w.dir>0&&_pb&&_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">장중 이탈 · 종가 확인 대기</span>';}
+        if(_pb&&w.dir<0){
+          if(_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">사망선 장중 돌파 · 종가 확인 대기</span>';
+          else if(vw!=null&&_pb.h>vw)stat+=' <span style="font-size:9px;border:1px dashed var(--sell);color:var(--sell);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">파동선 장중 돌파</span>';
+        }else if(_pb&&w.dir>0){
+          if(_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">사망선 장중 이탈 · 종가 확인 대기</span>';
+          else if(vw!=null&&_pb.l<vw)stat+=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">파동선 장중 이탈</span>';
+        }}
       var ladder=(!w.open&&w.death==null)?(stAlive+'/'+stTot+' 생존'):'없음';
       return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
     }).join('');
@@ -11906,7 +11912,23 @@ function waveDetailPanel(){try{
 
     +'<div style="padding:8px 15px 12px">'+(function(){
         var tf=wvLT, nm=(tf==='d1'?'일봉':tf==='w1'?'주봉':'월봉'), N=(tf==='d1'?12:tf==='w1'?10:8);
-        return mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+(tf==='w1'?wStat:'');
+        
+
+
+        var sitAxis=(function(){try{
+          var f2=function(v){return v==null?'-':'$'+Math.round(v).toLocaleString('en-US');};
+          var bb=gkWb(tf,'buy'), ss=gkWb(tf,'sell');
+          if(!bb&&!ss)return '';
+          var seg2=function(b,lbl,col){ if(!b)return '';
+            var d0=b.s0?dlY(new Date(b.s0)):null;
+            return '<span style="white-space:nowrap">'+lbl+' <b style="color:'+col+'">'+f2(b.rep)+'</b>'
+              +' <span class="sub">(생존 '+(b.nAlive||0)+'층'+(d0?' · '+d0+'~':'')+' · 뿌리 '+f2(b.root)+')</span></span>';};
+          return '<div style="font-size:11px;line-height:1.9;padding:7px 10px;margin-bottom:8px;border:1px solid rgba(214,162,58,.4);border-radius:8px;background:rgba(214,162,58,.06)">'
+            +'<b style="color:var(--gold2)">'+nm+' 실존가 축 (거래량 가중 계단)</b> — '
+            +seg2(bb,'롱 실존가','var(--buy)')+' · '+seg2(ss,'숏 실존가','var(--sell)')
+            +'<div class="sub" style="font-size:9.5px">아래 파동 표(방향 run · 종가 판정)와 계산 기준이 다른 축입니다 · 층위 전체는 위 [지금 자리] 계단에서 봅니다</div></div>';
+        }catch(e){return '';}})();
+        return sitAxis+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+(tf==='w1'?wStat:'');
       })()
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
 }catch(e){return '';}}
