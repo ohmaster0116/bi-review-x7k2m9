@@ -14396,8 +14396,15 @@ function renderHeader(){const d=E.d1,last=d[d.length-1],prev=d[d.length-2];
     
     
     var a=E[x[0]];if(!a||a.length<3)return '';
-    var b=a[a.length-2], pv=a[a.length-3];
-    var dd=b.dir||(b.gijun>=pv.gijun?'매수':'매도');
+    
+
+
+
+
+
+
+    var b=a[a.length-1], pv=a[a.length-2];
+    var dd=(b.gijun>=pv.gijun?'매수':'매도');
     return '<span class="chip '+(dd==='매수'?'up':'dn')+'" style="margin-left:4px">'+x[1]+' '+dd+'</span>';
   }).join('');dir.className='';}catch(e){dir.className='chip '+(last.dir==='매수'?'up':'dn');dir.textContent='일봉 '+(last.dir||'없음');}
   _updStamp();elStatus.textContent='실시간';}
