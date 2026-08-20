@@ -438,7 +438,18 @@ function closeBasePanel(){
       <td class="l">${above?'<span class="tag buy">▲ 중심 돌파(매수존)</span>':'<span class="tag sell">▼ 중심 이탈(매도존)</span>'}</td></tr>`;}).join('');
   return `<div class="panel" style="max-width:720px"><div class="hd">종가 기준가 · 중심 돌파로 내일 방향 유추</div><div class="scroll"><table>
     <thead><tr><th class="l">봉</th><th>현재가</th><th>종가 기준가</th><th>중심</th><th>이격</th><th class="l">상태</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;}
-function tpBands(bars){const n=bars.length;if(n<2)return null;const p=bars[n-2],c=bars[n-1],L=p.gijun,P=p.center,O=c.o;
+
+
+
+
+
+
+
+function tpBands(bars,live){const n=bars.length;if(n<2)return null;const c=bars[n-1];
+  var L,P;
+  if(live){ L=((c.o+c.c)/2+(c.h+c.l)/2)/2; P=(c.h+c.l+2*c.c)/4; }
+  else { var p=bars[n-2]; L=p.gijun; P=p.center; }
+  var O=c.o;
   
   const c1f=lin9((4*L+3*O)/7,5*O-4*L), c1v=lin9((2*L+O)/3,3*O-2*L), c2f=lin9((4*P+3*O)/7,5*O-4*P), c2v=lin9((4*P+O)/5,(7*O-4*P)/3);
   const c1a=c1f.map((v,i)=>(v+c1v[i])/2), c2a=c2f.map((v,i)=>(v+c2v[i])/2), hap=c1a.map((v,i)=>(v+c2a[i])/2);
@@ -11822,6 +11833,10 @@ function setScSec(x){scSec=x;scDay=null;try{var v=document.getElementById('view'
 function setScDay(x){scDay=x;try{var v=document.getElementById('view');if(false){v.innerHTML=viewScenario();window.scrollTo(0,0);}}catch(e){}}
 let tpSec='기간봉';   
 function setTpSec(s){tpSec=s;render();window.scrollTo(0,0);}
+
+
+let tpLive=false;
+function setTpLive(v){tpLive=v;render();}
 let srSec='기준가';   
 function setSrSec(s){srSec=s;render();window.scrollTo(0,0);}
 let vbSec='평균폭';   
