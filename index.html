@@ -11924,7 +11924,7 @@ function waveDetailPanel(){try{
             return '<span style="white-space:nowrap">'+lbl+' <b style="color:'+col+'">'+f2(b.rep)+'</b>'
               +' <span class="sub">(생존 '+(b.nAlive||0)+'층'+(d0?' · '+d0+'~':'')+' · 뿌리 '+f2(b.root)+')</span></span>';};
           return '<div style="font-size:11px;line-height:1.9;padding:7px 10px;margin-bottom:8px;border:1px solid rgba(214,162,58,.4);border-radius:8px;background:rgba(214,162,58,.06)">'
-            +'<b style="color:var(--gold2)">'+nm+' 실존가 축 (거래량 가중 계단)</b> — '
+            +'<b style="color:var(--gold2)">'+nm+' 실존가 축 (거래량 가중 계단)</b> · '
             +seg2(bb,'롱 실존가','var(--buy)')+' · '+seg2(ss,'숏 실존가','var(--sell)')
             +'<div class="sub" style="font-size:9.5px">아래 파동 표(방향 run · 종가 판정)와 계산 기준이 다른 축입니다 · 층위 전체는 위 [지금 자리] 계단에서 봅니다</div></div>';
         }catch(e){return '';}})();
