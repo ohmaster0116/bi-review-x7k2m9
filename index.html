@@ -445,16 +445,8 @@ function closeBasePanel(){
 
 
 
-function tpBands(bars,live){const n=bars.length;if(n<2)return null;const c=bars[n-1];
+function tpBands(bars){const n=bars.length;if(n<2)return null;const p=bars[n-2],c=bars[n-1],L=p.gijun,P=p.center,O=c.o;
   
-
-
-
-
-
-  var L,P,O;
-  if(live){ L=((c.o+c.c)/2+(c.h+c.l)/2)/2; P=(c.h+c.l+2*c.c)/4; O=c.c; }
-  else { var p=bars[n-2]; L=p.gijun; P=p.center; O=c.o; }
   
   const c1f=lin9((4*L+3*O)/7,5*O-4*L), c1v=lin9((2*L+O)/3,3*O-2*L), c2f=lin9((4*P+3*O)/7,5*O-4*P), c2v=lin9((4*P+O)/5,(7*O-4*P)/3);
   const c1a=c1f.map((v,i)=>(v+c1v[i])/2), c2a=c2f.map((v,i)=>(v+c2v[i])/2), hap=c1a.map((v,i)=>(v+c2a[i])/2);
@@ -490,7 +482,7 @@ function zoneStrength(L,px){
     <span style="flex:1;min-width:120px;max-width:260px;height:8px;background:rgba(239,83,80,.28);border-radius:4px;overflow:hidden"><span style="display:block;width:${pct}%;height:100%;background:var(--buy);opacity:.8"></span></span>
     <span><b style="color:var(--buy)">매수율(장악) ${pct}%</b> <span class="sub">:</span> <b style="color:var(--sell)">매도율(장악) ${100-pct}%</b> <span class="sub">(존 내 현재가 위치)</span></span>
     <span class="sub" style="font-size:10px">하단 ${f1(bot)} ~ 상단 ${f1(top)} 사이 현재가 위치 기준</span></div>`;}
-function tpPanel(k){const b=tpBands(E[k],tpLive);if(!b)return '';   
+function tpPanel(k){const b=tpBands(E[k]);if(!b)return '';
   const px=E.d1[E.d1.length-1].c, ref=b.hap;
   const cols=[['c1f','전1고정'],['c1v','전1유동'],['c1a','전1평균'],['c2f','전2고정'],['c2v','전2유동'],['c2a','전2평균'],['hap','합산']];
   const asc=ref[0]<ref[8], top=Math.max(ref[0],ref[8]),bot=Math.min(ref[0],ref[8]),botIdx=asc?0:8,topIdx=asc?8:0;
@@ -509,15 +501,14 @@ function tpPanel(k){const b=tpBands(E[k],tpLive);if(!b)return '';
   if(seg===9)rows+=pxRowHtml(px,cols.length,true);
   const stTxt=bandStateLine(state,k,top,bot);
   const head=cols.map(cc=>`<th>${cc[1]}</th>`).join('');
-  return `<div class="panel"><div class="hd">${NAME[k]} 전투포인트 밴드 <span class="sub">· 현재가 ${f1(px)}</span>${tpLive?' <span style="font-size:9.5px;border:1px solid var(--gold);color:var(--gold2);border-radius:8px;padding:1px 7px">실시간 · 봉 마감 전 미확정</span>':''}</div><div class="bandst">${stTxt}</div>${zoneStrength(ref,px)}<div class="scroll"><table class="tw">
+  return `<div class="panel"><div class="hd">${NAME[k]} 전투포인트 밴드 <span class="sub">· 현재가 ${f1(px)}</span></div><div class="bandst">${stTxt}</div>${zoneStrength(ref,px)}<div class="scroll"><table class="tw">
     <thead><tr><th></th><th class="l">위치</th><th class="l">현재역할</th>${head}</tr></thead><tbody>${rows}</tbody></table></div></div>`;}
-function tpCombo(keys){const bs=keys.map(k=>tpBands(E[k],tpLive)).filter(Boolean);   if(!bs.length)return null;
+function tpCombo(keys){const bs=keys.map(k=>tpBands(E[k])).filter(Boolean);if(!bs.length)return null;
   const mean=a=>a.reduce((x,y)=>x+y,0)/a.length, c1=[],c2=[],r=[];
   for(let i=0;i<9;i++){const a1=mean(bs.map(b=>b.c1a[i])),a2=mean(bs.map(b=>b.c2a[i]));c1.push(a1);c2.push(a2);r.push((a1+a2)/2);}
   return {c1,c2,r};}
 function tpComboPanel(title,keys){
-  
-  const bands=keys.map(k=>{const tp=tpBands(E[k],tpLive);return tp?{k:k,hap:tp.hap}:null;}).filter(Boolean);
+  const bands=keys.map(k=>{const tp=tpBands(E[k]);return tp?{k:k,hap:tp.hap}:null;}).filter(Boolean);
   if(!bands.length)return '';
   const comb=[];for(let i=0;i<9;i++){let s=0;bands.forEach(b=>s+=b.hap[i]);comb.push(s/bands.length);}
   const px=E.d1[E.d1.length-1].c;
@@ -11839,11 +11830,6 @@ function setScSec(x){scSec=x;scDay=null;try{var v=document.getElementById('view'
 function setScDay(x){scDay=x;try{var v=document.getElementById('view');if(false){v.innerHTML=viewScenario();window.scrollTo(0,0);}}catch(e){}}
 let tpSec='기간봉';   
 function setTpSec(s){tpSec=s;render();window.scrollTo(0,0);}
-
-
-let tpLive=true;   
-
-function setTpLive(v){tpLive=v;render();}
 let srSec='기준가';   
 function setSrSec(s){srSec=s;render();window.scrollTo(0,0);}
 let vbSec='평균폭';   
@@ -12520,8 +12506,7 @@ function viewWaveBattle(){
         <div style="position:absolute;left:50%;top:-3px;width:2px;height:18px;background:#c084fc;transform:translateX(-50%)"></div>
         <div style="position:absolute;left:25%;top:1px;width:1px;height:10px;background:#c084fc;opacity:.6"></div>
         <div style="position:absolute;left:75%;top:1px;width:1px;height:10px;background:#c084fc;opacity:.6"></div>
-        <div style="position:absolute;left:${pp.toFixed(1)}%;top:-19px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:10.5px;color:#fff;font-weight:800">${f1(px)}</span></div>
-        <div style="position:absolute;left:${pp.toFixed(1)}%;top:0;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #0b1220;transform:translateX(-50%)"></div>
+        <div class="num" style="position:absolute;left:${Math.max(4,Math.min(96,pp)).toFixed(1)}%;top:-22px;transform:translateX(-50%);font-size:10.5px;color:#fff;font-weight:800;line-height:10px;text-align:center;white-space:nowrap">${f1(px)}<br>▼</div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px">
         <span style="color:var(--buy)">◀ 아래 물량 평단 ${f1(lo)} <span class="sub">(${r.nS}선)</span></span>
@@ -12548,8 +12533,7 @@ function viewWaveBattle(){
         <div style="position:absolute;left:${P(g1)}%;width:${(P(g2)-P(g1)).toFixed(1)}%;top:0;height:12px;background:rgba(35,211,158,.25);border-left:1px dashed var(--buy);border-right:1px dashed var(--buy)"></div>
         ${tick(maxAl,'최대 할애 −30% = 파동 위험선','var(--sell)',true)}${tick(weak,'약 할애 −15%','#f0a83c',true)}${tick(wo,'주봉 시가','var(--gold2)',true)}
         <div style="position:absolute;left:${((+P(g1)+ +P(g2))/2).toFixed(1)}%;top:14px;transform:translateX(-50%);font-size:9px;color:var(--buy);white-space:nowrap">관문 +33~45%<br>도달 시 83% 관통(N217)</div>
-        <div style="position:absolute;left:${P(px)}%;top:-17px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:10px;color:#fff;font-weight:800">${f1(px)}</span></div>
-        <div style="position:absolute;left:${P(px)}%;top:0;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #0b1220;transform:translateX(-50%)"></div>
+        <div class="num" style="position:absolute;left:${Math.max(4,Math.min(96,+P(px))).toFixed(1)}%;top:-21px;transform:translateX(-50%);font-size:10px;color:#fff;font-weight:800;line-height:10px;text-align:center;white-space:nowrap">${f1(px)}<br>▼</div>
       </div>
       <div class="sub" style="font-size:10.5px;margin-top:26px;line-height:1.7">매수 주체가 내줄 수 있는 눌림 - <b>15~30% 구간 눌림은 매수 주체가 내줄 수 있는 폭</b> / <b style="color:var(--sell)">30% 넘으면 파동 위험 구간</b>. 상방 33~45%는 정지선이 아니라 <b>관문</b>(도달 시 83% 관통·N217) - 멈춤 지대로 쓰지 마세요.</div></div>`;
   }catch(e){return '';}})();
@@ -12559,7 +12543,7 @@ function viewWaveBattle(){
     ${pct!=null?`현재가 <b style="color:var(--gold2)">${f1(px)}</b>는 아래 물량 ${f1(m.S4)} ~ 위 물량 ${f1(m.R4)} 사이 <b>${pct}%</b> 위치입니다.<br>위 ${f1(m.R4)}를 시험하면 - ${stR==='성립'?'<b style="color:#c084fc">지금 합류 성립</b>: ':stR==='근접'?'합류 근접(격차 '+gR.toFixed(2)+'%) - 성립 시 ':'합류 시 '}여러 시간대 물량 평단이 같은 가격에 겹친 상태입니다(측정 사실 - 방어 확률은 검증 통과 전 게시하지 않습니다). 항상 있는 게 아니라 물량이 겹칠 때만 나타나는 자리입니다 <span class="sub">(한 선 터치는 동전 51% - 파동 현황 참조)</span>.<br>`:''}
     <span class="sub">🕰 <b>가까운 저항은 젊어서 먼저 무너지고, 뒤의 저항일수록 오래 버팁니다</b> - 오래 산 선이 더 오래 삽니다: 30일 넘긴 선은 92%가 한 주 이상 더 갑니다(실측·사망 파동 793개 룩업, 각 선의 "나이→잔여"는 카드·상세 표에).</span><br>
     <span class="sub"><b style="color:#f0a83c">⚠ 참조선 - 진입 신호가 아닙니다.</b> 아래측 합류는 실측 표본 부족(N=3)이라 방어율을 붙이지 않습니다. 숏·실존 지지 결합·일봉 터치 활용은 검증 기각(검증원장 §K). 가정치 포함 · 30분봉 마감마다 갱신 · 성립 시 종합 평가 차트에 라인.</span></div>`;
-  const gauge=`<div class="panel"><div class="hd" style="color:#c084fc">⚔ 파동 전투존 - 캔들별 물량 무게중심 <span class="sub">좌=아래 물량 평단(S*4) · 우=위 물량 평단(R*4) · 흰 점=현재가</span></div>
+  const gauge=`<div class="panel"><div class="hd" style="color:#c084fc">⚔ 파동 전투존 - 캔들별 물량 무게중심 <span class="sub">좌=아래 물량 평단(S*4) · 우=위 물량 평단(R*4) · 흰 ▼=현재가</span></div>
     <div style="padding:6px 14px;font-size:10.5px;color:var(--tx2);border-bottom:1px solid var(--bd)">※ 전투포인트 밴드(주체·전투 탭)와는 <b>별개 개념</b> - 여러 시간대 파동 평단(물량 무게중심)이 겹친 자리입니다.<br>※ 존 이름(매수존·매도존)은 '가격이 그리로 가면 유리한 <b>방향</b>', 물량 평단(매수·매도)은 '그 자리에 물량을 쌓은 <b>주체</b>' - 다른 축입니다. 위 물량(매도 주체 평단)을 넘어서면 매수존(상방 유리).</div>${card3}${bars}${alBar}${preview}</div>`;
   
   
@@ -15361,18 +15345,18 @@ function capForceBars(){
         +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">'
           +'<span><b>'+nm+'</b> <span class="sub">'+(filled?'변동폭 달성/초과':'잔여 '+f0(rem))+'</span></span>'
           +'<span style="color:'+fc+';font-weight:700">힘 '+(force>=0?'+':'')+force+' <span class="sub">×'+wt.toFixed(1)+' 무게 = 강도 '+(force*wt>=0?'+':'')+Math.round(force*wt)+'</span></span></div>'
-        +'<div style="position:relative;height:18px;border-radius:6px;background:linear-gradient(90deg,rgba(255,90,110,.28),rgba(255,255,255,.05) 50%,rgba(35,211,158,.28));border:1px solid var(--bd)">'
+        +'<div style="position:relative;height:18px;margin-top:20px;border-radius:6px;background:linear-gradient(90deg,rgba(255,90,110,.28),rgba(255,255,255,.05) 50%,rgba(35,211,158,.28));border:1px solid var(--bd)">'   
           +'<span style="position:absolute;left:4px;top:2px;font-size:9px;color:var(--sell)">'+f0(lo)+'</span>'
           +'<div style="position:absolute;left:'+Math.max(1,Math.min(99,zpos))+'%;top:0;bottom:0;width:1px;background:var(--tx3)"></div>'
           +'<span style="position:absolute;right:4px;top:2px;font-size:9px;color:var(--buy)">'+f0(up)+'</span>'
-          +'<div style="position:absolute;left:'+pos_c+'%;top:-3px;width:2px;height:24px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>'
+          +'<div class="num" style="position:absolute;left:'+Math.max(4,Math.min(96,pos_c)).toFixed(1)+'%;top:-21px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--gold2);line-height:10px;text-align:center;white-space:nowrap">'+f0(px)+'<br>▼</div>'   
         +'</div>'
         +'<div style="text-align:center;font-size:8.5px;color:var(--tx3);margin-top:1px">전투존 '+f0(zone)+'</div></div>';
     }
     return '<div class="panel" style="margin-top:12px">'
       +'<div class="hd">캔들별 힘 - 잔여 변동폭 전투존 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰 · 매매 명령 아님</span></div>'
       +'<div style="padding:8px 15px 12px">'
-        +'<div class="sub" style="font-size:10.5px;line-height:1.7;margin-bottom:4px">각 캔들의 <b>고가+잔여캡</b>(위 목표)과 <b>저가−잔여캡</b>(아래 목표) 사이에서 현재가(골드선)가 전투존 어느 쪽에 있는지 = 그 시간축의 힘. <b>무게 = 그 봉 변동폭 ÷ 30분 변동폭</b>(주봉≈28배·일봉≈8배·4시간≈2.8배) - 상위 봉일수록 힘이 무겁습니다. 강도 = 힘 × 무게.</div>'
+        +'<div class="sub" style="font-size:10.5px;line-height:1.7;margin-bottom:4px">각 캔들의 <b>고가+잔여캡</b>(위 목표)과 <b>저가−잔여캡</b>(아래 목표) 사이에서 현재가(골드 ▼)가 전투존 어느 쪽에 있는지 = 그 시간축의 힘. <b>무게 = 그 봉 변동폭 ÷ 30분 변동폭</b>(주봉≈28배·일봉≈8배·4시간≈2.8배) - 상위 봉일수록 힘이 무겁습니다. 강도 = 힘 × 무게.</div>'
         +rows
         +(function(){var net=wtot?Math.round(wsum/wtot*100):0; var netX=wtotX?Math.round(wsumX/wtotX*100):0;
           var nc=netX>2?'var(--buy)':netX<-2?'var(--sell)':'var(--tx2)';
@@ -15483,11 +15467,11 @@ function battleBalance(){
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
           <span style="color:var(--buy)">일봉 롱 실존가 <b>${f1(roll)}</b>${rollSrc?` <span class="sub">(${rollSrc})</span>`:''}</span>
           <span style="color:var(--sell)">일봉 숏 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
-        <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
+        <div style="position:relative;height:14px;margin-top:20px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
           <div style="position:absolute;left:50%;top:-3px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>
           <div style="position:absolute;left:25%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
           <div style="position:absolute;left:75%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
-          <div style="position:absolute;left:${pos}%;top:-4px;width:3px;height:22px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>
+          <div class="num" style="position:absolute;left:${Math.max(4,Math.min(96,pos)).toFixed(1)}%;top:-23px;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--gold2);line-height:10px;text-align:center;white-space:nowrap">${f1(px)}<br>▼</div>
         </div>
         <div style="position:relative;height:26px;margin-top:1px">
           <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--tx3);white-space:nowrap">중심 ${f1(cen)}${px>=cen?' <span style="color:var(--sell)">위</span>':' <span style="color:var(--buy)">아래</span>'}</span>
@@ -18898,7 +18882,7 @@ function volBalancePanel(){try{
       +'</div>';
   });
   if(!rows)return '';
-  return '<div class="panel" style="margin-top:10px"><div class="hd">변동폭 힘의 균형 <span class="sub">- 잔여 변동폭의 매수 끝·매도 끝 × 전투존 안 현재가 <b style="color:#ff6d00">┃ '+f(px)+'</b></span></div>'
+  return '<div class="panel" style="margin-top:10px"><div class="hd">변동폭 힘의 균형 <span class="sub">- 잔여 변동폭의 매수 끝·매도 끝 × 전투존 안 현재가 <b style="color:#ff6d00">▼ '+f(px)+'</b></span></div>'
     +rows
     +'<div class="sub" style="padding:7px 15px">매수율·매도율=통일 게이지(전투존=50 · 매수 끝=매수율 0 · 매도 끝=매수율 100, 우위만큼 50에서 가감) · 도달 한계이지 목표가 아닙니다</div></div>';
 }catch(e){return '';}}
@@ -22081,10 +22065,10 @@ function render(){if(!E)return;
 
 
 
-  else if(active==='전투포인트'){var _tpl=[[false,'확정판 (시가 기준 · 하루 고정)'],[true,'실시간판 (진행봉 반영 · 미확정)']].map(x=>'<button onclick="setTpLive('+x[0]+')" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(tpLive===x[0]?'var(--gold)':'var(--bd)')+';background:'+(tpLive===x[0]?'rgba(214,162,58,.13)':'transparent')+';color:'+(tpLive===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(tpLive===x[0]?700:400)+'">'+x[1]+'</button>').join('');var _tpb=[['기간봉','기간봉 (일·주·월·연)'],['시간봉','시간봉 (30분·1시간·4시간)']].map(x=>'<button onclick="setTpSec(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(tpSec===x[0]?'#46c2ff':'var(--bd)')+';background:'+(tpSec===x[0]?'rgba(70,194,255,.13)':'transparent')+';color:'+(tpSec===x[0]?'#46c2ff':'var(--tx2)')+';font-weight:'+(tpSec===x[0]?700:400)+'">'+x[1]+'</button>').join('');
+  else if(active==='전투포인트'){var _tpb=[['기간봉','기간봉 (일·주·월·연)'],['시간봉','시간봉 (30분·1시간·4시간)']].map(x=>'<button onclick="setTpSec(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:5px 14px;border-radius:7px;cursor:pointer;border:1px solid '+(tpSec===x[0]?'#46c2ff':'var(--bd)')+';background:'+(tpSec===x[0]?'rgba(70,194,255,.13)':'transparent')+';color:'+(tpSec===x[0]?'#46c2ff':'var(--tx2)')+';font-weight:'+(tpSec===x[0]?700:400)+'">'+x[1]+'</button>').join('');
     var _tpBody=tpSec==='시간봉'?('<div class="bandgrid2">'+['m30','h1','h4'].map(k=>tpPanel(k)).join('')+tpComboPanel('30분·1시간',['m30','h1'])+tpComboPanel('30분·1시간·4시간',['m30','h1','h4'])+'</div>')
       :('<div class="bandgrid2">'+['d1','w1','M1','y1'].map(k=>tpPanel(k)).join('')+tpComboPanel('일·주',['d1','w1'])+tpComboPanel('일·주·월',['d1','w1','M1'])+tpComboPanel('일·주·월·연',['d1','w1','M1','y1'])+'</div>'+battleMap()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">청산 규칙 - 9층 트레일(전투존 눈금)</summary>'+trailStopPanel()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">청산 규칙 - 화재 3단 프로토콜</summary>'+tradeProtocol()+'</details>');
-    v.innerHTML='<h2 class="sec" style="margin:0 0 8px">전투포인트 밴드</h2><div style="display:flex;gap:8px;margin-bottom:8px">'+_tpb+'</div><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+_tpl+'</div>'+_tpBody;}
+    v.innerHTML='<h2 class="sec" style="margin:0 0 8px">전투포인트 밴드</h2><div style="display:flex;gap:8px;margin-bottom:12px">'+_tpb+'</div>'+_tpBody;}
   else if(active==='포지션 진단')v.innerHTML=viewPositionDx();
   else if(active==='비트인포 설명서')v.innerHTML=viewGuide();
   else if(active==='BTC'||active==='ETH'||active==='SOL'||active==='XRP'){
@@ -22699,25 +22683,6 @@ async function priceTick(){
           if(_nh && _nh!==_t1.innerHTML) _t1.innerHTML=_nh;   
         }
       }catch(_e1){}
-      
-
-      try{
-        if(active==='전투포인트' && tpLive){
-          
-
-          var _ks2=(tpSec==='시간봉')?['m30','h1','h4']:['d1','w1','M1','y1'];
-          var _sig2='';
-          _ks2.forEach(function(kk){ var aa=E[kk]; if(aa&&aa.length){ var bb=aa[aa.length-1]; _sig2+=kk+bb.t+':'+bb.o+':'+bb.h+':'+bb.l+':'+bb.c+';'; } });
-          if(window.__tpSig!==_sig2){
-            window.__tpSig=_sig2;
-            var _sy2=window.pageYOffset;
-            var _open2=[]; try{ document.querySelectorAll('#view details').forEach(function(d,i){ if(d.open)_open2.push(i); }); }catch(_eo){}
-            render();
-            try{ var _ds2=document.querySelectorAll('#view details'); _open2.forEach(function(i){ if(_ds2[i])_ds2[i].open=true; }); }catch(_eo2){}
-            window.scrollTo(0,_sy2);
-          }
-        }
-      }catch(_e2){}
     }
     if(elStatus.textContent!=='실시간'){elStatus.textContent='실시간';dot.style.background='var(--buy)';}
     
