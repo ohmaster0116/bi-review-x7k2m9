@@ -12521,7 +12521,6 @@ function viewWaveBattle(){
         <span style="color:var(--buy)">◀ 아래 물량 평단 ${f1(lo)} <span class="sub">(${r.nS}선)</span></span>
         <span style="color:#c084fc;font-weight:700">⚔ 중심 ${f1(mid)} <span class="sub" style="font-weight:400">(두 평단의 중간)</span></span>
         <span style="color:var(--sell)"><span class="sub">(${r.nR}선)</span> 위 물량 평단 ${f1(hi)} ▶</span></div>
-      
       <div style="display:flex;justify-content:space-around;font-size:9px;color:var(--gold2);margin-top:2px">
         <span>전투존 ${f1((lo+mid)/2)}</span><span>전투존 ${f1((mid+hi)/2)}</span></div></div>`;};
   const bars=['m30','h1','h4','d1','w1','M1'].map(wbBar).join('');
@@ -15480,7 +15479,6 @@ function battleBalance(){
           <span style="color:var(--sell)">일봉 숏 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
         <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
           <div style="position:absolute;left:50%;top:-3px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>
-          
           <div style="position:absolute;left:25%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
           <div style="position:absolute;left:75%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
           <div style="position:absolute;left:${pos}%;top:-4px;width:3px;height:22px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>
