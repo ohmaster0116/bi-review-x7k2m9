@@ -12512,13 +12512,18 @@ function viewWaveBattle(){
       <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:3px"><span style="font-weight:700">${NAME[k]}${isConf?' <span style="color:#c084fc">합류</span>':''} <span style="color:${wC};font-weight:700">- ${up?'매수 우위':'매도 우위'}</span> <span class="sub">(현재가가 물량 전투존 ${up?'위':'아래'} - 위·아래 물량 평단의 중간)</span></span><span class="sub">최근접 선 생존 - 아래 ${wbSurvFmt(k,sv(r.maxSurvS))} · 위 ${wbSurvFmt(k,sv(r.maxSurvR))}</span></div>
       <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(45,212,150,.5),rgba(214,162,58,.3) 50%,rgba(239,83,80,.5))">
         <div style="position:absolute;left:50%;top:-3px;width:2px;height:18px;background:#c084fc;transform:translateX(-50%)"></div>
+        <div style="position:absolute;left:25%;top:1px;width:1px;height:10px;background:#c084fc;opacity:.6"></div>
+        <div style="position:absolute;left:75%;top:1px;width:1px;height:10px;background:#c084fc;opacity:.6"></div>
         <div style="position:absolute;left:${pp.toFixed(1)}%;top:-19px;transform:translateX(-50%);white-space:nowrap"><span style="font-size:10.5px;color:#fff;font-weight:800">${f1(px)}</span></div>
         <div style="position:absolute;left:${pp.toFixed(1)}%;top:0;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #0b1220;transform:translateX(-50%)"></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px">
         <span style="color:var(--buy)">◀ 아래 물량 평단 ${f1(lo)} <span class="sub">(${r.nS}선)</span></span>
-        <span style="color:#c084fc;font-weight:700">⚔ 전투존 ${f1(mid)} <span class="sub" style="font-weight:400">(두 평단의 중간)</span></span>
-        <span style="color:var(--sell)"><span class="sub">(${r.nR}선)</span> 위 물량 평단 ${f1(hi)} ▶</span></div></div>`;};
+        <span style="color:#c084fc;font-weight:700">⚔ 중심 ${f1(mid)} <span class="sub" style="font-weight:400">(두 평단의 중간)</span></span>
+        <span style="color:var(--sell)"><span class="sub">(${r.nR}선)</span> 위 물량 평단 ${f1(hi)} ▶</span></div>
+      
+      <div style="display:flex;justify-content:space-around;font-size:9px;color:var(--gold2);margin-top:2px">
+        <span>전투존 ${f1((lo+mid)/2)}</span><span>전투존 ${f1((mid+hi)/2)}</span></div></div>`;};
   const bars=['m30','h1','h4','d1','w1','M1'].map(wbBar).join('');
   
   const alBar=(function(){try{
@@ -15475,10 +15480,15 @@ function battleBalance(){
           <span style="color:var(--sell)">일봉 숏 실존가 <b>${f1(gv)}</b>${gate&&gate.nAlive?` <span class="sub">(생존 ${gate.nAlive}층 중 최전방)</span>`:''}</span></div>
         <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(35,211,158,.55),rgba(255,255,255,.07) 50%,rgba(255,90,110,.55))">
           <div style="position:absolute;left:50%;top:-3px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>
+          
+          <div style="position:absolute;left:25%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
+          <div style="position:absolute;left:75%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
           <div style="position:absolute;left:${pos}%;top:-4px;width:3px;height:22px;background:var(--gold2);border-radius:2px;transform:translateX(-50%)"></div>
         </div>
-        <div style="position:relative;height:13px;margin-top:1px">
+        <div style="position:relative;height:26px;margin-top:1px">
           <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--tx3);white-space:nowrap">중심 ${f1(cen)}${px>=cen?' <span style="color:var(--sell)">위</span>':' <span style="color:var(--buy)">아래</span>'}</span>
+          <span style="position:absolute;top:13px;left:25%;transform:translateX(-50%);font-size:9px;color:var(--gold2);white-space:nowrap">전투존 ${f1((roll+cen)/2)}</span>
+          <span style="position:absolute;top:13px;left:75%;transform:translateX(-50%);font-size:9px;color:var(--gold2);white-space:nowrap">전투존 ${f1((cen+gv)/2)}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--tx2);margin-top:4px">
           <span>일봉 롱 실존가까지 −${f1(dnGap)} (${(dnGap/px*100).toFixed(1)}%)</span>
@@ -18867,9 +18877,13 @@ function volBalancePanel(){try{
       +'<div style="position:absolute;left:0;width:'+buyR+'%;top:20px;height:8px;background:rgba(35,211,158,.22);border-radius:4px 0 0 4px"></div>'   
       +'<div style="position:absolute;left:'+buyR+'%;width:'+(100-buyR)+'%;top:20px;height:8px;background:rgba(255,90,110,.22);border-radius:0 4px 4px 0"></div>'
       +'<div style="position:absolute;left:'+midP.toFixed(1)+'%;top:15px;height:18px;border-left:2px solid var(--gold2)"></div>'
+      
+      +'<div style="position:absolute;left:'+P((buyEnd+mid)/2).toFixed(1)+'%;top:18px;height:12px;border-left:1px solid var(--gold2);opacity:.65"></div>'
+      +'<div style="position:absolute;left:'+P((mid+sellEnd)/2).toFixed(1)+'%;top:18px;height:12px;border-left:1px solid var(--gold2);opacity:.65"></div>'
       +'<div class="num" style="position:absolute;left:'+Math.max(4,Math.min(96,pxP)).toFixed(1)+'%;top:0;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:#ff6d00;line-height:10px;text-align:center;white-space:nowrap">'+f(px)+'<br>▼</div>'   
       +'</div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--tx3)"><span>매수 끝 '+f(buyEnd)+'</span><span style="color:var(--gold2)">전투존 '+f(mid)+'</span><span>매도 끝 '+f(sellEnd)+'</span></div>'
+      
+      +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--tx3)"><span>매수 끝 '+f(buyEnd)+'</span><span style="color:var(--gold2)">전투존 '+f((buyEnd+mid)/2)+'</span><span style="color:var(--tx);font-weight:700">중심 '+f(mid)+'</span><span style="color:var(--gold2)">전투존 '+f((mid+sellEnd)/2)+'</span><span>매도 끝 '+f(sellEnd)+'</span></div>'
       +'</div>';
   });
   if(!rows)return '';
@@ -18931,7 +18945,7 @@ function xAxisPanel(){try{
   var jy=m.여지||{};
   return '<div class="panel" style="margin-top:10px;border:1px solid var(--gold);box-shadow:0 0 0 1px rgba(214,162,58,.15)"><div class="hd"><i class="ti ti-diamond" style="color:var(--gold2);font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i><span style="color:var(--gold2);font-weight:800;font-size:15px;letter-spacing:.02em">골든 변동폭 힘의 균형</span> <span style="font-size:9.5px;border:1px solid var(--gold);border-radius:8px;padding:1px 7px;color:var(--gold2);margin-left:6px">전략 · 3자 EXACT</span> <span class="sub">- 골든 3선 × 현재가 · 실시간</span></div>'
     +'<div style="padding:8px 15px 2px;font-size:12px">현재가 <b style="color:#ff6d00">'+f(px)+'</b>는 골든 축 <b>'+f(x)+'</b> <b style="color:'+(side==='위'?'var(--buy)':'var(--sell)')+'">'+side+'</b> · 위 여지 '+f(jy.위)+' / 아래 여지 '+f(jy.아래)+'</div>'
-    +'<div style="position:relative;height:46px;margin:4px 17px 0">'
+    +'<div style="position:relative;height:60px;margin:4px 17px 0">'   
     +(function(){   
       
       var pxc=Math.max(X(dn),Math.min(X(up),X(px)));
@@ -18944,6 +18958,11 @@ function xAxisPanel(){try{
         +'<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;top:-8px;font-size:10px;font-weight:700"><span style="color:var(--buy)">매수율(장악) '+buyPct+'%</span> <span style="color:var(--tx3)">:</span> <span style="color:var(--sell)">매도율(장악) '+(100-buyPct)+'%</span> <span class="sub" style="font-size:9px">(존 내 현재가 위치)</span></div>';
     })()
     +'<div style="position:absolute;left:'+X(x).toFixed(1)+'%;top:9px;height:18px;border-left:2px solid var(--gold2)"></div>'
+    
+    +'<div style="position:absolute;left:'+X((dn+x)/2).toFixed(1)+'%;top:13px;height:11px;border-left:1px solid var(--gold2);opacity:.6"></div>'
+    +'<div style="position:absolute;left:'+X((x+up)/2).toFixed(1)+'%;top:13px;height:11px;border-left:1px solid var(--gold2);opacity:.6"></div>'
+    +'<div style="position:absolute;left:'+X((dn+x)/2).toFixed(1)+'%;top:37px;transform:translateX(-50%);font-size:9px;color:var(--gold2);opacity:.85;white-space:nowrap">전투존 '+f((dn+x)/2)+'</div>'
+    +'<div style="position:absolute;left:'+X((x+up)/2).toFixed(1)+'%;top:37px;transform:translateX(-50%);font-size:9px;color:var(--gold2);opacity:.85;white-space:nowrap">전투존 '+f((x+up)/2)+'</div>'
     +'<div style="position:absolute;left:'+X(x).toFixed(1)+'%;top:28px;transform:translateX(-50%);font-size:9.5px;color:var(--gold2);white-space:nowrap">골든 '+f(x)+'</div>'
     +'<div class="num" style="position:absolute;left:'+Math.max(4,Math.min(96,X(px))).toFixed(1)+'%;top:-9px;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--gold2);text-align:center;line-height:11px;white-space:nowrap;text-shadow:0 0 6px rgba(214,162,58,.6)">'+f(px)+'<br>▼</div>'   
     +'<div style="position:absolute;left:0;top:28px;font-size:9.5px;color:var(--buy)">골든 하단 '+f(dn)+'</div>'
