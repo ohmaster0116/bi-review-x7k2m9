@@ -15703,7 +15703,12 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
     +'<div style="position:absolute;left:'+X(half).toFixed(1)+'%;top:43px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--tx);white-space:nowrap">중심 '+f(half)+'</div>'   
     
 
-    +(function(){ var _l=(lo+half)/2, _h=(half+hi)/2;
+    
+
+
+
+
+    +(function(){ var _l=(zLo+half)/2, _h=(half+zHi)/2;
       return '<div style="position:absolute;left:'+X(_l).toFixed(1)+'%;top:22px;height:20px;border-left:1px solid var(--gold2);opacity:.55"></div>'
         +'<div style="position:absolute;left:'+X(_h).toFixed(1)+'%;top:22px;height:20px;border-left:1px solid var(--gold2);opacity:.55"></div>'
         +'<div style="position:absolute;left:'+X(_l).toFixed(1)+'%;top:69px;transform:translateX(-50%);font-size:9px;color:var(--gold2);opacity:.9;white-space:nowrap">전투존 '+f(_l)+'</div>'
