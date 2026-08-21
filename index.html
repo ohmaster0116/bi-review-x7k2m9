@@ -12290,7 +12290,7 @@ function waveDetailPanel(){try{
                 var terr='<div style="position:absolute;inset:0;border-radius:8px;background:radial-gradient(ellipse 60% 45% at 22% 30%,rgba(120,90,40,.10),transparent),radial-gradient(ellipse 55% 40% at 70% 75%,rgba(60,110,70,.10),transparent),radial-gradient(ellipse 45% 35% at 55% 15%,rgba(150,60,60,.07),transparent);border:1px solid var(--bd)"></div>';
                 var bf2=null,sf2=null;camps.forEach(function(c){if(!c.broken){if(c.side==='b'&&bf2==null)bf2=c.front;if(c.side==='s'&&sf2==null)sf2=c.front;}});
                 var shade=(bf2!=null&&sf2!=null&&Y(bf2)>Y(sf2))?('<div style="position:absolute;left:4%;right:4%;top:'+Y(sf2).toFixed(0)+'px;height:'+(Y(bf2)-Y(sf2)).toFixed(0)+'px;background:rgba(214,162,58,.08);border-top:1px dashed rgba(214,162,58,.55);border-bottom:1px dashed rgba(214,162,58,.55)"></div>'):'';
-                var el='';
+                var el='',lbls=[];
                 var maxVA=1;camps.forEach(function(c){if((c.volA||0)>maxVA)maxVA=c.volA;});
                 var kfmt=function(v){return v==null?'-':(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1e3)+'k');};
                 camps.forEach(function(c){
@@ -12301,11 +12301,16 @@ function waveDetailPanel(){try{
                   var thick=1+Math.round((c.volA||0)/maxVA*4);   
                   el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+yT.toFixed(0)+'px;height:'+Math.max(2,yB-yT).toFixed(0)+'px;border-left:'+thick+'px '+(c.broken?'dashed':'solid')+' '+col+';opacity:'+(c.broken?'.4':'.6')+'"></div>';
                   var pt=function(v,ico,big){if(v==null)return;
-                    el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(Y(v)-7).toFixed(0)+'px;transform:translateX(-50%);font-size:'+(big?'13px':'11px')+';line-height:14px;opacity:'+(c.broken?'.5':'1')+'">'+ico+'</div>'
-                      +'<div class="num" style="position:absolute;left:'+(x+1.6).toFixed(1)+'%;top:'+(Y(v)-5).toFixed(0)+'px;font-size:8.5px;color:'+col+';opacity:'+(c.broken?'.55':'.9')+';white-space:nowrap">'+f(v)+'</div>';};
+                    el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(Y(v)-7).toFixed(0)+'px;transform:translateX(-50%);font-size:'+(big?'13px':'11px')+';line-height:14px;opacity:'+(c.broken?'.5':'1')+'">'+ico+'</div>';
+                    lbls.push({x:x,y:Y(v)-5,txt:f(v),col:col,op:(c.broken?'.55':'.9')});};   
                   pt(c.root,'🏰',true);pt(c.cen,'🏯',false);pt(c.front,c.broken?'💥':'⚔',false);
                   el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(yT-13).toFixed(0)+'px;transform:translateX(-50%);font-size:8px;color:'+col+';opacity:.8;white-space:nowrap">'+dl2(c.w.s)+'~ · 방어 '+c.stA+'/'+c.stT+' · 병력 '+kfmt(c.volA)+(c.broken?' 💥':'')+'</div>';
                 });
+                
+                lbls.sort(function(a,b){return a.y-b.y;});
+                for(var li2=1;li2<lbls.length;li2++){for(var lj=0;lj<li2;lj++){
+                  if(Math.abs(lbls[li2].x-lbls[lj].x)<9&&lbls[li2].y-lbls[lj].y<11)lbls[li2].y=lbls[lj].y+11;}}
+                lbls.forEach(function(L4){el+='<div class="num" style="position:absolute;left:'+(L4.x+1.6).toFixed(1)+'%;top:'+L4.y.toFixed(0)+'px;font-size:8.5px;color:'+L4.col+';opacity:'+L4.op+';white-space:nowrap">'+L4.txt+'</div>';});
                 el+='<div style="position:absolute;left:2%;right:2%;top:'+Y(px2).toFixed(0)+'px;border-top:2px solid var(--gold2);box-shadow:0 0 6px rgba(214,162,58,.5)"></div>'
                   +'<div class="num" style="position:absolute;right:0;top:'+(Y(px2)-15).toFixed(0)+'px;font-size:10px;font-weight:800;color:var(--gold2)">🚩 '+f(px2)+' 전선</div>';
                 var near=null,nd=1e18;allV.forEach(function(v){var d=Math.abs(v-px2);if(v!==px2&&d<nd&&d/px2<0.02){nd=d;near=v;}});
