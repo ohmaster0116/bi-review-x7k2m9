@@ -586,7 +586,7 @@ function vbFillPanel(ks){
     const rel=f.ar>0?domExc/f.ar:0, bi=rel<0.5?0:(rel<=1?1:2);
     const vf=VARFILL[k]||VARFILL.M1, hold=vf.b[bi], flip=100-hold;
     const dc=domDown?'var(--sell)':'var(--buy)';
-    const dirCell=`<span style="color:${dc};font-weight:700">${domDown?'▼ 하방으로 진행중':'▲ 상방으로 진행중'}</span> <span class="sub">이미 평균변동폭의 ${(rel*100).toFixed(0)}% 진행${rel>1?'(초과)':''}</span>`;
+    const dirCell=`<span style="color:${dc};font-weight:700">${domDown?'▼ 하방으로 진행중':'▲ 상방으로 진행중'}</span> <span class="sub">한 방향 진행률 ${(rel*100).toFixed(0)}%${rel>1?'(초과)':''} <span style="font-size:9px">(충전율과 다른 자·용어 참조)</span></span>`;
     const holdC=hold>=85?'var(--gold2)':'var(--buy)';
     return `<tr><td class="l" style="font-weight:600">${NAME[k]}</td><td class="num">$${f1(f.ar)}</td><td class="num">$${f1(f.curR)}</td>
       <td><div style="display:flex;align-items:center;gap:7px"><div style="flex:1;min-width:54px;height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden"><div style="width:${bw}%;height:100%;background:${fc}"></div></div><b style="color:${fc};min-width:42px;text-align:right">${f.fill.toFixed(0)}%</b></div></td>
@@ -1389,8 +1389,8 @@ function fillScenarioPanel(){
       <div style="padding:9px 14px;font-size:12.5px;line-height:1.95">
       ${lead==='상방'?'매수율':'매도율'}(${lead} 이동) <b>${mv.toFixed(0)}%</b>(하루 평균변동폭 대비) - <b style="color:var(--gold2)">${zone}</b><br>
       ${(function(){var raw=Math.round(50+(up-dn)/2);var buyR=Math.max(0,Math.min(100,raw));   
-      var lab=raw>100?`<b style="color:var(--buy)">매수율(이동) 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">평균변동폭율 ${up.toFixed(0)}% 돌파</b>`
-             :raw<0?`<b style="color:var(--buy)">매수율(이동) 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">평균변동폭율 ${dn.toFixed(0)}% 이탈</b>`
+      var lab=raw>100?`<b style="color:var(--buy)">매수율(이동) 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">위 이동 ${up.toFixed(0)}%(평균변동폭 대비) 돌파</b>`
+             :raw<0?`<b style="color:var(--buy)">매수율(이동) 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">아래 이동 ${dn.toFixed(0)}%(평균변동폭 대비) 이탈</b>`
              :`<b style="color:var(--buy)">매수율(이동) ${buyR}%</b><b style="color:var(--sell)">매도율(이동) ${100-buyR}%</b>`;
       return `<div style="display:flex;justify-content:space-between;font-size:11px;margin:2px 0;flex-wrap:wrap;gap:4px">${lab}</div><div style="position:relative;height:13px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:#131b2a"><div style="position:absolute;left:0;top:0;bottom:0;width:${buyR}%;background:linear-gradient(90deg,rgba(35,211,158,.8),rgba(35,211,158,.5))"></div><div style="position:absolute;left:${buyR}%;right:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(255,90,110,.5),rgba(255,90,110,.8))"></div><div style="position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--gold2)"></div></div><div class="sub" style="font-size:9.5px">시가 ${f1(o)}=50 · 위 이동 ${up.toFixed(0)}% / 아래 이동 ${dn.toFixed(0)}%</div>`;})()}
       <span class="sub">눈금(${lead} 기준): 30% <b>${f1(p30)}</b>(안쪽 복귀 마감=되돌림 흡수) · 70% <b>${f1(p70)}</b>(도달 시 완주 우위 2:1)${cv(p70)} · 150% <b>${f1(p150)}</b>(역회전 3~7%)${cv(p150)}</span><br>
@@ -12100,7 +12100,7 @@ function waveDetailPanel(){try{
           if(!dd){stAlive++;fights=Math.max(fights,fg);}}
         vwC=cv>0?cuC/cv:null;}
       var stat;
-      if(w.open)stat='<b style="color:var(--gold2)">진행 중</b>';
+      if(w.open)stat='<b style="color:var(--gold2)">마지막 확정 파동 · 다음 파동 미형성</b>';   
       else if(w.death==null)stat='<b style="color:var(--buy)">생존 '+(n-w.e)+'봉</b>'+(fights>0?' · wick 전투 '+fights+'회':'');
       else stat='<span style="color:var(--tx3)">사망 '+dl(w.death)+' ('+(w.death-w.e)+'봉 버팀)</span>';
       
@@ -12150,7 +12150,7 @@ function waveDetailPanel(){try{
   
 
   var ltBtn=[['d1','일봉'],['w1','주봉'],['M1','월봉']].map(function(x){return '<button onclick="setWvLT(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:4px 16px;border-radius:7px;cursor:pointer;border:1px solid '+(wvLT===x[0]?'var(--gold2)':'var(--bd)')+';background:'+(wvLT===x[0]?'rgba(214,162,58,.15)':'transparent')+';color:'+(wvLT===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(wvLT===x[0]?800:400)+'">'+x[1]+'</button>';}).join(' ');
-  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세<div class="sub" style="font-size:10.5px;font-weight:400;margin-top:3px;line-height:1.6">이 표는 방향이 이어진 구간을 파동 하나로 셉니다. 골격의 실존가·뿌리와는 계산 기준이 다른 별도 원장입니다.</div><span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
+  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세<div class="sub" style="font-size:10.5px;font-weight:400;margin-top:3px;line-height:1.6">이 표는 한 시점 하나(배타)로 끊은 국면 열입니다. 실존가는 겹쳐 살아있는 층에서 냅니다. 두 자가 다르므로 값이 서로 다른 것이 정상입니다(위 실존가 축 참조).</div><span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
     +'<div style="padding:8px 15px 0;display:flex;gap:8px">'+ltBtn+'</div>'
     
 
@@ -19165,10 +19165,11 @@ function volBalancePanel(){try{
 
     var arw=(px-mid)/(g.ar/2)*100;   
     var buyR=Math.max(0,Math.min(100,Math.round(50+arw/2)));
-    var rlab;
-    if(arw>100)rlab='<b style="color:var(--buy)">매수율 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">평균변동폭율 '+Math.round(arw)+'% 돌파</b>';
-    else if(arw<-100)rlab='<b style="color:var(--buy)">매수율 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">평균변동폭율 '+Math.round(-arw)+'% 이탈</b>';
-    else rlab='<b style="color:var(--buy)">매수율 '+buyR+'%</b> · <b style="color:var(--sell)">매도율 '+(100-buyR)+'%</b>';
+    
+
+    var fill2=g.ar>0?(b.h-b.l)/g.ar*100:0;
+    var rlab='<b style="color:var(--buy)">매수율 '+buyR+'%</b> · <b style="color:var(--sell)">매도율 '+(100-buyR)+'%</b>'
+      +(fill2>100?' · <b style="color:var(--gold2)">평균변동폭율 '+Math.round(fill2)+'% 돌파</b>':'');
     
     
     
@@ -19262,8 +19263,8 @@ function xAxisPanel(){try{
         +'<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;top:-8px;font-size:10px;font-weight:700"><span style="color:var(--buy)">매수율(장악) '+buyPct+'%</span> <span style="color:var(--tx3)">:</span> <span style="color:var(--sell)">매도율(장악) '+(100-buyPct)+'%</span> <span class="sub" style="font-size:9px">(존 내 현재가 위치)</span>'
         
         +(function(){var gh=(up-dn)/2; if(!(gh>0))return '';var ge=(px-x)/gh*100;
-          if(ge>100)return ' <b style="color:var(--buy)">· 평균변동폭율 '+Math.round(ge)+'% 돌파</b>';
-          if(ge<-100)return ' <b style="color:var(--sell)">· 평균변동폭율 '+Math.round(-ge)+'% 이탈</b>';
+          if(ge>100)return ' <b style="color:var(--buy)">· 골든 폭 대비 '+Math.round(ge)+'% 돌파</b>';
+          if(ge<-100)return ' <b style="color:var(--sell)">· 골든 폭 대비 '+Math.round(-ge)+'% 이탈</b>';
           return '';})()
         +'</div>';
     })()
