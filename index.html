@@ -12114,8 +12114,8 @@ function waveDetailPanel(){try{
       
 
 
-      if(w.open)stat='<b style="color:var(--gold2)">형성 중(마지막 파동)</b>'
-        +((steps.length&&stAlive===steps.length)?' <span style="font-size:9px;color:var(--buy)">층 이탈 0</span>':'');
+      if(w.open)stat='<b style="color:var(--gold2)">형성 중</b>'
+        +((steps.length&&stAlive===steps.length)?' <span style="font-size:9px;color:var(--buy)">이탈 0</span>':'');
       else if(w.death==null)stat='<b style="color:var(--buy)">생존 '+(n-w.e)+'봉</b>'+(fights>0?' · wick 전투 '+fights+'회':'');
       else stat='<span style="color:var(--tx3)">사망 '+dl(w.death)+' ('+(w.death-w.e)+'봉 버팀)</span>';
       
@@ -12124,11 +12124,11 @@ function waveDetailPanel(){try{
 
       if(w.death==null){var _pb=A[n];
         if(_pb&&w.dir<0){
-          if(_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">사망선 장중 돌파 · 종가 확인 대기</span>';
-          else if(vw!=null&&_pb.h>vw)stat+=' <span style="font-size:9px;border:1px dashed var(--sell);color:var(--sell);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">파동선 장중 돌파</span>';
+          if(_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">소멸 시도중</span>';
+          else if(vw!=null&&_pb.h>vw)stat+=' <span style="font-size:9px;border:1px dashed var(--sell);color:var(--sell);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">장중 돌파</span>';
         }else if(_pb&&w.dir>0){
-          if(_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">사망선 장중 이탈 · 종가 확인 대기</span>';
-          else if(vw!=null&&_pb.l<vw)stat+=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">파동선 장중 이탈</span>';
+          if(_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">소멸 시도중</span>';
+          else if(vw!=null&&_pb.l<vw)stat+=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">장중 이탈</span>';
         }}
       var ladder=(w.death==null&&steps.length)?(stAlive+'/'+stTot+' 생존'):'없음';
       var tr='<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
@@ -12140,7 +12140,7 @@ function waveDetailPanel(){try{
             +'<span class="num" style="width:76px;flex:none;text-align:right;color:'+(st.dead?'var(--tx3)':dc)+'">'+f(st.v)+'</span>'
             +'<span style="flex:none">'+(st.dead?'소멸':'<b style="color:'+dc+'">생존</b>')+'</span>'
             +(st.fg>0?'<span class="sub">전투 '+st.fg+'회</span>':'')+'</div>';}).join('');
-        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stTot+'층(생존 '+stAlive+') · v가중 기준가 <b style="color:'+dc+'">'+f(vw)+'</b> · v가중 중심가 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
+        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
       return tr;
     }).join('');
     
@@ -12165,7 +12165,7 @@ function waveDetailPanel(){try{
   
 
   var ltBtn=[['d1','일봉'],['w1','주봉'],['M1','월봉']].map(function(x){return '<button onclick="setWvLT(&quot;'+x[0]+'&quot;)" style="font-size:12px;padding:4px 16px;border-radius:7px;cursor:pointer;border:1px solid '+(wvLT===x[0]?'var(--gold2)':'var(--bd)')+';background:'+(wvLT===x[0]?'rgba(214,162,58,.15)':'transparent')+';color:'+(wvLT===x[0]?'var(--gold2)':'var(--tx2)')+';font-weight:'+(wvLT===x[0]?800:400)+'">'+x[1]+'</button>';}).join(' ');
-  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세<div class="sub" style="font-size:10.5px;font-weight:400;margin-top:3px;line-height:1.6">이 표는 한 시점 하나(배타)로 끊은 국면 열입니다. 실존가는 겹쳐 살아있는 층에서 냅니다. 두 자가 다르므로 값이 서로 다른 것이 정상입니다(위 실존가 축 참조).</div><span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
+  return '<div class="panel" style="margin-top:14px"><div class="hd">📜 파동 원장 - '+(wvLT==='d1'?'일봉':wvLT==='w1'?'주봉':'월봉')+' 파동 상세<div class="sub" style="font-size:10.5px;font-weight:400;margin-top:3px;line-height:1.6">표=파동 열(배타) · 실존가=겹침 층 · 두 자는 다른 게 정상</div><span class="sub">형성 기간 · 파동선 · 계단(생존/전체) · 생사(종가 이탈=사망 · wick=전투) · 실시간 · 판독이며 명령 아님</span>'+((typeof sigBadge==='function')?sigBadge('가설','5자 확정 스펙 v2'):'')+'</div>'
     +'<div style="padding:8px 15px 0;display:flex;gap:8px">'+ltBtn+'</div>'
     
 
@@ -12185,7 +12185,7 @@ function waveDetailPanel(){try{
           return '<div style="font-size:11px;line-height:1.9;padding:7px 10px;margin-bottom:8px;border:1px solid rgba(214,162,58,.4);border-radius:8px;background:rgba(214,162,58,.06)">'
             +'<b style="color:var(--gold2)">'+nm+' 실존가 축 (거래량 가중 계단)</b> · '
             +seg2(bb,'롱 실존가','var(--buy)')+' · '+seg2(ss,'숏 실존가','var(--sell)')
-            +'<div class="sub" style="font-size:9.5px">아래 파동 표(방향 run · 종가 판정)와 계산 기준이 다른 축입니다 · 층위 전체는 위 [지금 자리] 계단에서 봅니다</div></div>';
+            +'<div class="sub" style="font-size:9.5px">파동 표와 다른 자 · 층위=위 계단</div></div>';
         }catch(e){return '';}})();
         
         var duel='',lineage='';
@@ -12214,10 +12214,10 @@ function waveDetailPanel(){try{
             var lyS=Ls?Ls.steps.filter(function(s){return !s.dead&&s.v!=null;}).map(function(s){return s.v;}).sort(function(a,b){return a-b;}):[];
             var mrow=Math.min(8,Math.max(lyL.length,lyS.length));
             var lyRows='';
-            for(var li=0;li<mrow;li++){lyRows+='<tr><td class="l sub" style="font-size:9.5px">'+(li===0?'실존가 층위<br><span style="font-size:8.5px">(각자 최전방부터)</span>':(li+1)+'차')+'</td>'
-              +'<td class="num" style="color:var(--buy)">'+(lyL[li]!=null?f(lyL[li]):'')+(li===0&&lyL[li]!=null?' <span style="font-size:8.5px">◀최전방</span>':'')+'</td>'
+            for(var li=0;li<mrow;li++){lyRows+='<tr><td class="l sub" style="font-size:9.5px">'+(li===0?'층위':(li+1)+'차')+'</td>'
+              +'<td class="num" style="color:var(--buy)">'+(lyL[li]!=null?f(lyL[li]):'')+(li===0&&lyL[li]!=null?' <span style="font-size:8.5px">◀</span>':'')+'</td>'
               +'<td style="text-align:center;color:var(--tx3);font-size:9px">'+(li===0?'VS':'')+'</td>'
-              +'<td class="num" style="color:var(--sell)">'+(lyS[li]!=null?f(lyS[li]):'')+(li===0&&lyS[li]!=null?' <span style="font-size:8.5px">◀최전방</span>':'')+'</td></tr>';}
+              +'<td class="num" style="color:var(--sell)">'+(lyS[li]!=null?f(lyS[li]):'')+(li===0&&lyS[li]!=null?' <span style="font-size:8.5px">◀</span>':'')+'</td></tr>';}
             var lyMore=(lyL.length>8||lyS.length>8)?'<tr><td></td><td class="sub" style="font-size:9px">'+(lyL.length>8?'외 '+(lyL.length-8)+'층':'')+'</td><td></td><td class="sub" style="font-size:9px">'+(lyS.length>8?'외 '+(lyS.length-8)+'층':'')+'</td></tr>':'';
             
 
@@ -12225,9 +12225,9 @@ function waveDetailPanel(){try{
             var _pb=buys.filter(function(o){return o.vw>px2&&o!==fb;}).sort(function(a,b){return a.vw-b.vw;}).slice(0,4);
             var passLine='';
             if(_ps.length||_pb.length){passLine='<div style="font-size:10px;margin-top:3px;line-height:1.7;color:var(--tx2)">'
-              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">장악·소멸 시도중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span> <span class="sub" style="font-size:9px">(장중 돌파당함 · 종가 확인 대기 · 마감서 살아나면 복귀)</span>'):'')
+              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">장악·소멸 시도중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
               +(_ps.length&&_pb.length?'<br>':'')
-              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">장악·소멸 시도중</span> 매수 실존가 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span> <span class="sub" style="font-size:9px">(장중 이탈당함 · 종가 확인 대기 · 마감서 살아나면 복귀)</span>'):'')
+              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">장악·소멸 시도중</span> 매수 실존가 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
               +'</div>';}
             duel='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
               +'<b style="color:var(--gold2)">현 대립 구도 · 싸움 파동</b> · '
@@ -12238,8 +12238,8 @@ function waveDetailPanel(){try{
               +'<div class="scroll" style="margin-top:4px"><table style="width:100%;table-layout:fixed"><colgroup><col style="width:26%"><col style="width:31%"><col style="width:8%"><col style="width:31%"></colgroup>'
               +'<thead><tr><th class="l" style="font-size:9.5px">축</th><th style="font-size:9.5px;color:var(--buy)">싸움 파동 롱'+(fb?' <span class="sub">'+dl2(fb.w.s)+'~</span>':'')+'</th><th></th><th style="font-size:9.5px;color:var(--sell)">싸움 파동 숏'+(fs?' <span class="sub">'+dl2(fs.w.s)+'~</span>':'')+'</th></tr></thead><tbody>'
               +vsRow('뿌리',fb?Lb.root:null,fs?Ls.root:null)
-              +vsRow('중심(v가중 중심가)',fb?Lb.vwC:null,fs?Ls.vwC:null)
-              +vsRow('파동선(v가중 기준가)',fb?fb.vw:null,fs?fs.vw:null)
+              +vsRow('중심',fb?Lb.vwC:null,fs?Ls.vwC:null)
+              +vsRow('파동선',fb?fb.vw:null,fs?fs.vw:null)
               
               +(function(){var vt=function(v){return v==null?'-':Math.round(v).toLocaleString('en-US');};
                 var tRow=function(nm,a,bq){return '<tr><td class="l sub" style="font-size:10px;white-space:nowrap">'+nm+'</td>'
@@ -12250,39 +12250,39 @@ function waveDetailPanel(){try{
                   volBar='<tr><td class="l sub" style="font-size:9.5px">물량 비교</td><td colspan="3" style="padding:2px 0">'
                     +'<div style="display:flex;flex-direction:column;gap:2px"><div style="height:5px;border-radius:2px;background:var(--buy);opacity:.7;width:'+Math.max(4,Lb.vol/mx2*100)+'%"></div>'
                     +'<div style="height:5px;border-radius:2px;background:var(--sell);opacity:.7;width:'+Math.max(4,Ls.vol/mx2*100)+'%"></div></div></td></tr>';}
-                return tRow('형성 물량(Σ거래량)',fb?vt(Lb.vol):'-',fs?vt(Ls.vol):'-')
-                  +tRow('생존 층 물량',fb?vt(Lb.volAlive):'-',fs?vt(Ls.volAlive):'-')
+                return tRow('물량',fb?vt(Lb.vol):'-',fs?vt(Ls.vol):'-')
+                  +tRow('생존 물량',fb?vt(Lb.volAlive):'-',fs?vt(Ls.volAlive):'-')
                   +volBar
-                  +tRow('계단 생존',fb?(Lb.stAlive+'/'+Lb.steps.length+' ('+Math.round(Lb.stAlive/Math.max(1,Lb.steps.length)*100)+'%)'):'-',fs?(Ls.stAlive+'/'+Ls.steps.length+' ('+Math.round(Ls.stAlive/Math.max(1,Ls.steps.length)*100)+'%)'):'-')
-                  +tRow('wick 전투(버팀)',fb?(Lb.fights+'회'):'-',fs?(Ls.fights+'회'):'-')
-                  +tRow('형성·나이',fb?((fb.w.e-fb.w.s+1)+'봉 · '+(n2-1-fb.w.e)+'봉 경과'):'-',fs?((fs.w.e-fs.w.s+1)+'봉 · '+(n2-1-fs.w.e)+'봉 경과'):'-')
-                  +tRow('현재가와 거리',fb&&fb.vw?(((fb.vw-px2)/px2*100).toFixed(1)+'%'):'-',fs&&fs.vw?(((fs.vw-px2)/px2*100).toFixed(1)+'%'):'-');})()
+                  +tRow('계단',fb?(Lb.stAlive+'/'+Lb.steps.length+' ('+Math.round(Lb.stAlive/Math.max(1,Lb.steps.length)*100)+'%)'):'-',fs?(Ls.stAlive+'/'+Ls.steps.length+' ('+Math.round(Ls.stAlive/Math.max(1,Ls.steps.length)*100)+'%)'):'-')
+                  +tRow('전투',fb?(Lb.fights+'회'):'-',fs?(Ls.fights+'회'):'-')
+                  +tRow('나이',fb?((fb.w.e-fb.w.s+1)+'봉 · '+(n2-1-fb.w.e)+'봉 경과'):'-',fs?((fs.w.e-fs.w.s+1)+'봉 · '+(n2-1-fs.w.e)+'봉 경과'):'-')
+                  +tRow('거리',fb&&fb.vw?(((fb.vw-px2)/px2*100).toFixed(1)+'%'):'-',fs&&fs.vw?(((fs.vw-px2)/px2*100).toFixed(1)+'%'):'-');})()
               +lyRows+lyMore
               +'</tbody></table></div>'
               
               +(function(){try{
                 var sent=[];
-                if(fb&&Lb){sent.push('① <b>어디로부터</b> : '+dl2(fb.w.s)+' <b style="color:var(--buy)">'+f(Lb.root)+'</b>(뿌리)에서 매수 파동이 섰습니다'
-                  +(Lb.stAlive===Lb.steps.length&&Lb.steps.length?' (층 '+Lb.stAlive+'/'+Lb.steps.length+' · 이탈 0)':'')+'.');}
+                if(fb&&Lb){sent.push('① 출발 : '+dl2(fb.w.s)+' <b style="color:var(--buy)">'+f(Lb.root)+'</b> 뿌리'
+                  +(Lb.stAlive===Lb.steps.length&&Lb.steps.length?' · 이탈 0':'')+'');}
                 if(tf!=='d1'){try{var Ld2=waveLedger('d1'),Ad2=E.d1;
                   var g2d=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
                   var lastB=Ld2.waves.filter(function(w){return (w.open||w.death==null)&&w.dir>0;}).sort(function(a,b){return b.s-a.s;})[0];
-                  if(lastB)sent.push('①−2 <b>이번 상승 출발</b> : 일봉 '+dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b> 뿌리 실존가 파동에서 올라왔습니다.');}catch(e){}}
+                  if(lastB)sent.push('①−2 이번 상승 : 일봉 '+dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b> 뿌리에서 출발');}catch(e){}}
                 if(_ps.length){var p0=_ps[0];var pf=_wl(A2,p0.w,n2);
-                  sent.push('② <b>방어와 돌파</b> : 매도 실존가 <b style="color:var(--sell)">'+f(p0.vw)+'</b>('+dl2(p0.w.s)+'~'+dl2(p0.w.e)+')는'
-                    +(pf.fights>0?' wick 방어 <b>'+pf.fights+'회</b> 뒤':'')+' 장중 돌파당했습니다(종가 확인 대기).');
+                  sent.push('② 돌파 : 매도 <b style="color:var(--sell)">'+f(p0.vw)+'</b>'
+                    +(pf.fights>0?' 방어 '+pf.fights+'회 뒤':'')+' 장중 돌파(종가 대기)');
                   if(fb&&Lb&&pf.vol>0){var ratio=(Lb.vol/pf.vol);
                     var f3=null;try{f3=vbFill(tf);}catch(e){}
-                    sent.push('③ <b>뚫은 힘</b> : 이번 매수 파동 형성 물량 <span class="num">'+Math.round(Lb.vol).toLocaleString('en-US')+'</span> = 뚫린 파동의 <b>'+(ratio>=10?Math.round(ratio):ratio.toFixed(1))+'배</b>'
-                      +((f3&&f3.fill>100)?' · <b style="color:var(--gold2)">충전율 '+f3.fill.toFixed(0)+'% 돌파 동반</b>(이전과 다른 보폭)':'')+'.');}}
+                    sent.push('③ 힘 : 물량 <b>'+(ratio>=10?Math.round(ratio):ratio.toFixed(1))+'배</b>'
+                      +((f3&&f3.fill>100)?' · <b style="color:var(--gold2)">충전율 '+f3.fill.toFixed(0)+'%</b>':'')+'');}}
                 var mb=null;try{mb=(tf!=='M1')?gkWb('M1','buy'):null;}catch(e){}
-                if(mb&&mb.rep!=null)sent.push('④ <b>전체 파동 배경</b> : 월봉 매수 실존가 <b style="color:var(--buy)">'+f(mb.rep)+'</b>(생존 '+(mb.nAlive||0)+'층) 우위가 유지되는 안에서 선 뿌리 파동입니다.');
+                if(mb&&mb.rep!=null)sent.push('④ 배경 : 월봉 매수 <b style="color:var(--buy)">'+f(mb.rep)+'</b>('+(mb.nAlive||0)+'층) 우위 속 뿌리 파동');
                 if(!sent.length)return '';
-                return '<details style="margin-top:5px"><summary style="cursor:pointer;font-size:10.5px;color:var(--gold2)">이번 싸움의 전개 (측정 사실로 읽기)</summary>'
+                return '<details style="margin-top:5px"><summary style="cursor:pointer;font-size:10.5px;color:var(--gold2)">이번 싸움 한눈에</summary>'
                   +'<div style="font-size:10.5px;line-height:2;padding:4px 2px 2px">'+sent.join('<br>')
-                  +'<br><span class="sub" style="font-size:9px">전부 측정 사실의 서술입니다 · 예측·매매 지시 아님 · 미확인값 확인 이력은 원장 규명 후 병기 예정</span></div></details>';
+                  +'<br><span class="sub" style="font-size:9px">측정 사실 · 예측 아님</span></div></details>';
               }catch(e){return '';}})()
-              +'<div class="sub" style="font-size:9px;margin-top:2px">물량·생존·전투·나이는 관찰 사실입니다. 우위 단정·방향 예측이 아닙니다.</div></div>';}
+              +'<div class="sub" style="font-size:9px;margin-top:2px">관찰 사실 · 예측 아님</div></div>';}
           var deads=L2.waves.filter(function(w){return w.death!=null;}).sort(function(a,b){return b.death-a.death;}).slice(0,4);
           if(deads.length){var lin=deads.map(function(w){
               var killer=L2.waves.filter(function(v2){return v2.dir===-w.dir&&v2.s<=w.death&&w.death<=v2.e;})[0];
