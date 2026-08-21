@@ -1388,9 +1388,9 @@ function fillScenarioPanel(){
     return `<div class="panel" style="border-left:3px solid var(--gold2)"><div class="hd" style="font-size:12.5px">오늘 변동폭 시나리오 <span class="sub">- 채움 통계 눈금 · 장중 실시간 정정 (실측 기준·무조건부 곡선·국면 조건 미반영 · AR=120일 자기제외 창)</span></div>
       <div style="padding:9px 14px;font-size:12.5px;line-height:1.95">
       ${lead==='상방'?'매수율':'매도율'}(${lead} 이동) <b>${mv.toFixed(0)}%</b>(하루 평균변동폭 대비) - <b style="color:var(--gold2)">${zone}</b><br>
-      ${(function(){var raw=Math.round(50+(up-dn)/2);var buyR=Math.max(0,Math.min(100,raw));   
-      var lab=raw>100?`<b style="color:var(--buy)">매수율(이동) 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">위 이동 ${up.toFixed(0)}%(평균변동폭 대비) 돌파</b>`
-             :raw<0?`<b style="color:var(--buy)">매수율(이동) 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">아래 이동 ${dn.toFixed(0)}%(평균변동폭 대비) 이탈</b>`
+      ${(function(){var raw=Math.floor(50+(up-dn)/2);var buyR=Math.max(0,Math.min(100,raw));      
+      var lab=raw>=100?`<b style="color:var(--buy)">매수율(이동) 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">위 이동 ${up.toFixed(0)}%(평균변동폭 대비) 돌파</b>`
+             :raw<=0?`<b style="color:var(--buy)">매수율(이동) 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">아래 이동 ${dn.toFixed(0)}%(평균변동폭 대비) 이탈</b>`
              :`<b style="color:var(--buy)">매수율(이동) ${buyR}%</b><b style="color:var(--sell)">매도율(이동) ${100-buyR}%</b>`;
       return `<div style="display:flex;justify-content:space-between;font-size:11px;margin:2px 0;flex-wrap:wrap;gap:4px">${lab}</div><div style="position:relative;height:13px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:#131b2a"><div style="position:absolute;left:0;top:0;bottom:0;width:${buyR}%;background:linear-gradient(90deg,rgba(35,211,158,.8),rgba(35,211,158,.5))"></div><div style="position:absolute;left:${buyR}%;right:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(255,90,110,.5),rgba(255,90,110,.8))"></div><div style="position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--gold2)"></div></div><div class="sub" style="font-size:9.5px">시가 ${f1(o)}=50 · 위 이동 ${up.toFixed(0)}% / 아래 이동 ${dn.toFixed(0)}%</div>`;})()}
       <span class="sub">눈금(${lead} 기준): 30% <b>${f1(p30)}</b>(안쪽 복귀 마감=되돌림 흡수) · 70% <b>${f1(p70)}</b>(도달 시 완주 우위 2:1)${cv(p70)} · 150% <b>${f1(p150)}</b>(역회전 3~7%)${cv(p150)}</span><br>
@@ -19454,6 +19454,7 @@ function xAxisPanel(){try{
       var pxc=Math.max(X(dn),Math.min(X(up),X(px)));
       var buyPct=Math.round(Math.max(0,Math.min(100,(px-dn)/(up-dn)*100)));
       try{var _sg=(window.__SCEN||{}).골든||{};if(_sg.매수율!=null)buyPct=_sg.매수율;}catch(e){}
+      if(px>=up)buyPct=100; else if(px<=dn)buyPct=0;   
       var wL=pxc-X(dn), wR=X(up)-pxc;
       return '<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;width:'+(X(up)-X(dn)).toFixed(1)+'%;top:12px;height:12px;border:1px solid var(--gold2);border-radius:6px;box-sizing:border-box"></div>'
         +'<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;width:'+wL.toFixed(1)+'%;top:14px;height:8px;background:linear-gradient(90deg,rgba(38,166,154,.35),rgba(38,166,154,.8));border-radius:4px 0 0 4px"></div>'
