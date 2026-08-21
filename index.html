@@ -608,7 +608,7 @@ function vbFillPanel(ks){
 function viewVB(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1','M1','y1'];
   
   const vbNote=k=>{const a=E[k];const ar=avgRangePct(a);const f2=vbFill(k);var ex='';
-    if(f2&&f2.ar>0)ex=' · 이번 봉 <b style="color:'+(f2.fill>100?'var(--gold2)':'var(--tx2)')+'">평균변동폭율 '+f2.fill.toFixed(0)+'%'+(f2.fill>100?' 돌파':'')+'</b>';
+    if(f2&&f2.ar>0)ex=' · 이번 봉 <b style="color:'+(f2.fill>100?'var(--gold2)':'var(--tx2)')+'">충전율 '+f2.fill.toFixed(0)+'%'+(f2.fill>100?' 돌파':'')+'</b>';   
     return `평균 변동폭 = <b style="color:var(--gold2)">$${f1(ar)}</b> <span class="sub">(전체사 2017~ · 완성봉 고−저 평균)</span>${ex}`;};
   return '<h2 class="sec" style="margin:0 0 12px">③ 비트코인 변동폭 밴드 · 최대 / 최소 / 평균</h2>'
     +'<div class="sub" style="margin:-6px 0 8px;font-size:10.5px">이 탭의 평균 = 전체사(2017~) - 종합 화면의 보폭 좌표도 <b>같은 전체사 평균변동폭</b>을 씁니다(이사 07-15 통일). 시가±AR(비이성·국면 전환 감지)과 고저±AR(힘겨루기 밴드)로 앵커만 다를 뿐 평균변동폭 값은 하나입니다. <span style="color:var(--gold2)">[전략]</span> 보폭 예산 - range의 79~86%가 평균 안에서 소진(꼬리 병기)·고점 후 반락 중앙 0.5AR · 이 선에서 튕긴다는 뜻 아님, 여기까지가 보통 걸음.</div>'+lyNote(
@@ -19167,13 +19167,13 @@ function volBalancePanel(){try{
 
 
 
-    var arw=(px-mid)/(g.ar/2)*100;   
-    var buyR=Math.max(0,Math.min(100,Math.round(50+arw/2)));
     
 
-    var fill2=g.ar>0?(b.h-b.l)/g.ar*100:0;
+
+    var arw=(px-mid)/(g.ar/2)*100;   
+    var buyR=Math.max(0,Math.min(100,Math.floor(50+arw/2)));
     var rlab='<b style="color:var(--buy)">매수율 '+buyR+'%</b> · <b style="color:var(--sell)">매도율 '+(100-buyR)+'%</b>'
-      +(fill2>100?' · <b style="color:var(--gold2)">평균변동폭율 '+Math.round(fill2)+'% 돌파</b>':'');
+      +(arw>=100?' · <b style="color:var(--buy)">평균변동폭율 '+Math.round(arw)+'% 돌파</b>':(arw<=-100?' · <b style="color:var(--sell)">평균변동폭율 '+Math.round(-arw)+'% 이탈</b>':''));
     
     
     
