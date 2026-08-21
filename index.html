@@ -16154,7 +16154,10 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   var gauge='', axTop='';
   {
     var gMid=(zLo+zHi)/2, gHalf=(zHi-zLo)/2;
-    var buyR=gHalf>0?Math.max(0,Math.min(100,Math.round(50+(px-gMid)/gHalf*50))):50;
+    
+    var _gr=gHalf>0?(px-gMid)/gHalf*100:0;
+    var buyR=gHalf>0?Math.max(0,Math.min(100,Math.floor(50+_gr/2))):50;
+    var _gEx=(_gr>=100)?' <span style="font-size:9.5px;color:var(--buy);font-weight:700">전투존 폭 대비 '+Math.round(_gr)+'% 돌파</span>':(_gr<=-100?' <span style="font-size:9.5px;color:var(--sell);font-weight:700">전투존 폭 대비 '+Math.round(-_gr)+'% 이탈</span>':'');
     var sellR=100-buyR;
     var lead=buyR>sellR?'매수 우위':buyR<sellR?'매도 우위':'백중';
     var lc=buyR>sellR?'var(--buy)':buyR<sellR?'var(--sell)':'var(--tx2)';
@@ -16164,7 +16167,7 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
     
 
     gauge=tk;
-    axTop='<div style="position:absolute;left:0;top:0;font-size:11px;font-weight:800;color:var(--buy);white-space:nowrap">매수율 '+buyR+'%</div>'
+    axTop='<div style="position:absolute;left:0;top:0;font-size:11px;font-weight:800;color:var(--buy);white-space:nowrap">매수율 '+buyR+'%'+_gEx+'</div>'
       +'<div style="position:absolute;right:0;top:0;font-size:11px;font-weight:800;color:var(--sell);white-space:nowrap">매도율 '+sellR+'% '
       +'<span style="font-size:10px;border:1px solid '+lc+';color:'+lc+';border-radius:8px;padding:1px 7px">'+lead+'</span></div>';
   }
