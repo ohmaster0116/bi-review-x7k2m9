@@ -19108,8 +19108,16 @@ function volBalancePanel(){try{
     var half=span/2;
     var exc=(px-mid)/half*100;
     var rate=Math.min(100,Math.round(Math.abs(exc)));   
-    var buyR=Math.max(0,Math.min(100,Math.round(50+exc/2)));   
-    var rlab='<b style="color:var(--buy)">매수율 '+buyR+'%</b> · <b style="color:var(--sell)">매도율 '+(100-buyR)+'%</b>';
+    
+
+
+
+    var arw=(px-mid)/(g.ar/2)*100;   
+    var buyR=Math.max(0,Math.min(100,Math.round(50+arw/2)));
+    var rlab;
+    if(arw>100)rlab='<b style="color:var(--buy)">매수율 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">평균변동폭율 '+Math.round(arw)+'% 돌파</b>';
+    else if(arw<-100)rlab='<b style="color:var(--buy)">매수율 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">평균변동폭율 '+Math.round(-arw)+'% 이탈</b>';
+    else rlab='<b style="color:var(--buy)">매수율 '+buyR+'%</b> · <b style="color:var(--sell)">매도율 '+(100-buyR)+'%</b>';
     
     
     
@@ -19134,7 +19142,7 @@ function volBalancePanel(){try{
   if(!rows)return '';
   return '<div class="panel" style="margin-top:10px"><div class="hd">변동폭 힘의 균형 <span class="sub">- 잔여 변동폭의 매수 끝·매도 끝 × 전투존 안 현재가 <b style="color:#ff6d00">▼ '+f(px)+'</b></span></div>'
     +rows
-    +'<div class="sub" style="padding:7px 15px">매수율·매도율=통일 게이지(전투존=50 · 매수 끝=매수율 0 · 매도 끝=매수율 100, 우위만큼 50에서 가감) · 도달 한계이지 목표가 아닙니다</div></div>';
+    +'<div class="sub" style="padding:7px 15px">매수율·매도율=평균변동폭 기준(중심=50 · 중심±반AR=0/100, 넘으면 평균변동폭율 돌파/이탈 병기) · 밴드 좌표(매수 끝·전투존·매도 끝)는 원래 산식 그대로 · 도달 한계이지 목표가 아닙니다</div></div>';
 }catch(e){return '';}}
 
 function dirWeightPanel(){try{
@@ -19200,7 +19208,13 @@ function xAxisPanel(){try{
       return '<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;width:'+(X(up)-X(dn)).toFixed(1)+'%;top:12px;height:12px;border:1px solid var(--gold2);border-radius:6px;box-sizing:border-box"></div>'
         +'<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;width:'+wL.toFixed(1)+'%;top:14px;height:8px;background:linear-gradient(90deg,rgba(38,166,154,.35),rgba(38,166,154,.8));border-radius:4px 0 0 4px"></div>'
         +'<div style="position:absolute;left:'+pxc.toFixed(1)+'%;width:'+wR.toFixed(1)+'%;top:14px;height:8px;background:linear-gradient(90deg,rgba(239,83,80,.8),rgba(239,83,80,.35));border-radius:0 4px 4px 0"></div>'
-        +'<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;top:-8px;font-size:10px;font-weight:700"><span style="color:var(--buy)">매수율(장악) '+buyPct+'%</span> <span style="color:var(--tx3)">:</span> <span style="color:var(--sell)">매도율(장악) '+(100-buyPct)+'%</span> <span class="sub" style="font-size:9px">(존 내 현재가 위치)</span></div>';
+        +'<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;top:-8px;font-size:10px;font-weight:700"><span style="color:var(--buy)">매수율(장악) '+buyPct+'%</span> <span style="color:var(--tx3)">:</span> <span style="color:var(--sell)">매도율(장악) '+(100-buyPct)+'%</span> <span class="sub" style="font-size:9px">(존 내 현재가 위치)</span>'
+        
+        +(function(){var gh=(up-dn)/2; if(!(gh>0))return '';var ge=(px-x)/gh*100;
+          if(ge>100)return ' <b style="color:var(--buy)">· 평균변동폭율 '+Math.round(ge)+'% 돌파</b>';
+          if(ge<-100)return ' <b style="color:var(--sell)">· 평균변동폭율 '+Math.round(-ge)+'% 이탈</b>';
+          return '';})()
+        +'</div>';
     })()
     +'<div style="position:absolute;left:'+X(x).toFixed(1)+'%;top:9px;height:18px;border-left:2px solid var(--gold2)"></div>'
     
