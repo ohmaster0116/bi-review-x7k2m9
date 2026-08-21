@@ -12203,9 +12203,11 @@ function waveDetailPanel(){try{
 
           var _mx=function(a,b){return b.vw>a.vw?b:a;}, _mn=function(a,b){return b.vw<a.vw?b:a;};
           var _bl=buys.filter(function(o){return o.vw<=px2;});
-          var fb=_bl.length?_bl.reduce(_mx):(buys.length?buys.reduce(_mx):null);   
+          
+
+          var fb=_bl.length?_bl.reduce(_mx):(buys.length?buys.reduce(_mn):null);   
           var _ab=sells.filter(function(o){return o.vw>=px2;});
-          var fs=_ab.length?_ab.reduce(_mn):(sells.length?sells.reduce(_mn):null); 
+          var fs=_ab.length?_ab.reduce(_mn):(sells.length?sells.reduce(_mx):null); 
           if(fb||fs){var mid2=(fb&&fs)?('현재가 '+f(px2)+(px2>=fs.vw?' = 매도 최전방 <b style="color:var(--sell)">위</b>(장중)':px2<=fb.vw?' = 매수 최전방 <b style="color:var(--buy)">아래</b>(장중)':' = 두 최전방 사이 '+Math.round((px2-fb.vw)/(fs.vw-fb.vw)*100)+'% 지점')):'';
             
 
@@ -16381,7 +16383,11 @@ function waveBook(tf,ax){try{
 
   var _lpx=A[n-1].c;
   var _below=_sv.filter(function(st){return st.vw!=null&&st.vw<=_lpx;});
-  var rep=_below.length?Math.max.apply(null,_below.map(function(st){return st.vw;})):(_sv.length?_sv[_sv.length-1].vw:null);
+  
+
+  var _upL=_sv.filter(function(st){return st.vw!=null&&st.vw>_lpx;});
+  var rep=_below.length?Math.max.apply(null,_below.map(function(st){return st.vw;}))
+          :(_upL.length?Math.min.apply(null,_upL.map(function(st){return st.vw;})):(_sv.length?_sv[_sv.length-1].vw:null));
   var repAlive=_sv.length;
   
   
@@ -19739,7 +19745,10 @@ function sellBook(tf,ax){try{
     
     var _lpx2=A[n-1].c;
     var _above2=_sv2.filter(function(st){return st.vw!=null&&st.vw>=_lpx2;});
-    var _rp2=_above2.length?Math.min.apply(null,_above2.map(function(st){return st.vw;})):(_sv2.length?_sv2[_sv2.length-1].vw:null);
+    
+    var _dnS=_sv2.filter(function(st){return st.vw!=null&&st.vw<_lpx2;});
+    var _rp2=_above2.length?Math.min.apply(null,_above2.map(function(st){return st.vw;}))
+             :(_dnS.length?Math.max.apply(null,_dnS.map(function(st){return st.vw;})):(_sv2.length?_sv2[_sv2.length-1].vw:null));
     if(_rp2!=null)sitga=_rp2;
     
 
