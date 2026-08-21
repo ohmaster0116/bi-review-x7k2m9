@@ -12211,7 +12211,7 @@ function waveDetailPanel(){try{
               +'<td class="num" style="color:var(--sell)">'+(lyS[li]!=null?f(lyS[li]):'')+(li===0&&lyS[li]!=null?' <span style="font-size:8.5px">◀최전방</span>':'')+'</td></tr>';}
             var lyMore=(lyL.length>8||lyS.length>8)?'<tr><td></td><td class="sub" style="font-size:9px">'+(lyL.length>8?'외 '+(lyL.length-8)+'층':'')+'</td><td></td><td class="sub" style="font-size:9px">'+(lyS.length>8?'외 '+(lyS.length-8)+'층':'')+'</td></tr>':'';
             duel='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
-              +'<b style="color:var(--gold2)">현 대립 구도 · 싸움 파동</b> — '
+              +'<b style="color:var(--gold2)">현 대립 구도 · 싸움 파동</b> · '
               +(fb?('매수 '+dl2(fb.w.s)+'~'+dl2(fb.w.e)):'생존 매수 없음')+' <span class="sub">↔</span> '
               +(fs?('매도 '+dl2(fs.w.s)+'~'+dl2(fs.w.e)):'위 생존 매도 없음(저항 축 부재)')
               +(mid2?' · '+mid2:'')
