@@ -12178,9 +12178,13 @@ function waveDetailPanel(){try{
           var f2=function(v){return v==null?'-':'$'+Math.round(v).toLocaleString('en-US');};
           var bb=gkWb(tf,'buy'), ss=gkWb(tf,'sell');
           if(!bb&&!ss)return '';
-          var seg2=function(b,lbl,col){ if(!b)return '';
+          var seg2=function(b,lbl,col,side2){ if(!b)return '';
             var d0=b.s0?dlY(new Date(b.s0)):null;
-            return '<span style="white-space:nowrap">'+lbl+' <b style="color:'+col+'">'+f2(b.rep)+'</b>'
+            
+            var atk='';try{var _cb=E[tf][E[tf].length-1];
+              if(side2==='sell'&&_cb.h>b.rep)atk=' <span style="font-size:9px;border:1px dashed var(--sell);color:var(--sell);border-radius:7px;padding:0 4px;white-space:nowrap">공격중 · 종가 전</span>';
+              else if(side2==='buy'&&_cb.l<b.rep)atk=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);border-radius:7px;padding:0 4px;white-space:nowrap">공격중 · 종가 전</span>';}catch(e){}
+            return '<span style="white-space:nowrap">'+lbl+' <b style="color:'+col+'">'+f2(b.rep)+'</b>'+atk
               +' <span class="sub">(생존 '+(b.nAlive||0)+'층'+(d0?' · '+d0+'~':'')+' · 뿌리 '+f2(b.root)+')</span></span>';};
           return '<div style="font-size:11px;line-height:1.9;padding:7px 10px;margin-bottom:8px;border:1px solid rgba(214,162,58,.4);border-radius:8px;background:rgba(214,162,58,.06)">'
             +'<b style="color:var(--gold2)">'+nm+' 실존가 축 (거래량 가중 계단)</b> · '
@@ -12221,8 +12225,11 @@ function waveDetailPanel(){try{
             var lyMore=(lyL.length>8||lyS.length>8)?'<tr><td></td><td class="sub" style="font-size:9px">'+(lyL.length>8?'외 '+(lyL.length-8)+'층':'')+'</td><td></td><td class="sub" style="font-size:9px">'+(lyS.length>8?'외 '+(lyS.length-8)+'층':'')+'</td></tr>':'';
             
 
-            var _ps=sells.filter(function(o){return o.vw<px2&&o!==fs;}).sort(function(a,b){return b.vw-a.vw;}).slice(0,4);   
-            var _pb=buys.filter(function(o){return o.vw>px2&&o!==fb;}).sort(function(a,b){return a.vw-b.vw;}).slice(0,4);
+            
+
+            var _hb=A2[n2];
+            var _ps=sells.filter(function(o){return _hb&&_hb.h>o.vw&&o!==fs;}).sort(function(a,b){return b.vw-a.vw;}).slice(0,4);   
+            var _pb=buys.filter(function(o){return _hb&&_hb.l<o.vw&&o!==fb;}).sort(function(a,b){return a.vw-b.vw;}).slice(0,4);
             var passLine='';
             if(_ps.length||_pb.length){passLine='<div style="font-size:10px;margin-top:3px;line-height:1.7;color:var(--tx2)">'
               +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">장악·소멸 시도중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
@@ -12259,6 +12266,59 @@ function waveDetailPanel(){try{
                   +tRow('거리',fb&&fb.vw?(((fb.vw-px2)/px2*100).toFixed(1)+'%'):'-',fs&&fs.vw?(((fs.vw-px2)/px2*100).toFixed(1)+'%'):'-');})()
               +lyRows+lyMore
               +'</tbody></table></div>'
+              
+
+
+              +(function(){try{
+                var camps=[];
+                var mkCamp=function(o,side3,broken){if(!o||!o.w)return;var L3=_wl(A2,o.w,n2);
+                  var fr=L3.steps.filter(function(s){return !s.dead&&s.v!=null;}).map(function(s){return s.v;});
+                  fr=side3==='s'?fr.sort(function(a,b){return a-b;}):fr.sort(function(a,b){return b-a;});
+                  camps.push({w:o.w,side:side3,broken:!!broken,root:L3.root,cen:L3.vwC,front:fr.length?fr[0]:o.vw,nly:fr.length,age:n2-o.w.s,
+                    vol:L3.vol,volA:L3.volAlive,stA:L3.stAlive,stT:L3.steps.length});};   
+                if(fs)mkCamp(fs,'s',false); if(fb)mkCamp(fb,'b',false);
+                _ps.slice(0,2).forEach(function(o){mkCamp(o,'s',true);});
+                _pb.slice(0,2).forEach(function(o){mkCamp(o,'b',true);});
+                if(!camps.length)return '';
+                var allV=[px2];camps.forEach(function(c){allV.push(c.root,c.cen,c.front);});
+                allV=allV.filter(function(v){return v!=null&&isFinite(v);});
+                var lo3=Math.min.apply(null,allV),hi3=Math.max.apply(null,allV);
+                var pad3=(hi3-lo3)*0.07||1;lo3-=pad3;hi3+=pad3;
+                var H=290,Y=function(v){return (hi3-v)/(hi3-lo3)*H;};
+                var maxAge=1;camps.forEach(function(c){if(c.age>maxAge)maxAge=c.age;});
+                var X2=function(age){return 6+(1-age/maxAge)*72;};   
+                var terr='<div style="position:absolute;inset:0;border-radius:8px;background:radial-gradient(ellipse 60% 45% at 22% 30%,rgba(120,90,40,.10),transparent),radial-gradient(ellipse 55% 40% at 70% 75%,rgba(60,110,70,.10),transparent),radial-gradient(ellipse 45% 35% at 55% 15%,rgba(150,60,60,.07),transparent);border:1px solid var(--bd)"></div>';
+                var bf2=null,sf2=null;camps.forEach(function(c){if(!c.broken){if(c.side==='b'&&bf2==null)bf2=c.front;if(c.side==='s'&&sf2==null)sf2=c.front;}});
+                var shade=(bf2!=null&&sf2!=null&&Y(bf2)>Y(sf2))?('<div style="position:absolute;left:4%;right:4%;top:'+Y(sf2).toFixed(0)+'px;height:'+(Y(bf2)-Y(sf2)).toFixed(0)+'px;background:rgba(214,162,58,.08);border-top:1px dashed rgba(214,162,58,.55);border-bottom:1px dashed rgba(214,162,58,.55)"></div>'):'';
+                var el='';
+                var maxVA=1;camps.forEach(function(c){if((c.volA||0)>maxVA)maxVA=c.volA;});
+                var kfmt=function(v){return v==null?'-':(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1e3)+'k');};
+                camps.forEach(function(c){
+                  var col=c.side==='s'?'var(--sell)':'var(--buy)';
+                  var x=X2(c.age);
+                  var ys=[c.root,c.cen,c.front].filter(function(v){return v!=null;}).map(Y);
+                  var yT=Math.min.apply(null,ys),yB=Math.max.apply(null,ys);
+                  var thick=1+Math.round((c.volA||0)/maxVA*4);   
+                  el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+yT.toFixed(0)+'px;height:'+Math.max(2,yB-yT).toFixed(0)+'px;border-left:'+thick+'px '+(c.broken?'dashed':'solid')+' '+col+';opacity:'+(c.broken?'.4':'.6')+'"></div>';
+                  var pt=function(v,ico,big){if(v==null)return;
+                    el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(Y(v)-7).toFixed(0)+'px;transform:translateX(-50%);font-size:'+(big?'13px':'11px')+';line-height:14px;opacity:'+(c.broken?'.5':'1')+'">'+ico+'</div>'
+                      +'<div class="num" style="position:absolute;left:'+(x+1.6).toFixed(1)+'%;top:'+(Y(v)-5).toFixed(0)+'px;font-size:8.5px;color:'+col+';opacity:'+(c.broken?'.55':'.9')+';white-space:nowrap">'+f(v)+'</div>';};
+                  pt(c.root,'🏰',true);pt(c.cen,'🏯',false);pt(c.front,c.broken?'💥':'⚔',false);
+                  el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(yT-13).toFixed(0)+'px;transform:translateX(-50%);font-size:8px;color:'+col+';opacity:.8;white-space:nowrap">'+dl2(c.w.s)+'~ · 방어 '+c.stA+'/'+c.stT+' · 병력 '+kfmt(c.volA)+(c.broken?' 💥':'')+'</div>';
+                });
+                el+='<div style="position:absolute;left:2%;right:2%;top:'+Y(px2).toFixed(0)+'px;border-top:2px solid var(--gold2);box-shadow:0 0 6px rgba(214,162,58,.5)"></div>'
+                  +'<div class="num" style="position:absolute;right:0;top:'+(Y(px2)-15).toFixed(0)+'px;font-size:10px;font-weight:800;color:var(--gold2)">🚩 '+f(px2)+' 전선</div>';
+                var near=null,nd=1e18;allV.forEach(function(v){var d=Math.abs(v-px2);if(v!==px2&&d<nd&&d/px2<0.02){nd=d;near=v;}});
+                if(near!=null)el+='<div style="position:absolute;left:88%;top:'+(Y(near)-8).toFixed(0)+'px;transform:translateX(-50%);font-size:12px">💥</div>';
+                var ups=allV.filter(function(v){return v>px2;}).sort(function(a,b){return a-b;}).slice(0,4).map(f);
+                var dns=allV.filter(function(v){return v<px2;}).sort(function(a,b){return b-a;}).slice(0,4).map(f);
+                var sim='<div class="sub" style="font-size:9px;line-height:1.8;margin-top:2px">'
+                  +(ups.length?('전선 북상 시 : '+ups.join(' → ')):'')+(ups.length&&dns.length?'<br>':'')
+                  +(dns.length?('전선 남하 시 : '+dns.join(' → ')):'')+'</div>';
+                return '<div style="margin-top:7px"><b style="color:var(--gold2);font-size:10.5px">파동 맵 · 전장</b> <span class="sub" style="font-size:8.5px">왼쪽일수록 오래된 파동(거리=기간)</span>'
+                  +'<div style="position:relative;height:'+(H+22)+'px;margin:5px 0 0">'+terr+shade+el+'</div>'+sim
+                  +'<div class="sub" style="font-size:8.5px">🏰 요새=뿌리 · 🏯 중간 성=중심가 · ⚔ 최전방=실존가 층 · 💥 소멸 시도중(종가 전) · 🚩 금선=현재가 전선 · 시뮬=닿는 순서(예측 아님)</div></div>';
+              }catch(e){return '';}})()
               
               +(function(){try{
                 var sent=[];
