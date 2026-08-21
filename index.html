@@ -1849,7 +1849,7 @@ function wvSetData(){
 
 let wvSec='현황';
 let wvLT='d1';   
-function setWvLT(x){wvLT=x;render();}
+function setWvLT(x){wvLT=x;try{if(x==='d1'||x==='w1'||x==='M1')wvTF=x;}catch(e){}render();}   
 window.__RPT_DATA={"2026-08-12_pm.txt": "7월 소비자물가지수 앞둔 날, 위기일까 기회일까\n\nBTC · 8월 12일 (수) · 오후시황 · 7월 소비자물가지수 발표일\n\n현재가 $63,814\n\n\n■ 오전에 짚은 대로\n\n우리가 오전에 짚어둔 좌표들이 장중 어떻게 시험됐는지 함께 복기합니다.\n\n오늘 장중 위로는 $63,908, 아래로는 $63,534까지 다녀왔습니다.\n\n판정선(오늘 매수 주체의 평단) $63,772은 장중 한때 뚫렸다가 다시 위로 회복해, 마감 가격 확정 전까지는 시험으로 읽습니다.\n\n우리가 지켜보자던 윗선 $64,447에는 아직 도달하지 않았습니다.\n\n\n\n■ 오늘의 선\n\n저항 $64,447, 위에서 판 평균 단가 · 위를 막아온 자리\n지지 $63,586, 이번에 산 평균 단가\n위치 아래쪽 · 다음 저항 $70,235\n\n■ 포지션\n\n롱, 손절 $63,586 / 목표 $64,447\n숏, 손절 $64,447 / 목표 $63,586\n무포, $64,447↑ 롱 / $63,586↓ 숏\n\n■ 무게\n\n변동 여지 위 $1,373 / 아래 $1,560\n체결 힘 매수 우위\n\n↑↓ = 일봉 마감 기준 · 확률이며 확정 아님"};
 window.__RPT_LIST=["2026-08-12_pm.txt"];
 window.__VERDICT_DATA=[{"d": "2026-08-12", "t": "오후", "px": 63814, "j": "상승 추세 속 눌림", "g": null, "gx": null, "up": 64447, "br": 63772, "ev": null}];
@@ -12421,7 +12421,7 @@ function setWaveAx(a){ waveAx=a; try{render();}catch(e){} }
 
 
 var wvTF='d1';
-function setWvTF(x){ wvTF=x; try{render();}catch(e){} }
+function setWvTF(x){ wvTF=x; if(x!=='all')wvLT=x; try{render();}catch(e){} }   
 
 
 
