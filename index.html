@@ -556,7 +556,9 @@ function vbCols(k){const a=E[k];if(!a.length)return null;const b=a[a.length-1],a
   const mx=linAB(b.o+ar,b.o-ar);    
   const mn=lin9(b.l+ar,b.h-ar);    
   const av=mx.map((v,i)=>(v+mn[i])/2);
-  return [{n:'최대',v:mx},{n:'최소',v:mn},{n:'평균',v:av}];}
+  
+  const _crossed=(2*ar<(b.h-b.l));
+  return [{n:'최대',v:mx},{n:_crossed?'최소 <span style="font-size:9px;color:var(--sell)">(교차·수축 무의미)</span>':'최소',v:mn},{n:'평균',v:av}];}
 function vbBand(k){const c=vbCols(k);return c?c[2].v:null;}
 function comboBand(fn,keys){const bs=keys.map(fn).filter(Boolean);if(!bs.length)return null;const out=[];for(let i=0;i<9;i++){let s=0;for(let j=0;j<bs.length;j++)s+=bs[j][i];out.push(s/bs.length);}return out;}
 function viewSGR(){const px=E.d1[E.d1.length-1].c, ks=['d1','w1','M1','y1'];
@@ -604,7 +606,10 @@ function vbFillPanel(ks){
       <b style="color:var(--gold2)">★역회전(되돌림) 발생 진행률</b> - 전체 역회전율 15~17%인데, <b>대부분 진행률 50% 이전(중앙값 ~35%)에 발생</b>(역회전의 약 60%가 0~50% 구간, 그중 0~25%가 40%↑). 진행률이 낮을수록 역회전율↑(0~25%=약 20~26%), <b>평균변동폭을 넘기면(150%+) 역회전 ~3~7%로 급감</b>. → 초반 진입은 되돌림 위험, <b>이미 절반 이상 진행한 방향은 마저 갈 확률이 높음</b>.</div>
     <div class="scroll"><table><thead><tr><th class="l">봉</th><th>평균변동폭</th><th>현재 변동폭</th><th>충전율</th><th class="l">달성 / 미달성</th><th class="l">메움 방향 (이미 간 쪽)</th><th>메움 유지%</th><th>단기반등 회복%</th></tr></thead><tbody>${ks.map(row).join('')}</tbody></table></div></div>`;}
 function viewVB(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1','M1','y1'];
-  const vbNote=k=>{const a=E[k];const ar=avgRangePct(a);return `평균 변동폭 = <b style="color:var(--gold2)">$${f1(ar)}</b> <span class="sub">(전체사 2017~ · 완성봉 고−저 평균)</span>`;};
+  
+  const vbNote=k=>{const a=E[k];const ar=avgRangePct(a);const f2=vbFill(k);var ex='';
+    if(f2&&f2.ar>0)ex=' · 이번 봉 <b style="color:'+(f2.fill>100?'var(--gold2)':'var(--tx2)')+'">평균변동폭율 '+f2.fill.toFixed(0)+'%'+(f2.fill>100?' 돌파':'')+'</b>';
+    return `평균 변동폭 = <b style="color:var(--gold2)">$${f1(ar)}</b> <span class="sub">(전체사 2017~ · 완성봉 고−저 평균)</span>${ex}`;};
   return '<h2 class="sec" style="margin:0 0 12px">③ 비트코인 변동폭 밴드 · 최대 / 최소 / 평균</h2>'
     +'<div class="sub" style="margin:-6px 0 8px;font-size:10.5px">이 탭의 평균 = 전체사(2017~) - 종합 화면의 보폭 좌표도 <b>같은 전체사 평균변동폭</b>을 씁니다(이사 07-15 통일). 시가±AR(비이성·국면 전환 감지)과 고저±AR(힘겨루기 밴드)로 앵커만 다를 뿐 평균변동폭 값은 하나입니다. <span style="color:var(--gold2)">[전략]</span> 보폭 예산 - range의 79~86%가 평균 안에서 소진(꼬리 병기)·고점 후 반락 중앙 0.5AR · 이 선에서 튕긴다는 뜻 아님, 여기까지가 보통 걸음.</div>'+lyNote(
     '평소 하루 움직임(변동폭) 대비 오늘 얼마나 썼는지 봅니다. 남은 여력이 적으면 그 방향 추격은 자제하는 편이 낫다는 판단입니다.',
@@ -1383,7 +1388,11 @@ function fillScenarioPanel(){
     return `<div class="panel" style="border-left:3px solid var(--gold2)"><div class="hd" style="font-size:12.5px">오늘 변동폭 시나리오 <span class="sub">- 채움 통계 눈금 · 장중 실시간 정정 (실측 기준·무조건부 곡선·국면 조건 미반영 · AR=120일 자기제외 창)</span></div>
       <div style="padding:9px 14px;font-size:12.5px;line-height:1.95">
       ${lead==='상방'?'매수율':'매도율'}(${lead} 이동) <b>${mv.toFixed(0)}%</b>(하루 평균변동폭 대비) - <b style="color:var(--gold2)">${zone}</b><br>
-      ${(function(){var buyR=Math.max(0,Math.min(100,Math.round(50+(up-dn)/2)));return `<div style="display:flex;justify-content:space-between;font-size:11px;margin:2px 0"><b style="color:var(--buy)">매수율(이동) ${buyR}%</b><b style="color:var(--sell)">매도율(이동) ${100-buyR}%</b></div><div style="position:relative;height:13px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:#131b2a"><div style="position:absolute;left:0;top:0;bottom:0;width:${buyR}%;background:linear-gradient(90deg,rgba(35,211,158,.8),rgba(35,211,158,.5))"></div><div style="position:absolute;left:${buyR}%;right:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(255,90,110,.5),rgba(255,90,110,.8))"></div><div style="position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--gold2)"></div></div><div class="sub" style="font-size:9.5px">시가 ${f1(o)}=50 · 위 이동 ${up.toFixed(0)}% / 아래 이동 ${dn.toFixed(0)}%</div>`;})()}
+      ${(function(){var raw=Math.round(50+(up-dn)/2);var buyR=Math.max(0,Math.min(100,raw));   
+      var lab=raw>100?`<b style="color:var(--buy)">매수율(이동) 100%</b> · <b style="color:var(--sell)">매도율 0%</b> · <b style="color:var(--buy)">평균변동폭율 ${up.toFixed(0)}% 돌파</b>`
+             :raw<0?`<b style="color:var(--buy)">매수율(이동) 0%</b> · <b style="color:var(--sell)">매도율 100%</b> · <b style="color:var(--sell)">평균변동폭율 ${dn.toFixed(0)}% 이탈</b>`
+             :`<b style="color:var(--buy)">매수율(이동) ${buyR}%</b><b style="color:var(--sell)">매도율(이동) ${100-buyR}%</b>`;
+      return `<div style="display:flex;justify-content:space-between;font-size:11px;margin:2px 0;flex-wrap:wrap;gap:4px">${lab}</div><div style="position:relative;height:13px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:#131b2a"><div style="position:absolute;left:0;top:0;bottom:0;width:${buyR}%;background:linear-gradient(90deg,rgba(35,211,158,.8),rgba(35,211,158,.5))"></div><div style="position:absolute;left:${buyR}%;right:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(255,90,110,.5),rgba(255,90,110,.8))"></div><div style="position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--gold2)"></div></div><div class="sub" style="font-size:9.5px">시가 ${f1(o)}=50 · 위 이동 ${up.toFixed(0)}% / 아래 이동 ${dn.toFixed(0)}%</div>`;})()}
       <span class="sub">눈금(${lead} 기준): 30% <b>${f1(p30)}</b>(안쪽 복귀 마감=되돌림 흡수) · 70% <b>${f1(p70)}</b>(도달 시 완주 우위 2:1)${cv(p70)} · 150% <b>${f1(p150)}</b>(역회전 3~7%)${cv(p150)}</span><br>
       ${actLine||jumpLine?`<span class="sub">${actLine}${jumpLine}</span><br>`:''}
       ${(function(){try{
@@ -12073,15 +12082,23 @@ function waveDetailPanel(){try{
     var ws=alive.sort(function(a,b){return b.s-a.s;}).slice(0,maxN)
       .map(function(w){var vw=null;try{vw=vwOfWave(A,w)||w.line;}catch(e){vw=w.line;}return {w:w,vw:vw};})
       .sort(function(a,b){return (b.vw||0)-(a.vw||0);});   
+    var c4=function(b){return b.center!=null?b.center:(b.h+b.l+2*b.c)/4;};
     var rows=ws.map(function(o){
       var w=o.w, vw=o.vw;
       var dir=w.dir>0?'<span style="color:var(--buy)">매수</span>':'<span style="color:var(--sell)">매도</span>';
       
-      var stTot=w.e-w.s+1,stAlive=0,fights=0;
-      if(!w.open&&w.death==null){var cu=0,cv=0;
-        for(var k=w.s;k<=w.e;k++){cu+=g2(A[k])*A[k].v;cv+=A[k].v;var asof=cv>0?cu/cv:null;var dd=false,fg=0;
-          for(var q=w.e+1;q<=n;q++){if(w.dir<0){if(A[q].c>asof){dd=true;break;}if(A[q].h>asof)fg++;}else{if(A[q].c<asof){dd=true;break;}if(A[q].l<asof)fg++;}}
-          if(!dd){stAlive++;fights=Math.max(fights,fg);}}}
+
+
+
+
+
+      var stTot=w.e-w.s+1,stAlive=0,fights=0,steps=[],vwC=null;
+      if(w.death==null){var cu=0,cv=0,cuC=0;
+        for(var k=w.s;k<=w.e;k++){cu+=g2(A[k])*A[k].v;cuC+=c4(A[k])*A[k].v;cv+=A[k].v;var asof=cv>0?cu/cv:null;var dd=false,fg=0;
+          for(var q=w.e+1;q<n;q++){if(w.dir<0){if(A[q].c>asof){dd=true;break;}if(A[q].h>asof)fg++;}else{if(A[q].c<asof){dd=true;break;}if(A[q].l<asof)fg++;}}
+          steps.push({i:k,v:asof,dead:dd,fg:fg});
+          if(!dd){stAlive++;fights=Math.max(fights,fg);}}
+        vwC=cv>0?cuC/cv:null;}
       var stat;
       if(w.open)stat='<b style="color:var(--gold2)">진행 중</b>';
       else if(w.death==null)stat='<b style="color:var(--buy)">생존 '+(n-w.e)+'봉</b>'+(fights>0?' · wick 전투 '+fights+'회':'');
@@ -12098,8 +12115,18 @@ function waveDetailPanel(){try{
           if(_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">사망선 장중 이탈 · 종가 확인 대기</span>';
           else if(vw!=null&&_pb.l<vw)stat+=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">파동선 장중 이탈</span>';
         }}
-      var ladder=(!w.open&&w.death==null)?(stAlive+'/'+stTot+' 생존'):'없음';
-      return '<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
+      var ladder=(w.death==null&&steps.length)?(stAlive+'/'+stTot+' 생존'):'없음';
+      var tr='<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
+      
+      if(steps.length){var dc=w.dir>0?'var(--buy)':'var(--sell)';
+        var lis=steps.map(function(st){
+          return '<div style="display:flex;gap:8px;font-size:10px;padding:1px 0'+(st.dead?';color:var(--tx3);text-decoration:line-through':'')+'">'
+            +'<span style="width:64px;flex:none" class="sub">'+dl(st.i)+'</span>'
+            +'<span class="num" style="width:76px;flex:none;text-align:right;color:'+(st.dead?'var(--tx3)':dc)+'">'+f(st.v)+'</span>'
+            +'<span style="flex:none">'+(st.dead?'소멸':'<b style="color:'+dc+'">생존</b>')+'</span>'
+            +(st.fg>0?'<span class="sub">전투 '+st.fg+'회</span>':'')+'</div>';}).join('');
+        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stTot+'층(생존 '+stAlive+') · v가중 기준가 <b style="color:'+dc+'">'+f(vw)+'</b> · v가중 중심가 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
+      return tr;
     }).join('');
     
 
@@ -12145,7 +12172,31 @@ function waveDetailPanel(){try{
             +seg2(bb,'롱 실존가','var(--buy)')+' · '+seg2(ss,'숏 실존가','var(--sell)')
             +'<div class="sub" style="font-size:9.5px">아래 파동 표(방향 run · 종가 판정)와 계산 기준이 다른 축입니다 · 층위 전체는 위 [지금 자리] 계단에서 봅니다</div></div>';
         }catch(e){return '';}})();
-        return sitAxis+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+(tf==='w1'?wStat:'');
+        
+        var duel='',lineage='';
+        try{var A2=E[tf],L2=waveLedger(tf),n2=A2.length-1,px2=E.d1[E.d1.length-1].c;
+          var dl2=function(i){return dlY(new Date(A2[i].t));};
+          var vwOf=function(w){try{return vwOfWave(A2,w)||w.line;}catch(e){return w.line;}};
+          var alv=L2.waves.filter(function(w){return w.open||w.death==null;});
+          var buys=alv.filter(function(w){return w.dir>0;}).map(function(w){return {w:w,vw:vwOf(w)};}).filter(function(o){return o.vw;});
+          var sells=alv.filter(function(w){return w.dir<0;}).map(function(w){return {w:w,vw:vwOf(w)};}).filter(function(o){return o.vw;});
+          var fb=buys.length?buys.reduce(function(a,b){return b.vw>a.vw?b:a;}):null;   
+          var fs=sells.length?sells.reduce(function(a,b){return b.vw<a.vw?b:a;}):null; 
+          if(fb||fs){var mid2=(fb&&fs)?('현재가 '+f(px2)+(px2>=fs.vw?' = 매도 최전방 <b style="color:var(--sell)">위</b>(장중)':px2<=fb.vw?' = 매수 최전방 <b style="color:var(--buy)">아래</b>(장중)':' = 두 최전방 사이 '+Math.round((px2-fb.vw)/(fs.vw-fb.vw)*100)+'% 지점')):'';
+            duel='<div style="font-size:11px;line-height:1.9;padding:6px 10px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px"><b style="color:var(--gold2)">현 대립 구도</b> · '
+              +(fb?('매수 '+dl2(fb.w.s)+'~'+dl2(fb.w.e)+' <b style="color:var(--buy)">'+f(fb.vw)+'</b>'):'생존 매수 파동 없음')
+              +' <span class="sub">↔</span> '
+              +(fs?('매도 '+dl2(fs.w.s)+'~'+dl2(fs.w.e)+' <b style="color:var(--sell)">'+f(fs.vw)+'</b>'):'위 생존 매도 없음(저항 축 부재)')
+              +(mid2?' · '+mid2:'')+'</div>';}
+          var deads=L2.waves.filter(function(w){return w.death!=null;}).sort(function(a,b){return b.death-a.death;}).slice(0,4);
+          if(deads.length){var lin=deads.map(function(w){
+              var killer=L2.waves.filter(function(v2){return v2.dir===-w.dir&&v2.s<=w.death&&w.death<=v2.e;})[0];
+              return '<div style="font-size:10px;padding:1px 0;color:var(--tx2)">'+dl2(w.death)+' · '+(w.dir>0?'<span style="color:var(--buy)">매수</span>':'<span style="color:var(--sell)">매도</span>')+' '+dl2(w.s)+'~'+dl2(w.e)+' <span class="num">'+f(w.line)+'</span> 사망'
+                +(killer?' ← <b>'+(killer.dir>0?'매수':'매도')+' '+dl2(killer.s)+'~'+dl2(killer.e)+' 파동</b>이 종가로 '+(w.dir>0?'이탈시킴':'돌파함'):' ← 종가 '+(w.dir>0?'이탈':'돌파'))+'</div>';}).join('');
+            lineage='<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">전투 계보 · 최근 사망 '+deads.length+'건(어느 파동이 어느 파동을 넘었나)</summary><div style="padding:4px 0 2px 6px">'+lin
+              +'<div class="sub" style="font-size:9.5px;margin-top:3px">사망=종가 판정(조문 ㉯) · 현 최전방은 위 [현 대립 구도]</div></div></details>';}
+        }catch(e){}
+        return sitAxis+duel+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+lineage+(tf==='w1'?wStat:'');
       })()
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
 }catch(e){return '';}}
