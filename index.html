@@ -1360,7 +1360,7 @@ function fillScenarioPanel(){
     const BL=bandLevelsNamed();
     const cv=v=>{
       let t='';
-      if(risk&&Math.abs(v-risk)/risk<0.005)t+=' - <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>';
+      if(risk&&Math.abs(v-risk)/risk<0.005)t+=' - <b style="color:var(--gold2)">주봉 눌림 30% 선과 수렴</b>';
       const near=BL.filter(x=>Math.abs(x.v-v)/v<=0.006).sort((a,b)=>Math.abs(a.v-v)-Math.abs(b.v-v))[0];
       if(near)t+=` - <b style="color:var(--gold2)">${near.n} ${f1(near.v)} 부근과 수렴</b>`;
       return t;};
@@ -1509,7 +1509,7 @@ function tabLink(sysKeys){
     const px=E.d1[E.d1.length-1].c;
     const hn=hierNote();
     const hits=convClusters().slice(0,4);
-    const hier=hn?`주봉 명목 <b style="color:${hn.mandate?'var(--buy)':'var(--sell)'}">${hn.mandate?'생존':'훼손'}</b>(${hn.wAlive?'주봉 매수파동 유지':'파동 위험선 '+f1(hn.risk)+' '+(hn.px>=hn.risk?'위':'아래')}) - 이 탭의 레벨들은 그 위계 안의 자리입니다.`:'';
+    const hier=hn?`주봉 명목 <b style="color:${hn.mandate?'var(--buy)':'var(--sell)'}">${hn.mandate?'생존':'훼손'}</b>(${hn.wAlive?'주봉 매수파동 유지':'눌림 30% 선 '+f1(hn.risk)+' '+(hn.px>=hn.risk?'위':'아래')}) - 이 탭의 레벨들은 그 위계 안의 자리입니다.`:'';
     const rows=hits.map(c=>{const mine=c.sys.some(x=>sysKeys.includes(x));
       return `<tr${mine?' style="background:rgba(214,162,58,.08)"':''}><td class="num" style="font-weight:700;color:${c.price>px?'var(--sell)':'var(--buy)'}">${f1(c.price)}</td><td class="num sub">${((c.price-px)/px*100).toFixed(1)}%</td><td class="l" style="font-size:10px;line-height:1.6">${c.items.map(x=>x.name).join(' · ')}${mine?' <b style="color:var(--gold2)">← 이 탭 계열 포함</b>':''}</td></tr>`;}).join('');
     return `<div class="panel" style="margin-top:12px"><div class="hd" style="font-size:12px">🧲 다른 체계와의 연결 <span class="sub">- 값은 혼자 서지 않습니다: 독립 산식이 같은 가격에 모이면 실재 기준(0.5% 내)</span></div>
@@ -13000,11 +13000,11 @@ function viewWaveBattle(){
       <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:3px"><span style="font-weight:700">주봉 할애 밴드 <span class="sub">(주봉 평균변동폭(52주) 기준·주 시작 갱신 · <b style="color:var(--gold2)">§M 4자 서명</b>)</span></span><span style="font-size:10px;color:${act?'var(--buy)':'var(--tx2)'};font-weight:700">${act?'● 조건 활성(일봉 매수파동 생존·시가>전주 기준가)':'○ 조건 비활성 - 참고 표시'}</span></div>
       <div style="position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(45,212,150,.55),rgba(214,162,58,.3) 41%,rgba(239,83,80,.35))">
         <div style="position:absolute;left:${P(g1)}%;width:${(P(g2)-P(g1)).toFixed(1)}%;top:0;height:12px;background:rgba(35,211,158,.25);border-left:1px dashed var(--buy);border-right:1px dashed var(--buy)"></div>
-        ${tick(maxAl,'최대 할애 −30% = 파동 위험선','var(--sell)',true)}${tick(weak,'약 할애 −15%','#f0a83c',true)}${tick(wo,'주봉 시가','var(--gold2)',true)}
+        ${tick(maxAl,'최대 할애 −30% = 눌림 30% 선','var(--sell)',true)}${tick(weak,'약 할애 −15%','#f0a83c',true)}${tick(wo,'주봉 시가','var(--gold2)',true)}
         <div style="position:absolute;left:${((+P(g1)+ +P(g2))/2).toFixed(1)}%;top:14px;transform:translateX(-50%);font-size:9px;color:var(--buy);white-space:nowrap">관문 +33~45%<br>도달 시 83% 관통(N217)</div>
         <div class="num" style="position:absolute;left:${Math.max(4,Math.min(96,+P(px))).toFixed(1)}%;top:-21px;transform:translateX(-50%);font-size:10px;color:#fff;font-weight:800;line-height:10px;text-align:center;white-space:nowrap">${f1(px)}<br>▼</div>
       </div>
-      <div class="sub" style="font-size:10.5px;margin-top:26px;line-height:1.7">매수 주체가 내줄 수 있는 눌림 - <b>15~30% 구간 눌림은 매수 주체가 내줄 수 있는 폭</b> / <b style="color:var(--sell)">30% 넘으면 파동 위험 구간</b>. 상방 33~45%는 정지선이 아니라 <b>관문</b>(도달 시 83% 관통·N217) - 멈춤 지대로 쓰지 마세요.</div></div>`;
+      <div class="sub" style="font-size:10.5px;margin-top:26px;line-height:1.7">매수 주체가 내줄 수 있는 눌림 - <b>15~30% 구간 눌림은 매수 주체가 내줄 수 있는 폭</b> / <b style="color:var(--sell)">30% 넘으면 눌림 30% 초과 구간</b>. 상방 33~45%는 정지선이 아니라 <b>관문</b>(도달 시 83% 관통·N217) - 멈춤 지대로 쓰지 마세요.</div></div>`;
   }catch(e){return '';}})();
   
   const pct=m.R4&&m.S4?Math.round((px-m.S4)/((m.R4-m.S4)||1)*100):null;
@@ -13072,7 +13072,7 @@ function viewWaveInner(){
   else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
   else{const hn0=hierNote();
     saga=`<b>무파동</b> - 활성 파동 없음. 박스 문법(실존 지지·되돌림)이 기본값인 구간.`
-      +(hn0&&hn0.mandate?` <span class="sub">단 주봉 명목 생존(${hn0.wAlive?'주봉 매수파동 유지':'파동 위험선 '+f1(hn0.risk)+' 위'}) - 일봉 이탈은 트리거일 뿐(주봉 전이 실측 기준 1.1%·정의 확정 중), 일봉 재발아 감시 구간.</span>`:'');}
+      +(hn0&&hn0.mandate?` <span class="sub">단 주봉 명목 생존(${hn0.wAlive?'주봉 매수파동 유지':'눌림 30% 선 '+f1(hn0.risk)+' 위'}) - 일봉 이탈은 트리거일 뿐(주봉 전이 실측 기준 1.1%·정의 확정 중), 일봉 재발아 감시 구간.</span>`:'');}
   
   try{const CA=E.d1,cm=CA.length-2;let cst=0,cdr=0;const cacc=[];
     for(let t=cm;t>=1;t--){const d2=CA[t].gijun>CA[t-1].gijun?1:CA[t].gijun<CA[t-1].gijun?-1:0;
@@ -13092,7 +13092,7 @@ function viewWaveInner(){
   try{const W=E.w1,wb=W[W.length-1];const n52=Math.min(52,W.length-1);let s52=0;for(let i=W.length-1-n52;i<W.length-1;i++)s52+=W[i].h-W[i].l;const ar52=s52/n52;
     let sAR=0;for(let i=0;i<W.length-1;i++)sAR+=W[i].h-W[i].l;const arW=sAR/(W.length-1);
     const wStruct=wb.o-0.45*ar52, wFill=(wb.h-wb.l)/arW*100;
-    saga+=`<div style="font-size:11.5px;margin-top:6px;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;line-height:1.7"><b>방어선 두 층</b> - 전술(일봉 파동선) <b style="color:var(--gold2)">${f1(ws.line)}</b> / 주봉 파동 위험선(−30%·평균변동폭 52주) <b style="color:#c9a227">${f1(wb.o-0.30*ar52)}</b>${wFill>=100?` · 차주 예상 <b style="color:#c9a227">${f1(px-0.30*ar52)}</b><span class="sub">(시가=현재가 가정, 주 시작 갱신)</span>`:''}<br><span class="sub">일봉선은 주봉 정상 호흡만으로 닿는 전술선. 주봉 눌림은 −15%(${f1(wb.o-0.15*ar52)})까지 정상, <b>−30%(${f1(wb.o-0.30*ar52)}) 넘으면 눌림 깊이 30% 초과</b>, −45%(${f1(wStruct)})부터는 더 깊은 구간. 이탈 판정은 주봉 <b>종가</b>. <span style="opacity:.75">(오늘의 화면 카드와 동일 층위)</span><br><b>위계 원리(실측 기준·정의 확정 중)</b> - 트리거는 하위, 명목은 상위: 상위 파동은 거의 예외 없이 하위가 먼저 살아야 태어나고(일→주 100%·4시간→일 99.6%), 상위 힘이 꺾이는 날엔 하위가 먼저 깨져 있지만(99~100%), 하위 이탈이 위로 번진 경우는 4시간→일봉 7%(5일)·일봉→주봉 1.1%(28일)뿐 - 하위 이탈=감시 개시, 판정권=상위 본전.</span></div>`;
+    saga+=`<div style="font-size:11.5px;margin-top:6px;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;line-height:1.7"><b>방어선 두 층</b> - 전술(일봉 파동선) <b style="color:var(--gold2)">${f1(ws.line)}</b> / 주봉 눌림 30% 선(−30%·평균변동폭 52주) <b style="color:#c9a227">${f1(wb.o-0.30*ar52)}</b>${wFill>=100?` · 차주 예상 <b style="color:#c9a227">${f1(px-0.30*ar52)}</b><span class="sub">(시가=현재가 가정, 주 시작 갱신)</span>`:''}<br><span class="sub">일봉선은 주봉 정상 호흡만으로 닿는 전술선. 주봉 눌림은 −15%(${f1(wb.o-0.15*ar52)})까지 정상, <b>−30%(${f1(wb.o-0.30*ar52)}) 넘으면 눌림 깊이 30% 초과</b>, −45%(${f1(wStruct)})부터는 더 깊은 구간. 이탈 판정은 주봉 <b>종가</b>. <span style="opacity:.75">(오늘의 화면 카드와 동일 층위)</span><br><b>위계 원리(실측 기준·정의 확정 중)</b> - 트리거는 하위, 명목은 상위: 상위 파동은 거의 예외 없이 하위가 먼저 살아야 태어나고(일→주 100%·4시간→일 99.6%), 상위 힘이 꺾이는 날엔 하위가 먼저 깨져 있지만(99~100%), 하위 이탈이 위로 번진 경우는 4시간→일봉 7%(5일)·일봉→주봉 1.1%(28일)뿐 - 하위 이탈=감시 개시, 판정권=상위 본전.</span></div>`;
   }catch(e){}
   
   let bigBanner='';
@@ -13417,7 +13417,7 @@ function viewToday(){
     
 
 
-    const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>일봉 잔파동 실존가(전일 기준) ${f1(vwL)}</b> - 주체 실제 평단(자체 산출) · 종가가 이 선을 잃으면 지금까지의 힘이 약해졌다는 기준${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 파동 위험선과 수렴</b>`:''}.</span>`:wsSub2;
+    const wsSub3=vwL?wsSub2+`<br><span style="opacity:.8"><b>일봉 잔파동 실존가(전일 기준) ${f1(vwL)}</b> - 주체 실제 평단(자체 산출) · 종가가 이 선을 잃으면 지금까지의 힘이 약해졌다는 기준${hnR&&Math.abs(vwL-hnR)/hnR<0.005?` · <b style="color:var(--gold2)">주봉 눌림 30% 선과 수렴</b>`:''}.</span>`:wsSub2;
     {
       
       
@@ -13480,8 +13480,8 @@ function viewToday(){
     
     
     const wMin=wb.o-0.15*ar52, wMax=wb.o-0.30*ar52;
-    watch.push(['주봉 파동 위험선(주 시작 갱신·평균변동폭 52주)',wMax,'#8d6e63',`이 선(−30%) 이탈 시 <b style="color:var(--sell)">파동 위험</b><span style="opacity:.7">(반등률 32%로 급락)</span><br>눌림 정상 ${f1(wMin)}<span style="opacity:.7">(−15%)까지</span> · 완주 우위 전환 ${f1(wStruct)}<span style="opacity:.7">(−45%·이하 반등 기대 접기)</span>${(function(){try{const fl=fractalLand();if(!fl)return '';return fl.hits.length?`<br>프랙탈 예상 착지(예산 구간 내 수렴): ${fl.hits.slice(0,2).map(c=>'<b>'+f1(c.price)+'</b>('+c.nSys+'계열)').join(' · ')} - 독립 산식이 같은 자리`:`<br>프랙탈 예상 착지: 예산 구간 내 수렴 자리 없음 - 구간 단독 참조`;}catch(e){return ''}})()}`]);
-    if(wFill>=100)watch.push(['차주 예상 파동 위험선(시가=현재가 가정)',px-0.30*ar52,'#8d6e63',`눌림 정상 ${f1(px-0.15*ar52)}까지 · 완주 우위 전환 ${f1(px-0.45*ar52)}`]);
+    watch.push(['주봉 눌림 30% 선(주 시작 갱신·평균변동폭 52주)',wMax,'#8d6e63',`이 선(−30%)을 종가로 넘기면 <b>눌림 깊이 30% 초과</b><span style="opacity:.7">(사실 서술 · 확률 아님)</span><br>눌림 정상 ${f1(wMin)}<span style="opacity:.7">(−15%)까지</span> · 더 깊은 구간 ${f1(wStruct)}<span style="opacity:.7">(−45%)</span>${(function(){try{const fl=fractalLand();if(!fl)return '';return fl.hits.length?`<br>프랙탈 예상 착지(예산 구간 내 수렴): ${fl.hits.slice(0,2).map(c=>'<b>'+f1(c.price)+'</b>('+c.nSys+'계열)').join(' · ')} - 독립 산식이 같은 자리`:`<br>프랙탈 예상 착지: 예산 구간 내 수렴 자리 없음 - 구간 단독 참조`;}catch(e){return ''}})()}`]);
+    if(wFill>=100)watch.push(['차주 예상 눌림 30% 선(시가=현재가 가정)',px-0.30*ar52,'#8d6e63',`눌림 정상 ${f1(px-0.15*ar52)}까지 · 완주 우위 전환 ${f1(px-0.45*ar52)}`]);
   }catch(e){}
   
   let bandLine='';
@@ -16034,7 +16034,7 @@ function bandCharPanel(){
       <span class="sub">② 주체·본전</span> ${subj}<br>
       <span class="sub">③ 한계·과열</span> 상단캡 <b>${f1(cap)}</b>${capHit?' - <b style="color:var(--sell)">오늘 도달</b>':''} · 도달해도 다음날 평균 <b>${cn[0]>=0?'+':''}${cn[0]}%</b>(N${cn[1]}) = 반전 신호 아님·관성 쪽<br>
       <span class="sub">⑥ 역할 전환(비이성)</span> 돌파·이탈 후 5봉 내 <b>리테스트 76~79%</b>(전 캔들·전 밴드) = <b>추격 금지·리테스트 대기</b>의 실측 근거 · <span style="opacity:.75">돌파선→지지 전환은 <b>대조군 대비 우위 없음</b>(실측 기각)</span><br>
-      <span class="sub">⑦ 캔들 상수</span> <b>변동폭 지지(시가−평균변동폭)</b> 터치 방어 <b>57~58%</b> - 30분~일봉 전 캔들 균일(국면·캔들을 이기는 유일한 선, N419~19,501) · 반대로 일봉 변동폭 저항은 43%=문(뚫리는 쪽)<br>
+      <span class="sub">⑦ 캔들 상수</span> <b>변동폭 지지(시가−평균변동폭)</b> 터치 후 종가 사수 <b>54.6%</b> <span class="sub">(대조군 49.8% · 순리프트 +4.8%p · 일봉 N820 · 케인 08-21 거울 재현)</span> - 30분~일봉 전 캔들에서 같은 방향 · 반대로 일봉 변동폭 저항은 뚫리는 쪽<br>
       <span class="sub">⑧ 프랙탈 좌표(월·주·일 동형)</span> 유의 되돌림은 <b>채움 ~50%</b>에서 시작(중앙 43~59%) · 깊이 중앙 <b>50~68%AR</b> · 75분위 ~100%AR=시가 복귀 · 주봉 극값의 <b>57~59%는 월요일</b>(월+화 73%) - 역추세 회귀의 시기·자리·폭 눈금<br>
       <span class="sub" style="opacity:.75">④ 마감 변곡 자석 성격=실측 기각(수렴 17%<귀무 21%) - 제외 · ⑤ 편 가르기=약한 회귀 신호 재분류 · ⑦ <b>전투포인트 재지지도 실측 기각</b>(대조군과 동률) - 터치 방어(47~50%)와 마찬가지로 단독 근거로 쓰지 말 것</span>
       </div></div>`;
