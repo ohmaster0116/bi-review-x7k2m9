@@ -21841,8 +21841,8 @@ function whaleSupply(){
         <b>전투 기록</b>: BP 도달 전투 <b>${cb.length}회</b> · 방어 성공률 <b>50%(반반 - 냉정판)</b> <span class="sub">(판정 기준 의존: 반등 발생 기준 관대판은 상회 - 반반으로 읽는 것이 냉정)</span> · 방어 성공 시 반등폭 중앙 <b>+${cn.rise_median}%</b> · 수명 중앙 <b>${cn.life_median}일</b> <span class="sub">(조건부 통계·확정 아님)</span></div>
       ${cn.current?`<div style="padding:0 14px 10px;font-size:12px;line-height:1.9;border-top:1px solid var(--bd);padding-top:9px">
         <b style="color:var(--gold2)">이번 파동 판독</b> - 저점 ${cn.current.low_date} ${f0(cn.current.low)}에서 ${liveRise!=null?`현재 <b>+${liveRise.toFixed(1)}%</b>`:''} <span class="sub">(과거 방어 성공 반등폭의 하위 ${cn.current.pct}% 지점 = 아직 초반)</span><br>
-        발밑 전투포인트 <b>${f0(_bpNow)}</b> 사수 중 · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b><br>
-        프랙탈 투영(시나리오·확정 아님): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
+        발밑 전투포인트 <b>${f0(_bpNow)}</b> <span class="sub">(${(window.__WHDELTA&&window.__WHDELTA.as_of)||'2026-07'} 판 기준)</span> · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b> <span class="sub">(같은 판)</span><br>
+        프랙탈 투영(시나리오·확정 아님 · 07 판 좌표): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
         <span class="sub">현재 = 매도 고래가 −25% 물린 자리에서 매수가 전투포인트 위에 서 있는 <b>자리</b> - 84,920을 회복하기 전까지 고래가 항복한 것은 아닙니다.</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식 · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
@@ -22475,7 +22475,7 @@ function viewSign(){
     say:'흔들리고 살아난 파동이 진짜다 - 실존가 위 마감 확인 후의 보유가 수명을 먹는다.',ver:'헤븐 실측 · 표본 확대(하위 TF)=성공 몫'},
    {nm:'합산 캔들',st:'전략',def:'파동 전체를 캔들 하나로 접는 좌표 변환 - 시가·저가=시작 캔들, 고가·종가=마무리 캔들.',
     how:'자체 좌표 변환 산식(사내 정본·항등 검증)',
-    num:'현 파동: 기준가1=61,250=월봉 파동 0.1차 좌표 · 평균기준가=현재가 0.02%',
+    num:'측정 예시(2026-07-09 판): 기준가1=61,250=월봉 파동 0.1차 좌표 · 평균기준가=그 판 현재가와 0.02%',
     say:'파동만 보고도 월봉의 좌표를 얻는다 - 위치 도구이지 방어선 약속이 아니다(방어선 예측력은 기각).',ver:'항등(검증 불요) · 예측 주장은 정직 기각'},
    {nm:'셋업 특성 사전',st:'전략',def:'이 사이클에서 각 자리(급락 익일·신고가 추격 등)가 실제로 어떤 성격이었는지의 실측 사전.',
     how:'2025-12~ 사이클 한정 재측정: 승률·평균·MFE/MAE·꼬리. 오늘 발동된 것만 종합화면 카드로 자동 표출.',
@@ -22837,7 +22837,10 @@ function _ageTxt(h){
 function _asofMs(v){
   if(!v)return null;
   var t=String(v).trim();
-  if(/^\d{4}-\d{2}$/.test(t))return null;                    
+  if(/^\d{4}-\d{2}$/.test(t)){                               
+    var dM=new Date(+t.slice(0,4), +t.slice(5,7), 0);
+    return isNaN(dM.getTime())?null:dM.getTime();
+  }
   if(/^\d{4}-\d{2}-\d{2}$/.test(t)){                          
     var d0=new Date(+t.slice(0,4),+t.slice(5,7)-1,+t.slice(8,10));
     return isNaN(d0.getTime())?null:d0.getTime();
