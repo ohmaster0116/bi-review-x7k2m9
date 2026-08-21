@@ -16189,7 +16189,11 @@ function waveBook(tf,ax){try{
   
   var _px=A[n-2]!=null?A[n-2].c:A[n-1].c;                       
   var _sv=stepsAll.filter(function(st){return st.alive;});      
-  var rep=_sv.length?_sv[_sv.length-1].vw:null;                 
+  
+
+  var _lpx=A[n-1].c;
+  var _below=_sv.filter(function(st){return st.vw!=null&&st.vw<=_lpx;});
+  var rep=_below.length?Math.max.apply(null,_below.map(function(st){return st.vw;})):(_sv.length?_sv[_sv.length-1].vw:null);
   var repAlive=_sv.length;
   
   
@@ -19544,7 +19548,10 @@ function sellBook(tf,ax){try{
 
 
 
-    var _rp2=_sv2.length?_sv2[_sv2.length-1].vw:null;
+    
+    var _lpx2=A[n-1].c;
+    var _above2=_sv2.filter(function(st){return st.vw!=null&&st.vw>=_lpx2;});
+    var _rp2=_above2.length?Math.min.apply(null,_above2.map(function(st){return st.vw;})):(_sv2.length?_sv2[_sv2.length-1].vw:null);
     if(_rp2!=null)sitga=_rp2;
     
 
