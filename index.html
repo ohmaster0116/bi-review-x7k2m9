@@ -12264,10 +12264,15 @@ function waveDetailPanel(){try{
                 var sent=[];
                 if(fb&&Lb){sent.push('① 출발 : '+dl2(fb.w.s)+' <b style="color:var(--buy)">'+f(Lb.root)+'</b> 뿌리'
                   +(Lb.stAlive===Lb.steps.length&&Lb.steps.length?' · 이탈 0':'')+'');}
-                if(tf!=='d1'){try{var Ld2=waveLedger('d1'),Ad2=E.d1;
-                  var g2d=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+                
+
+                try{var _db=gkWb('d1','buy');var Ld2=waveLedger('d1'),Ad2=E.d1;
+                  var g2d=function(b){return b.gijun!=null?b.gijun:((b.o+b.c)/2+(b.h+b.l)/2)/2;};
                   var lastB=Ld2.waves.filter(function(w){return (w.open||w.death==null)&&w.dir>0;}).sort(function(a,b){return b.s-a.s;})[0];
-                  if(lastB)sent.push('①−2 이번 상승 : 일봉 '+dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b> 뿌리에서 출발');}catch(e){}}
+                  var s1t=(_db&&_db.s0)?('일봉 '+dlY(new Date(_db.s0))+' <b style="color:var(--buy)">'+f(_db.root)+'</b> 뿌리 출발'):null;
+                  var s2t=lastB?(dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b> 재점화'):null;
+                  if(s1t||s2t)sent.push('①−2 이번 상승 : '+(s1t||'')+(s1t&&s2t?' · ':'')+(s2t||''));}catch(e){}
+                
                 if(_ps.length){var p0=_ps[0];var pf=_wl(A2,p0.w,n2);
                   sent.push('② 돌파 : 매도 <b style="color:var(--sell)">'+f(p0.vw)+'</b>'
                     +(pf.fights>0?' 방어 '+pf.fights+'회 뒤':'')+' 장중 돌파(종가 대기)');
@@ -12275,8 +12280,21 @@ function waveDetailPanel(){try{
                     var f3=null;try{f3=vbFill(tf);}catch(e){}
                     sent.push('③ 힘 : 물량 <b>'+(ratio>=10?Math.round(ratio):ratio.toFixed(1))+'배</b>'
                       +((f3&&f3.fill>100)?' · <b style="color:var(--gold2)">충전율 '+f3.fill.toFixed(0)+'%</b>':'')+'');}}
+                else if(_pb.length){var p0b=_pb[0];var pfb=_wl(A2,p0b.w,n2);
+                  sent.push('② 이탈 : 매수 <b style="color:var(--buy)">'+f(p0b.vw)+'</b>'
+                    +(pfb.fights>0?' 방어 '+pfb.fights+'회 뒤':'')+' 장중 이탈(종가 대기)');
+                  if(fs&&Ls&&pfb.vol>0){var ratio2=(Ls.vol/pfb.vol);
+                    var f4=null;try{f4=vbFill(tf);}catch(e){}
+                    sent.push('③ 힘 : 물량 <b>'+(ratio2>=10?Math.round(ratio2):ratio2.toFixed(1))+'배</b>'
+                      +((f4&&f4.fill>100)?' · <b style="color:var(--gold2)">충전율 '+f4.fill.toFixed(0)+'%</b>':'')+'');}}
                 var mb=null;try{mb=(tf!=='M1')?gkWb('M1','buy'):null;}catch(e){}
                 if(mb&&mb.rep!=null)sent.push('④ 배경 : 월봉 매수 <b style="color:var(--buy)">'+f(mb.rep)+'</b>('+(mb.nAlive||0)+'층) 우위 속 뿌리 파동');
+                
+                try{var _sd=gkWb('d1','sell'),_sw=gkWb('w1','sell'),_sm2=gkWb('M1','sell');var _pp2=[];
+                  if(_sd&&_sd.rep!=null)_pp2.push('일 <b style="color:var(--sell)">'+f(_sd.rep)+'</b>('+(_sd.nAlive||0)+'층)');
+                  if(_sw&&_sw.rep!=null)_pp2.push('주 <b style="color:var(--sell)">'+f(_sw.rep)+'</b>('+(_sw.nAlive||0)+'층)');
+                  if(_sm2&&_sm2.rep!=null)_pp2.push('월 <b style="color:var(--sell)">'+f(_sm2.rep)+'</b>('+(_sm2.nAlive||0)+'층)');
+                  if(_pp2.length)sent.push('⑤ 위에 남은 숏 : '+_pp2.join(' · '));}catch(e){}
                 if(!sent.length)return '';
                 return '<details style="margin-top:5px"><summary style="cursor:pointer;font-size:10.5px;color:var(--gold2)">이번 싸움 한눈에</summary>'
                   +'<div style="font-size:10.5px;line-height:2;padding:4px 2px 2px">'+sent.join('<br>')
