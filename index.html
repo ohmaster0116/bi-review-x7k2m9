@@ -12219,11 +12219,22 @@ function waveDetailPanel(){try{
               +'<td style="text-align:center;color:var(--tx3);font-size:9px">'+(li===0?'VS':'')+'</td>'
               +'<td class="num" style="color:var(--sell)">'+(lyS[li]!=null?f(lyS[li]):'')+(li===0&&lyS[li]!=null?' <span style="font-size:8.5px">◀최전방</span>':'')+'</td></tr>';}
             var lyMore=(lyL.length>8||lyS.length>8)?'<tr><td></td><td class="sub" style="font-size:9px">'+(lyL.length>8?'외 '+(lyL.length-8)+'층':'')+'</td><td></td><td class="sub" style="font-size:9px">'+(lyS.length>8?'외 '+(lyS.length-8)+'층':'')+'</td></tr>':'';
+            
+
+            var _ps=sells.filter(function(o){return o.vw<px2&&o!==fs;}).sort(function(a,b){return b.vw-a.vw;}).slice(0,4);   
+            var _pb=buys.filter(function(o){return o.vw>px2&&o!==fb;}).sort(function(a,b){return a.vw-b.vw;}).slice(0,4);
+            var passLine='';
+            if(_ps.length||_pb.length){passLine='<div style="font-size:10px;margin-top:3px;line-height:1.7;color:var(--tx2)">'
+              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">장악·소멸 시도중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span> <span class="sub" style="font-size:9px">(장중 돌파당함 · 종가 확인 대기 · 마감서 살아나면 복귀)</span>'):'')
+              +(_ps.length&&_pb.length?'<br>':'')
+              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">장악·소멸 시도중</span> 매수 실존가 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span> <span class="sub" style="font-size:9px">(장중 이탈당함 · 종가 확인 대기 · 마감서 살아나면 복귀)</span>'):'')
+              +'</div>';}
             duel='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
               +'<b style="color:var(--gold2)">현 대립 구도 · 싸움 파동</b> · '
               +(fb?('매수 '+dl2(fb.w.s)+'~'+dl2(fb.w.e)):'생존 매수 없음')+' <span class="sub">↔</span> '
               +(fs?('매도 '+dl2(fs.w.s)+'~'+dl2(fs.w.e)):'위 생존 매도 없음(저항 축 부재)')
               +(mid2?' · '+mid2:'')
+              +passLine
               +'<div class="scroll" style="margin-top:4px"><table style="width:100%;table-layout:fixed"><colgroup><col style="width:26%"><col style="width:31%"><col style="width:8%"><col style="width:31%"></colgroup>'
               +'<thead><tr><th class="l" style="font-size:9.5px">축</th><th style="font-size:9.5px;color:var(--buy)">싸움 파동 롱'+(fb?' <span class="sub">'+dl2(fb.w.s)+'~</span>':'')+'</th><th></th><th style="font-size:9.5px;color:var(--sell)">싸움 파동 숏'+(fs?' <span class="sub">'+dl2(fs.w.s)+'~</span>':'')+'</th></tr></thead><tbody>'
               +vsRow('뿌리',fb?Lb.root:null,fs?Ls.root:null)
@@ -12248,6 +12259,29 @@ function waveDetailPanel(){try{
                   +tRow('현재가와 거리',fb&&fb.vw?(((fb.vw-px2)/px2*100).toFixed(1)+'%'):'-',fs&&fs.vw?(((fs.vw-px2)/px2*100).toFixed(1)+'%'):'-');})()
               +lyRows+lyMore
               +'</tbody></table></div>'
+              
+              +(function(){try{
+                var sent=[];
+                if(fb&&Lb){sent.push('① <b>어디로부터</b> : '+dl2(fb.w.s)+' <b style="color:var(--buy)">'+f(Lb.root)+'</b>(뿌리)에서 매수 파동이 섰습니다'
+                  +(Lb.stAlive===Lb.steps.length&&Lb.steps.length?' (층 '+Lb.stAlive+'/'+Lb.steps.length+' · 이탈 0)':'')+'.');}
+                if(tf!=='d1'){try{var Ld2=waveLedger('d1'),Ad2=E.d1;
+                  var g2d=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+                  var lastB=Ld2.waves.filter(function(w){return (w.open||w.death==null)&&w.dir>0;}).sort(function(a,b){return b.s-a.s;})[0];
+                  if(lastB)sent.push('①−2 <b>이번 상승 출발</b> : 일봉 '+dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b> 뿌리 실존가 파동에서 올라왔습니다.');}catch(e){}}
+                if(_ps.length){var p0=_ps[0];var pf=_wl(A2,p0.w,n2);
+                  sent.push('② <b>방어와 돌파</b> : 매도 실존가 <b style="color:var(--sell)">'+f(p0.vw)+'</b>('+dl2(p0.w.s)+'~'+dl2(p0.w.e)+')는'
+                    +(pf.fights>0?' wick 방어 <b>'+pf.fights+'회</b> 뒤':'')+' 장중 돌파당했습니다(종가 확인 대기).');
+                  if(fb&&Lb&&pf.vol>0){var ratio=(Lb.vol/pf.vol);
+                    var f3=null;try{f3=vbFill(tf);}catch(e){}
+                    sent.push('③ <b>뚫은 힘</b> : 이번 매수 파동 형성 물량 <span class="num">'+Math.round(Lb.vol).toLocaleString('en-US')+'</span> = 뚫린 파동의 <b>'+(ratio>=10?Math.round(ratio):ratio.toFixed(1))+'배</b>'
+                      +((f3&&f3.fill>100)?' · <b style="color:var(--gold2)">충전율 '+f3.fill.toFixed(0)+'% 돌파 동반</b>(이전과 다른 보폭)':'')+'.');}}
+                var mb=null;try{mb=(tf!=='M1')?gkWb('M1','buy'):null;}catch(e){}
+                if(mb&&mb.rep!=null)sent.push('④ <b>전체 파동 배경</b> : 월봉 매수 실존가 <b style="color:var(--buy)">'+f(mb.rep)+'</b>(생존 '+(mb.nAlive||0)+'층) 우위가 유지되는 안에서 선 뿌리 파동입니다.');
+                if(!sent.length)return '';
+                return '<details style="margin-top:5px"><summary style="cursor:pointer;font-size:10.5px;color:var(--gold2)">이번 싸움의 전개 (측정 사실로 읽기)</summary>'
+                  +'<div style="font-size:10.5px;line-height:2;padding:4px 2px 2px">'+sent.join('<br>')
+                  +'<br><span class="sub" style="font-size:9px">전부 측정 사실의 서술입니다 · 예측·매매 지시 아님 · 미확인값 확인 이력은 원장 규명 후 병기 예정</span></div></details>';
+              }catch(e){return '';}})()
               +'<div class="sub" style="font-size:9px;margin-top:2px">물량·생존·전투·나이는 관찰 사실입니다. 우위 단정·방향 예측이 아닙니다.</div></div>';}
           var deads=L2.waves.filter(function(w){return w.death!=null;}).sort(function(a,b){return b.death-a.death;}).slice(0,4);
           if(deads.length){var lin=deads.map(function(w){
