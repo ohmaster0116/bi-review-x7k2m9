@@ -12111,7 +12111,11 @@ function waveDetailPanel(){try{
       var _L=_wl(A,w,n);   
       var stAlive=_L.stAlive,fights=_L.fights,steps=_L.steps,vwC=_L.vwC;
       var stat;
-      if(w.open)stat='<b style="color:var(--gold2)">마지막 확정 파동 · 다음 파동 미형성</b>';   
+      
+
+
+      if(w.open)stat='<b style="color:var(--gold2)">형성 중(마지막 파동)</b>'
+        +((steps.length&&stAlive===steps.length)?' <span style="font-size:9px;color:var(--buy)">층 이탈 0</span>':'');
       else if(w.death==null)stat='<b style="color:var(--buy)">생존 '+(n-w.e)+'봉</b>'+(fights>0?' · wick 전투 '+fights+'회':'');
       else stat='<span style="color:var(--tx3)">사망 '+dl(w.death)+' ('+(w.death-w.e)+'봉 버팀)</span>';
       
