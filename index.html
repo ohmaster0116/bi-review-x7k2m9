@@ -12195,8 +12195,13 @@ function waveDetailPanel(){try{
           var alv=L2.waves.filter(function(w){return w.open||w.death==null;});
           var buys=alv.filter(function(w){return w.dir>0;}).map(function(w){return {w:w,vw:vwOf(w)};}).filter(function(o){return o.vw;});
           var sells=alv.filter(function(w){return w.dir<0;}).map(function(w){return {w:w,vw:vwOf(w)};}).filter(function(o){return o.vw;});
-          var fb=buys.length?buys.reduce(function(a,b){return b.vw>a.vw?b:a;}):null;   
-          var fs=sells.length?sells.reduce(function(a,b){return b.vw<a.vw?b:a;}):null; 
+          
+
+          var _mx=function(a,b){return b.vw>a.vw?b:a;}, _mn=function(a,b){return b.vw<a.vw?b:a;};
+          var _bl=buys.filter(function(o){return o.vw<=px2;});
+          var fb=_bl.length?_bl.reduce(_mx):(buys.length?buys.reduce(_mx):null);   
+          var _ab=sells.filter(function(o){return o.vw>=px2;});
+          var fs=_ab.length?_ab.reduce(_mn):(sells.length?sells.reduce(_mn):null); 
           if(fb||fs){var mid2=(fb&&fs)?('현재가 '+f(px2)+(px2>=fs.vw?' = 매도 최전방 <b style="color:var(--sell)">위</b>(장중)':px2<=fb.vw?' = 매수 최전방 <b style="color:var(--buy)">아래</b>(장중)':' = 두 최전방 사이 '+Math.round((px2-fb.vw)/(fs.vw-fb.vw)*100)+'% 지점')):'';
             
 
