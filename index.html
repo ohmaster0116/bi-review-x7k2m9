@@ -12274,7 +12274,7 @@ function waveDetailPanel(){try{
                 var mkCamp=function(o,side3,broken){if(!o||!o.w)return;var L3=_wl(A2,o.w,n2);
                   var fr=L3.steps.filter(function(s){return !s.dead&&s.v!=null;}).map(function(s){return s.v;});
                   fr=side3==='s'?fr.sort(function(a,b){return a-b;}):fr.sort(function(a,b){return b-a;});
-                  camps.push({w:o.w,side:side3,broken:!!broken,root:L3.root,cen:L3.vwC,front:fr.length?fr[0]:o.vw,nly:fr.length,age:n2-o.w.s,
+                  camps.push({w:o.w,side:side3,broken:!!broken,root:L3.root,cen:L3.vwC,gj:o.vw,front:fr.length?fr[0]:o.vw,lys:fr,nly:fr.length,age:n2-o.w.s,
                     vol:L3.vol,volA:L3.volAlive,stA:L3.stAlive,stT:L3.steps.length});};   
                 if(fs)mkCamp(fs,'s',false); if(fb)mkCamp(fb,'b',false);
                 _ps.slice(0,2).forEach(function(o){mkCamp(o,'s',true);});
@@ -12303,7 +12303,11 @@ function waveDetailPanel(){try{
                   var pt=function(v,ico,big){if(v==null)return;
                     el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(Y(v)-7).toFixed(0)+'px;transform:translateX(-50%);font-size:'+(big?'13px':'11px')+';line-height:14px;opacity:'+(c.broken?'.5':'1')+'">'+ico+'</div>';
                     lbls.push({x:x,y:Y(v)-5,txt:f(v),col:col,op:(c.broken?'.55':'.9')});};   
-                  pt(c.root,'🏰',true);pt(c.cen,'🏯',false);pt(c.front,c.broken?'💥':'⚔',false);
+                  pt(c.root,'🏰',true);pt(c.cen,'🏯',false);
+                  if(c.gj!=null&&Math.abs(c.gj-(c.front||0))>0.5)pt(c.gj,'<span style="color:'+col+';font-size:9px">◆</span>',false);
+                  (c.lys||[]).forEach(function(lv,li3){if(li3===0)return;
+                    el+='<div style="position:absolute;left:'+(x-0.9).toFixed(1)+'%;width:1.8%;top:'+Y(lv).toFixed(0)+'px;border-top:1px solid '+col+';opacity:.45"></div>';});
+                  pt(c.front,c.broken?'💥':'⚔',false);
                   el+='<div style="position:absolute;left:'+x.toFixed(1)+'%;top:'+(yT-13).toFixed(0)+'px;transform:translateX(-50%);font-size:8px;color:'+col+';opacity:.8;white-space:nowrap">'+dl2(c.w.s)+'~ · 방어 '+c.stA+'/'+c.stT+' · 병력 '+kfmt(c.volA)+(c.broken?' 💥':'')+'</div>';
                 });
                 
@@ -12322,7 +12326,7 @@ function waveDetailPanel(){try{
                   +(dns.length?('전선 남하 시 : '+dns.join(' → ')):'')+'</div>';
                 return '<div style="margin-top:7px"><b style="color:var(--gold2);font-size:10.5px">파동 맵 · 전장</b> <span class="sub" style="font-size:8.5px">왼쪽일수록 오래된 파동(거리=기간)</span>'
                   +'<div style="position:relative;height:'+(H+22)+'px;margin:5px 0 0">'+terr+shade+el+'</div>'+sim
-                  +'<div class="sub" style="font-size:8.5px">🏰 요새=뿌리 · 🏯 중간 성=중심가 · ⚔ 최전방=실존가 층 · 💥 소멸 시도중(종가 전) · 🚩 금선=현재가 전선 · 시뮬=닿는 순서(예측 아님)</div></div>';
+                  +'<div class="sub" style="font-size:8.5px">🏰 요새=뿌리 · 🏯 중간 성=중심가 · ◆ 기준가(파동선) · ⚔ 최전방 · 가는 눈금=실존가 층위 전부 · 💥 소멸 시도중(종가 전) · 🚩 금선=현재가 전선 · 시뮬=닿는 순서(예측 아님)</div></div>';
               }catch(e){return '';}})()
               
               +(function(){try{
