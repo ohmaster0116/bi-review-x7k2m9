@@ -12817,9 +12817,10 @@ function waveDetailPanel(){try{
                 try{var _db=gkWb('d1','buy');var Ld2=waveLedger('d1'),Ad2=E.d1;
                   var g2d=function(b){return b.gijun!=null?b.gijun:((b.o+b.c)/2+(b.h+b.l)/2)/2;};
                   var lastB=Ld2.waves.filter(function(w){return (w.open||w.death==null)&&w.dir>0;}).sort(function(a,b){return b.s-a.s;})[0];
-                  var s1t=(_db&&_db.s0)?('일봉 '+dlY(new Date(_db.s0))+' <b style="color:var(--buy)">'+f(_db.root)+'</b> 뿌리 출발'):null;
-                  var s2t=lastB?(dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b> 재점화'):null;
-                  if(s1t||s2t)sent.push('①−2 이번 상승 : '+(s1t||'')+(s1t&&s2t?' · ':'')+(s2t||''));}catch(e){}
+                  
+                  var s1t=(_db&&_db.s0)?('1차 · 일봉 '+dlY(new Date(_db.s0))+' <b style="color:var(--buy)">'+f(_db.root)+'</b> 프랙탈 밴드'):null;
+                  var s2t=lastB?('이은 <b>2차</b> · '+dlY(new Date(Ad2[lastB.s].t))+' <b style="color:var(--buy)">'+f(g2d(Ad2[lastB.s]))+'</b>'):null;
+                  if(s1t||s2t)sent.push('①−2 이번 상승 계보 : '+(s1t||'')+(s1t&&s2t?' → ':'')+(s2t||''));}catch(e){}
                 
                 if(_ps.length){var p0=_ps[0];var pf=_wl(A2,p0.w,n2);
                   sent.push('② 돌파 : 매도 <b style="color:var(--sell)">'+f(p0.vw)+'</b>'
