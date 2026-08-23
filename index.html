@@ -12628,7 +12628,7 @@ function waveDetailPanel(){try{
 
     var CG='<colgroup><col style="width:23%"><col style="width:8%"><col style="width:15%">'
       +'<col style="width:10%"><col style="width:11%"><col style="width:15%"><col style="width:18%"></colgroup>';
-    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부</span></div><div class="scroll"><table style="table-layout:fixed;width:100%">'+CG+'<thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>파동선</th><th>거리</th><th>계단</th><th>뿌리</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    return '<div style="margin-top:8px"><div style="font-size:11.5px;font-weight:700;margin-bottom:4px">'+label+' <span class="sub" style="font-weight:400">생존 전부</span></div><div class="scroll"><table style="table-layout:fixed;width:100%">'+CG+'<thead><tr><th class="l">형성 기간</th><th class="l">방향</th><th>주체 평단</th><th>거리</th><th>계단</th><th>뿌리</th><th class="l">생사</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   };
   
   
@@ -12747,9 +12747,9 @@ function waveDetailPanel(){try{
               +passLine
               +'<div class="scroll" style="margin-top:4px"><table style="width:100%;table-layout:fixed"><colgroup><col style="width:26%"><col style="width:31%"><col style="width:8%"><col style="width:31%"></colgroup>'
               +'<thead><tr><th class="l" style="font-size:9.5px">축</th><th style="font-size:9.5px;color:var(--buy)">싸움 파동 롱'+(fb?' <span class="sub">'+dl2(fb.w.s)+'~</span>':'')+'</th><th></th><th style="font-size:9.5px;color:var(--sell)">싸움 파동 숏'+(fs?' <span class="sub">'+dl2(fs.w.s)+'~</span>':'')+'</th></tr></thead><tbody>'
-              +vsRow('뿌리',fb?Lb.root:null,fs?Ls.root:null)
-              +vsRow('중심',fb?Lb.vwC:null,fs?Ls.vwC:null)
-              +vsRow('파동선',fb?fb.vw:null,fs?fs.vw:null)
+              +vsRow('파동 뿌리',fb?Lb.root:null,fs?Ls.root:null)
+              +vsRow('주체 중심 단가',fb?Lb.vwC:null,fs?Ls.vwC:null)
+              +vsRow('주체 평단',fb?fb.vw:null,fs?fs.vw:null)
               
               +(function(){var vt=function(v){return v==null?'-':Math.round(v).toLocaleString('en-US');};
                 var tRow=function(nm,a,bq){return '<tr><td class="l sub" style="font-size:10px;white-space:nowrap">'+nm+'</td>'
@@ -13653,7 +13653,7 @@ function viewWaveInner(){
   try{const W=E.w1,wb=W[W.length-1];const n52=Math.min(52,W.length-1);let s52=0;for(let i=W.length-1-n52;i<W.length-1;i++)s52+=W[i].h-W[i].l;const ar52=s52/n52;
     let sAR=0;for(let i=0;i<W.length-1;i++)sAR+=W[i].h-W[i].l;const arW=sAR/(W.length-1);
     const wStruct=wb.o-0.45*ar52, wFill=(wb.h-wb.l)/arW*100;
-    saga+=`<div style="font-size:11.5px;margin-top:6px;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;line-height:1.7"><b>방어선 두 층</b> - 전술(일봉 파동선) <b style="color:var(--gold2)">${f1(ws.line)}</b> / 주봉 눌림 30% 선(−30%·평균변동폭 52주) <b style="color:#c9a227">${f1(wb.o-0.30*ar52)}</b>${wFill>=100?` · 차주 예상 <b style="color:#c9a227">${f1(px-0.30*ar52)}</b><span class="sub">(시가=현재가 가정, 주 시작 갱신)</span>`:''}<br><span class="sub">일봉선은 주봉 정상 호흡만으로 닿는 전술선. 주봉 눌림은 −15%(${f1(wb.o-0.15*ar52)})까지 정상, <b>−30%(${f1(wb.o-0.30*ar52)}) 넘으면 눌림 깊이 30% 초과</b>, −45%(${f1(wStruct)})부터는 더 깊은 구간. 이탈 판정은 주봉 <b>종가</b>. <span style="opacity:.75">(오늘의 화면 카드와 동일 층위)</span><br><b>위계 원리(실측 기준·정의 확정 중)</b> - 트리거는 하위, 명목은 상위: 상위 파동은 거의 예외 없이 하위가 먼저 살아야 태어나고(일→주 100%·4시간→일 99.6%), 상위 힘이 꺾이는 날엔 하위가 먼저 깨져 있지만(99~100%), 하위 이탈이 위로 번진 경우는 4시간→일봉 7%(5일)·일봉→주봉 1.1%(28일)뿐 - 하위 이탈=감시 개시, 판정권=상위 본전.</span></div>`;
+    saga+=`<div style="font-size:11.5px;margin-top:6px;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;line-height:1.7"><b>방어선 두 층</b> - 전술(일봉 파동선) <b style="color:var(--gold2)">${f1(ws.line)}</b> / 주봉 눌림 30% 선(−30%·평균변동폭 52주) <b style="color:#c9a227">${f1(wb.o-0.30*ar52)}</b>${wFill>=100?` · 차주 예상 <b style="color:#c9a227">${f1(px-0.30*ar52)}</b><span class="sub">(시가=현재가 가정, 주 시작 갱신)</span>`:''}<br><span class="sub">일봉선은 주봉 정상 호흡만으로 닿는 전술선. 주봉 눌림은 −15%(${f1(wb.o-0.15*ar52)})까지 정상, <b>−30%(${f1(wb.o-0.30*ar52)}) 넘으면 눌림 깊이 30% 초과</b>, −45%(${f1(wStruct)})부터는 더 깊은 구간. 이탈 판정은 주봉 <b>종가</b>. <span style="opacity:.75">(오늘의 화면 카드와 동일 층위)</span><br><b>위계 원리(구조적 사실·엣지 아님)</b> - 트리거는 하위, 명목은 상위: 상위 파동은 구조상 하위가 먼저 살아야 태어납니다(일→주 100%·4시간→일 99.6%). 상위 봉이 하위 봉들로 이루어지므로 산술적으로 그렇게 나오는 값이고, 방향을 맞히는 근거가 아닙니다, 상위 힘이 꺾이는 날엔 하위가 먼저 깨져 있지만(99~100%), 하위 이탈이 위로 번진 경우는 4시간→일봉 7%(5일)·일봉→주봉 1.1%(28일)뿐 - 하위 이탈=감시 개시, 판정권=상위 본전.</span></div>`;
   }catch(e){}
   
   let bigBanner='';
