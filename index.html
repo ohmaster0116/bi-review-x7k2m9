@@ -22801,9 +22801,9 @@ function viewWhale(){
   // 결전 3선 칸: 평균가(크게) + 최대/최소 예상가(기준가·중심가 중 큰/작은 것). 평균이 어떻게 나왔는지 보이게.
   const col3=(lbl,cv,g,c,sub,bg,last,roll)=>`<div style="flex:${bg?1.18:1};padding:7px 5px;${last?'':'border-right:1px solid var(--bd);'}${bg?'background:rgba(214,162,58,.1);':''}"><div style="color:${cv};font-weight:700">${lbl}</div><div style="font-size:16px;font-weight:800;color:${cv};margin:1px 0 0">${f0((g+c)/2)}</div><div style="font-size:8.5px;color:${cv};opacity:.85">예상 평균</div><div class="sub" style="font-size:9px;line-height:1.55">최대 예상가(${g>=c?'기준가':'중심가'}) <b>${f0(Math.max(g,c))}</b><br>최소 예상가(${g>=c?'중심가':'기준가'}) <b>${f0(Math.min(g,c))}</b><br>${sub}</div></div>`;
   // 위치 막대바 - 왼쪽=하락기준(bAvg) / 중심=전투지역(tpAvg) / 오른쪽=상승기준(sAvg), 현재가 실시간 마커
-  // ★★[이사 08-20 지시 · 케인 시공] ⑴ 현재가 마커 = ★고래 그림. ★매수 고래 우세(방어선 위)면 ★초록 · ★매도 고래 우세(방어선 아래)면 ★빨강.
-  //     ⇒ 색만 판정에 연동하고 ★값·위치 산식은 무접촉. 이모지는 색을 못 바꾸므로 ★SVG 로 그린다.
-  //   ⑵ 4분할 — 방어선(중심)과 양 끝단 사이에 ★전투존 두 선.
+  // 현재가 마커 = 고래 그림. 매수 우세(방어선 위)면 초록 · 매도 우세(방어선 아래)면 빨강.
+  //   색만 판정에 연동 · 값·위치 산식 무접촉. 이모지는 색을 못 바꾸므로 SVG 로 그린다.
+  //   4분할 - 방어선(중심)과 양 끝단 사이에 전투존 두 선.
   const whaleMk=(up)=>{const c=up?'#23d39e':'#ff5a6e';return `<svg viewBox="0 0 34 18" width="25" height="13" aria-hidden="true"><path fill="${c}" d="M3 9.5c0-4 5-6.5 11.5-6.5 5 0 8.6 1.8 10.6 4.2l5.4-3.8c.7-.5 1.6.2 1.3 1L30.4 9.5l1.4 5.1c.3.8-.6 1.5-1.3 1l-5.4-3.8C23.1 14.2 19.5 16 14.5 16 8 16 3 13.5 3 9.5Z"/><path fill="${c}" opacity=".7" d="M13 13.4c1.4 1.6 3.4 2.3 5 2.2-1.5 1-4.1.6-5-2.2Z"/><circle cx="8.5" cy="8.2" r="1.05" fill="#0b1220"/></svg>`;};
   const posBar=(lo,mid,hi,cur)=>{const span=(hi-lo)||1,pos=v=>Math.max(0,Math.min(100,(v-lo)/span*100)),pp=pos(cur),mp=pos(mid),off=cur<lo?'⚠ 하락기준 아래 이탈':cur>hi?'⚠ 상승기준 위 돌파':'';const buyWin=cur>=mid,q1=(lo+mid)/2,q3=(mid+hi)/2;return `<div style="padding:36px 18px 8px;position:relative">
       <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(239,83,80,.5),rgba(214,162,58,.35) 50%,rgba(45,212,150,.5))">
@@ -23443,7 +23443,19 @@ function _staleScan(){try{
       
       if(v){
         var ms=_asofMs(v);
-        if(ms!=null)stamps.push({ms:ms,label:String(v).slice(0,10)});
+        
+
+
+
+
+
+
+
+
+
+
+
+        if(ms!=null&&String(v).trim().length>7)stamps.push({ms:ms,label:String(v).slice(0,10)});
       }
     }catch(e){}});   
   if(!stamps.length)return;
