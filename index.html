@@ -12892,8 +12892,8 @@ function waveDetailPanel(){try{
                 if(w.dir>0){cb.u+=cu;cb.v+=cv;}else{cs.u+=cu;cs.v+=cv;}});
               var dfmt=function(u){return u>=1e9?'$'+(u/1e9).toFixed(1)+'B':'$'+Math.round(u/1e6)+'M';};
               if(!(cb.v>0)&&!(cs.v>0))return '';
-              return '<div style="margin-top:3px;font-size:11px">진영 형성기 평단 <span class="sub">(형성 구간 기준가 평균 · 실존가 아님)</span> · <b style="color:var(--buy)">롱 '+(cb.v>0?f(cb.u/cb.v):'-')+'</b><span class="sub">(형성기 거래대금 '+dfmt(cb.u)+' · 근사)</span>'
-                +' <span class="sub">↔</span> <b style="color:var(--sell)">숏 '+(cs.v>0?f(cs.u/cs.v):'-')+'</b><span class="sub">(형성기 거래대금 '+dfmt(cs.u)+' · 근사)</span></div>';
+              return '<div style="margin-top:3px;font-size:11px">진영 형성기 평단 <span class="sub">(형성 구간 기준가 평균 · 실존가 아님)</span> · <b style="color:var(--buy)">롱 '+(cb.v>0?f(cb.u/cb.v):'-')+'</b><span class="sub">(형성기 거래대금 '+(cb.v>0?dfmt(cb.u):'-')+' · 근사)</span>'
+                +' <span class="sub">↔</span> <b style="color:var(--sell)">숏 '+(cs.v>0?f(cs.u/cs.v):'-')+'</b><span class="sub">(형성기 거래대금 '+(cs.v>0?dfmt(cs.u):'-')+' · 근사)</span></div>';   
             }catch(e){return '';}})()
             +'</div>';}}catch(e){}
         return powerLine+sitAxis+duel+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+lineage+(tf==='w1'?wStat:'');
