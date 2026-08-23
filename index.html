@@ -16439,13 +16439,13 @@ function battleBalance(){
 
     let gv=null, gate=null;
     try{const _sb=sellBook('d1'); if(_sb&&_sb.rep!=null){gv=_sb.rep; gate={s:_sb.s,e:_sb.e,line:_sb.rep,dir:-1,nAlive:_sb.nAlive};}}catch(e){}
-    if(gv==null)return _bbNote('현재가 위에 살아 있는 <b>매도 파동이 없습니다</b> - 저항 축 부재 상태. 위 매도 파동이 생기면 자동 복원됩니다.');
+    if(gv==null)return _bbNote('현재가 위에 살아 있는 <b>매도 파동이 없습니다</b> - 저항 축 부재 상태. 위 매도 파동이 새로 서면 저항 축이 다시 잡힙니다.');
     let roll=null, rollSrc='', _wbD=null;
     try{_wbD=waveBook('d1');
       if(_wbD){ if(_wbD.rep!=null){roll=_wbD.rep; rollSrc='생존 '+(_wbD.nAlive||0)+'층 중 최전방';}
                 else if(_wbD.sitga){roll=_wbD.sitga;} }
     }catch(e){}
-    if(roll==null)return _bbNote('<b>매수 실존가 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 매도 실존가: '+f1(gv)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 자동 복원.');
+    if(roll==null)return _bbNote('<b>매수 실존가 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 매도 실존가: '+f1(gv)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 매수 축이 다시 잡힙니다.');
     if(!(gv>roll))return _bbNote('축 역전(매수 실존가 '+f1(roll)+' ≥ 매도 실존가 '+f1(gv)+') - 균형 게이지 정의 불가 구간. 상태만 표기합니다.');
     const pos=Math.max(0,Math.min(100,(px-roll)/(gv-roll)*100));
     const upGap=gv-px, dnGap=px-roll;
