@@ -12857,7 +12857,19 @@ function waveDetailPanel(){try{
             lineage='<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">전투 계보 · 최근 사망 '+deads.length+'건(어느 파동이 어느 파동을 넘었나)</summary><div style="padding:4px 0 2px 6px">'+lin
               +'<div class="sub" style="font-size:9.5px;margin-top:3px">사망=종가 판정(조문 ㉯) · 현 최전방은 위 [현 대립 구도]</div></div></details>';}
         }catch(e){}
-        return sitAxis+duel+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+lineage+(tf==='w1'?wStat:'');
+        
+
+        var powerLine='';
+        try{if(fb||fs){
+          var _lad=buys.slice().sort(function(a,b){return b.vw-a.vw;}).slice(0,3);
+          powerLine='<div style="font-size:12px;line-height:1.9;padding:8px 11px;margin-bottom:8px;border:1px solid var(--gold);border-radius:8px;background:rgba(214,162,58,.07)">'
+            +'<b style="color:var(--gold2)">'+nm+' 힘의 우위</b> · '
+            +(fs?('현재가가 위 매도 최전방 <b style="color:var(--sell)">'+f(fs.vw)+'</b> '+(px2>=fs.vw?'<b style="color:var(--buy)">위(장중)</b>':'아래')):'위 생존 매도 없음')
+            +(fb?(' · <b style="color:var(--buy)">롱 우위 유지 = '+f(fb.vw)+' 위</b>'
+              +(_lad.length>1?' <span class="sub">(밀려도 다음 방어 '+_lad.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
+              +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 숏 우위 전환 후보</b>'):'')
+            +'</div>';}}catch(e){}
+        return powerLine+sitAxis+duel+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+lineage+(tf==='w1'?wStat:'');
       })()
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
 }catch(e){return '';}}
@@ -23077,7 +23089,16 @@ function render(){if(!E)return;
   else if(active==='BTC'||active==='ETH'||active==='SOL'||active==='XRP'){
     if(whaleSym!==active){whaleSym=active;whaleData=null;whaleKrw=0;whaleDaily=null;whaleWeekly=null;whaleLoading=false;}
     v.innerHTML=viewWhale();}
-  else if(active==='파동 현황'){wvSec='현황';v.innerHTML=waveSkeleton()+viewWave()+waveDetailPanel()+waveLifecycle()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">주체형성가 - 주체 평단(실존가)·본전</summary>'+viewMP()+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 롱의 역공(파동 재생)</summary>'+viewSkillRevival()+'</details>';}
+  
+
+  else if(active==='파동 현황'){wvSec='현황';
+    var _fold=function(t,b){return '<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">'+t+'</summary>'+b+'</details>';};
+    v.innerHTML=waveDetailPanel()
+      +_fold('골격 - 지금 자리·계단·사다리 (상세)',waveSkeleton())
+      +_fold('파동 서사·게이지 (상세)',viewWave())
+      +_fold('생애주기 판독',waveLifecycle())
+      +_fold('주체형성가 - 주체 평단(실존가)·본전',viewMP())
+      +_fold('전략 - 롱의 역공(파동 재생)',viewSkillRevival());}
   else if(active==='파동 전투존'){wvSec='전투';v.innerHTML=viewWave();}
   else if(active==='파동 차트'){wvSec='차트';v.innerHTML=viewWave();}
   else if(active==='과거 사례'){wvSec='사례';v.innerHTML=viewWave();setTimeout(function(){var el=document.getElementById('wvCases');if(el)el.scrollIntoView({block:'start'});},80);}
