@@ -12867,10 +12867,18 @@ function waveDetailPanel(){try{
           var _lad=buys.slice().sort(function(a,b){return b.vw-a.vw;}).slice(0,3);
           powerLine='<div style="font-size:12px;line-height:1.9;padding:8px 11px;margin-bottom:8px;border:1px solid var(--gold);border-radius:8px;background:rgba(214,162,58,.07)">'
             +'<b style="color:var(--gold2)">'+nm+' 힘의 우위</b> · '
-            +(fs?('현재가가 위 매도 최전방 <b style="color:var(--sell)">'+f(fs.vw)+'</b> '+(px2>=fs.vw?'<b style="color:var(--buy)">위(장중)</b>':'아래')):'위 생존 매도 없음')
-            +(fb?(' · <b style="color:var(--buy)">롱 우위 유지 = '+f(fb.vw)+' 위</b>'
+            
+
+
+
+
+
+            +(fs?(px2>=fs.vw?'현재가가 아래 매도(생존 최고) <b style="color:var(--sell)">'+f(fs.vw)+'</b> <b style="color:var(--buy)">위(장중)</b>'
+                            :'현재가가 위 매도 최전방 <b style="color:var(--sell)">'+f(fs.vw)+'</b> 아래'):'위 생존 매도 없음')
+            +(fb?(px2>=fb.vw?(' · <b style="color:var(--buy)">롱 우위 유지 = '+f(fb.vw)+' 위</b>'
               +(_lad.length>1?' <span class="sub">(밀려도 다음 방어 '+_lad.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
-              +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 숏 우위 전환 후보</b>'):'')
+              +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 숏 우위 전환 후보</b>')
+              :' · <span class="sub">아래 생존 매수 없음 · 위쪽 최저 '+f(fb.vw)+'</span>'):' · <span class="sub">아래 생존 매수 없음</span>')
             +(function(){try{   
 
 
@@ -19968,7 +19976,12 @@ function xAxisPanel(){try{
   var warn='';
   if(chGood==='매수'&&side==='아래')warn='<div style="font-size:11px;color:var(--sell);padding:2px 15px">성격은 매수인데 현재가가 골든 축 아래 - 과거 이 조합은 거짓 매수였던 경우가 많았습니다(격차 부호 반전 실측)</div>';
   else if(chGood==='매도')warn='<div class="sub" style="font-size:10px;padding:2px 15px">매도 성격 국면에서는 이 선의 통계 의미가 확인되지 않았습니다(무의미 라벨·조건부)</div>';
-  var jy=m.여지||{};
+  
+
+
+
+
+  var jy={위:Math.round(up-px), 아래:Math.round(px-dn)};
   return '<div class="panel" style="margin-top:10px;border:1px solid var(--gold);box-shadow:0 0 0 1px rgba(214,162,58,.15)"><div class="hd"><i class="ti ti-diamond" style="color:var(--gold2);font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i><span style="color:var(--gold2);font-weight:800;font-size:15px;letter-spacing:.02em">골든 변동폭 힘의 균형</span> <span style="font-size:9.5px;border:1px solid var(--gold);border-radius:8px;padding:1px 7px;color:var(--gold2);margin-left:6px">전략 · 3자 EXACT</span> <span class="sub">- 골든 3선 × 현재가 · 실시간</span></div>'
     +'<div style="padding:8px 15px 2px;font-size:12px">현재가 <b style="color:#ff6d00">'+f(px)+'</b>는 골든 축 <b>'+f(x)+'</b> <b style="color:'+(side==='위'?'var(--buy)':'var(--sell)')+'">'+side+'</b> · 위 여지 '+f(jy.위)+' / 아래 여지 '+f(jy.아래)+'</div>'
     +'<div style="position:relative;height:60px;margin:4px 17px 0">'   
