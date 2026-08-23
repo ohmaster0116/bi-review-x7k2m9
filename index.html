@@ -1484,7 +1484,7 @@ function convClusters(){
       let ai=0;whaleData.forEach((r2,i)=>{if(r2.h>whaleData[ai].h)ai=i;});
       const bl=whaleData.filter(r2=>r2.bull),dc=whaleData.slice(ai).filter(r2=>!r2.bull);
       wtp=((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2;
-      add('고래','고래 방어선',wtp);add('고래','매수 고래 평단',(vw(bl,'gj')+vw(bl,'cen'))/2);add('고래','매도 고래 평단',(vw(dc,'gj')+vw(dc,'cen'))/2);}}catch(e){}
+      add('고래','고래 밀집 층',wtp);add('고래','매수 고래 평단',(vw(bl,'gj')+vw(bl,'cen'))/2);add('고래','매도 고래 평단',(vw(dc,'gj')+vw(dc,'cen'))/2);}}catch(e){}
     try{const Mp=E.M1[E.M1.length-2];if(wtp)add('중간값','전월 기준·고래 전투 중간값',(gj2(Mp)+wtp)/2);}catch(e){}
     L.sort((x,y)=>x.v-y.v);
     const cl=[];let cc=null;
@@ -12918,6 +12918,19 @@ function waveDetailPanel(){try{
               if(!(cb.v>0)&&!(cs.v>0))return '';
               return '<div style="margin-top:3px;font-size:11px">진영 형성기 평단 <span class="sub">(형성 구간 기준가 평균 · 실존가 아님)</span> · <b style="color:var(--buy)">롱 '+(cb.v>0?f(cb.u/cb.v):'-')+'</b><span class="sub">(형성기 거래대금 '+(cb.v>0?dfmt(cb.u):'-')+' · 근사)</span>'
                 +' <span class="sub">↔</span> <b style="color:var(--sell)">숏 '+(cs.v>0?f(cs.u/cs.v):'-')+'</b><span class="sub">(형성기 거래대금 '+(cs.v>0?dfmt(cs.u):'-')+' · 근사)</span></div>';   
+            }catch(e){return '';}})()
+            +(function(){try{   
+
+
+
+              var _wc={},_ok=false;
+              try{convClusters().forEach(function(c){if(c.sys==='고래'){_wc[c.name]=c.v;_ok=true;}});}catch(e){}
+              if(!_ok)return '';
+              var _wb=_wc['매수 고래 평단'],_ws=_wc['매도 고래 평단'],_wl=_wc['고래 밀집 층'];
+              if(_wb==null||_ws==null)return '';
+              return '<div style="margin-top:3px;font-size:11px">고래 평단 <span class="sub">(월봉 거래량 가중 · 매도는 최고가 이후)</span> · '
+                +'<b style="color:var(--buy)">매수 '+f(_wb)+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">매도 '+f(_ws)+'</b>'
+                +(_wl!=null?(' <span class="sub">= 방어선</span> <b>'+f(_wl)+'</b>'):'')+'</div>';
             }catch(e){return '';}})()
             +'</div>';}}catch(e){}
         return powerLine+sitAxis+duel+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+lineage+(tf==='w1'?wStat:'');
