@@ -12670,6 +12670,61 @@ function waveDetailPanel(){try{
         }catch(e){return '';}})();
         
         var duel='',lineage='';
+        
+        try{var A2=E[tf],L2=waveLedger(tf),n2=A2.length-1,px2=E.d1[E.d1.length-1].c;
+          var alv=L2.waves.filter(function(w){return w.open||w.death==null;});
+          var vwOf=function(w){try{return vwOfWave(A2,w)||w.line;}catch(e){return w.line;}};
+          var buys=alv.filter(function(w){return w.dir>0;}).map(function(w){return {w:w,vw:vwOf(w)};}).filter(function(o){return o.vw;});
+          var sells=alv.filter(function(w){return w.dir<0;}).map(function(w){return {w:w,vw:vwOf(w)};}).filter(function(o){return o.vw;});
+          var _bl2=buys.filter(function(o){return o.vw<=px2;}),_ab2=sells.filter(function(o){return o.vw>=px2;});
+          var _mx3=function(a,b){return a.vw>b.vw?a:b;},_mn3=function(a,b){return a.vw<b.vw?a:b;};
+          var fb0=_bl2.length?_bl2.reduce(_mx3):(buys.length?buys.reduce(_mn3):null);
+          var fs0=_ab2.length?_ab2.reduce(_mn3):(sells.length?sells.reduce(_mx3):null);
+          var Lb0=fb0?_wl(A2,fb0.w,n2):null, Ls0=fs0?_wl(A2,fs0.w,n2):null;
+          duel=duel=(function(){try{   
+
+
+      var _mid=function(a,b){return (a!=null&&b!=null)?(a+b)/2:null;};
+      var _AL=alv.filter(function(w){return w.dir>0;}),_AS=alv.filter(function(w){return w.dir<0;});
+      var _rt=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var r=g2(A2[w.s]);if(v==null||(up?r<v:r>v))v=r;});return v;};
+      var _ct=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){try{var L=_wl(A2,w,n2);if(L.vwC==null)return;if(v==null||(up?L.vwC<v:L.vwC>v))v=L.vwC;}catch(e){}});return v;};
+      var zR=_mid(_rt(_AL,true),_rt(_AS,false)),zC=_mid(_ct(_AL,true),_ct(_AS,false));
+      var zW=_mid(fb0?Lb0.root:null,fs0?Ls0.root:null),zS=_mid(fb0?fb0.vw:null,fs0?fs0.vw:null);
+      var rows=[['전체 파동 뿌리간',zR,(_rt(_AL,true)),(_rt(_AS,false))],
+                ['전체 파동 중심간',zC,(_ct(_AL,true)),(_ct(_AS,false))],
+                ['소파동간',zW,fb0?Lb0.root:null,fs0?Ls0.root:null],
+                ['실존가간',null,null,null]];
+      
+
+      try{var _WB=((gkSrc()['파동']||{}).wb)||{};
+        var _lr=(_WB[tf]||{}).rep,_sr=(_WB['sell_'+tf]||{}).rep;
+        if(_lr!=null&&_sr!=null){rows[3]=['실존가간',_mid(_lr,_sr),_lr,_sr];}
+        else{rows.pop();}
+      }catch(e){rows.pop();}
+      var vals=rows.map(function(r){return r[1];}).filter(function(v){return v!=null;});
+      if(!vals.length)return '';
+      var lo=Math.min.apply(null,vals.concat([px2])),hi=Math.max.apply(null,vals.concat([px2])),sp=(hi-lo)||1;
+      var body=rows.map(function(r){
+        if(r[1]==null)return '';
+        var pos=(r[1]-lo)/sp*100,pp=(px2-lo)/sp*100;
+        
+
+        var _br=null;
+        if(r[2]!=null&&r[3]!=null&&r[2]!==r[3]){var _sp2=Math.abs(r[3]-r[2]);_br=Math.round(Math.max(0,Math.min(100,(px2-Math.min(r[2],r[3]))/_sp2*100)));if(r[2]>r[3])_br=100-_br;}
+        return '<div style="margin-top:7px"><div style="display:flex;justify-content:space-between;font-size:10.5px">'
+          +'<span class="sub">'+r[0]+(_br!=null?(' <b style="color:var(--buy)">매수 '+_br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-_br)+'%</b>'):'')+'</span>'
+          +'<span><b style="color:var(--buy)">'+f(r[2])+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">'+f(r[3])+'</b>'
+          +' <span class="sub">=</span> <b style="color:var(--gold2)">'+f(r[1])+'</b></span></div>'
+          +'<div style="position:relative;height:7px;margin-top:3px;border-radius:4px;background:linear-gradient(90deg,rgba(63,179,127,.30),rgba(230,90,90,.30))">'
+          +'<span style="position:absolute;left:'+pos.toFixed(1)+'%;top:-2px;width:2px;height:11px;background:var(--gold2)"></span>'
+          +'<span style="position:absolute;left:'+pp.toFixed(1)+'%;top:-4px;font-size:8px;color:var(--tx)">▼</span></div></div>';
+      }).join('');
+      return '<div style="font-size:11px;line-height:1.7;padding:8px 11px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
+        +'<b style="color:var(--gold2)">전투존 · '+nm+'</b> <span class="sub">현재가 '+f(px2)+' ▼ · 금선=전투존</span>'
+        +(fb0?('<div class="sub" style="font-size:9.5px;margin-top:2px">실존가 소속 , 롱 '+dl2(fb0.w.s)+'~'+dl2(fb0.w.e)+(fs0?(' · 숏 '+dl2(fs0.w.s)+'~'+dl2(fs0.w.e)):'')+'</div>'):'')
+        +body+'</div>';
+    }catch(e){return '';}})();
+        }catch(e){}
         try{var A2=E[tf],L2=waveLedger(tf),n2=A2.length-1,px2=E.d1[E.d1.length-1].c;
           var dl2=function(i){return dlY(new Date(A2[i].t));};
           var vwOf=function(w){try{return vwOfWave(A2,w)||w.line;}catch(e){return w.line;}};
@@ -12739,49 +12794,7 @@ function waveDetailPanel(){try{
               +(_pb.length?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 '+((_nxL!=null)?('다음 매수 파동선 <b class="num" style="color:var(--buy)">'+f(_nxL)+'</b>'):'<span class="sub">아래 생존 매수 층 없음</span>')+'</div>'):'')
               +(_ps.length?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 '+((_nxS!=null)?('다음 매도 파동선 <b class="num" style="color:var(--sell)">'+f(_nxS)+'</b>'):'<span class="sub">위 생존 매도 층 없음</span>')+'</div>'):'')
               +'</div>';}
-            duel=(function(){try{   
-
-
-      var _mid=function(a,b){return (a!=null&&b!=null)?(a+b)/2:null;};
-      var _AL=alv.filter(function(w){return w.dir>0;}),_AS=alv.filter(function(w){return w.dir<0;});
-      var _rt=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var r=g2(A2[w.s]);if(v==null||(up?r<v:r>v))v=r;});return v;};
-      var _ct=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){try{var L=_wl(A2,w,n2);if(L.vwC==null)return;if(v==null||(up?L.vwC<v:L.vwC>v))v=L.vwC;}catch(e){}});return v;};
-      var zR=_mid(_rt(_AL,true),_rt(_AS,false)),zC=_mid(_ct(_AL,true),_ct(_AS,false));
-      var zW=_mid(fb?Lb.root:null,fs?Ls.root:null),zS=_mid(fb?fb.vw:null,fs?fs.vw:null);
-      var rows=[['전체 파동 뿌리간',zR,(_rt(_AL,true)),(_rt(_AS,false))],
-                ['전체 파동 중심간',zC,(_ct(_AL,true)),(_ct(_AS,false))],
-                ['소파동간',zW,fb?Lb.root:null,fs?Ls.root:null],
-                ['실존가간',null,null,null]];
-      
-
-      try{var _WB=((gkSrc()['파동']||{}).wb)||{};
-        var _lr=(_WB[tf]||{}).rep,_sr=(_WB['sell_'+tf]||{}).rep;
-        if(_lr!=null&&_sr!=null){rows[3]=['실존가간',_mid(_lr,_sr),_lr,_sr];}
-        else{rows.pop();}
-      }catch(e){rows.pop();}
-      var vals=rows.map(function(r){return r[1];}).filter(function(v){return v!=null;});
-      if(!vals.length)return '';
-      var lo=Math.min.apply(null,vals.concat([px2])),hi=Math.max.apply(null,vals.concat([px2])),sp=(hi-lo)||1;
-      var body=rows.map(function(r){
-        if(r[1]==null)return '';
-        var pos=(r[1]-lo)/sp*100,pp=(px2-lo)/sp*100;
-        
-
-        var _br=null;
-        if(r[2]!=null&&r[3]!=null&&r[2]!==r[3]){var _sp2=Math.abs(r[3]-r[2]);_br=Math.round(Math.max(0,Math.min(100,(px2-Math.min(r[2],r[3]))/_sp2*100)));if(r[2]>r[3])_br=100-_br;}
-        return '<div style="margin-top:7px"><div style="display:flex;justify-content:space-between;font-size:10.5px">'
-          +'<span class="sub">'+r[0]+(_br!=null?(' <b style="color:var(--buy)">매수 '+_br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-_br)+'%</b>'):'')+'</span>'
-          +'<span><b style="color:var(--buy)">'+f(r[2])+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">'+f(r[3])+'</b>'
-          +' <span class="sub">=</span> <b style="color:var(--gold2)">'+f(r[1])+'</b></span></div>'
-          +'<div style="position:relative;height:7px;margin-top:3px;border-radius:4px;background:linear-gradient(90deg,rgba(63,179,127,.30),rgba(230,90,90,.30))">'
-          +'<span style="position:absolute;left:'+pos.toFixed(1)+'%;top:-2px;width:2px;height:11px;background:var(--gold2)"></span>'
-          +'<span style="position:absolute;left:'+pp.toFixed(1)+'%;top:-4px;font-size:8px;color:var(--tx)">▼</span></div></div>';
-      }).join('');
-      return '<div style="font-size:11px;line-height:1.7;padding:8px 11px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
-        +'<b style="color:var(--gold2)">전투존 · '+nm+'</b> <span class="sub">현재가 '+f(px2)+' ▼ · 금선=전투존</span>'
-        +(fb?('<div class="sub" style="font-size:9.5px;margin-top:2px">실존가 소속 , 롱 '+dl2(fb.w.s)+'~'+dl2(fb.w.e)+(fs?(' · 숏 '+dl2(fs.w.s)+'~'+dl2(fs.w.e)):'')+'</div>'):'')
-        +body+passLine+'</div>';
-    }catch(e){return '';}})();
+            
             lineage='<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">전투 계보 · 최근 사망 '+deads.length+'건(어느 파동이 어느 파동을 넘었나)</summary><div style="padding:4px 0 2px 6px">'+lin
               +'<div class="sub" style="font-size:9.5px;margin-top:3px">사망=종가 판정(조문 ㉯) · 현 최전방은 위 [현 대립 구도]</div></div></details>';}
         }catch(e){}
@@ -12869,8 +12882,14 @@ function waveDetailPanel(){try{
               +((_BL&&_BL.vwC!=null)?(' · 주체 평단 <b>'+f(_BL.vwC)+'</b>'):'')
               +' · 나이 <b>'+(n2-_big.e)+'봉</b> · 소파동 <b>'+(_cand.length-1)+'개</b></div></div>';}
         }catch(e){}
-        return powerLine+duel+_bigTxt
-          +_det('소파동 상세 (매수·매도 원장)',mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1))
+        
+
+        return powerLine+duel
+          +(_bigTxt?('<details open style="margin-top:8px"><summary style="cursor:pointer;list-style:none">'+_bigTxt+'</summary>'
+             +'<div style="padding-left:10px;border-left:2px solid var(--gold);margin-top:4px">'
+             +'<div class="sub" style="font-size:9.5px;margin:2px 0 4px">이 대파동에서 파생된 소파동</div>'
+             +mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+'</div></details>')
+             :(mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)))
           +lineage+(tf==='w1'?wStat:'');
       })()
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
