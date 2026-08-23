@@ -12844,11 +12844,14 @@ function waveDetailPanel(){try{
               try{convClusters().forEach(function(c){if(c.sys==='고래'){_wc[c.name]=c.v;_ok=true;}});}catch(e){}
               if(!_ok)return '';
               var _wb=_wc['매수 고래 평단'],_ws=_wc['매도 고래 평단'],_wl=_wc['고래 밀집 층'];
-              if(_wb==null||_ws==null)return '';
+              
+
+              if(_wb==null||_ws==null)
+                return '<div style="margin-top:3px;font-size:11px" class="sub">고래 평단 산출 없음</div>';
               return '<div style="margin-top:3px;font-size:11px">고래 평단 <span class="sub">(월봉 거래량 가중 · 매수는 전 구간 · 매도는 최고가 이후 · 분모가 다릅니다)</span> · '
                 +'<b style="color:var(--buy)">매수 '+f(_wb)+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">매도 '+f(_ws)+'</b>'
-                +(_wl!=null?(' <span class="sub">= 방어선</span> <b>'+f(_wl)+'</b>'):'')+'</div>';
-            }catch(e){return '';}})()
+                +(_wl!=null?(' <span class="sub">= 밀집 층</span> <b>'+f(_wl)+'</b>'):' <span class="sub">= 밀집 층 산출 없음</span>')+'</div>';
+            }catch(e){console.warn('[고래 평단 줄] '+e);return '';}})()
             +'</div>';}}catch(e){}
         
 
