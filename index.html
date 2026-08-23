@@ -12850,7 +12850,8 @@ function waveDetailPanel(){try{
         
 
         var _det=function(t,b2){return '<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">'+t+'</summary>'+b2+'</details>';};
-        return powerLine+sitAxis+duel
+        
+        return powerLine+duel
           +_det(nm+' 파동 상세 (매수·매도 원장)',mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1))
           +lineage+(tf==='w1'?wStat:'');
       })()
@@ -23103,10 +23104,10 @@ function render(){if(!E)return;
     var _fold=function(t,b){return '<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">'+t+'</summary>'+b+'</details>';};
     v.innerHTML=waveDetailPanel()
          
-      +_fold('파동 서사·게이지 (상세)',viewWave())
-      +_fold('생애주기 판독',waveLifecycle())
-      +_fold('주체형성가 - 주체 평단(실존가)·본전',viewMP())
-      +_fold('전략 - 롱의 역공(파동 재생)',viewSkillRevival());}
+      
+
+
+      +_fold('파동 서사 (계보·상세)',viewWave());}
   else if(active==='파동 전투존'){wvSec='전투';v.innerHTML=viewWave();}
   else if(active==='파동 차트'){wvSec='차트';v.innerHTML=viewWave();}
   else if(active==='과거 사례'){wvSec='사례';v.innerHTML=viewWave();setTimeout(function(){var el=document.getElementById('wvCases');if(el)el.scrollIntoView({block:'start'});},80);}
