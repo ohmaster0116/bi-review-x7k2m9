@@ -13177,8 +13177,18 @@ function wgTier1(tfs){
         +(function(){ var GG=(((gkSrc()['파동']||{}).wb||{}).gauge||{})[tf];
            var _fc=function(n){ return (n==null)?'0':Number(n).toLocaleString('en-US'); };   
            
-           if(GG&&GG.aL!=null)return '<span class="sub" style="font-size:9.5px">지지 '+GG.nL+'파동 · 생존 '+_fc(GG.aL)+'층(대표 '+src(L).length+'묶음 표시)'
-             +' | 저항 '+GG.nS+'파동 · 생존 '+_fc(GG.aS)+'층(대표 '+src(S).length+'묶음 표시)</span>';
+           
+
+
+
+
+           var _tw=function(side,shown){ try{
+             var A0=((((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{})[side];
+             var t=(A0&&A0[0]&&A0[0]._tot)||null;
+             return (t&&t>shown)?(shown+'파동 표시<span class="sub">(전체 '+t+')</span>'):(shown+'파동');
+           }catch(e){ return shown+'파동'; } };
+           if(GG&&GG.aL!=null)return '<span class="sub" style="font-size:9.5px">지지 '+_tw('롱',GG.nL)+' · 생존 '+_fc(GG.aL)+'층(대표 '+src(L).length+'묶음 표시)'
+             +' | 저항 '+_tw('숏',GG.nS)+' · 생존 '+_fc(GG.aS)+'층(대표 '+src(S).length+'묶음 표시)</span>';
            return '<span class="sub" style="font-size:9.5px">생존 지지 '+((L&&L.nAlive)||0)+'층('+src(L).length+'묶음·대표 파동)'
              +' · 저항 '+((S&&S.nAlive)||0)+'층('+src(S).length+'묶음·대표 파동)</span>'; })()
         +'</div>';
