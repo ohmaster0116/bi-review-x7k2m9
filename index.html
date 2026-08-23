@@ -12601,10 +12601,10 @@ function waveDetailPanel(){try{
 
       if(w.death==null){var _pb=A[n];
         if(_pb&&w.dir<0){
-          if(_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">소멸 시도중</span>';
+          if(_pb.h>w.line)stat+=' <span style="font-size:9px;border:1px solid var(--sell);color:var(--sell);border-radius:7px;padding:0 5px;white-space:nowrap">소멸 진행중</span>';
           else if(vw!=null&&_pb.h>vw)stat+=' <span style="font-size:9px;border:1px dashed var(--sell);color:var(--sell);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">장중 돌파</span>';
         }else if(_pb&&w.dir>0){
-          if(_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">소멸 시도중</span>';
+          if(_pb.l<w.line)stat+=' <span style="font-size:9px;border:1px solid var(--buy);color:var(--buy);border-radius:7px;padding:0 5px;white-space:nowrap">소멸 진행중</span>';
           else if(vw!=null&&_pb.l<vw)stat+=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">장중 이탈</span>';
         }}
       var ladder=(w.death==null&&steps.length)?(stAlive+'/'+stTot+' 생존'):'없음';
@@ -12710,10 +12710,17 @@ function waveDetailPanel(){try{
             var _ps=sells.filter(function(o){return _hb&&_hb.h>o.vw&&o!==fs;}).sort(function(a,b){return b.vw-a.vw;}).slice(0,4);   
             var _pb=buys.filter(function(o){return _hb&&_hb.l<o.vw&&o!==fb;}).sort(function(a,b){return a.vw-b.vw;}).slice(0,4);
             var passLine='';
+            
+
+
+            var _nxL=(function(){try{var c=buys.filter(function(o){return _hb&&o.vw<_hb.l;}).sort(function(x,y){return y.vw-x.vw;});return c.length?c[0].vw:null;}catch(e){return null;}})();
+            var _nxS=(function(){try{var c=sells.filter(function(o){return _hb&&o.vw>_hb.h;}).sort(function(x,y){return x.vw-y.vw;});return c.length?c[0].vw:null;}catch(e){return null;}})();
             if(_ps.length||_pb.length){passLine='<div style="font-size:10px;margin-top:3px;line-height:1.7;color:var(--tx2)">'
-              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">장악·소멸 시도중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
+              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">소멸 진행중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
               +(_ps.length&&_pb.length?'<br>':'')
-              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">장악·소멸 시도중</span> 매수 실존가 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
+              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">소멸 진행중</span> 매수 실존가 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
+              +((_pb.length&&_nxL!=null)?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 다음 매수 방어선 <b class="num" style="color:var(--buy)">'+f(_nxL)+'</b></div>'):'')
+              +((_ps.length&&_nxS!=null)?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 다음 매도 방어선 <b class="num" style="color:var(--sell)">'+f(_nxS)+'</b></div>'):'')
               +'</div>';}
             duel='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
               +'<b style="color:var(--gold2)">현 대립 구도 · 싸움 파동 · '+nm+'</b> · '
@@ -12807,7 +12814,7 @@ function waveDetailPanel(){try{
                   +(dns.length?('전선 남하 시 : '+dns.join(' → ')):'')+'</div>';
                 return '<div style="margin-top:7px"><b style="color:var(--gold2);font-size:10.5px">파동 맵 · 전장 · '+nm+'</b> <span class="sub" style="font-size:8.5px">왼쪽일수록 오래된 파동(거리=기간)</span>'
                   +'<div style="position:relative;height:'+(H+22)+'px;margin:5px 0 0">'+terr+shade+el+'</div>'+sim
-                  +'<div class="sub" style="font-size:8.5px">🏰 요새=뿌리 · 🏯 중간 성=중심가 · ◆ 기준가(파동선) · ⚔ 최전방 · 가는 눈금=실존가 층위 전부 · 💥 소멸 시도중(종가 전) · 🚩 금선=현재가 전선 · 시뮬=닿는 순서(예측 아님)</div></div>';
+                  +'<div class="sub" style="font-size:8.5px">🏰 요새=뿌리 · 🏯 중간 성=중심가 · ◆ 기준가(파동선) · ⚔ 최전방 · 가는 눈금=실존가 층위 전부 · 💥 소멸 진행중(종가 전) · 🚩 금선=현재가 전선 · 시뮬=닿는 순서(예측 아님)</div></div>';
               }catch(e){return '';}})()
               
               +(function(){try{
