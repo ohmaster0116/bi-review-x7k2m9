@@ -17576,7 +17576,17 @@ function reportPayload(){try{
       return {x:Math.round(x), 구성:{일중점:Math.round(dMid), 주중점:Math.round(wMid), 월중점:Math.round(mMid)},
         현재가측:px>x?'위':'아래',
         위끝단평균:Math.round(upAvg), 아래끝단평균:Math.round(dnAvg),
-        여지:{위:Math.round(upAvg-px), 아래:Math.round(px-dnAvg)},
+        
+
+
+
+
+
+
+        여지:(function(){try{var _g=(window.__SCEN||{}).골든||{};
+              var _u=(_g.매도끝!=null)?_g.매도끝:upAvg, _d=(_g.매수끝!=null)?_g.매수끝:dnAvg;
+              return {위:Math.round(_u-px), 아래:Math.round(px-_d)};
+            }catch(e){return {위:Math.round(upAvg-px), 아래:Math.round(px-dnAvg)};}})(),
         조건:'엣지=성격 매수 국면 한정(위 +1.32%/아래 -0.26%·5일·p.006) · 매도 국면 무의미(p.187) · 자석 아님=필터 · 끝단=도달 한계이지 목표 아님'};
     }catch(e){return null;}})(),
     
