@@ -12863,7 +12863,7 @@ function waveDetailPanel(){try{
                     sent.push('③ 힘 : 물량 <b>'+(ratio2>=10?Math.round(ratio2):ratio2.toFixed(1))+'배</b>'
                       +((f4&&f4.fill>100)?' · <b style="color:var(--gold2)">충전율 '+f4.fill.toFixed(0)+'%</b>':'')+'');}}
                 var mb=null;try{mb=(tf!=='M1')?gkWb('M1','buy'):null;}catch(e){}
-                if(mb&&mb.rep!=null)sent.push('④ 배경 : 월봉 매수 <b style="color:var(--buy)">'+f(mb.rep)+'</b>('+(mb.nAlive||0)+'층) 우위 속 뿌리 파동');
+                if(mb&&mb.rep!=null)sent.push('④ 배경 : 월봉 매수 <b style="color:var(--buy)">'+f(mb.rep)+'</b> 우위 속 뿌리 파동'   );
                 
                 try{var _sd=gkWb('d1','sell'),_sw=gkWb('w1','sell'),_sm2=gkWb('M1','sell');var _pp2=[];
                   if(_sd&&_sd.rep!=null)_pp2.push('일 <b style="color:var(--sell)">'+f(_sd.rep)+'</b>('+(_sd.nAlive||0)+'층)');
