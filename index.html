@@ -12717,14 +12717,27 @@ function waveDetailPanel(){try{
 
 
 
+
+
+
+
+
+
+
+
+
+
             var _nxL=(function(){try{var c=buys.filter(function(o){return _hb&&o.vw<_hb.l;}).sort(function(x,y){return y.vw-x.vw;});return c.length?c[0].vw:null;}catch(e){return null;}})();
             var _nxS=(function(){try{var c=sells.filter(function(o){return _hb&&o.vw>_hb.h;}).sort(function(x,y){return x.vw-y.vw;});return c.length?c[0].vw:null;}catch(e){return null;}})();
             if(_ps.length||_pb.length){passLine='<div style="font-size:10px;margin-top:3px;line-height:1.7;color:var(--tx2)">'
-              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">소멸 진행중</span> 매도 실존가 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
+              +(_ps.length?('<span style="border:1px dashed var(--sell);border-radius:7px;padding:0 5px;font-size:9px;color:var(--sell);white-space:nowrap">소멸 진행중</span> 매도 파동선 <span class="num">'+_ps.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
               +(_ps.length&&_pb.length?'<br>':'')
-              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">소멸 진행중</span> 매수 실존가 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
-              +((_pb.length&&_nxL!=null)?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 다음 매수 층 <b class="num" style="color:var(--buy)">'+f(_nxL)+'</b></div>'):'')
-              +((_ps.length&&_nxS!=null)?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 다음 매도 층 <b class="num" style="color:var(--sell)">'+f(_nxS)+'</b></div>'):'')
+              +(_pb.length?('<span style="border:1px dashed var(--buy);border-radius:7px;padding:0 5px;font-size:9px;color:var(--buy);white-space:nowrap">소멸 진행중</span> 매수 파동선 <span class="num">'+_pb.map(function(o){return f(o.vw);}).join(' · ')+'</span>'):'')
+              
+
+
+              +(_pb.length?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 '+((_nxL!=null)?('다음 매수 파동선 <b class="num" style="color:var(--buy)">'+f(_nxL)+'</b>'):'<span class="sub">아래 생존 매수 층 없음</span>')+'</div>'):'')
+              +(_ps.length?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 '+((_nxS!=null)?('다음 매도 파동선 <b class="num" style="color:var(--sell)">'+f(_nxS)+'</b>'):'<span class="sub">위 생존 매도 층 없음</span>')+'</div>'):'')
               +'</div>';}
             duel='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
               +'<b style="color:var(--gold2)">현 대립 구도 · 싸움 파동 · '+nm+'</b> · '
