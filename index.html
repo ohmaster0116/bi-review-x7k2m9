@@ -12681,6 +12681,8 @@ function waveDetailPanel(){try{
           var fb0=_bl2.length?_bl2.reduce(_mx3):(buys.length?buys.reduce(_mn3):null);
           var fs0=_ab2.length?_ab2.reduce(_mn3):(sells.length?sells.reduce(_mx3):null);
           var Lb0=fb0?_wl(A2,fb0.w,n2):null, Ls0=fs0?_wl(A2,fs0.w,n2):null;
+          
+          var _d2=function(ix){try{var t=new Date(A2[ix].t);return (t.getUTCMonth()+1)+'/'+t.getUTCDate();}catch(e){return '';}};
           duel=duel=(function(){try{   
 
 
@@ -12721,7 +12723,7 @@ function waveDetailPanel(){try{
       }).join('');
       return '<div style="font-size:11px;line-height:1.7;padding:8px 11px;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px">'
         +'<b style="color:var(--gold2)">전투존 · '+nm+'</b> <span class="sub">현재가 '+f(px2)+' ▼ · 금선=전투존</span>'
-        +(fb0?('<div class="sub" style="font-size:9.5px;margin-top:2px">실존가 소속 , 롱 '+dl2(fb0.w.s)+'~'+dl2(fb0.w.e)+(fs0?(' · 숏 '+dl2(fs0.w.s)+'~'+dl2(fs0.w.e)):'')+'</div>'):'')
+        +(fb0?('<div class="sub" style="font-size:9.5px;margin-top:2px">실존가 소속 , 롱 '+_d2(fb0.w.s)+'~'+_d2(fb0.w.e)+(fs0?(' · 숏 '+_d2(fs0.w.s)+'~'+_d2(fs0.w.e)):'')+'</div>'):'')
         +body+'</div>';
     }catch(e){return '';}})();
         }catch(e){}
