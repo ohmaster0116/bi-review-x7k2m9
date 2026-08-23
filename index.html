@@ -12554,14 +12554,14 @@ function waveDetailPanel(){try{
   var _wl=function(A,w,n){
     var g2=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
     var c4=function(b){return b.center!=null?b.center:(b.h+b.l+2*b.c)/4;};
-    var out={root:g2(A[w.s]),vwC:null,steps:[],stAlive:0,fights:0,vol:0,volAlive:0};
+    var out={root:g2(A[w.s]),vwC:null,steps:[],stAlive:0,fights:0,vol:0,volAlive:0,cap:0};   
     if(w.death!=null)return out;
     var cu=0,cv=0,cuC=0;
     for(var k=w.s;k<=w.e;k++){cu+=g2(A[k])*A[k].v;cuC+=c4(A[k])*A[k].v;cv+=A[k].v;var asof=cv>0?cu/cv:null;var dd=false,fg=0;
       for(var q=w.e+1;q<n;q++){if(w.dir<0){if(A[q].c>asof){dd=true;break;}if(A[q].h>asof)fg++;}else{if(A[q].c<asof){dd=true;break;}if(A[q].l<asof)fg++;}}
       out.steps.push({i:k,v:asof,dead:dd,fg:fg,bv:A[k].v});
       if(!dd){out.stAlive++;out.fights=Math.max(out.fights,fg);out.volAlive+=A[k].v;}}
-    out.vol=cv; out.vwC=cv>0?cuC/cv:null;
+    out.vol=cv; out.vwC=cv>0?cuC/cv:null; out.cap=cu;
     return out;
   };
   var mk=function(tf,label,maxN,side){
@@ -12617,7 +12617,7 @@ function waveDetailPanel(){try{
             +'<span class="num" style="width:76px;flex:none;text-align:right;color:'+(st.dead?'var(--tx3)':dc)+'">'+f(st.v)+'</span>'
             +'<span style="flex:none">'+(st.dead?'소멸':'<b style="color:'+dc+'">생존</b>')+'</span>'
             +(st.fg>0?'<span class="sub">전투 '+st.fg+'회</span>':'')+'</div>';}).join('');
-        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
+        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+' · 자금 '+(_L.cap>=1e9?'$'+(_L.cap/1e9).toFixed(1)+'B':'$'+Math.round(_L.cap/1e6)+'M')+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
       return tr;
     }).join('');
     
@@ -12736,7 +12736,9 @@ function waveDetailPanel(){try{
                   volBar='<tr><td class="l sub" style="font-size:9.5px">물량 비교</td><td colspan="3" style="padding:2px 0">'
                     +'<div style="display:flex;flex-direction:column;gap:2px"><div style="height:5px;border-radius:2px;background:var(--buy);opacity:.7;width:'+Math.max(4,Lb.vol/mx2*100)+'%"></div>'
                     +'<div style="height:5px;border-radius:2px;background:var(--sell);opacity:.7;width:'+Math.max(4,Ls.vol/mx2*100)+'%"></div></div></td></tr>';}
-                return tRow('물량',fb?vt(Lb.vol):'-',fs?vt(Ls.vol):'-')
+                var dfm=function(u){return u==null?'-':(u>=1e9?'$'+(u/1e9).toFixed(1)+'B':'$'+Math.round(u/1e6)+'M');};
+                return tRow('자금(형성기·근사)',fb?dfm(Lb.cap):'-',fs?dfm(Ls.cap):'-')
+                  +tRow('물량',fb?vt(Lb.vol):'-',fs?vt(Ls.vol):'-')
                   +tRow('생존 물량',fb?vt(Lb.volAlive):'-',fs?vt(Ls.volAlive):'-')
                   +volBar
                   +tRow('계단',fb?(Lb.stAlive+'/'+Lb.steps.length+' ('+Math.round(Lb.stAlive/Math.max(1,Lb.steps.length)*100)+'%)'):'-',fs?(Ls.stAlive+'/'+Ls.steps.length+' ('+Math.round(Ls.stAlive/Math.max(1,Ls.steps.length)*100)+'%)'):'-')
@@ -12869,6 +12871,15 @@ function waveDetailPanel(){try{
             +(fb?(' · <b style="color:var(--buy)">롱 우위 유지 = '+f(fb.vw)+' 위</b>'
               +(_lad.length>1?' <span class="sub">(밀려도 다음 방어 '+_lad.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
               +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 숏 우위 전환 후보</b>'):'')
+            +(function(){try{   
+              var cb={u:0,v:0},cs={u:0,v:0};
+              alv.forEach(function(w){var cu=0,cv=0;for(var k=w.s;k<=w.e;k++){cu+=(A2[k].gijun!=null?A2[k].gijun:((A2[k].o+A2[k].c)/2+(A2[k].h+A2[k].l)/2)/2)*A2[k].v;cv+=A2[k].v;}
+                if(w.dir>0){cb.u+=cu;cb.v+=cv;}else{cs.u+=cu;cs.v+=cv;}});
+              var dfmt=function(u){return u>=1e9?'$'+(u/1e9).toFixed(1)+'B':'$'+Math.round(u/1e6)+'M';};
+              if(!(cb.v>0)&&!(cs.v>0))return '';
+              return '<div style="margin-top:3px;font-size:11px">진영 실존가 중심 · <b style="color:var(--buy)">롱 '+(cb.v>0?f(cb.u/cb.v):'-')+'</b><span class="sub">(자금 '+dfmt(cb.u)+')</span>'
+                +' <span class="sub">↔</span> <b style="color:var(--sell)">숏 '+(cs.v>0?f(cs.u/cs.v):'-')+'</b><span class="sub">('+dfmt(cs.u)+')</span></div>';
+            }catch(e){return '';}})()
             +'</div>';}}catch(e){}
         return powerLine+sitAxis+duel+mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)+lineage+(tf==='w1'?wStat:'');
       })()
