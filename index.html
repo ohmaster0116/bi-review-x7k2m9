@@ -184,7 +184,7 @@ const TABGROUPS_V2=[
   {g:'인포 차트', tabs:['인포 차트']},             
   
   {g:'고래 추적', tabs:['BTC','ETH','SOL','XRP']},   
-  {g:'파동 분석', tabs:['파동 현황','파동 전투존','파동 차트','과거 사례']},   
+  {g:'파동 분석', tabs:['파동 현황','파동 차트','과거 사례']},      
   {g:'수급 분석', tabs:['수급 분석']},              
   
 
@@ -12857,8 +12857,20 @@ function waveDetailPanel(){try{
 
         var _det=function(t,b2){return '<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">'+t+'</summary>'+b2+'</details>';};
         
-        return powerLine+duel
-          +_det(nm+' 파동 상세 (매수·매도 원장)',mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1))
+        
+
+        var _bigTxt='';
+        try{var _cand=alv.filter(function(w){return w.dir>0;});
+          if(_cand.length){var _big=_cand.reduce(function(x,y){return (x.s<y.s)?x:y;});
+            var _BL=_wl(A2,_big,n2);
+            _bigTxt='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-top:8px;border:1px solid var(--gold);border-radius:8px;background:rgba(214,162,58,.05)">'
+              +'<b style="color:var(--gold2)">대파동</b> <span class="sub">'+dl2(_big.s)+'~'+dl2(_big.e)+' · 전체 파동의 출발점</span>'
+              +'<div style="margin-top:3px">파동 뿌리 <b style="color:var(--buy)">'+f(g2(A2[_big.s]))+'</b>'
+              +((_BL&&_BL.vwC!=null)?(' · 주체 평단 <b>'+f(_BL.vwC)+'</b>'):'')
+              +' · 나이 <b>'+(n2-_big.e)+'봉</b> · 소파동 <b>'+(_cand.length-1)+'개</b></div></div>';}
+        }catch(e){}
+        return powerLine+duel+_bigTxt
+          +_det('소파동 상세 (매수·매도 원장)',mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1))
           +lineage+(tf==='w1'?wStat:'');
       })()
     +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
@@ -23045,7 +23057,7 @@ function viewSign(){
     +cards;
 }
 function render(){if(!E)return;
-  var GONE={'투자 리포트':'LIVE','시나리오':'LIVE','투자 복기':'LIVE','투자 전략':'LIVE','종합 평가':'LIVE','승률 매매':'전략','패닉 반등':'전략','롱의 역공':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','지지저항밴드':'지지·저항','시가저항지지':'지지·저항','평균변동폭밴드':'변동폭','예상마감가':'변동폭','검증 성적표':'전략 검증','성적표':'전략 검증','주체형성가':'파동 현황','밴드 통합':'종합 밴드','평가·후기':'LIVE','판단 근거':'정렬·대치','심층 분석':'정렬·대치','고래 추적':'BTC','파동 분석':'파동 현황','이벤트 정합 원장':'정합 원장','판단 원장':'정합 원장','한장':'LIVE','위계·레벨':'심층 근거','참고 판독':'심층 근거'};   
+  var GONE={'투자 리포트':'LIVE','시나리오':'LIVE','투자 복기':'LIVE','투자 전략':'LIVE','종합 평가':'LIVE','승률 매매':'전략','패닉 반등':'전략','롱의 역공':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','지지저항밴드':'지지·저항','시가저항지지':'지지·저항','평균변동폭밴드':'변동폭','예상마감가':'변동폭','검증 성적표':'전략 검증','성적표':'전략 검증','주체형성가':'파동 현황','밴드 통합':'종합 밴드','평가·후기':'LIVE','판단 근거':'정렬·대치','심층 분석':'정렬·대치','고래 추적':'BTC','파동 분석':'파동 현황','파동 전투존':'파동 현황','이벤트 정합 원장':'정합 원장','판단 원장':'정합 원장','한장':'LIVE','위계·레벨':'심층 근거','참고 판독':'심층 근거'};   
   if(MENU_V2)delete GONE['평가·후기'];  
   if(!MENU_V2){delete GONE['파동 분석'];GONE['롱의 역공']='파동 분석';GONE['주체형성가']='파동 분석';}   
   
@@ -23114,7 +23126,7 @@ function render(){if(!E)return;
 
 
       +_fold('파동 서사 (계보·상세)',viewWave());}
-  else if(active==='파동 전투존'){wvSec='전투';v.innerHTML=viewWave();}
+  
   else if(active==='파동 차트'){wvSec='차트';v.innerHTML=viewWave();}
   else if(active==='과거 사례'){wvSec='사례';v.innerHTML=viewWave();setTimeout(function(){var el=document.getElementById('wvCases');if(el)el.scrollIntoView({block:'start'});},80);}
   else if(active==='전략'){v.innerHTML=viewSign()+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 회귀 반등 전략(승률·성과표·국면 처방)</summary>'+(viewOpenTrade()+regimePanel())+'</details>'+'<details style="margin-top:16px"><summary style="cursor:pointer;padding:10px 15px;border:1px solid var(--bd);border-radius:10px;font-size:12.5px;font-weight:700;color:var(--tx2)">전략 - 급락 반등</summary>'+viewSkillPanic()+'</details>';}
