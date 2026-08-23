@@ -12544,6 +12544,49 @@ function setWvSec(s){wvSec=s;render();if(s==='사례')setTimeout(()=>{const el=d
 
 
 
+function battleZones(tf,nm){try{
+  
+
+  var A=E[tf]; if(!A||A.length<40)return '';
+  var L=waveLedger(tf); if(!L||!L.waves)return '';
+  var n=A.length-1, px=E.d1[E.d1.length-1].c;
+  var f0=function(v){return v==null?'-':'$'+Math.round(v).toLocaleString('en-US');};
+  var gj=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+  var c4=function(b){return b.center!=null?b.center:(b.h+b.l+2*b.c)/4;};
+  var alv=L.waves.filter(function(w){return w.open||w.death==null;});
+  var AL=alv.filter(function(w){return w.dir>0;}),AS=alv.filter(function(w){return w.dir<0;});
+  if(!AL.length&&!AS.length)return '';
+  var mid=function(a,b){return (a!=null&&b!=null)?(a+b)/2:null;};
+  var root=function(arr,lo){if(!arr.length)return null;var v=null;arr.forEach(function(w){var r=gj(A[w.s]);if(v==null||(lo?r<v:r>v))v=r;});return v;};
+  var cen=function(arr,lo){if(!arr.length)return null;var v=null;arr.forEach(function(w){var u=0,q=0;for(var k=w.s;k<=w.e;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}if(!q)return;var m=u/q;if(v==null||(lo?m<v:m>v))v=m;});return v;};
+  var near=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x==null)return;if(up){if(x<=px&&(v==null||x>v))v=x;}else{if(x>=px&&(v==null||x<v))v=x;}});
+    if(v==null)arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x!=null&&(v==null||(up?x<v:x>v)))v=x;});return v;};
+  var rl=root(AL,true),rs=root(AS,false),cl=cen(AL,true),cs=cen(AS,false);
+  var wl=near(AL,true),wsx=near(AS,false);
+  var sl=null,ss=null;try{var WB=((gkSrc()['파동']||{}).wb)||{};sl=(WB[tf]||{}).rep;ss=(WB['sell_'+tf]||{}).rep;}catch(e){}
+  var rows=[['대파동 뿌리간',mid(rl,rs),rl,rs],['대파동 중심간',mid(cl,cs),cl,cs],
+            ['소파동간',mid(wl,wsx),wl,wsx],['실존가간',mid(sl,ss),sl,ss]];
+  rows=rows.filter(function(r){return r[1]!=null;});
+  if(!rows.length)return '';
+  var vs=rows.map(function(r){return r[1];}).concat([px]);
+  var lo2=Math.min.apply(null,vs),hi2=Math.max.apply(null,vs),sp=(hi2-lo2)||1;
+  var body=rows.map(function(r){
+    var br=null;
+    if(r[2]!=null&&r[3]!=null&&r[2]!==r[3]){var w2=Math.abs(r[3]-r[2]);br=Math.round(Math.max(0,Math.min(100,(px-Math.min(r[2],r[3]))/w2*100)));if(r[2]>r[3])br=100-br;}
+    var pz=(r[1]-lo2)/sp*100,pp=(px-lo2)/sp*100;
+    return '<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:11px;flex-wrap:wrap;gap:4px">'
+      +'<span><b style="color:var(--tx)">'+r[0]+'</b>'+(br!=null?(' <b style="color:var(--buy)">매수 '+br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-br)+'%</b>'):'')+'</span>'
+      +'<span><b style="color:var(--buy)">'+f0(r[2])+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">'+f0(r[3])+'</b>'
+      +' <span class="sub">=</span> <b style="color:var(--gold2)">'+f0(r[1])+'</b></span></div>'
+      +'<div style="position:relative;height:8px;margin-top:4px;border-radius:4px;background:linear-gradient(90deg,rgba(63,179,127,.30),rgba(230,90,90,.30))">'
+      +'<span style="position:absolute;left:'+pz.toFixed(1)+'%;top:-2px;width:2px;height:12px;background:var(--gold2)"></span>'
+      +'<span style="position:absolute;left:'+pp.toFixed(1)+'%;top:-5px;font-size:9px;color:var(--tx)">▼</span></div></div>';
+  }).join('');
+  return '<div style="padding:10px 12px;margin-bottom:10px;border:1px solid var(--gold);border-radius:9px;background:rgba(214,162,58,.05)">'
+    +'<b style="color:var(--gold2);font-size:12px">전투존 · '+nm+'</b> <span class="sub" style="font-size:10px">현재가 '+f0(px)+' ▼ · 금선=전투존</span>'
+    +body+'</div>';
+}catch(e){return '';}}
+
 function waveDetailPanel(){try{
   var px=E.d1[E.d1.length-1].c;
   var f=function(v){return v==null?'없음':'$'+Math.round(v).toLocaleString('en-US');};
@@ -12901,7 +12944,7 @@ function waveDetailPanel(){try{
         }catch(e){}
         
 
-        return powerLine+duel
+        return battleZones(tf,nm)+powerLine+duel
           +(_bigTxt?('<details open style="margin-top:8px"><summary style="cursor:pointer;list-style:none">'+_bigTxt+'</summary>'
              +'<div style="padding-left:10px;border-left:2px solid var(--gold);margin-top:4px">'
              +'<div class="sub" style="font-size:9.5px;margin:2px 0 4px">이 대파동에서 파생된 소파동</div>'
