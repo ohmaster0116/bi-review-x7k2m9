@@ -12571,16 +12571,33 @@ function battleZones(tf,nm){try{
   var vs=rows.map(function(r){return r[1];}).concat([px]);
   var lo2=Math.min.apply(null,vs),hi2=Math.max.apply(null,vs),sp=(hi2-lo2)||1;
   var body=rows.map(function(r){
-    var br=null;
-    if(r[2]!=null&&r[3]!=null&&r[2]!==r[3]){var w2=Math.abs(r[3]-r[2]);br=Math.round(Math.max(0,Math.min(100,(px-Math.min(r[2],r[3]))/w2*100)));if(r[2]>r[3])br=100-br;}
-    var pz=(r[1]-lo2)/sp*100,pp=(px-lo2)/sp*100;
-    return '<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:11px;flex-wrap:wrap;gap:4px">'
-      +'<span><b style="color:var(--tx)">'+r[0]+'</b>'+(br!=null?(' <b style="color:var(--buy)">매수 '+br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-br)+'%</b>'):'')+'</span>'
-      +'<span><b style="color:var(--buy)">'+f0(r[2])+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">'+f0(r[3])+'</b>'
-      +' <span class="sub">=</span> <b style="color:var(--gold2)">'+f0(r[1])+'</b></span></div>'
-      +'<div style="position:relative;height:8px;margin-top:4px;border-radius:4px;background:linear-gradient(90deg,rgba(63,179,127,.30),rgba(230,90,90,.30))">'
-      +'<span style="position:absolute;left:'+pz.toFixed(1)+'%;top:-2px;width:2px;height:12px;background:var(--gold2)"></span>'
-      +'<span style="position:absolute;left:'+pp.toFixed(1)+'%;top:-5px;font-size:9px;color:var(--tx)">▼</span></div></div>';
+    var a=r[2],b=r[3],z=r[1];
+    if(a==null||b==null){return '';}
+    
+
+    var lo3=Math.min(a,b),hi3=Math.max(a,b),sp3=(hi3-lo3)||1;
+    var q1=(lo3+z)/2,q3=(z+hi3)/2;
+    var P=function(v){return Math.max(0,Math.min(100,(v-lo3)/sp3*100));};
+    var br=Math.round(a>b?100-P(px):P(px));
+    var inRange=(px>=lo3&&px<=hi3);
+    var seg=function(l,w,c){return '<span style="position:absolute;left:'+l.toFixed(1)+'%;width:'+w.toFixed(1)+'%;top:0;height:100%;background:'+c+'"></span>';};
+    var tick=function(v,c,h,t){return '<span style="position:absolute;left:'+P(v).toFixed(1)+'%;top:'+t+'px;width:2px;height:'+h+'px;background:'+c+'"></span>';};
+    var p1=P(q1),pz=P(z),p3=P(q3);
+    return '<div style="margin-top:9px"><div style="display:flex;justify-content:space-between;font-size:11px;flex-wrap:wrap;gap:4px">'
+      +'<span><b style="color:var(--tx)">'+r[0]+'</b> <b style="color:var(--buy)">매수 '+br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-br)+'%</b></span>'
+      +'<span><b style="color:var(--buy)">'+f0(a)+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">'+f0(b)+'</b>'
+      +' <span class="sub">=</span> <b style="color:var(--gold2)">'+f0(z)+'</b></span></div>'
+      +'<div style="position:relative;height:10px;margin-top:5px;border-radius:4px;overflow:hidden;background:var(--bg)">'
+      +seg(0,p1,'rgba(63,179,127,.42)')+seg(p1,pz-p1,'rgba(63,179,127,.20)')
+      +seg(pz,p3-pz,'rgba(230,90,90,.20)')+seg(p3,100-p3,'rgba(230,90,90,.42)')
+      +tick(q1,'rgba(255,255,255,.35)',10,0)+tick(q3,'rgba(255,255,255,.35)',10,0)
+      +'<span style="position:absolute;left:'+pz.toFixed(1)+'%;top:0;width:2px;height:100%;background:var(--gold2)"></span>'
+      +(inRange?('<span style="position:absolute;left:'+P(px).toFixed(1)+'%;top:-1px;font-size:10px;line-height:1;color:var(--tx)">▼</span>'):'')
+      +'</div>'
+      +'<div class="sub" style="display:flex;justify-content:space-between;font-size:9px;margin-top:2px">'
+      +'<span>'+f0(lo3)+'</span><span>'+f0(a>b?q3:q1)+'</span><span style="color:var(--gold2)">'+f0(z)+'</span><span>'+f0(a>b?q1:q3)+'</span><span>'+f0(hi3)+'</span></div>'
+      +(inRange?'':('<div class="sub" style="font-size:9px;margin-top:1px">현재가 '+f0(px)+' 는 이 구간 '+(px>hi3?'위':'아래')+'</div>'))
+      +'</div>';
   }).join('');
   return '<div style="padding:10px 12px;margin-bottom:10px;border:1px solid var(--gold);border-radius:9px;background:rgba(214,162,58,.05)">'
     +'<b style="color:var(--gold2);font-size:12px">전투존 · '+nm+'</b> <span class="sub" style="font-size:10px">현재가 '+f0(px)+' ▼ · 금선=전투존</span>'
