@@ -12925,9 +12925,11 @@ function waveDetailPanel(){try{
     var _grp=[],_cur=null;
     _asc.forEach(function(o){
       if(_cur){
-        var hw=_cur.head.w;
-        var span=Math.max(2,(hw.e-hw.s+1)*2);
-        if(o.w.s-hw.e<=span){_cur.kids.push(o);return;}
+        
+
+        var hw=_cur.head.w, hr=g2(A[hw.s]), orr=g2(A[o.w.s]);
+        var gap=o.w.s-hw.e, rise=hr?((orr-hr)/hr*100):999;
+        if(gap<=6 && rise>=0 && rise<=30){_cur.kids.push(o);return;}
       }
       _cur={head:o,kids:[]}; _grp.push(_cur);
     });
