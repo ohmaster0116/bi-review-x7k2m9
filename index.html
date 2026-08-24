@@ -1821,6 +1821,38 @@ function setWvTf(k){wvTf=k;_wvKey='';render();}
 
 
 
+
+function wvGoto(tf,t0,lab){
+  try{
+    window.__wvJump={tf:tf,t:+t0,lab:lab||'파동 시작',g:0};
+    if(wvTf!==tf){wvTf=tf;_wvKey='';}
+    setTab('파동 차트');
+    setTimeout(wvJumpApply,140);
+  }catch(e){}
+}
+function wvJumpApply(){
+  try{
+    var J=window.__wvJump; if(!J)return;
+    if(!wvChart||!wvCs){ if((J.g=(J.g||0)+1)<40)setTimeout(wvJumpApply,150); return; }
+    var src=(typeof waveCoin!=='undefined'&&waveCoin!=='BTC')?COINE[waveCoin]:E;
+    var A2=src&&src[J.tf]; if(!A2||!A2.length){ if((J.g=(J.g||0)+1)<40)setTimeout(wvJumpApply,150); return; }
+    var ix=-1; for(var i=0;i<A2.length;i++){ if(A2[i].t===J.t){ix=i;break;} }
+    if(ix<0){ for(var i2=0;i2<A2.length;i2++){ if(A2[i2].t>=J.t){ix=i2;break;} } }   
+    if(ix<0)return;
+    var half=45;
+    wvChart.timeScale().setVisibleLogicalRange({from:Math.max(0,ix-half),to:Math.min(A2.length+1,ix+half)});
+    try{ wvCs.setMarkers([{time:Math.floor(A2[ix].t/1000),position:'belowBar',color:'#ffd24a',shape:'arrowUp',text:J.lab}]); }catch(e){}
+    var el=document.getElementById('wvChart'); if(el&&el.scrollIntoView)el.scrollIntoView({block:'center'});
+    window.__wvJump=null;
+  }catch(e){}
+}
+
+
+
+
+
+
+
 function wvHistory(A2,upto){
   const out=[]; const st={'1':[0,null,0,[],null],'-1':[0,null,0,[],null]}; const dirs=[0];
   for(let t=1;t<=upto;t++)dirs.push(A2[t].gijun>A2[t-1].gijun?1:A2[t].gijun<A2[t-1].gijun?-1:dirs[t-1]);
@@ -13086,7 +13118,10 @@ function waveDetailPanel(){try{
         +' <span class="sub" style="font-size:8.5px">'+(o._kidDays||'')+'</span>'):''):
                (_isK?' <span style="font-size:8.5px;border:1px dashed var(--tx3);color:var(--tx3);border-radius:6px;padding:0 4px;white-space:nowrap">확장</span>':'');
       var _ind=_isK?'<span style="display:inline-block;width:9px;border-left:2px solid var(--gold);opacity:.55;margin-right:5px">&nbsp;</span>':'';
-      var tr='<tr'+_bd+'><td class="l" style="white-space:nowrap">'+_ind+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span>'+_tag+'</td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
+      
+      var _jt=A[w.s].t, _jlab=(_isK?'확장 파동 시작':'파동 시작')+' '+dl(w.s);
+      var _jat=' onclick="wvGoto(&quot;'+tf+'&quot;,'+_jt+',&quot;'+_jlab+'&quot;)" title="차트에서 이 파동이 생긴 캔들 보기" style="white-space:nowrap;cursor:pointer"';
+      var tr='<tr'+_bd+'><td class="l"'+_jat+'>'+_ind+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span> <span class="sub" style="font-size:8.5px;color:var(--gold2)">차트↗</span>'+_tag+'</td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
       
       if(steps.length){var dc=w.dir>0?'var(--buy)':'var(--sell)';
         var lis=steps.map(function(st){
