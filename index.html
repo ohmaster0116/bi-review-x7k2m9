@@ -769,7 +769,15 @@ function regimeCalc(k){
   const liveDir=cur.l>gPrev?1:-1;
   const liveStreak=liveTouch?0:((streak===0||liveDir===dir)?streak+1:1);
   const liveState=liveStreak>=3?'trend':(liveStreak>=2||drop>=10)?'warn':'box';
-  return {k,full,recent,drop,streak,dir,state,short:rc.length<30,liveTouch,liveStreak,liveDir,liveState,gPrev};
+  
+
+
+
+  var _sv=null;
+  try{ var _R=((window.__VERDICT||{}).data||{}).regime;
+       if(_R) _sv = (_R.indexOf('추세')>=0)?'trend':((_R.indexOf('경계')>=0)?'warn':'box'); }catch(e){}
+  var _st=_sv||state, _lst=_sv||liveState;
+  return {k,full,recent,drop,streak,dir,state:_st,short:rc.length<30,liveTouch,liveStreak,liveDir,liveState:_lst,gPrev,src:(_sv?'서버효율비':'화면터치율'),raw_state:state,raw_liveState:liveState};
 }
 
 
