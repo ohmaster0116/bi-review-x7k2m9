@@ -190,7 +190,7 @@ const TABGROUPS_V2=[
 
 
 
-  {g:'분석 도구', tabs:['분석 도구']},             
+  {g:'분석 도구', tabs:['분석 도구','주체형성가']},                
   {g:'내 자리', tabs:['포지션 진단']},
   {g:'인포 엣지', tabs:['인포 엣지']},             
   {g:'전략 검증', tabs:['전략 검증']},                   
@@ -18739,7 +18739,7 @@ function viewMarketMap(){try{
   return '<h2 class="sec" style="margin:0 0 8px">분석 도구 <span class="sub" style="font-size:11px;font-weight:400">, 낱개 도구·표 서랍 (찾는 분만 · 핵심은 메인·오늘의 분석에)</span></h2>'
     +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin:6px 0">가격 밴드</div>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px">'
-    +it('파동 현황','주체형성가 밴드(주체 평단·본전), 파동 현황 안 접힘')   
+    +it('주체형성가','가격 형성별 주요 포인트 밴드 , 기준가전투·중심간전투·평균')      
     +it('종합 밴드',bd('종합 밴드'))+it('지지·저항',bd('지지·저항'))+it('전투포인트',bd('전투포인트'))+it('변동폭',bd('변동폭'))+it('기준가',bd('기준가'))+it('성격전환가',bd('성격전환가'))+it('미확인값밴드',bd('미확인값밴드'))+it('추세전환가',bd('추세전환가'))+'</div>'
     
     +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin:12px 0 6px">참고</div>'
@@ -23609,9 +23609,9 @@ function viewSign(){
     +cards;
 }
 function render(){if(!E)return;
-  var GONE={'투자 리포트':'LIVE','시나리오':'LIVE','투자 복기':'LIVE','투자 전략':'LIVE','종합 평가':'LIVE','승률 매매':'전략','패닉 반등':'전략','롱의 역공':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','지지저항밴드':'지지·저항','시가저항지지':'지지·저항','평균변동폭밴드':'변동폭','예상마감가':'변동폭','검증 성적표':'전략 검증','성적표':'전략 검증','주체형성가':'파동 현황','밴드 통합':'종합 밴드','평가·후기':'LIVE','판단 근거':'정렬·대치','심층 분석':'정렬·대치','고래 추적':'BTC','파동 분석':'파동 현황','파동 전투존':'파동 현황','이벤트 정합 원장':'정합 원장','판단 원장':'정합 원장','한장':'LIVE','위계·레벨':'심층 근거','참고 판독':'심층 근거'};   
+  var GONE={'투자 리포트':'LIVE','시나리오':'LIVE','투자 복기':'LIVE','투자 전략':'LIVE','종합 평가':'LIVE','승률 매매':'전략','패닉 반등':'전략','롱의 역공':'파동 현황','9층 트레일':'전투포인트','매매 프로토콜':'전투포인트','전투포인트·기간봉':'전투포인트','전투포인트·시간봉':'전투포인트','지지저항밴드':'지지·저항','시가저항지지':'지지·저항','평균변동폭밴드':'변동폭','예상마감가':'변동폭','검증 성적표':'전략 검증','성적표':'전략 검증','밴드 통합':'종합 밴드','평가·후기':'LIVE','판단 근거':'정렬·대치','심층 분석':'정렬·대치','고래 추적':'BTC','파동 분석':'파동 현황','파동 전투존':'파동 현황','이벤트 정합 원장':'정합 원장','판단 원장':'정합 원장','한장':'LIVE','위계·레벨':'심층 근거','참고 판독':'심층 근거'};   
   if(MENU_V2)delete GONE['평가·후기'];  
-  if(!MENU_V2){delete GONE['파동 분석'];GONE['롱의 역공']='파동 분석';GONE['주체형성가']='파동 분석';}   
+  if(!MENU_V2){delete GONE['파동 분석'];GONE['롱의 역공']='파동 분석';GONE['주체형성가']='파동 분석';}      
   
   
   
@@ -23687,7 +23687,8 @@ function render(){if(!E)return;
   else if(active==='전략 검증')v.innerHTML=viewScoreHub();   
   else if(active==='오늘의 분석')v.innerHTML=viewTodayAnalysis();   
   else if(active==='인포 엣지')v.innerHTML=viewVerified();          
-  else if(active==='분석 도구')v.innerHTML=viewMarketMap();         
+  else if(active==='분석 도구')v.innerHTML=viewMarketMap();
+  else if(active==='주체형성가')v.innerHTML=viewMP();            
   else if(active==='상관계수')v.innerHTML=viewCorr();
   else if(active==='수급 분석'){v.innerHTML=supplyDemandView();try{sdAttackDefenseFill();}catch(e){}}   
   else if(active==='알고리즘')v.innerHTML=viewAlgo();
