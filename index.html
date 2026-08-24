@@ -863,7 +863,28 @@ function waveLedger(tf,arr,opt){
 
 
 
-    if(!r.open){for(let k=r.e+1;k<n;k++){if(r.dir>0?A[k].c<line:A[k].c>line){death=k;break;}}}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    if(!r.open){
+      const _cc=A[n-1].c;                                   
+      if(r.dir>0?_cc<line:_cc>line){                        
+        for(let k=n-1;k>r.e;k--){                           
+          if(r.dir>0?A[k].c<line:A[k].c>line)death=k; else break;
+        }
+        if(death==null)death=n-1;
+      }
+    }
     return {dir:r.dir,s:r.s,e:r.e,line,death,open:!!r.open,formDays:r.e-r.s+1};
   });
   return {waves,n};
@@ -12887,7 +12908,23 @@ function battleZones(tf,nm){try{
   }).join('');
   return '<div style="padding:10px 12px;margin-bottom:10px;border:1px solid var(--gold);border-radius:9px;background:rgba(214,162,58,.05)">'
     +'<b style="color:var(--gold2);font-size:12px">전투존 · '+nm+'</b> <span class="sub" style="font-size:10px">현재가 '+f0(px)+' ▼ · 금선=전투존</span>'
-    +body+'</div>';
+    +body+(function(){try{
+      
+      var lastL=null,deadL=0;
+      L.waves.forEach(function(w){ if(w.dir<0)return;
+        var rt=gj(A[w.s]),dd=false;
+        for(var k=w.e+1;k<n;k++){ if(A[k].c<rt){dd=true;break;} }
+        if(!dd&&(lastL==null||w.s>lastL))lastL=w.s; });
+      if(lastL==null)return '';
+      L.waves.forEach(function(w){ if(w.dir<0||w.s<=lastL)return;
+        var rt=gj(A[w.s]);
+        for(var k=w.e+1;k<n;k++){ if(A[k].c<rt){deadL++;break;} } });
+      if(!deadL)return '';
+      var d0=new Date(A[lastL].t);
+      return '<div class="sub" style="font-size:10px;margin-top:5px">마지막 생존 매수 파동 <b style="color:var(--buy)">'
+        +(d0.getUTCFullYear()%100)+'/'+(d0.getUTCMonth()+1)+'/'+d0.getUTCDate()
+        +'</b> · 그 뒤 만들어진 <b>'+deadL+'개</b>는 뿌리를 잃었습니다</div>';
+    }catch(e){return '';}})()+'</div>';
 }catch(e){return '';}}
 
 
