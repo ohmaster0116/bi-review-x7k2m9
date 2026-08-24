@@ -12960,8 +12960,19 @@ function waveDetailPanel(){try{
     
     
 
+    
+
+
+
+    var _V=function(b){return (b.o+b.h+b.l)/3;};
     var alive=L.waves.filter(function(w){
       if(side!=null&&(side>0?w.dir<=0:w.dir>=0))return false;
+      var i=w.s;
+      if(i<1||i+1>=n)return false;
+      var fire = (w.dir>0)
+        ? (A[i-1].c<_V(A[i-1]) && A[i].c>_V(A[i]) && A[i+1].c>_V(A[i+1]))
+        : (A[i-1].c>_V(A[i-1]) && A[i].c<_V(A[i]) && A[i+1].c<_V(A[i+1]));
+      if(!fire)return false;
       var rt=g2(A[w.s]);
       for(var k=w.e+1;k<n;k++){ if(w.dir>0? A[k].c<rt : A[k].c>rt) return false; }
       return true;
