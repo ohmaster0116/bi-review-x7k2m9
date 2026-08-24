@@ -15278,9 +15278,19 @@ function lwDrawAll(){
   try{if(window._lwPxLine&&lwSeries)lwSeries.removePriceLine(window._lwPxLine);}catch(e){}
   window._lwPxLine=lwSeries.createPriceLine({price:px,color:'#ff6d00',lineWidth:2,lineStyle:LS.Solid,axisLabelVisible:true,title:''});
   
-  try{var _sl=(typeof _supState!=='undefined'&&_supState&&_supState.axis2_sell_life&&_supState.axis2_sell_life.layers)||[];
-    _sl.filter(function(l){return l&&l.alive&&l.sitga>px;}).sort(function(a,b){return a.sitga-b.sitga;}).slice(0,2).forEach(function(l){
-      lwAdd(l.sitga,'#ef5350','숏 청산선(매도 실존가·돌파 시 청산)',LS.Dashed,2);});
+  
+
+
+
+  try{var _sv2=[];
+    var _WVc=(((gkSrc()['파동']||{}).wb||{}).waves||{});
+    ['d1','w1','M1'].forEach(function(_tf){
+      ((_WVc[_tf]||{})['숏']||[]).forEach(function(x){ if(x&&x.rep>px)_sv2.push(x.rep); });});
+    _sv2.sort(function(a,b){return a-b;});
+    var _seen2=[];
+    _sv2.forEach(function(v){ if(_seen2.length>=2)return;
+      if(_seen2.some(function(u){return Math.abs(u-v)/v<0.005;}))return;
+      _seen2.push(v); lwAdd(v,'#ef5350','숏 청산선(매도 실존가·돌파 시 청산)',LS.Dashed,2);});
   }catch(e){}
   lwTraj();
   lwSideRender();
