@@ -12925,7 +12925,23 @@ function battleZones(tf,nm){try{
   var pL=pick(AL,true),pS=pick(AS,false);
   var nrL=pL?gj(A[pL.s]):null, nrS=pS?gj(A[pS.s]):null;
   var ncL=cw(pL), ncS=cw(pS);
-  var sl=null,ss=null;try{var WB=((gkSrc()['파동']||{}).wb)||{};sl=(WB[tf]||{}).rep;ss=(WB['sell_'+tf]||{}).rep;}catch(e){}
+  
+
+
+
+
+
+
+  var repOfWave=function(w,side){ if(!w)return null;
+    try{ var _WV=(((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{};
+      var _arr=(side>0?_WV['롱']:_WV['숏'])||[]; var _t0=A[w.s].t;
+      for(var _q=0;_q<_arr.length;_q++){ if(_arr[_q].s0===_t0)return _arr[_q].rep; }
+    }catch(e){} return null; };
+  var sl=null,ss=null;
+  try{ sl=repOfWave(pL,1); ss=repOfWave(pS,-1);
+    var WB=((gkSrc()['파동']||{}).wb)||{};
+    if(sl==null)sl=(WB[tf]||{}).rep; if(ss==null)ss=(WB['sell_'+tf]||{}).rep;
+  }catch(e){}
   var rows=[['전체 파동 뿌리간',mid(rl,rs),rl,rs],
             ['전체 파동 중심간',mid(cl,cs),cl,cs],
             ['현재 진행중 뿌리간',mid(nrL,nrS),nrL,nrS],
@@ -13066,6 +13082,11 @@ function waveDetailPanel(){try{
       }
       _cur={head:o,kids:[]}; _grp.push(_cur);
     });
+    
+
+
+    _grp.forEach(function(g,gi){ g.head._wno=(gi+1)+'파동';
+      g.kids.forEach(function(k,ki){ k._wno=(gi+1)+'-'+(ki+1); }); });
     _grp.sort(function(a,b){return (b.head.vw||0)-(a.head.vw||0);});
     var ws=[]; _grp.forEach(function(g){ g.head._grpHead=true; g.head._kids=g.kids.length; g.head._grpId=g.head.w.s;
       
@@ -13128,7 +13149,8 @@ function waveDetailPanel(){try{
       
       var _jt=A[w.s].t, _jlab=(_isK?'확장 파동 시작':'파동 시작')+' '+dl(w.s);
       var _jat=' onclick="wvGoto(&quot;'+tf+'&quot;,'+_jt+',&quot;'+_jlab+'&quot;)" title="차트에서 이 파동이 생긴 캔들 보기" style="white-space:nowrap;cursor:pointer"';
-      var tr='<tr'+_bd+'><td class="l"'+_jat+'>'+_ind+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span> <span class="sub" style="font-size:8.5px;color:var(--gold2)">차트↗</span>'+_tag+'</td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
+      var _wnoTag=o._wno?('<b style="color:var(--gold2);font-size:9.5px;margin-right:4px">'+o._wno+'</b>'):'';   
+      var tr='<tr'+_bd+'><td class="l"'+_jat+'>'+_ind+_wnoTag+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span> <span class="sub" style="font-size:8.5px;color:var(--gold2)">차트↗</span>'+_tag+'</td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
       
       if(steps.length){var dc=w.dir>0?'var(--buy)':'var(--sell)';
         var lis=steps.map(function(st){
@@ -13375,12 +13397,31 @@ function waveDetailPanel(){try{
 
 
 
-              var _wc={},_ok=false;
-              try{convClusters().forEach(function(c){if(c.sys==='고래'){_wc[c.name]=c.v;_ok=true;}});}catch(e){console.warn('[고래 평단 줄] convClusters '+e);}
+              
+
+
+
+
+
+
+              var _wc={},_ok=false,_wb=null,_ws=null,_wl=null;
+              try{
+                if(typeof whaleData!=='undefined'&&whaleData===null&&!whaleLoading&&typeof loadWhale==='function'){try{loadWhale();}catch(e){}}
+                if(typeof whaleData!=='undefined'&&Array.isArray(whaleData)&&whaleData.length>3){
+                  var _vwq=function(s2,k2){var v=s2.reduce(function(x,r2){return x+r2.vol;},0);return v?s2.reduce(function(x,r2){return x+r2[k2]*r2.vol;},0)/v:0;};
+                  var _ai=0; whaleData.forEach(function(r2,i2){if(r2.h>whaleData[_ai].h)_ai=i2;});
+                  var _bl=whaleData.filter(function(r2){return r2.bull;}), _dc=whaleData.slice(_ai).filter(function(r2){return !r2.bull;});
+                  if(_bl.length&&_dc.length){
+                    _wb=(_vwq(_bl,'gj')+_vwq(_bl,'cen'))/2;
+                    _ws=(_vwq(_dc,'gj')+_vwq(_dc,'cen'))/2;
+                    _wl=((_vwq(_bl,'gj')+_vwq(_dc,'gj'))/2+(_vwq(_bl,'cen')+_vwq(_dc,'cen'))/2)/2;
+                    _ok=true;
+                  }
+                }
+              }catch(e){console.warn('[고래 평단 줄] '+e);}
               
               if(!_ok)
-                return '<div style="margin-top:3px;font-size:11px" class="sub">고래 평단 미로드</div>';
-              var _wb=_wc['매수 고래 평단'],_ws=_wc['매도 고래 평단'],_wl=_wc['고래 밀집 층'];
+                return '<div style="margin-top:3px;font-size:11px" class="sub">고래 평단 , 월봉 수신 중</div>';
               
 
               if(_wb==null||_ws==null)
