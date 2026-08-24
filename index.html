@@ -12919,12 +12919,15 @@ function waveDetailPanel(){try{
 
 
     var _asc=_pick.slice().sort(function(a,b){return a.w.s-b.w.s;});
+    
+
+
     var _grp=[],_cur=null;
     _asc.forEach(function(o){
       if(_cur){
-        var last=_cur.kids.length?_cur.kids[_cur.kids.length-1]:_cur.head;
-        var span=Math.max(2,(last.w.e-last.w.s+1)*2);
-        if(o.w.s-last.w.e<=span){_cur.kids.push(o);return;}
+        var hw=_cur.head.w;
+        var span=Math.max(2,(hw.e-hw.s+1)*2);
+        if(o.w.s-hw.e<=span){_cur.kids.push(o);return;}
       }
       _cur={head:o,kids:[]}; _grp.push(_cur);
     });
