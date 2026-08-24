@@ -579,7 +579,7 @@ function vbFillPanel(ks){
   const row=k=>{const f=vbFill(k);if(!f)return '';
     const fc=f.fill>=100?'var(--gold2)':f.fill>=70?'var(--buy)':f.fill>=40?'var(--tx)':'var(--tx2)';
     const bw=Math.min(100,f.fill);
-    const ach=f.done?`<span style="color:var(--buy);font-weight:700">달성</span> · 초과 <b style="color:var(--buy)">+$${f1(f.need)}</b>`
+    const ach=f.done?(f.need<=0?`<span style="color:var(--buy);font-weight:700">정확히 달성</span>`:`<span style="color:var(--buy);font-weight:700">달성</span> · 초과 <b style="color:var(--buy)">+$${f1(f.need)}</b>`)
                     :`<span style="color:var(--warn);font-weight:700">미달성</span> · 필요 <b style="color:var(--warn)">−$${f1(f.need)}</b>`;
     
     const dnExc=f.o-f.l, upExc=f.h-f.o, domDown=dnExc>=upExc, domExc=Math.max(dnExc,upExc);
@@ -12973,6 +12973,12 @@ function waveDetailPanel(){try{
         ? (A[i-1].c<_V(A[i-1]) && A[i].c>_V(A[i]) && A[i+1].c>_V(A[i+1]))
         : (A[i-1].c>_V(A[i-1]) && A[i].c<_V(A[i]) && A[i+1].c<_V(A[i+1]));
       if(!fire)return false;
+      
+
+
+      var _held=0;
+      for(var _h=Math.max(0,i-6);_h<i;_h++){ if(w.dir>0? A[_h].c<_V(A[_h]) : A[_h].c>_V(A[_h]))_held++; }
+      if(_held<3)return false;
       var rt=g2(A[w.s]);
       for(var k=w.e+1;k<n;k++){ if(w.dir>0? A[k].c<rt : A[k].c>rt) return false; }
       return true;
@@ -15165,6 +15171,7 @@ function _lwCat(t){t=String(t||'');
   if(/상단|하단|중심|전투존|1차|2차/.test(t))return 'band';
   return null;}
 function lwAdd(p,color,title,style,width){var _bc=_lwCat(title);if(_bc&&!_lwSelOn(_bc))return;const tgt=lwMirror||lwSeries;if(p==null||!isFinite(p)||!tgt)return;lwLines.push({s:tgt,ln:tgt.createPriceLine({price:p,color,lineWidth:width||1,lineStyle:style,axisLabelVisible:true,title}),p:p});}
+
 function lwAddR(p,color,title,style,width){var _bc=_lwCat(title);if(_bc&&!_lwSelOn(_bc))return;if(p==null||!isFinite(p)||!lwSeries)return;lwLines.push({s:lwSeries,ln:lwSeries.createPriceLine({price:p,color,lineWidth:width||1,lineStyle:style,axisLabelVisible:true,title}),p:p});}
 function lwDrawAll(){
   
@@ -15936,6 +15943,7 @@ function integBandsHtml(k,px){
     <div class="scroll"><table><thead><tr><th>가격</th><th>거리</th><th class="l">겹친 통합밴드</th></tr></thead><tbody>${confl.slice(0,6).map(c=>`<tr><td class="num" style="font-weight:700;color:${c.price>px?'var(--sell)':'var(--buy)'}">${f1(c.price)}</td><td class="num sub">${((c.price-px)/px*100).toFixed(2)}%</td><td class="l" style="font-size:11px">${c.items.map(x=>x.n).join(' · ')}</td></tr>`).join('')}</tbody></table></div></div>`;}
   return {cards,conflHtml};
 }
+
 function integBandStrip(){
   try{
     const k=dashIntegTF, px=E.d1[E.d1.length-1].c;
@@ -16945,6 +16953,7 @@ function battleBalance(){
   }catch(e){return ''}
 }
 
+
 function dashFightZone(){
   try{
     const px=E.d1[E.d1.length-1].c;
@@ -17034,6 +17043,7 @@ function frameTrend(div){try{
   const g=x=>((x.o+x.c)/2+(x.h+x.l)/2)/2;
   return {up:g(arr[arr.length-2])>=g(arr[arr.length-3]),curG:g(arr[arr.length-1]),transG:g(arr[arr.length-2])};   
 }catch(e){return null;}}
+
 function quarterTrend(){return frameTrend(3);}   
 
 
@@ -18100,6 +18110,7 @@ function reportPayload(){try{
 
 
 
+
 function _opxRow(px,f){return '<tr style="background:rgba(214,162,58,.12)"><td class="l" style="font-weight:800;color:var(--gold2);white-space:nowrap">▶ 현재가</td><td class="num" style="font-weight:800;color:var(--gold2)">'+f(px)+'</td><td class="num sub">0.0%</td><td class="l sub" style="font-size:10.5px">지금 여기</td></tr>';}
 
 function actionChipsPanel(){try{
@@ -18702,6 +18713,7 @@ function viewInvestStrategy(){try{
   var body=(__isSec==='시나리오')?viewScenario():viewReviewBoard();
   return '<h2 class="sec" style="margin:0 0 8px">투자 전략 <span class="sub" style="font-size:11px;font-weight:400">, 앞을 그리는 시나리오 · 뒤를 정직하게 보는 복기</span></h2>'+bar+body;
 }catch(e){return '<div class="sub" style="padding:20px">투자 전략 렌더 오류: '+e.message+'</div>';}}
+
 function goUMap(){try{_pm('go_map');}catch(e){}setTab('LIVE');setTimeout(function(){var e=document.getElementById('uMap');if(e)e.scrollIntoView({behavior:'smooth'});},500);}
 function _whyLink(label,tab,key){return '<span onclick="_go(\''+tab+'\',\''+key+'\')" style="cursor:pointer;font-size:10.5px;color:var(--gold2);text-decoration:underline;white-space:nowrap;margin-left:6px">'+label+' →</span>';}
 function viewHanjang(){try{
@@ -22834,7 +22846,7 @@ function whaleSupply(){
         <b>전투 기록</b>: BP 도달 전투 <b>${cb.length}회</b> · 방어 성공률 <b>50%(반반 - 냉정판)</b> <span class="sub">(판정 기준 의존: 반등 발생 기준 관대판은 상회 - 반반으로 읽는 것이 냉정)</span> · 방어 성공 시 반등폭 중앙 <b>+${cn.rise_median}%</b> · 수명 중앙 <b>${cn.life_median}일</b> <span class="sub">(조건부 통계·확정 아님)</span></div>
       ${cn.current?`<div style="padding:0 14px 10px;font-size:12px;line-height:1.9;border-top:1px solid var(--bd);padding-top:9px">
         <b style="color:var(--gold2)">이번 파동 판독</b> - 저점 ${cn.current.low_date} ${f0(cn.current.low)}에서 ${liveRise!=null?`현재 <b>+${liveRise.toFixed(1)}%</b>`:''} <span class="sub">(과거 방어 성공 반등폭의 하위 ${cn.current.pct}% 지점 = 아직 초반)</span><br>
-        발밑 전투포인트 <b>${f0(_bpNow)}</b> <span class="sub">(${(window.__WHDELTA&&window.__WHDELTA.as_of)||'2026-07'} 판 기준)</span> · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b> <span class="sub">(같은 판)</span><br>
+        전투포인트 <b>${f0(_bpNow)}</b> <span class="sub">(현재가 대비 ${((_bpNow-px)/px*100).toFixed(1)}% · ${(window.__WHDELTA&&window.__WHDELTA.as_of)||'저장'} 판)</span> · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b> <span class="sub">(같은 판)</span><br>
         프랙탈 투영(시나리오·확정 아님 · 07 판 좌표): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
         <span class="sub">현재 = 매도 고래가 −25% 물린 자리에서 매수가 전투포인트 위에 서 있는 <b>자리</b> - 84,920을 회복하기 전까지 고래가 항복한 것은 아닙니다.</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -23696,6 +23708,7 @@ try{
   if(_h&&_h!=='snapshot'){var _all=[];TABGROUPS.forEach(function(g2){g2.tabs.forEach(function(t2){_all.push(t2);});});if(_all.indexOf(_h)>=0)active=_h;}
 }catch(e){}
 function _gatePx(g){try{if(g==null)return null;if(typeof g==='number')return g;if(typeof g==='object')return g.좌표||null;var m=String(g).match(/(\d{4,})/);return m?+m[1]:null;}catch(e){return null;}}
+
 function _navTog(g){window._navOpen=(window._navOpen===g?null:g);render();}
 function gotoTab(tab,k){if(tab==='기준가'&&k)tfSel=k;if(tab==='전투포인트'&&k)tpSec=(k==='m30'||k==='h1'||k==='h4')?'시간봉':'기간봉';setTab(tab);}
 function simToggle(which){const sy=window.pageYOffset;if(which==='up')simExpUp=!simExpUp;else simExpDn=!simExpDn;render();window.scrollTo(0,sy);}
@@ -24279,6 +24292,7 @@ async function whaleTick(){
 window.addEventListener('scroll',()=>{_lastScroll=Date.now();},{passive:true});
 window.addEventListener('touchmove',()=>{_lastScroll=Date.now();},{passive:true});
 ['click','pointerdown','keydown'].forEach(ev=>window.addEventListener(ev,()=>{_lastScroll=Date.now();},{passive:true}));   
+
 
 (async function preboot(){try{
   if(typeof E!=='undefined'&&E)return;
