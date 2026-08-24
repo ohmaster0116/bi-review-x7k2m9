@@ -13307,7 +13307,7 @@ function waveDetailPanel(){try{
             +(fs?(px2>=fs.vw?'현재가가 아래 매도(생존 최고) <b style="color:var(--sell)">'+f(fs.vw)+'</b> <b style="color:var(--buy)">위(장중)</b>'
                             :'현재가가 위 매도 최전방 <b style="color:var(--sell)">'+f(fs.vw)+'</b> 아래'):'위 생존 매도 없음')
             +(fb?(px2>=fb.vw?(' · <b style="color:var(--buy)">롱 우위 유지 = '+f(fb.vw)+' 위</b>'
-              +(_lad.length>1?' <span class="sub">(밀려도 다음 방어 '+_lad.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
+              +(_lad.length>1?' <span class="sub">(밀려도 다음 층 '+_lad.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
               +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 숏 우위 전환 후보</b>')
               :' · <span class="sub">아래 생존 매수 없음 · 위쪽 최저 '+f(fb.vw)+'</span>'):' · <span class="sub">아래 생존 매수 없음</span>')
             +(function(){try{   
@@ -13374,7 +13374,7 @@ function waveDetailPanel(){try{
              :(mk(tf,nm+' 매수 파동',N,1)+mk(tf,nm+' 매도 파동',N,-1)))
           +lineage+(tf==='w1'?wStat:'');
       })()
-    +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 방어선의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
+    +'<div class="sub" style="font-size:9.5px;margin-top:4px">현 매수 파동 일별 계단(생존/소멸)=종합 다음 층의 계단 이력 · 매도 계단=숏 저항 5칸 참조</div></div></div>';
 }catch(e){return '';}}
 
 
@@ -17650,7 +17650,7 @@ function marketReadPanel(mode){try{
   lvItems.push({v:px,nm:'현재가',cur:1,note:'지금 자리',col:'var(--gold2)'});
   if(gFrame!=null)lvItems.push({v:gFrame,nm:'반전 유지선',note:'진행 분기·월 기준가(구조적 동일 · 실시간 이동) - 이 위 유지가 반전 1봉',col:'#f0a83c'});
   lvItems.push({v:rLo,nm:'생명선(주봉 실존가)',note:'반등 생사선 - 종가 이탈=반등 무효'+(netVW!=null?' · 넷 본전 '+f(netVW)+' 수렴':'')+(uncAvg!=null?' · 미확인 평균 '+f(uncAvg):''),col:'var(--buy)'});
-  if(lifeW!=null&&lifeW<gW)lvItems.push({v:lifeW,nm:'다음 방어선(주 파동)',note:'주봉 생존 파동선 - 생명선 깨지면 여기서 다음 싸움(하락 재개 경계)',col:'var(--sell)'});
+  if(lifeW!=null&&lifeW<gW)lvItems.push({v:lifeW,nm:'다음 층(주 파동)',note:'주봉 생존 파동선 - 생명선 깨지면 여기서 다음 싸움(하락 재개 경계)',col:'var(--sell)'});
   lvItems.sort(function(a,b){return b.v-a.v;});
   var levels='<div class="scroll" style="margin-top:8px"><table><thead><tr><th class="l">작동 레벨(위→아래)</th><th>값</th><th class="l">의미</th></tr></thead><tbody>'
     +lvItems.map(function(it){return lv(it.nm,f(it.v)+(it.cur?'':' <span class="sub" style="font-weight:400">'+pc(it.v)+(it.x||'')+'</span>'),it.note,it.col);}).join('')
@@ -20212,7 +20212,7 @@ function daeungPanel(){try{
   if(dn)rows.push({v:dn,c:'var(--buy)',n:'매수 주체의 본진, 마감으로 깨지면 하락 재개'});
   try{var bd2=waveBook('d1');   
     if(bd2&&bd2.stepsAll){var cands=bd2.stepsAll.filter(function(st){return st.alive&&st.vw<px&&(!jl||Math.abs(st.vw-jl)/px>0.002)&&(!dn||Math.abs(st.vw-dn)/px>0.002);});
-      if(cands.length){cands.sort(function(a,b2){return b2.vw-a.vw;});rows.push({v:cands[0].vw,c:'var(--buy)',n:'다음 방어 계단, 본진 아래 대기 실존가'});}}}catch(e){}
+      if(cands.length){cands.sort(function(a,b2){return b2.vw-a.vw;});rows.push({v:cands[0].vw,c:'var(--buy)',n:'다음 층, 본진 아래 대기 실존가'});}}}catch(e){}
   rows.sort(function(a,b){return b.v-a.v;});
   rows=rows.slice(0,6);
   var lad=rows.map(function(r){
@@ -20223,7 +20223,7 @@ function daeungPanel(){try{
   var plan='';
   var brD2=p.보폭일||{};
   if(up)plan+='<div>· '+f(up)+'를 마감으로 넘으면 → <span style="color:var(--buy)">(추세추종 자리)</span> 다음 목표 '+(mPrev?f(mPrev):'위쪽 관문')+(brD2.상승한계?' · 오늘 위 한계 '+f(brD2.상승한계):'')+'</div>';
-  if(dn)plan+='<div>· '+f(dn)+'이 마감으로 깨지면 → <span style="color:var(--sell)">(하락 전환 자리)</span> 다음 하단 방어선 확인'+(brD2.반락한계?' · 오늘 아래 한계 '+f(brD2.반락한계):'')+', 반등 없으면 추세 하방</div>';   
+  if(dn)plan+='<div>· '+f(dn)+'이 마감으로 깨지면 → <span style="color:var(--sell)">(하락 전환 자리)</span> 다음 하단 층 확인'+(brD2.반락한계?' · 오늘 아래 한계 '+f(brD2.반락한계):'')+', 반등 없으면 추세 하방</div>';   
   plan+='<div>· 그 사이에서는 → <span style="color:var(--blue)">(되돌림 매수 유효 구간)</span> 확인이 먼저인 자리, 서두를 이유 없음'+(brD2.회귀50?' · 되돌림 중앙 '+f(brD2.회귀50)+'까지가 보통 걸음':'')+'</div>';
   if(p.보폭&&p.보폭.월잔여)plan+='<div class="sub" style="font-size:10px">이번 달 남은 보폭 '+f(p.보폭.월잔여)+' <span style="border:1px solid var(--gold);border-radius:7px;padding:0 6px;color:var(--gold2)">전략 · 5자</span> (이정표이지 저항 아님)</div>';
   if(mPrev)plan+='<div class="sub" style="font-size:9.5px">'+f(mPrev)+'=중간 저항 · $70,235=관문(층 구분)</div>';
@@ -21537,7 +21537,7 @@ function viewDash(){
     +'<div id="lwSlot" style="min-width:0;margin-top:10px"></div>'   
     +verdictCard()+subjectClashPanel()+simpleTopPanel()+daeungPanel()+tfFlipPanel()+liveDuelBlock()
     +daeungPlanPanel()+dirWeightPanel()+xAxisPanel()+volBalancePanel()+defenseLadderPanel()
-    +'<div onclick="setTab(&quot;정렬·대치&quot;)" style="margin-top:12px;padding:13px 17px;border:1px solid var(--gold);border-radius:11px;cursor:pointer;font-size:13px;background:rgba(214,162,58,.10);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span><b style="color:var(--gold2)">심층 분석</b> <span style="color:var(--tx2)">- 층별 정렬·힘의 대치·다음 방어선·엔진 반응</span></span><b style="font-size:15px;color:var(--gold2);text-decoration:underline;white-space:nowrap">보러 가기 ›</b></div>'
+    +'<div onclick="setTab(&quot;정렬·대치&quot;)" style="margin-top:12px;padding:13px 17px;border:1px solid var(--gold);border-radius:11px;cursor:pointer;font-size:13px;background:rgba(214,162,58,.10);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span><b style="color:var(--gold2)">심층 분석</b> <span style="color:var(--tx2)">- 층별 정렬·힘의 대치·다음 층·엔진 반응</span></span><b style="font-size:15px;color:var(--gold2);text-decoration:underline;white-space:nowrap">보러 가기 ›</b></div>'
     +verdictLivePointer();
 }
 
