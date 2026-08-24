@@ -12889,8 +12889,8 @@ function battleZones(tf,nm){try{
       +'<span><b style="color:var(--tx)">'+r[0]+'</b> <b style="color:var(--buy)">매수 '+br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-br)+'%</b></span>'
       +'</div>'   
       +'<div style="position:relative;height:10px;margin-top:5px;border-radius:4px;overflow:hidden;background:var(--bg)">'
-      +seg(0,p1,'rgba(63,179,127,.42)')+seg(p1,pz-p1,'rgba(63,179,127,.20)')
-      +seg(pz,p3-pz,'rgba(230,90,90,.20)')+seg(p3,100-p3,'rgba(230,90,90,.42)')
+      
+      +seg(0,br,'rgba(63,179,127,.55)')+seg(br,100-br,'rgba(230,90,90,.55)')
       +tick(q1,'rgba(255,255,255,.35)',10,0)+tick(q3,'rgba(255,255,255,.35)',10,0)
       +'<span style="position:absolute;left:'+pz.toFixed(1)+'%;top:0;width:2px;height:100%;background:var(--gold2)"></span>'
       +(inRange?('<span style="position:absolute;left:'+P(px).toFixed(1)+'%;top:-1px;font-size:10px;line-height:1;color:#ff8a3c">▼</span>'):'')
