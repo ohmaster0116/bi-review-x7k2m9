@@ -12905,15 +12905,22 @@ function battleZones(tf,nm){try{
 
 
   var cen=function(arr){if(!arr.length)return null;var U=0,Q=0;arr.forEach(function(w){var u=0,q=0;for(var k=w.s;k<=w.e;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}if(!q)return;U+=u;Q+=q;});return Q?U/Q:null;};
-  var near=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x==null)return;if(up){if(x<=px&&(v==null||x>v))v=x;}else{if(x>=px&&(v==null||x<v))v=x;}});
-    if(v==null)arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x!=null&&(v==null||(up?x<v:x>v)))v=x;});return v;};
+  
+
+
+
+  var _vwc={}, _vwOf=function(w){ var k=w.s+'_'+w.e;
+    if(!(k in _vwc)){ var x=null; try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;} _vwc[k]=x; }
+    return _vwc[k]; };
+  var near=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var x=_vwOf(w);if(x==null)return;if(up){if(x<=px&&(v==null||x>v))v=x;}else{if(x>=px&&(v==null||x<v))v=x;}});
+    if(v==null)arr.forEach(function(w){var x=_vwOf(w);if(x!=null&&(v==null||(up?x<v:x>v)))v=x;});return v;};
   var rl=root(AL,true),rs=root(AS,false),cl=cen(AL),cs=cen(AS);
   
 
 
-  var pick=function(arr,up){if(!arr.length)return null;var best=null;arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x==null)return;
+  var pick=function(arr,up){if(!arr.length)return null;var best=null;arr.forEach(function(w){var x=_vwOf(w);if(x==null)return;
     if(up){if(x<=px&&(best==null||x>best._x)){best=w;best._x=x;}}else{if(x>=px&&(best==null||x<best._x)){best=w;best._x=x;}}});
-    if(best==null)arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x!=null&&(best==null||(up?x<best._x:x>best._x))){best=w;best._x=x;}});return best;};
+    if(best==null)arr.forEach(function(w){var x=_vwOf(w);if(x!=null&&(best==null||(up?x<best._x:x>best._x))){best=w;best._x=x;}});return best;};
   var cw=function(w){if(!w)return null;var u=0,q=0;for(var k=w.s;k<=w.e;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
   var pL=pick(AL,true),pS=pick(AS,false);
   var nrL=pL?gj(A[pL.s]):null, nrS=pS?gj(A[pS.s]):null;
