@@ -836,8 +836,14 @@ function trendResolveFwd(x){
 }
 
 
+var _wlC=new WeakMap();   
+
+
 function waveLedger(tf,arr,opt){
   const A=arr||E[tf||'d1']; if(!A||A.length<40)return arr?null:_wbFB('ledger',tf||'d1');
+  const _lc=(opt&&opt.lastClosed)?'C':'R';
+  const _ck=_lc+'|'+A.length+'|'+A[A.length-1].t+'|'+A[A.length-1].c;
+  {const _m=_wlC.get(A); if(_m){const _h=_m.get(_lc); if(_h&&_h.k===_ck)return _h.r;}}
   
 
 
@@ -854,6 +860,17 @@ function waveLedger(tf,arr,opt){
     if(curDir!==0&&i-runStart>=2)runs.push({dir:curDir,s:runStart,e:i-1});
     curDir=d;runStart=i;}
   if(curDir!==0&&(n-1)-runStart+1>=2)runs.push({dir:curDir,s:runStart,e:n-1,open:true});
+  
+
+
+
+
+
+
+
+  const _sMax=new Float64Array(n>0?n:1),_sMin=new Float64Array(n>0?n:1);
+  {let mx=-Infinity,mn=Infinity;
+   for(let i=n-1;i>=0;i--){const cv=A[i].c; if(cv>mx)mx=cv; if(cv<mn)mn=cv; _sMax[i]=mx;_sMin[i]=mn;}}
   const waves=runs.map(r=>{
     let s=0;for(let i=r.s;i<=r.e;i++)s+=G(i);
     const line=s/(r.e-r.s+1);
@@ -879,15 +896,22 @@ function waveLedger(tf,arr,opt){
     if(!r.open){
       const _cc=A[n-1].c;                                   
       if(r.dir>0?_cc<line:_cc>line){                        
-        for(let k=n-1;k>r.e;k--){                           
-          if(r.dir>0?A[k].c<line:A[k].c>line)death=k; else break;
-        }
-        if(death==null)death=n-1;
+        
+
+
+
+        let _lo=0,_hi=n-1,_j=-1;
+        if(r.dir>0){ while(_lo<=_hi){const _m=(_lo+_hi)>>1; if(_sMax[_m]>=line){_j=_m;_lo=_m+1;}else _hi=_m-1;} }
+        else       { while(_lo<=_hi){const _m=(_lo+_hi)>>1; if(_sMin[_m]<=line){_j=_m;_lo=_m+1;}else _hi=_m-1;} }
+        death=(_j>r.e)?(_j+1):(r.e+1);
+        if(death>n-1)death=n-1;
       }
     }
     return {dir:r.dir,s:r.s,e:r.e,line,death,open:!!r.open,formDays:r.e-r.s+1};
   });
-  return {waves,n};
+  const _out={waves,n};
+  {let _m=_wlC.get(A); if(!_m){_m=new Map();_wlC.set(A,_m);} _m.set(_lc,{k:_ck,r:_out});}
+  return _out;
 }
 
 function dlY(x){var d=(x instanceof Date)?x:new Date(x);var s=(d.getUTCMonth()+1)+"/"+d.getUTCDate();var y=d.getUTCFullYear();return y===(new Date()).getUTCFullYear()?s:(y%100)+'.'+s;}
