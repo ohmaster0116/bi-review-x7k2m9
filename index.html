@@ -14226,6 +14226,24 @@ function viewWaveInner(){
         · 파동 크기 = 생존 예고: 대형(5캔들+) 생존 중앙 8~10캔들 vs 소형(2캔들) 1캔들 · 사망 시 다음 살아있는 파동선까지 평균변동폭의 약 2배(1.97배) 공백(하락 여지).</div></div>`;
   }
   
+
+
+
+
+  else {
+    var _wm=(ws&&ws.mode)||'none';
+    cases='<div class="panel" id="wvCases"><div class="hd">📚 과거 같은 상태</div>'
+      +'<div style="padding:10px 14px;font-size:12.5px;line-height:1.85;color:var(--tx2)">'
+      +(_wm==='live'
+        ? ('현재 일봉 파동은 <b style="color:var(--tx)">형성이 끝나고 생존 중</b>입니다'
+           +(ws.days!=null?(' <span class="sub">(형성 종료 후 '+ws.days+'봉째)</span>'):'')+'.<br>'
+           +'역대 대조는 <b>형성 중(스트릭 진행)</b> 상태를 자로 삼아 검증된 것이라, 생존 구간에는 붙이지 않습니다.<br>'
+           +'<span class="sub">다음 파동이 형성에 들어가면 그 자리에서 다시 나옵니다. 지금 볼 것은 위 원장의 뿌리·주체 평단 사수 여부입니다.</span>')
+        : ('지금은 <b style="color:var(--tx)">진행 중인 일봉 파동이 없습니다</b>(무파동).<br>'
+           +'<span class="sub">기준가가 같은 방향으로 2봉 이상 이어지면 파동이 서고, 그때 역대 같은 상태 대조가 나옵니다.</span>'))
+      +'</div></div>';
+  }
+  
   let mfill='';
   try{
     const M=E.M1, mb=M[M.length-1];let mar=null;try{const gM=vbFill('M1');mar=gM&&gM.ar?gM.ar:null;}catch(e){}if(!mar)throw 0;   
