@@ -12592,8 +12592,9 @@ function battleZones(tf,nm){try{
       +seg(pz,p3-pz,'rgba(230,90,90,.20)')+seg(p3,100-p3,'rgba(230,90,90,.42)')
       +tick(q1,'rgba(255,255,255,.35)',10,0)+tick(q3,'rgba(255,255,255,.35)',10,0)
       +'<span style="position:absolute;left:'+pz.toFixed(1)+'%;top:0;width:2px;height:100%;background:var(--gold2)"></span>'
-      +(inRange?('<span style="position:absolute;left:'+P(px).toFixed(1)+'%;top:-1px;font-size:10px;line-height:1;color:var(--tx)">▼</span>'):'')
+      +(inRange?('<span style="position:absolute;left:'+P(px).toFixed(1)+'%;top:-1px;font-size:10px;line-height:1;color:#ff8a3c">▼</span>'):'')
       +'</div>'
+      +(inRange?('<div style="position:relative;height:11px"><span class="num" style="position:absolute;left:'+P(px).toFixed(1)+'%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#ff8a3c;white-space:nowrap">'+f0(px)+'</span></div>'):'')
       +'<div class="sub" style="display:flex;justify-content:space-between;font-size:9px;margin-top:2px">'
       +'<span>'+f0(lo3)+'</span><span>'+f0(a>b?q3:q1)+'</span><span style="color:var(--gold2)">'+f0(z)+'</span><span>'+f0(a>b?q1:q3)+'</span><span>'+f0(hi3)+'</span></div>'
       +(inRange?'':('<div class="sub" style="font-size:9px;margin-top:1px">현재가 '+f0(px)+' 는 이 구간 '+(px>hi3?'위':'아래')+'</div>'))
@@ -12683,7 +12684,14 @@ function waveDetailPanel(){try{
           else if(vw!=null&&_pb.l<vw)stat+=' <span style="font-size:9px;border:1px dashed var(--buy);color:var(--buy);opacity:.85;border-radius:7px;padding:0 5px;white-space:nowrap">장중 이탈</span>';
         }}
       var ladder=(w.death==null&&steps.length)?(stAlive+'/'+stTot+' 생존'):'없음';
-      var tr='<tr'+(w.death!=null&&!w.open?' style="opacity:.5"':'')+'><td class="l" style="white-space:nowrap">'+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span></td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
+      
+
+      var _isH=!!o._grpHead,_isK=!!o._grpKid,_nk=o._kids||0;
+      var _bd=_isK?' style="background:rgba(214,162,58,.04)"':(w.death!=null&&!w.open?' style="opacity:.5"':'');
+      var _tag=_isH?(_nk>0?' <span style="font-size:8.5px;border:1px solid var(--gold);color:var(--gold2);border-radius:6px;padding:0 4px;white-space:nowrap">메인 · 확장 '+_nk+'</span>':''):
+               (_isK?' <span style="font-size:8.5px;border:1px dashed var(--tx3);color:var(--tx3);border-radius:6px;padding:0 4px;white-space:nowrap">확장</span>':'');
+      var _ind=_isK?'<span style="display:inline-block;width:9px;border-left:2px solid var(--gold);opacity:.55;margin-right:5px">&nbsp;</span>':'';
+      var tr='<tr'+_bd+'><td class="l" style="white-space:nowrap">'+_ind+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span>'+_tag+'</td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
       
       if(steps.length){var dc=w.dir>0?'var(--buy)':'var(--sell)';
         var lis=steps.map(function(st){
@@ -13301,7 +13309,7 @@ function wgTier1(tfs){
           +'<span style="flex:1;position:relative;padding:31px 0 24px">'   
             +'<span class="num" style="position:absolute;top:0;left:0;font-size:9px;color:var(--buy)">매수율 '+_wB.toFixed(1)+'%</span>'
             +'<span class="num" style="position:absolute;top:0;right:0;font-size:9px;color:var(--sell)">매도율 '+(100-_wB).toFixed(1)+'%</span>'
-            +'<span class="num" style="position:absolute;top:11px;left:'+_pp.toFixed(1)+'%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--gold2);line-height:10px;text-align:center;white-space:nowrap">'+f(px)+'<br>▼</span>'   
+            +'<span class="num" style="position:absolute;top:11px;left:'+_pp.toFixed(1)+'%;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:#ff8a3c;line-height:10px;text-align:center;white-space:nowrap">'+f(px)+'<br>▼</span>'   
             +'<span style="display:flex;height:9px;border-radius:2px;overflow:hidden">'
               +'<span style="width:'+_wB.toFixed(1)+'%;background:var(--buy);opacity:.6"></span>'
               +'<span style="width:'+(100-_wB).toFixed(1)+'%;background:var(--sell);opacity:.6"></span></span>'
@@ -16432,7 +16440,7 @@ function capForceBars(){
           +'<span style="position:absolute;left:4px;top:2px;font-size:9px;color:var(--sell)">'+f0(lo)+'</span>'
           +'<div style="position:absolute;left:'+Math.max(1,Math.min(99,zpos))+'%;top:0;bottom:0;width:1px;background:var(--tx3)"></div>'
           +'<span style="position:absolute;right:4px;top:2px;font-size:9px;color:var(--buy)">'+f0(up)+'</span>'
-          +'<div class="num" style="position:absolute;left:'+Math.max(4,Math.min(96,pos_c)).toFixed(1)+'%;top:-21px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:var(--gold2);line-height:10px;text-align:center;white-space:nowrap">'+f0(px)+'<br>▼</div>'   
+          +'<div class="num" style="position:absolute;left:'+Math.max(4,Math.min(96,pos_c)).toFixed(1)+'%;top:-21px;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:#ff8a3c;line-height:10px;text-align:center;white-space:nowrap">'+f0(px)+'<br>▼</div>'   
         +'</div>'
         +'<div style="text-align:center;font-size:8.5px;color:var(--tx3);margin-top:1px">전투존 '+f0(zone)+'</div></div>';
     }
@@ -16554,7 +16562,7 @@ function battleBalance(){
           <div style="position:absolute;left:50%;top:-3px;height:20px;border-left:1px dashed rgba(232,237,244,.55)"></div>
           <div style="position:absolute;left:25%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
           <div style="position:absolute;left:75%;top:0;height:14px;border-left:1px solid rgba(214,162,58,.7)"></div>
-          <div class="num" style="position:absolute;left:${Math.max(4,Math.min(96,pos)).toFixed(1)}%;top:-23px;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--gold2);line-height:10px;text-align:center;white-space:nowrap">${f1(px)}<br>▼</div>
+          <div class="num" style="position:absolute;left:${Math.max(4,Math.min(96,pos)).toFixed(1)}%;top:-23px;transform:translateX(-50%);font-size:10px;font-weight:800;color:#ff8a3c;line-height:10px;text-align:center;white-space:nowrap">${f1(px)}<br>▼</div>
         </div>
         <div style="position:relative;height:26px;margin-top:1px">
           <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--tx3);white-space:nowrap">중심 ${f1(cen)}${px>=cen?' <span style="color:var(--sell)">위</span>':' <span style="color:var(--buy)">아래</span>'}</span>
