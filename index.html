@@ -13225,8 +13225,10 @@ function waveDetailPanel(){try{
 
 
               var _wc={},_ok=false;
-              try{convClusters().forEach(function(c){if(c.sys==='고래'){_wc[c.name]=c.v;_ok=true;}});}catch(e){}
-              if(!_ok)return '';
+              try{convClusters().forEach(function(c){if(c.sys==='고래'){_wc[c.name]=c.v;_ok=true;}});}catch(e){console.warn('[고래 평단 줄] convClusters '+e);}
+              
+              if(!_ok)
+                return '<div style="margin-top:3px;font-size:11px" class="sub">고래 평단 미로드</div>';
               var _wb=_wc['매수 고래 평단'],_ws=_wc['매도 고래 평단'],_wl=_wc['고래 밀집 층'];
               
 
