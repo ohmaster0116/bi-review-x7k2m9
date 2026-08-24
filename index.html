@@ -12816,10 +12816,22 @@ function battleZones(tf,nm){try{
   var near=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x==null)return;if(up){if(x<=px&&(v==null||x>v))v=x;}else{if(x>=px&&(v==null||x<v))v=x;}});
     if(v==null)arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x!=null&&(v==null||(up?x<v:x>v)))v=x;});return v;};
   var rl=root(AL,true),rs=root(AS,false),cl=cen(AL),cs=cen(AS);
-  var wl=near(AL,true),wsx=near(AS,false);
+  
+
+
+  var pick=function(arr,up){if(!arr.length)return null;var best=null;arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x==null)return;
+    if(up){if(x<=px&&(best==null||x>best._x)){best=w;best._x=x;}}else{if(x>=px&&(best==null||x<best._x)){best=w;best._x=x;}}});
+    if(best==null)arr.forEach(function(w){var x=null;try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;}if(x!=null&&(best==null||(up?x<best._x:x>best._x))){best=w;best._x=x;}});return best;};
+  var cw=function(w){if(!w)return null;var u=0,q=0;for(var k=w.s;k<=w.e;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
+  var pL=pick(AL,true),pS=pick(AS,false);
+  var nrL=pL?gj(A[pL.s]):null, nrS=pS?gj(A[pS.s]):null;
+  var ncL=cw(pL), ncS=cw(pS);
   var sl=null,ss=null;try{var WB=((gkSrc()['파동']||{}).wb)||{};sl=(WB[tf]||{}).rep;ss=(WB['sell_'+tf]||{}).rep;}catch(e){}
-  var rows=[['대파동 뿌리간',mid(rl,rs),rl,rs],['대파동 중심간',mid(cl,cs),cl,cs],
-            ['소파동간',mid(wl,wsx),wl,wsx],['실존가간',mid(sl,ss),sl,ss]];
+  var rows=[['전체 파동 뿌리간',mid(rl,rs),rl,rs],
+            ['전체 파동 중심간',mid(cl,cs),cl,cs],
+            ['현재 진행중 뿌리간',mid(nrL,nrS),nrL,nrS],
+            ['현재 진행중 중심간',mid(ncL,ncS),ncL,ncS],
+            ['현재 진행중 실존가간',mid(sl,ss),sl,ss]];
   rows=rows.filter(function(r){return r[1]!=null;});
   if(!rows.length)return '';
   var vs=rows.map(function(r){return r[1];}).concat([px]);
