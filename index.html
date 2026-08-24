@@ -12890,6 +12890,11 @@ function battleZones(tf,nm){try{
     +body+'</div>';
 }catch(e){return '';}}
 
+
+function wvTgl(cls,el){try{var n=document.getElementsByClassName(cls);var open=null;
+  for(var i=0;i<n.length;i++){if(open===null)open=(n[i].style.display==='none');n[i].style.display=open?'table-row':'none';}
+  if(el)el.innerHTML=el.innerHTML.replace(open?'▸':'▾',open?'▾':'▸');}catch(e){}}
+
 function waveDetailPanel(){try{
   var px=E.d1[E.d1.length-1].c;
   var f=function(v){return v==null?'없음':'$'+Math.round(v).toLocaleString('en-US');};
@@ -12938,8 +12943,8 @@ function waveDetailPanel(){try{
       _cur={head:o,kids:[]}; _grp.push(_cur);
     });
     _grp.sort(function(a,b){return (b.head.vw||0)-(a.head.vw||0);});
-    var ws=[]; _grp.forEach(function(g){ g.head._grpHead=true; g.head._kids=g.kids.length; ws.push(g.head);
-      g.kids.slice().sort(function(a,b){return (b.vw||0)-(a.vw||0);}).forEach(function(k){k._grpKid=true; ws.push(k);}); });   
+    var ws=[]; _grp.forEach(function(g){ g.head._grpHead=true; g.head._kids=g.kids.length; g.head._grpId=g.head.w.s; ws.push(g.head);
+      g.kids.slice().sort(function(a,b){return (b.vw||0)-(a.vw||0);}).forEach(function(k){k._grpKid=true; k._grpId=g.head.w.s; ws.push(k);}); });   
     var c4=function(b){return b.center!=null?b.center:(b.h+b.l+2*b.c)/4;};
     var rows=ws.map(function(o){
       var w=o.w, vw=o.vw;
@@ -12976,9 +12981,11 @@ function waveDetailPanel(){try{
       var ladder=(w.death==null&&steps.length)?(stAlive+'/'+stTot+' 생존'):'없음';
       
 
-      var _isH=!!o._grpHead,_isK=!!o._grpKid,_nk=o._kids||0;
-      var _bd=_isK?' style="background:rgba(214,162,58,.04)"':(w.death!=null&&!w.open?' style="opacity:.5"':'');
-      var _tag=_isH?(_nk>0?' <span style="font-size:8.5px;border:1px solid var(--gold);color:var(--gold2);border-radius:6px;padding:0 4px;white-space:nowrap">메인 · 확장 '+_nk+'</span>':''):
+      var _isH=!!o._grpHead,_isK=!!o._grpKid,_nk=o._kids||0,_gidK=(o._grpId!=null?o._grpId:0);
+      var _bd=_isK?(' class="wg'+tf+(side>0?'L':'S')+_gidK+'" style="display:none;background:rgba(214,162,58,.04)"'):(w.death!=null&&!w.open?' style="opacity:.5"':'');
+      
+      var _gid=(o._grpId!=null?o._grpId:(_isH?w.s:null));
+      var _tag=_isH?(_nk>0?' <span onclick="wvTgl(&quot;wg'+tf+(side>0?'L':'S')+_gid+'&quot;,this)" style="cursor:pointer;font-size:8.5px;border:1px solid var(--gold);color:var(--gold2);border-radius:6px;padding:0 5px;white-space:nowrap">확장 '+_nk+' ▸</span>':''):
                (_isK?' <span style="font-size:8.5px;border:1px dashed var(--tx3);color:var(--tx3);border-radius:6px;padding:0 4px;white-space:nowrap">확장</span>':'');
       var _ind=_isK?'<span style="display:inline-block;width:9px;border-left:2px solid var(--gold);opacity:.55;margin-right:5px">&nbsp;</span>':'';
       var tr='<tr'+_bd+'><td class="l" style="white-space:nowrap">'+_ind+dl(w.s)+'~'+dl(w.e)+' <span class="sub">('+stTot+'봉)</span>'+_tag+'</td><td class="l">'+dir+'</td><td class="num" style="font-weight:700;color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+f(vw)+'</td><td class="num sub">'+(vw?((vw-px)/px*100).toFixed(1)+'%':'없음')+'</td><td class="num" style="font-size:10.5px">'+ladder+'</td><td class="num" style="font-size:10.5px;color:var(--tx3)">'+f(g2(A[w.s]))+'</td><td class="l" style="font-size:10.5px">'+stat+'</td></tr>';
