@@ -12929,7 +12929,7 @@ function waveDetailPanel(){try{
 
         var hw=_cur.head.w, hr=g2(A[hw.s]), orr=g2(A[o.w.s]);
         var gap=o.w.s-hw.e, rise=hr?((orr-hr)/hr*100):999;
-        if(gap<=6 && rise>=0 && rise<=30){_cur.kids.push(o);return;}
+        if(gap<=6 && rise>=0 && rise<=30){_cur.kids.push(o);return;}   
       }
       _cur={head:o,kids:[]}; _grp.push(_cur);
     });
