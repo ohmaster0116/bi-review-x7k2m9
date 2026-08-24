@@ -13022,6 +13022,15 @@ function waveDetailPanel(){try{
       
 
       var _isH=!!o._grpHead,_isK=!!o._grpKid,_nk=o._kids||0,_gidK=(o._grpId!=null?o._grpId:0);
+      
+
+
+      var _rep=null,_repN=null;
+      try{ var _WV=(((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{};
+        var _arr=(side>0?_WV['롱']:_WV['숏'])||[];
+        var _t0=A[w.s].t;
+        for(var _q=0;_q<_arr.length;_q++){ if(_arr[_q].s0===_t0){_rep=_arr[_q].rep;_repN=_arr[_q].nAlive;break;} }
+      }catch(e){}
       var _bd=_isK?(' class="wg'+tf+(side>0?'L':'S')+_gidK+'" style="display:none;background:rgba(214,162,58,.04)"'):(w.death!=null&&!w.open?' style="opacity:.5"':'');
       
       var _gid=(o._grpId!=null?o._grpId:(_isH?w.s:null));
@@ -13038,7 +13047,7 @@ function waveDetailPanel(){try{
             +'<span class="num" style="width:76px;flex:none;text-align:right;color:'+(st.dead?'var(--tx3)':dc)+'">'+f(st.v)+'</span>'
             +'<span style="flex:none">'+(st.dead?'소멸':'<b style="color:'+dc+'">생존</b>')+'</span>'
             +(st.fg>0?'<span class="sub">전투 '+st.fg+'회</span>':'')+'</div>';}).join('');
-        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+' · 자금 '+(_L.cap>=1e9?'$'+(_L.cap/1e9).toFixed(1)+'B':'$'+Math.round(_L.cap/1e6)+'M')+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
+        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+(_rep!=null?(' · <b style="color:var(--gold2)">실존가 '+f(_rep)+'</b>'+(_repN!=null?('<span class="sub">('+_repN+'층)</span>'):'')):'')+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+' · 자금 '+(_L.cap>=1e9?'$'+(_L.cap/1e9).toFixed(1)+'B':'$'+Math.round(_L.cap/1e6)+'M')+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
       return tr;
     }).join('');
     
