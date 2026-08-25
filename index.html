@@ -13166,16 +13166,21 @@ function battleZones(tf,nm){try{
       var _arr=(side>0?_WV['롱']:_WV['숏'])||[]; var _t0=A[w.s].t;
       for(var _q=0;_q<_arr.length;_q++){ if(_arr[_q].s0===_t0)return _arr[_q].rep; }
     }catch(e){} return null; };
-  var sl=null,ss=null;
+  var sl=null,ss=null,_fbTag='';
   try{ sl=repOfWave(pL,1); ss=repOfWave(pS,-1);
     var WB=((gkSrc()['파동']||{}).wb)||{};
-    if(sl==null)sl=(WB[tf]||{}).rep; if(ss==null)ss=(WB['sell_'+tf]||{}).rep;
+    
+
+
+
+    if(sl==null){sl=(WB[tf]||{}).rep; if(sl!=null)_fbTag=' (대표)';}
+    if(ss==null){ss=(WB['sell_'+tf]||{}).rep; if(ss!=null)_fbTag=' (대표)';}
   }catch(e){}
   var rows=[['전체 파동 뿌리간',mid(rl,rs),rl,rs],
             ['전체 파동 중심간',mid(cl,cs),cl,cs],
             ['현재 진행중 뿌리간',mid(nrL,nrS),nrL,nrS],
             ['현재 진행중 중심간',mid(ncL,ncS),ncL,ncS],
-            ['현재 진행중 실존가간',mid(sl,ss),sl,ss]];
+            ['현재 진행중 실존가간'+_fbTag,mid(sl,ss),sl,ss]];
   rows=rows.filter(function(r){return r[1]!=null;});
   if(!rows.length)return '';
   var vs=rows.map(function(r){return r[1];}).concat([px]);
@@ -13300,9 +13305,26 @@ function waveDetailPanel(){try{
     
 
 
+    
+
+
+
+
+    var _sgrp={};
+    try{var _swv=((((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{})[side>0?'롱':'숏']||[];
+        _swv.forEach(function(e){ if(e&&e.grp!==undefined)_sgrp[e.s0]=e.grp; });}catch(e){}
+    var _hasSg=false; for(var _k0 in _sgrp){_hasSg=true;break;}
     var _grp=[],_cur=null;
     _asc.forEach(function(o){
       if(_cur){
+        if(_hasSg){
+          var _ta=A[_cur.head.w.s].t, _tb=A[o.w.s].t;
+          if(_sgrp[_ta]!==undefined && _sgrp[_tb]!==undefined){
+            if(_sgrp[_tb]===_sgrp[_ta]){_cur.kids.push(o);return;}
+            _cur={head:o,kids:[]}; _grp.push(_cur); return;   
+          }
+          
+        }
         
 
         var hw=_cur.head.w, hr=g2(A[hw.s]), orr=g2(A[o.w.s]);
