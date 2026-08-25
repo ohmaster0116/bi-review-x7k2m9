@@ -22150,7 +22150,26 @@ function viewUB(){
   let compT='';
   try{
     
-    const b9=k=>{try{const rr=liveUnc(k,ubBasis==='center'?'center':'gijun');if(!rr||!rr.up.length||!rr.dn.length)return null;return lin9(rr.up[0],rr.dn[0]);}catch(e){return null;}};
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    const b9=k=>{try{const rr=liveUnc(k,ubBasis==='center'?'center':'gijun');
+      if(!rr)return null;
+      const _u=(rr.up&&rr.up.length)?rr.up[0]:null, _d=(rr.dn&&rr.dn.length)?rr.dn[0]:null;
+      if(_u==null&&_d==null)return null;                 
+      const _px=E.d1[E.d1.length-1].c;
+      return lin9(_u==null?_px:_u, _d==null?_px:_d);     
+    }catch(e){return null;}};
     const bD=b9('d1'),bW=b9('w1'),bM=b9('M1'),bY=b9('y1');
     if(bD&&bW&&bM){
       
