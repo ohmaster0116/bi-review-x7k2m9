@@ -13198,8 +13198,10 @@ function battleZones(tf,nm){try{
   var pES=pickBy(AS,false,function(w){return repOfWave(w,-1);});
   try{ var WB=((gkSrc()['파동']||{}).wb)||{};
     
-    if(pEL==null){var _r=(WB[tf]||{}).rep; if(_r!=null){pEL={v:_r,eaten:0,dead:false}; _fbL=' (대표)';}}
-    if(pES==null){var _r2=(WB['sell_'+tf]||{}).rep; if(_r2!=null){pES={v:_r2,eaten:0,dead:false}; _fbS=' (대표)';}}
+    
+
+    if(pEL==null){var _r=(WB[tf]||{}).rep; if(_r!=null){pEL={v:_r,eaten:0,dead:(AL.length===0)}; _fbL=' (대표)';}}
+    if(pES==null){var _r2=(WB['sell_'+tf]||{}).rep; if(_r2!=null){pES={v:_r2,eaten:0,dead:(AS.length===0)}; _fbS=' (대표)';}}
   }catch(e){}
   var sl=pEL?pEL.v:null, ss=pES?pES.v:null;
   var dieTag=function(pl,ps){ var t=[];
