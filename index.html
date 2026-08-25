@@ -13220,8 +13220,19 @@ function battleZones(tf,nm){try{
     if(b!=null&&px>b)t.push('<span class="sub">매도측 소멸 진행중(종가 확정 대기)</span>');
     return t.length?(' · '+t.join(' · ')):'';
   };
+  
+
+
+
+  var rng=function(arr){ if(!arr.length)return null; var s0=null;
+    arr.forEach(function(w){ if(s0==null||w.s<s0)s0=w.s; });
+    var hi=null,lo=null;
+    for(var k=s0;k<n;k++){ if(hi==null||A[k].h>hi)hi=A[k].h; if(lo==null||A[k].l<lo)lo=A[k].l; }
+    return (hi!=null&&lo!=null)?(hi+lo)/2:null; };
+  var gl=rng(AL), gs=rng(AS);
   var rows=[['전체 파동 뿌리간'+allTag(rl,rs),mid(rl,rs),rl,rs],
             ['전체 파동 중심간'+allTag(cl,cs),mid(cl,cs),cl,cs],
+            ['전체 구간중점간 <span class="sub">(각 진영 가격 여정의 한가운데)</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
             ['현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS],
             ['현재 진행중 중심간'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS],
             ['현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss]];
