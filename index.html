@@ -13172,8 +13172,11 @@ function battleZones(tf,nm){try{
       var standing=up? (x<=px) : (x>=px);
       if(standing){ if(bv==null||(up? x>bv : x<bv)){best=w;bv=x;} } else eaten++; });
     if(best!=null)return {w:best,v:bv,eaten:eaten,dead:false};
+    
+
+
     arr.forEach(function(w){ var x=valFn(w); if(x==null)return;
-      if(bv==null||(up? x>bv : x<bv)){best=w;bv=x;} });
+      if(bv==null||(up? x<bv : x>bv)){best=w;bv=x;} });
     return (best!=null)?{w:best,v:bv,eaten:eaten,dead:true}:null;
   };
   var rootFn=function(w){return gj(A[w.s]);};
@@ -19680,7 +19683,9 @@ function _computeMVS(){
   var mWord=(dM!==dW&&dM!==0)?'월봉 성격 전환 중':(dM>0?'월봉 매수':dM<0?'월봉 매도':'월봉 중립');
   var regimeTurn=(dM<0)||(wU<=0),regimeBull=(dM>0&&wU>=0);
   var st;
-  if(!above) st={key:'short',word:'생명선 이탈 · 숏 우위',color:'sell',dir:-1,confirm:false};
+  
+
+  if(!above) st={key:'short',word:(life!=null?'생명선 이탈 · 숏 우위':'생명선 미산출 · 흐름 기준 숏 우위'),color:'sell',dir:-1,confirm:false};
   else if(thin&&(flowSell||regimeTurn)) st={key:'defend',word:'생명선 방어 시험 · 이탈 시 숏',color:'warn',dir:0,confirm:true};
   else if(regimeBull&&flowBuy) st={key:'long_strong',word:'매수 우위 · 롱 강',color:'buy',dir:1,confirm:false};
   else if(above&&(flowSell||regimeTurn)) st={key:'long_pullback',word:'롱 구조 · 단기 조정 · 확인 먼저',color:'warn',dir:0,confirm:true};
