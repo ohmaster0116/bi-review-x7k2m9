@@ -13166,15 +13166,16 @@ function battleZones(tf,nm){try{
       var _arr=(side>0?_WV['롱']:_WV['숏'])||[]; var _t0=A[w.s].t;
       for(var _q=0;_q<_arr.length;_q++){ if(_arr[_q].s0===_t0)return _arr[_q].rep; }
     }catch(e){} return null; };
-  var sl=null,ss=null,_fbTag='';
+  var sl=null,ss=null,_fbTag='',_fbL='',_fbS='';
   try{ sl=repOfWave(pL,1); ss=repOfWave(pS,-1);
     var WB=((gkSrc()['파동']||{}).wb)||{};
     
 
 
 
-    if(sl==null){sl=(WB[tf]||{}).rep; if(sl!=null)_fbTag=' (대표)';}
-    if(ss==null){ss=(WB['sell_'+tf]||{}).rep; if(ss!=null)_fbTag=' (대표)';}
+    
+    if(sl==null){sl=(WB[tf]||{}).rep; if(sl!=null){_fbL=' (대표)';_fbTag=' (대표)';}}
+    if(ss==null){ss=(WB['sell_'+tf]||{}).rep; if(ss!=null){_fbS=' (대표)';_fbTag=' (대표)';}}
   }catch(e){}
   var rows=[['전체 파동 뿌리간',mid(rl,rs),rl,rs],
             ['전체 파동 중심간',mid(cl,cs),cl,cs],
@@ -13312,8 +13313,10 @@ function waveDetailPanel(){try{
 
     var _sgrp={};
     try{var _swv=((((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{})[side>0?'롱':'숏']||[];
-        _swv.forEach(function(e){ if(e&&e.grp!==undefined)_sgrp[e.s0]=e.grp; });}catch(e){}
-    var _hasSg=false; for(var _k0 in _sgrp){_hasSg=true;break;}
+        _swv.forEach(function(e){ if(e&&e.grp!==undefined)_sgrp[e.s0]=e.grp; });}catch(e){console.warn('[grp 적재] '+e);}
+    
+
+    var _hasSg=_asc.length>0; for(var _i0=0;_i0<_asc.length;_i0++){ if(_sgrp[A[_asc[_i0].w.s].t]===undefined){_hasSg=false;break;} }
     var _grp=[],_cur=null;
     _asc.forEach(function(o){
       if(_cur){
@@ -13714,7 +13717,29 @@ function waveDetailPanel(){try{
         }catch(e){}
         
 
-        return battleZones(tf,nm)+powerLine+duel
+        
+
+
+
+        var _cenStrip='';
+        try{
+          var _WVX=(((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{};
+          var _mk2=function(side){
+            var a=_WVX[side]||[]; if(!a.length)return '';
+            var mains=0,exts=0,al=0,to=0,rt=null;
+            a.forEach(function(e){
+              if(e.grp!==undefined){ if(e.grp===e.s0)mains++; else exts++; }
+              al+=(e.nAlive||0); to+=(e.n||0);
+              var r=e.root; if(r!=null){ rt=(rt==null)?r:((side==='롱')?Math.min(rt,r):Math.max(rt,r)); } });
+            if(!mains)mains=a.length;   
+            return '<span style="white-space:nowrap">'+(side==='롱'?'<b style="color:var(--buy)">롱</b>':'<b style="color:var(--sell)">숏</b>')
+              +' 파동 <b>'+mains+'</b>'+(exts?('<span class="sub">(+확장 '+exts+')</span>'):'')
+              +' · 뿌리 <b>'+f(rt)+'</b> · 층위 <b>'+al.toLocaleString('en-US')+'</b><span class="sub">/'+to.toLocaleString('en-US')+' 생존</span></span>';
+          };
+          var _sL=_mk2('롱'), _sS=_mk2('숏');
+          if(_sL||_sS)_cenStrip='<div class="sub" style="font-size:10px;margin:2px 0 6px;line-height:1.9">전수 <span class="sub">(18.12/15 3천달러 바닥~)</span> · '+_sL+((_sL&&_sS)?' <span class="sub">|</span> ':'')+_sS+'</div>';
+        }catch(e){}
+        return battleZones(tf,nm)+_cenStrip+powerLine+duel
           +(_bigTxt?('<details open style="margin-top:8px"><summary style="cursor:pointer;list-style:none">'+_bigTxt+'</summary>'
              +'<div style="padding-left:10px;border-left:2px solid var(--gold);margin-top:4px">'
              +'<div class="sub" style="font-size:9.5px;margin:2px 0 4px">이 대파동에서 파생된 소파동</div>'
