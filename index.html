@@ -13121,7 +13121,14 @@ function battleZones(tf,nm){try{
   
 
 
+  
+
+
+
+
+  var CUT_MS=Date.UTC(2018,11,15);
   var alv=L.waves.filter(function(w){
+    if(A[w.s].t<CUT_MS) return false;
     var rt=gj(A[w.s]);
     for(var k=w.e+1;k<n;k++){ if(w.dir>0? A[k].c<rt : A[k].c>rt) return false; }
     return true;
