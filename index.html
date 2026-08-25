@@ -13133,7 +13133,14 @@ function battleZones(tf,nm){try{
   
 
 
-  var cen=function(arr){if(!arr.length)return null;var U=0,Q=0;arr.forEach(function(w){var u=0,q=0;for(var k=w.s;k<=w.e;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}if(!q)return;U+=u;Q+=q;});return Q?U/Q:null;};
+  
+
+
+
+
+
+  var cen=function(arr){if(!arr.length)return null;var s0=null;arr.forEach(function(w){if(s0==null||w.s<s0)s0=w.s;});
+    var u=0,q=0;for(var k=s0;k<n;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
   
 
 
@@ -13150,7 +13157,8 @@ function battleZones(tf,nm){try{
   var pick=function(arr,up){if(!arr.length)return null;var best=null;arr.forEach(function(w){var x=_vwOf(w);if(x==null)return;
     if(up){if(x<=px&&(best==null||x>best._x)){best=w;best._x=x;}}else{if(x>=px&&(best==null||x<best._x)){best=w;best._x=x;}}});
     if(best==null)arr.forEach(function(w){var x=_vwOf(w);if(x!=null&&(best==null||(up?x<best._x:x>best._x))){best=w;best._x=x;}});return best;};
-  var cw=function(w){if(!w)return null;var u=0,q=0;for(var k=w.s;k<=w.e;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
+  
+  var cw=function(w){if(!w)return null;var u=0,q=0;for(var k=w.s;k<n;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
   var pL=pick(AL,true),pS=pick(AS,false);
   var nrL=pL?gj(A[pL.s]):null, nrS=pS?gj(A[pS.s]):null;
   var ncL=cw(pL), ncS=cw(pS);
