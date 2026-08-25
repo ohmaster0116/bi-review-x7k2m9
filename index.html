@@ -13182,8 +13182,14 @@ function battleZones(tf,nm){try{
   var rootFn=function(w){return gj(A[w.s]);};
   var pRL=pickBy(AL,true,rootFn), pRS=pickBy(AS,false,rootFn);
   var pCL=pickBy(AL,true,cw),    pCS=pickBy(AS,false,cw);
-  var nrL=pRL?pRL.v:null, nrS=pRS?pRS.v:null;
-  var ncL=pCL?pCL.v:null, ncS=pCS?pCS.v:null;
+  
+
+
+
+  var vOf=function(p){ return p? (p.dead? px : p.v) : null; };
+  var bothDead=function(pl,ps){ return !!(pl&&pl.dead&&ps&&ps.dead); };
+  var nrL=vOf(pRL), nrS=vOf(pRS);
+  var ncL=vOf(pCL), ncS=vOf(pCS);
   
 
 
@@ -13206,11 +13212,12 @@ function battleZones(tf,nm){try{
     if(pEL==null){var _r=(WB[tf]||{}).rep; if(_r!=null){pEL={v:_r,eaten:0,dead:(AL.length===0)}; _fbL=' (대표)';}}
     if(pES==null){var _r2=(WB['sell_'+tf]||{}).rep; if(_r2!=null){pES={v:_r2,eaten:0,dead:(AS.length===0)}; _fbS=' (대표)';}}
   }catch(e){}
-  var sl=pEL?pEL.v:null, ss=pES?pES.v:null;
+  var sl=vOf(pEL), ss=vOf(pES);
   var dieTag=function(pl,ps){ var t=[];
-    if(pl){ if(pl.dead)t.push('<span style="color:var(--buy)">매수 전량 소멸 진행중·새 파동 대기</span>');
+    
+    if(pl){ if(pl.dead)t.push('<span style="color:var(--buy)">매수 전량 소멸 진행중·새 파동 대기</span> <span class="sub">(직전 소멸값 '+f0(pl.v)+')</span>');
             else if(pl.eaten)t.push('<span class="sub">매수 '+pl.eaten+'개 소멸 진행중</span>'); }
-    if(ps){ if(ps.dead)t.push('<span style="color:var(--sell)">매도 전량 소멸 진행중·새 파동 대기</span>');
+    if(ps){ if(ps.dead)t.push('<span style="color:var(--sell)">매도 전량 소멸 진행중·새 파동 대기</span> <span class="sub">(직전 소멸값 '+f0(ps.v)+')</span>');
             else if(ps.eaten)t.push('<span class="sub">매도 '+ps.eaten+'개 소멸 진행중</span>'); }
     return t.length?(' · '+t.join(' · ')):'';
   };
@@ -13233,9 +13240,9 @@ function battleZones(tf,nm){try{
   var rows=[['전체 파동 뿌리간'+allTag(rl,rs),mid(rl,rs),rl,rs],
             ['전체 파동 중심간'+allTag(cl,cs),mid(cl,cs),cl,cs],
             ['전체 구간중점간 <span class="sub">(각 진영 가격 여정의 한가운데)</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
-            ['현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS],
-            ['현재 진행중 중심간'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS],
-            ['현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss]];
+            ['현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS,bothDead(pRL,pRS)],
+            ['현재 진행중 중심간'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS,bothDead(pCL,pCS)],
+            ['현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss,bothDead(pEL,pES)]];
   rows=rows.filter(function(r){return r[1]!=null;});
   if(!rows.length)return '';
   var vs=rows.map(function(r){return r[1];}).concat([px]);
@@ -13245,16 +13252,28 @@ function battleZones(tf,nm){try{
     if(a==null||b==null){return '';}
     
 
+    if(r[4]){ return '<div style="margin-top:9px"><div style="font-size:11px"><b style="color:var(--tx)">'+r[0]+'</b></div>'
+      +'<div class="sub" style="font-size:10px;margin-top:3px">양 진영 전량 소멸 진행중, 서 있는 대치가 없어 막대를 그리지 않습니다(새 파동 생성 대기)</div></div>'; }
+    
+
     var lo3=Math.min(a,b),hi3=Math.max(a,b),sp3=(hi3-lo3)||1;
     var q1=(lo3+z)/2,q3=(z+hi3)/2;
     var P=function(v){return Math.max(0,Math.min(100,(v-lo3)/sp3*100));};
-    var br=Math.round(a>b?100-P(px):P(px));
+    
+
+
+
+    var br=Math.round(P(px));
+    var inv=(a>b);
+    var cLo=inv?'var(--sell)':'var(--buy)', cHi=inv?'var(--buy)':'var(--sell)';
     var inRange=(px>=lo3&&px<=hi3);
     var seg=function(l,w,c){return '<span style="position:absolute;left:'+l.toFixed(1)+'%;width:'+w.toFixed(1)+'%;top:0;height:100%;background:'+c+'"></span>';};
     var tick=function(v,c,h,t){return '<span style="position:absolute;left:'+P(v).toFixed(1)+'%;top:'+t+'px;width:2px;height:'+h+'px;background:'+c+'"></span>';};
     var p1=P(q1),pz=P(z),p3=P(q3);
     return '<div style="margin-top:9px"><div style="display:flex;justify-content:space-between;font-size:11px;flex-wrap:wrap;gap:4px">'
-      +'<span><b style="color:var(--tx)">'+r[0]+'</b> <b style="color:var(--buy)">매수 '+br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-br)+'%</b></span>'
+      +'<span><b style="color:var(--tx)">'+r[0]+'</b>'
+      +(inv?' <b style="color:var(--buy)">역전(매수값이 매도값 위)</b> ·':'')
+      +' <b style="color:var(--buy)">매수 '+br+'%</b> <span class="sub">/</span> <b style="color:var(--sell)">매도 '+(100-br)+'%</b></span>'
       +'</div>'   
       +'<div style="position:relative;height:10px;margin-top:5px;border-radius:4px;overflow:hidden;background:var(--bg)">'
       
@@ -13266,11 +13285,14 @@ function battleZones(tf,nm){try{
       +(inRange?('<div style="position:relative;height:11px"><span class="num" style="position:absolute;left:'+P(px).toFixed(1)+'%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#ff8a3c;white-space:nowrap">'+f0(px)+'</span></div>'):'')
       
       +'<div style="display:flex;justify-content:space-between;font-size:9.5px;font-weight:700;margin-top:3px">'
-      +'<span style="color:var(--buy)">'+f0(lo3)+'</span>'
-      +'<span style="color:var(--buy)">'+f0(a>b?q3:q1)+'</span>'
+      
+
+
+      +'<span style="color:'+cLo+'">'+f0(lo3)+'</span>'
+      +'<span style="color:'+cLo+'">'+f0(q1)+'</span>'
       +'<span style="color:var(--gold2)">'+f0(z)+'</span>'
-      +'<span style="color:var(--sell)">'+f0(a>b?q1:q3)+'</span>'
-      +'<span style="color:var(--sell)">'+f0(hi3)+'</span></div>'
+      +'<span style="color:'+cHi+'">'+f0(q3)+'</span>'
+      +'<span style="color:'+cHi+'">'+f0(hi3)+'</span></div>'
       +(inRange?'':('<div class="sub" style="font-size:9px;margin-top:1px">현재가 '+f0(px)+' 는 이 구간 '+(px>hi3?'위':'아래')+'</div>'))
       +'</div>';
   }).join('');
