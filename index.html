@@ -13238,9 +13238,9 @@ function battleZones(tf,nm){try{
       if(bv==null||(up? x<bv : x>bv)){best=w;bv=x;} });
     return (best!=null)?{w:best,v:bv,eaten:eaten,dead:true}:null;
   };
-  var rootFn=function(w){return gj(A[w.s]);};
+  var rootFn=function(w){return w.root;}, cenFn=function(w){return w.cen;};
   var pRL=pickBy(AL,true,rootFn), pRS=pickBy(AS,false,rootFn);
-  var pCL=pickBy(AL,true,cw),    pCS=pickBy(AS,false,cw);
+  var pCL=pickBy(AL,true,cenFn), pCS=pickBy(AS,false,cenFn);
   
 
 
@@ -13254,23 +13254,16 @@ function battleZones(tf,nm){try{
 
 
 
+  
 
 
-  var repOfWave=function(w,side){ if(!w)return null;
-    try{ var _WV=(((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{};
-      var _arr=(side>0?_WV['롱']:_WV['숏'])||[]; var _t0=A[w.s].t;
-      for(var _q=0;_q<_arr.length;_q++){ if(_arr[_q].s0===_t0)return _arr[_q].rep; }
-    }catch(e){} return null; };
+
+
+
   var _fbL='',_fbS='';
-  var pEL=pickBy(AL,true,function(w){return repOfWave(w,1);});
-  var pES=pickBy(AS,false,function(w){return repOfWave(w,-1);});
-  try{ var WB=((gkSrc()['파동']||{}).wb)||{};
-    
-    
-
-    if(pEL==null){var _r=(WB[tf]||{}).rep; if(_r!=null){pEL={v:_r,eaten:0,dead:(AL.length===0)}; _fbL=' (대표)';}}
-    if(pES==null){var _r2=(WB['sell_'+tf]||{}).rep; if(_r2!=null){pES={v:_r2,eaten:0,dead:(AS.length===0)}; _fbS=' (대표)';}}
-  }catch(e){}
+  var repFn=function(w){return w.rep;};
+  var pEL=pickBy(AL,true,repFn);
+  var pES=pickBy(AS,false,repFn);
   var sl=vOf(pEL), ss=vOf(pES);
   var dieTag=function(pl,ps){ var t=[];
     
@@ -13359,15 +13352,12 @@ function battleZones(tf,nm){try{
     +'<b style="color:var(--gold2);font-size:12px">전투존 · '+nm+'</b> <span class="sub" style="font-size:10px">현재가 '+f0(px)+' ▼ · 금선=전투존</span>'
     +body+(function(){try{
       
-      var lastL=null,deadL=0;
-      L.waves.forEach(function(w){ if(w.dir<0)return;
-        var rt=gj(A[w.s]),dd=false;
-        for(var k=w.e+1;k<n;k++){ if(A[k].c<rt){dd=true;break;} }
-        if(!dd&&(lastL==null||w.s>lastL))lastL=w.s; });
+
+
+      var lastL=null;
+      AL.forEach(function(w){ if(lastL==null||w.s>lastL)lastL=w.s; });
       if(lastL==null)return '';
-      L.waves.forEach(function(w){ if(w.dir<0||w.s<=lastL)return;
-        var rt=gj(A[w.s]);
-        for(var k=w.e+1;k<n;k++){ if(A[k].c<rt){deadL++;break;} } });
+      var deadL=_WL.dead.filter(function(w){return w.s>lastL;}).length;
       if(!deadL)return '';
       var d0=new Date(A[lastL].t);
       return '<div class="sub" style="font-size:10px;margin-top:5px">마지막 생존 매수 파동 <b style="color:var(--buy)">'
