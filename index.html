@@ -13109,11 +13109,84 @@ function setWvSec(s){wvSec=s;render();if(s==='사례')setTimeout(()=>{const el=d
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _CANON_WV={};
+function canonWaves(A,key,isL){try{
+  var N=A.length, ck=key+(isL?'L':'S')+N+'_'+A[N-1].t;
+  if(_CANON_WV[ck])return _CANON_WV[ck];
+  var res={live:[],dead:[],merged:0};
+  if(N<40){_CANON_WV[ck]=res;return res;}
+  var CUT=Date.UTC(2018,11,15), EXT_MIN=7;
+  var n=N-1;                                   
+  var iv=function(b){return (b.o+b.h+b.l)/3;};                            
+  var gj=function(b){return (b.o+b.h+b.l+b.c)/4;};                        
+  var c4=function(b){return b.center!=null?b.center:(b.h+b.l+2*b.c)/4;};  
+  var cx=A[n-1].c;                                                        
+  var px=(E.d1&&E.d1.length)?E.d1[E.d1.length-1].c:A[n].c;
+  
+  var sfx=new Float64Array(n+1); sfx[n]=isL?Infinity:-Infinity;
+  for(var k=n-1;k>=0;k--) sfx[k]=isL?Math.min(sfx[k+1],A[k].c):Math.max(sfx[k+1],A[k].c);
+  
+  var U=new Float64Array(n+1), UC=new Float64Array(n+1), Q=new Float64Array(n+1);
+  for(var k=0;k<n;k++){U[k+1]=U[k]+gj(A[k])*A[k].v; UC[k+1]=UC[k]+c4(A[k])*A[k].v; Q[k+1]=Q[k]+A[k].v;}
+  var formLen=function(i){var k=i;while(k+1<n){var b=A[k+1];if(isL?(b.c>iv(b)):(b.c<iv(b)))k++;else break;}return k-i+1;};
+  
+  var cand=[];
+  for(var i=1;i<n-1;i++){
+    if(A[i].t<CUT) continue;
+    var sig=isL?(A[i-1].c<iv(A[i-1])&&A[i].c>iv(A[i])&&A[i+1].c>iv(A[i+1]))
+               :(A[i-1].c>iv(A[i-1])&&A[i].c<iv(A[i])&&A[i+1].c<iv(A[i+1]));
+    if(!sig) continue;
+    var held=0; for(var q=Math.max(0,i-6);q<i;q++){ if(isL?(A[q].c<iv(A[q])):(A[q].c>iv(A[q]))) held++; }
+    if(held<3) continue;
+    var rt=gj(A[i]);
+    if(isL?(sfx[i+1]<rt):(sfx[i+1]>rt)){ res.dead.push({s:i,root:rt,dir:isL?1:-1}); continue; }
+    cand.push({s:i,root:rt,form:formLen(i),dir:isL?1:-1});
+  }
+  
+  var main=[];
+  cand.forEach(function(w){
+    var p=main[main.length-1];
+    if(p){ var gap=w.s-(p.s+p.form-1);
+      if(gap>0&&gap<=Math.max(p.form*2,EXT_MIN)){ p.ext=(p.ext||0)+1; res.merged++; return; } }
+    main.push(w);
+  });
+  
+  main.forEach(function(w){
+    var i=w.s, best=null, opp=null, last=null, na=0, nt=0;
+    for(var k=i;k<n;k++){
+      var dq=Q[k+1]-Q[i]; if(dq<=0) continue;
+      var vw=(U[k+1]-U[i])/dq; nt++;
+      if(isL?(cx<vw):(vw<cx)) continue;      
+      na++; last=vw;
+      if(isL? vw<px : vw>px){ if(best==null||(isL? vw>best : vw<best)) best=vw; }
+      else { if(opp==null||(isL? vw<opp : vw>opp)) opp=vw; }
+    }
+    var dq2=Q[n]-Q[i];
+    w.cen=dq2?((UC[n]-UC[i])/dq2):null;      
+    w.rep=(best!=null)?best:((opp!=null)?opp:last);
+    w.alive=na; w.total=nt; w.e=n-1;
+  });
+  res.live=main;
+  _CANON_WV[ck]=res; return res;
+}catch(e){return {live:[],dead:[],merged:0};}}
+
 function battleZones(tf,nm){try{
   
 
   var A=E[tf]; if(!A||A.length<40)return '';
-  var L=waveLedger(tf); if(!L||!L.waves)return '';
   var n=A.length-1, px=E.d1[E.d1.length-1].c;
   var f0=function(v){return v==null?'-':'$'+Math.round(v).toLocaleString('en-US');};
   var gj=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
@@ -13124,19 +13197,11 @@ function battleZones(tf,nm){try{
   
 
 
-
-
-  var CUT_MS=Date.UTC(2018,11,15);
-  var alv=L.waves.filter(function(w){
-    if(A[w.s].t<CUT_MS) return false;
-    var rt=gj(A[w.s]);
-    for(var k=w.e+1;k<n;k++){ if(w.dir>0? A[k].c<rt : A[k].c>rt) return false; }
-    return true;
-  });
-  var AL=alv.filter(function(w){return w.dir>0;}),AS=alv.filter(function(w){return w.dir<0;});
+  var _WL=canonWaves(A,tf,true), _WS=canonWaves(A,tf,false);
+  var AL=_WL.live, AS=_WS.live;
   if(!AL.length&&!AS.length)return '';
   var mid=function(a,b){return (a!=null&&b!=null)?(a+b)/2:null;};
-  var root=function(arr,lo){if(!arr.length)return null;var v=null;arr.forEach(function(w){var r=gj(A[w.s]);if(v==null||(lo?r<v:r>v))v=r;});return v;};
+  var root=function(arr,lo){if(!arr.length)return null;var v=null;arr.forEach(function(w){var r=w.root;if(v==null||(lo?r<v:r>v))v=r;});return v;};
   
 
 
@@ -13150,22 +13215,9 @@ function battleZones(tf,nm){try{
     var u=0,q=0;for(var k=s0;k<n;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
   
 
-
-
-  var _vwc={}, _vwOf=function(w){ var k=w.s+'_'+w.e;
-    if(!(k in _vwc)){ var x=null; try{x=vwOfWave(A,w)||w.line;}catch(e){x=w.line;} _vwc[k]=x; }
-    return _vwc[k]; };
-  var near=function(arr,up){if(!arr.length)return null;var v=null;arr.forEach(function(w){var x=_vwOf(w);if(x==null)return;if(up){if(x<=px&&(v==null||x>v))v=x;}else{if(x>=px&&(v==null||x<v))v=x;}});
-    if(v==null)arr.forEach(function(w){var x=_vwOf(w);if(x!=null&&(v==null||(up?x<v:x>v)))v=x;});return v;};
   var rl=root(AL,true),rs=root(AS,false),cl=cen(AL),cs=cen(AS);
   
 
-
-  var pick=function(arr,up){if(!arr.length)return null;var best=null;arr.forEach(function(w){var x=_vwOf(w);if(x==null)return;
-    if(up){if(x<=px&&(best==null||x>best._x)){best=w;best._x=x;}}else{if(x>=px&&(best==null||x<best._x)){best=w;best._x=x;}}});
-    if(best==null)arr.forEach(function(w){var x=_vwOf(w);if(x!=null&&(best==null||(up?x<best._x:x>best._x))){best=w;best._x=x;}});return best;};
-  
-  var cw=function(w){if(!w)return null;var u=0,q=0;for(var k=w.s;k<n;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
   
 
 
