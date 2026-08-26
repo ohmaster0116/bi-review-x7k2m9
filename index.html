@@ -13739,7 +13739,56 @@ function battleZones(tf,nm){try{
       return '<div class="sub" style="font-size:10px;margin-top:5px">마지막 생존 매수 파동 <b style="color:var(--buy)">'
         +(d0.getUTCFullYear()%100)+'/'+(d0.getUTCMonth()+1)+'/'+d0.getUTCDate()
         +'</b> · 그 뒤 만들어진 <b>'+deadL+'개</b>는 뿌리를 잃었습니다</div>';
-    }catch(e){return '';}})()+'</div>';
+    }catch(e){return '';}})()
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    +(function(){try{
+      var _gate=function(isL){
+        var live=isL?AL:AS;
+        var rs=live.map(function(w){return w.root;}).filter(function(v){return v!=null;});
+        if(!rs.length)return null;
+        
+        rs.sort(function(a,b){return isL?(b-a):(a-b);});
+        var ahead=rs.filter(function(v){return isL?(v<_cxb):(v>_cxb);});   
+        return {all:rs, ahead:ahead, last:rs[rs.length-1]};
+      };
+      var gU=_gate(false), gD=_gate(true);
+      if(!gU&&!gD)return '';
+      var _row=function(g,isL){
+        if(!g)return '<div style="flex:1;min-width:215px"><div class="sub" style="font-size:10px">'
+          +(isL?'아래':'위')+' 관문 없음</div></div>';
+        var col=isL?'var(--buy)':'var(--sell)';
+        var show=g.all.slice(0,5);
+        return '<div style="flex:1;min-width:215px">'
+          +'<div style="font-size:10.5px;font-weight:700;color:'+col+'">'
+          +(isL?'아래 관문':'위 관문')+' <b>'+g.all.length+'</b>개 '
+          +'<span class="sub" style="font-weight:400">'+(isL?'넘기면 신저가 쪽':'넘기면 신고가 쪽')+'</span></div>'
+          +'<div style="font-size:10.5px;margin-top:2px;line-height:1.7">'
+          +show.map(function(v){return '<span class="num" style="color:'+col+'">'+f0(v)+'</span>';}).join(' <span class="sub">→</span> ')
+          
+
+          +(g.all.length>5?(' <span class="sub">외 '+(g.all.length-5)+'개</span>'):'')
+          +' <span class="sub">→ '+(isL?'신저가':'신고가')+'</span>'
+          +'</div></div>';
+      };
+      return '<div style="margin-top:7px;padding:7px 9px;border:1px solid var(--bd);border-radius:8px">'
+        +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:2px">관문 <span class="sub" style="font-weight:400">(뿌리를 하나씩 먹으며 나아갑니다)</span></div>'
+        +'<div class="sub" style="font-size:9.5px;margin-bottom:4px;line-height:1.55">살아 있는 반대편 파동의 뿌리가 관문입니다. '
+        +'한 번에 끝까지 가는 일은 드뭅니다 <span style="color:var(--tx3)">, 관문마다 방어선이 뒤로 물러나며 다시 붙습니다.</span></div>'
+        +'<div style="display:flex;gap:14px;flex-wrap:wrap">'+_row(gU,false)+_row(gD,true)+'</div></div>';
+    }catch(e){console.warn('[관문 사다리] '+e);return '';}})()
+    +'</div>';
 }catch(e){return '';}}
 
 
