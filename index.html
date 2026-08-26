@@ -23850,7 +23850,29 @@ function whaleSupply(){
         <b style="color:var(--gold2)">이번 파동 판독</b> - 저점 ${_curLowD} ${f0(_curLow)}에서 ${liveRise!=null?`현재 <b>+${liveRise.toFixed(1)}%</b>`:''} <span class="sub">(과거 방어 성공 반등폭 중 하위 ${_pctNow!=null?_pctNow:'-'}% 지점${_pctNow!=null?(_pctNow<40?' = 아직 초반':(_pctNow>70?' = 상위권':'')):''}${_lf?'':' · 굳은 판'})</span><br>
         전투포인트 <b>${f0(_bpNow)}</b> <span class="sub">(현재가 대비 ${((_bpNow-px)/px*100).toFixed(1)}% · ${(window.__WHDELTA&&window.__WHDELTA.as_of)||'저장'} 판)</span> · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b> <span class="sub">(같은 판)</span><br>
         프랙탈 투영(시나리오·확정 아님 · 07 판 좌표): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
-        <span class="sub">현재 = 매수가 전투포인트 위에 서 있는 <b>자리</b> · <b>${f0(_sellAvg)}</b>을 회복하기 전까지 고래가 항복한 것은 아닙니다.${(_wd&&_wd.dead_sell_pct>=1)?` <span style="color:var(--tx3)">(매도평단=살아남은 물량 기준 · ${Math.round(_wd.dead_sell_pct)}% 소멸분 제외${_wd.sell_avg_all?` · 소멸 포함 시 ${f0(_wd.sell_avg_all)}`:''})</span>`:''}</span></div>`:''}
+        <span class="sub">현재 = 매수가 전투포인트 위에 서 있는 <b>자리</b> · 매도 평단은 <b>${f0(_sellAvg)}</b>입니다.${(_wd&&_wd.dead_sell_pct>=1)?` <span style="color:var(--tx3)">(살아남은 물량 기준 · ${Math.round(_wd.dead_sell_pct)}% 소멸분 제외${_wd.sell_avg_all?` · 소멸 포함 시 ${f0(_wd.sell_avg_all)}`:''})</span>`:''}
+        ${(function(){try{
+          
+
+
+
+
+
+          var _fl=(_wd&&_whDelta&&_whDelta.flow)?_whDelta.flow:((window.__WHDELTA||{}).flow);
+          var _bs=(window.__WHDELTA||{}).breakout_stat||(_whDelta&&_whDelta.breakout_stat);
+          if(!_fl&&!_bs)return '';
+          var s1='';
+          if(_fl&&_fl.sell_delta_pct!=null&&_fl.buy_delta_pct!=null){
+            s1='<br><span style="color:var(--tx3)">최근 3개월 물량 : 매도 <b style="color:var(--sell)">'
+              +(_fl.sell_delta_pct>=0?'+':'')+_fl.sell_delta_pct+'%</b> · 매수 <b style="color:var(--buy)">'
+              +(_fl.buy_delta_pct>=0?'+':'')+_fl.buy_delta_pct+'%</b> <span class="sub">(그 전 3개월 대비)</span></span>';
+          }
+          var s2='';
+          if(_bs)s2='<br><span style="color:var(--tx3)">과거 평단 돌파 시 : 매도 물량 축소 <b>'+_bs.sell_cut+'/'+_bs.n
+            +'</b> · 매수 확대 <b>'+_bs.buy_up+'/'+_bs.n+'</b> · 돌파 후 1개월 중앙 <b>+'+_bs.fwd1m_median_pct
+            +'%</b> <span class="sub">(N='+_bs.n+'·표본 작음 · 대조군 +'+_bs.ctrl_fwd1m_median_pct+'% · 과거 기록이며 예측 아님)</span></span>';
+          return s1+s2;
+        }catch(e){return '';}})()}</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식 · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
     }
