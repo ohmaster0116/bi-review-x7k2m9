@@ -13375,8 +13375,24 @@ function setWvSec(s){wvSec=s;render();if(s==='사례')setTimeout(()=>{const el=d
 
 var _CANON_WV={};
 function canonWaves(A,key,isL){try{
-  var N=A.length, ck=key+(isL?'L':'S')+N+'_'+A[N-1].t;
+  
+
+
+
+
+
+
+
+
+  var N=A.length;
+  var _cxK=(N>=2)?Math.round(A[N-2].c*100):0;                                  
+  
+  var _pxK=(function(){try{var p=(E.d1&&E.d1.length)?E.d1[E.d1.length-1].c:A[N-1].c;
+    return (p>0)?Math.floor(Math.log(p)*400):0;}catch(e){return 0;}})();
+  var ck=key+(isL?'L':'S')+N+'_'+A[N-1].t+'_'+_cxK+'_'+_pxK;
   if(_CANON_WV[ck])return _CANON_WV[ck];
+  
+  try{var _ks=Object.keys(_CANON_WV); if(_ks.length>48){ for(var _z=0;_z<24;_z++) delete _CANON_WV[_ks[_z]]; }}catch(e){}
   var res={live:[],dead:[],merged:0};
   if(N<40){_CANON_WV[ck]=res;return res;}
   var CUT=Date.UTC(2018,11,15), EXT_MIN=7;
