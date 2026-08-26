@@ -1545,7 +1545,7 @@ function convClusters(){
 
 
 
-      var _WD=(window.__WHDELTA||window._whDelta||{}), _WN=(_WD&&_WD.now)||null;
+      var _WD=(window.__WHDELTA||window._whDelta||(window.__CRON&&window.__CRON.whale_delta_state)||{}), _WN=(_WD&&_WD.now)||null;
       var _wbS=(_WN&&_WN.buy_avg!=null)?_WN.buy_avg:null, _wsS=(_WN&&_WN.sell_avg!=null)?_WN.sell_avg:null;
       var _bpS=(_WN&&_WN.battle_point!=null)?_WN.battle_point:null;
       var _fbTag=(_wsS==null)?' (소멸 포함·옛 자)':'';
@@ -14070,7 +14070,19 @@ function waveDetailPanel(){try{
 
 
               var _wc={},_ok=false,_wb=null,_ws=null,_wl=null,_wsBasis='';
+              
+
+
+
+
               try{
+                var _WNa=((window.__WHDELTA||window._whDelta||(window.__CRON&&window.__CRON.whale_delta_state)||{}).now)||null;
+                if(_WNa&&_WNa.sell_avg!=null&&_WNa.buy_avg!=null){
+                  _wb=_WNa.buy_avg; _ws=_WNa.sell_avg;
+                  _wl=(_WNa.battle_point!=null)?_WNa.battle_point:null;
+                  _wsBasis=' <span class="sub">(살아남은 물량 기준'+((_WNa.dead_sell_pct>=1)?(' · '+Math.round(_WNa.dead_sell_pct)+'% 이동분 제외'):'')+')</span>';
+                  _ok=true;
+                }
                 if(typeof whaleData!=='undefined'&&whaleData===null&&!whaleLoading&&typeof loadWhale==='function'){try{loadWhale();}catch(e){}}
                 if(typeof whaleData!=='undefined'&&Array.isArray(whaleData)&&whaleData.length>3){
                   var _vwq=function(s2,k2){var v=s2.reduce(function(x,r2){return x+r2.vol;},0);return v?s2.reduce(function(x,r2){return x+r2[k2]*r2.vol;},0)/v:0;};
@@ -14078,7 +14090,7 @@ function waveDetailPanel(){try{
                   var _bl=whaleData.filter(function(r2){return r2.bull;}), _dc=whaleData.slice(_ai).filter(function(r2){return !r2.bull;});
                   if(_bl.length&&_dc.length){
                     
-                    var _WN2=((window.__WHDELTA||window._whDelta||{}).now)||null;
+                    var _WN2=((window.__WHDELTA||window._whDelta||(window.__CRON&&window.__CRON.whale_delta_state)||{}).now)||null;
                     _wb=(_WN2&&_WN2.buy_avg!=null)?_WN2.buy_avg:((_vwq(_bl,'gj')+_vwq(_bl,'cen'))/2);
                     _ws=(_WN2&&_WN2.sell_avg!=null)?_WN2.sell_avg:((_vwq(_dc,'gj')+_vwq(_dc,'cen'))/2);
                     _wl=(_WN2&&_WN2.battle_point!=null)?_WN2.battle_point:(((_vwq(_bl,'gj')+_vwq(_dc,'gj'))/2+(_vwq(_bl,'cen')+_vwq(_dc,'cen'))/2)/2);
@@ -15757,7 +15769,7 @@ function alCheck(){
         let ai=0;whaleData.forEach((r2,i)=>{if(r2.h>whaleData[ai].h)ai=i;});
         const bl=whaleData.filter(r2=>r2.bull),dc=whaleData.slice(ai).filter(r2=>!r2.bull);
         
-        const _wn3=((window.__WHDELTA||window._whDelta||{}).now)||null;
+        const _wn3=((window.__WHDELTA||window._whDelta||(window.__CRON&&window.__CRON.whale_delta_state)||{}).now)||null;
         const tp=(_wn3&&_wn3.battle_point!=null)?_wn3.battle_point:(((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2);
         if(tp){const side=px>=tp?'up':'dn';
           if(window._alWhSide&&window._alWhSide!==side){
@@ -16235,7 +16247,7 @@ function lwDrawAll(){
     let ai=0;whaleData.forEach((r2,i)=>{if(r2.h>whaleData[ai].h)ai=i;});
     const bl=whaleData.filter(r2=>r2.bull),dc=whaleData.slice(ai).filter(r2=>!r2.bull);
     
-    const _wn4=((window.__WHDELTA||window._whDelta||{}).now)||null;
+    const _wn4=((window.__WHDELTA||window._whDelta||(window.__CRON&&window.__CRON.whale_delta_state)||{}).now)||null;
     const tp=(_wn4&&_wn4.battle_point!=null)?_wn4.battle_point:(((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2);
     if(tp)lwAdd(tp,'#ffd24a','고래 방어선',LS.Solid,2);
   }
