@@ -14012,10 +14012,22 @@ function waveDetailPanel(){try{
 
             +(fs?(px2>=fs.vw?'현재가가 아래 매도(생존 최고) <b style="color:var(--sell)">'+f(fs.vw)+'</b> <b style="color:var(--buy)">위(장중)</b>'
                             :'현재가가 위 매도 최전방 <b style="color:var(--sell)">'+f(fs.vw)+'</b> 아래'):'위 생존 매도 없음')
-            +(fb?(px2>=fb.vw?(' · <b style="color:var(--buy)">롱 우위 유지 = '+f(fb.vw)+' 위</b>'
+            
+
+
+
+            +(fb?(px2>=fb.vw?(' · <b style="color:var(--buy)">매수 우위 유지 = '+f(fb.vw)+' 위</b>'
               +(_lad.length>1?' <span class="sub">(밀려도 다음 층 '+_lad.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
-              +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 숏 우위 전환 후보</b>')
+              +' · <b style="color:var(--sell)">'+f(fb.vw)+' 종가 이탈 = 매도 우위 전환 후보</b>')
               :' · <span class="sub">아래 생존 매수 없음 · 위쪽 최저 '+f(fb.vw)+'</span>'):' · <span class="sub">아래 생존 매수 없음</span>')
+            +(function(){try{   
+              var _lads=sells.slice().sort(function(a,b){return a.vw-b.vw;}).slice(0,3);
+              if(!fs)return '';
+              if(px2<fs.vw) return ' · <b style="color:var(--sell)">매도 우위 유지 = '+f(fs.vw)+' 아래</b>'
+                +(_lads.length>1?' <span class="sub">(밀려도 다음 층 '+_lads.slice(1).map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
+                +' · <b style="color:var(--buy)">'+f(fs.vw)+' 종가 돌파 = 매수 우위 전환 후보</b>';
+              return ' · <span class="sub">매도 최전방 '+f(fs.vw)+' 는 이미 위로 넘어섰습니다</span>';
+            }catch(e){return '';}})()
             +(function(){try{   
 
 
