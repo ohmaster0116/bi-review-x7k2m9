@@ -23904,7 +23904,13 @@ function whaleSupply(){
             +(isCur?'<span style="color:var(--gold2);font-weight:800">▶ 현재 캠페인</span> ':'')+'<b>ATH '+f0h(c.ath)+'</b> <span class="sub">'+c.start+' · '+c.months+'개월'+(isCur?' 진행중':'')+'</span> '
             +spark(c.steps,90,22)
             +' <span style="color:var(--sell);font-weight:700">BP '+f0h(c.bp_start)+'→'+f0h(c.bp_end)+' ('+dd.toFixed(0)+'%)</span></summary>'
-          +'<div class="scroll" style="max-height:210px;padding:0 8px 8px"><table><thead><tr><th class="l">월</th><th>매도평단</th><th>전투포인트</th><th>전월비</th></tr></thead><tbody>'+stepRows+'</tbody></table></div></details>';
+          
+
+
+
+
+          +'<div class="sub" style="font-size:9.5px;padding:2px 12px 0">표 기준 : ★소멸 포함(캠페인 원장 축) · 위 현재 매도평단은 ★소멸 제외(생존 물량) 축이라 값이 다릅니다</div>'
+          +'<div class="scroll" style="max-height:210px;padding:0 8px 8px"><table><thead><tr><th class="l">월</th><th>매도평단<span class="sub" style="font-size:8.5px"> 소멸포함</span></th><th>전투포인트</th><th>전월비</th></tr></thead><tbody>'+stepRows+'</tbody></table></div></details>';
       }).join('');
       var curDD=(cur.bp_end/cur.bp_start-1)*100;
       pBpHist='<div class="panel" style="margin-top:12px"><div class="hd" style="color:var(--sell)">\u2699 전투포인트 계단 이력 - 매도 고래 하강 궤적 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰</span> <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9px;font-weight:700;margin-left:3px;background:rgba(139,148,168,.14);color:var(--tx2)">\uD83D\uDD12 아침 잠금</span></div>'
