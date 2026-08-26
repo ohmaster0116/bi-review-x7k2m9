@@ -18683,7 +18683,17 @@ function waveBookPanel(){try{
   var conflTxt=conflOk?('뿌리 본진(합치 폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) '+f(cLo)+'~'+f(cHi))
     :('<b style="color:var(--gold2)">합치 풀림</b>(폭 '+((cHi-cLo)/px*100).toFixed(1)+'%) - 주봉 실존가 '+f(gW)+' · 월봉 기준가 '+f(gM)+(ua!=null?' · 미확인 평균 '+f(ua):'')+' 각자 지지');
   var banner='<b style="color:var(--gold2)">현 파동 장부(정본: 전 층 v가중 · 매 갱신 자동 재계산)</b> - '
-    +'일봉 실존가 <b>'+f(bd.sitga)+'</b>'+(bd.rep!=null?' <span class="sub">· 실존가 '+f(bd.rep)+' (생존 '+(bd.nAlive||0)+'층)</span>':'')+(bw?' · 주봉 실존가 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
+    
+
+
+
+    +(function(){try{var _c=((window.__VERDICT||{}).data||{}).파동||{};
+        var _d=(_c.일봉실존!=null)?_c.일봉실존:(bd.rep!=null?bd.rep:bd.sitga);
+        var _w=(_c.주봉실존!=null)?_c.주봉실존:(bw?bw.sitga:null);
+        return '일봉 실존가 <b>'+f(_d)+'</b>'+(bd.rep!=null?' <span class="sub">(생존 '+(bd.nAlive||0)+'층)</span>':'')
+          +(_w!=null?(' · 주봉 실존가 <b>'+f(_w)+'</b>'+((_d&&_w&&Math.abs(_d-_w)/_d<0.01)?' <b style="color:var(--buy)">(독립 수렴)</b>':'')):'');
+      }catch(e){return '일봉 실존가 <b>'+f(bd.sitga)+'</b>';}})()
+    +''+(false?' · 주봉 실존가 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
     +' → <b>싸우는 곳</b>: 위 매도 파동선 '+(fightUp?f(fightUp):'없음')+foeTxt+' vs 아래 실존가 진지 '+f(bd.sitga)+' · '+conflTxt+' · 최종 뿌리 '+f(bd.root)+'.'
     +(moFlip!=null?'<br><b style="color:var(--gold2)">월봉 성격 전환 라인 '+f(moFlip)+'</b> - 현재가가 이 '+(px>=moFlip?'<b style="color:var(--buy)">위</b>(이번 달이 매수 성격으로 바뀌는 중)':'<b style="color:var(--sell)">아래</b>(매도 성격 유지)')+' · 자체 산식 · 실시간 이동':'');
   
