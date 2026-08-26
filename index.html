@@ -13653,7 +13653,11 @@ function battleZones(tf,nm){try{
 
 
             ['<b>전쟁</b> · 전체 파동 중심간 <span class="sub">(진영 전체 평단'
-              +((csA!=null&&cs!=null&&Math.abs(csA-cs)>1)?(' · 전선 기준으로는 매도 '+f0(cs)):'')
+              
+
+              +((clA!=null&&cl!=null&&Math.abs(clA-cl)>1)?(' · 전선 기준 매수 '+f0(cl)):'')
+              +((csA!=null&&cs!=null&&Math.abs(csA-cs)>1)?(' · 매도 '+f0(cs)):'')
+              +((clD!=null&&clD>=1)?(' · 매수 '+Math.round(clD)+'% 이동'):'')
               +((csD!=null&&csD>=1)?(' · 매도 '+Math.round(csD)+'% 이동'):'')+')</span>'+allTag(clA,csA),mid(clA,csA),clA,csA],
             
             ['<b>전쟁</b> · 전체 구간중점간 <span class="sub">(양 진영이 딛고 선 영토의 한가운데'
@@ -14421,7 +14425,10 @@ function waveDetailPanel(){try{
             return '<div style="flex:1;min-width:200px">'
               +'<div style="font-size:10.5px;font-weight:700;color:'+col+'">'+(dir>0?'매수':'매도')+' 대파동 '
               +'<span class="sub" style="font-weight:400">'+dl2(o.w.s)+'~ · 이 진영의 출발점</span></div>'
-              +'<div style="margin-top:2px;font-size:10.5px">뿌리 <b style="color:'+col+'">'+f(g2b(A2[o.w.s]))+'</b>'
+              
+
+
+              +'<div style="margin-top:2px;font-size:10.5px"><span class="sub" style="font-size:9px">이 파동</span> 뿌리 <b style="color:'+col+'">'+f(g2b(A2[o.w.s]))+'</b>'
               +((c&&c.cen!=null)?(' · 중심 <b>'+f(c.cen)+'</b>'):'')
               
 
