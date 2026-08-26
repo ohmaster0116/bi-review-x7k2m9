@@ -13615,24 +13615,37 @@ function battleZones(tf,nm){try{
   var rng=function(arr,isL){ var r=_rngRaw(arr); if(!r)return null;
     var flo=isL?r.lo:Math.max(r.lo,_cxb), fhi=isL?Math.min(r.hi,_cxb):r.hi;
     return (fhi>flo)?((flo+fhi)/2):((r.hi+r.lo)/2); };   
-  var _lostPct=function(arr,isL){ var r=_rngRaw(arr); if(!r||r.hi<=r.lo)return null;
+  
+
+
+
+
+
+
+  var _holdPct=function(arr,isL){ var r=_rngRaw(arr); if(!r||r.hi<=r.lo)return null;
     var flo=isL?r.lo:Math.max(r.lo,_cxb), fhi=isL?Math.min(r.hi,_cxb):r.hi;
-    return (fhi>flo)?((1-(fhi-flo)/(r.hi-r.lo))*100):null; };
+    return (fhi>flo)?(((fhi-flo)/(r.hi-r.lo))*100):0; };
   var gl=rng(AL,true), gs=rng(AS,false);
-  var glL=_lostPct(AL,true), gsL=_lostPct(AS,false);
-  var rows=[['전체 파동 뿌리간'+allTag(rl,rs),mid(rl,rs),rl,rs],
+  var glL=_holdPct(AL,true), gsL=_holdPct(AS,false);   
+  var rows=[['<b>전쟁</b> · 전체 파동 뿌리간 <span class="sub">(진영 출발점 · 안 움직임)</span>'+allTag(rl,rs),mid(rl,rs),rl,rs],
             
-            ['전체 파동 중심간 <span class="sub">(빠져나간 물량 제외'
-              +((csD!=null&&csD>=1)?(' · 매도 '+Math.round(csD)+'% 이동'):'')
-              +((clD!=null&&clD>=1)?(' · 매수 '+Math.round(clD)+'% 이동'):'')
-              +((csA!=null)?(' · 이동 전 기준 '+f0(csA)):'')+')</span>'+allTag(cl,cs),mid(cl,cs),cl,cs],
+
+
+
+
+
+
+
+
+            ['<b>전쟁</b> · 전체 파동 중심간 <span class="sub">(진영 전체 평단'
+              +((csA!=null&&cs!=null&&Math.abs(csA-cs)>1)?(' · 전선 기준으로는 매도 '+f0(cs)):'')
+              +((csD!=null&&csD>=1)?(' · 매도 '+Math.round(csD)+'% 이동'):'')+')</span>'+allTag(clA,csA),mid(clA,csA),clA,csA],
             
-            ['전체 구간중점간 <span class="sub">(남은 영토의 한가운데'
-              +((gsL!=null&&gsL>=1)?(' · 매도 '+Math.round(gsL)+'% 물러남'):'')
-              +((glL!=null&&glL>=1)?(' · 매수 '+Math.round(glL)+'% 물러남'):'')+')</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
-            ['현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS,bothDead(pRL,pRS),oneDead(pRL,pRS)],
-            ['현재 진행중 중심간'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS,bothDead(pCL,pCS),oneDead(pCL,pCS)],
-            ['현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss,bothDead(pEL,pES),oneDead(pEL,pES)]];
+            ['<b>전쟁</b> · 전체 구간중점간 <span class="sub">(양 진영이 딛고 선 영토의 한가운데'
+              +((glL!=null&&gsL!=null)?(' · 영토 점유 매수 '+Math.round(glL)+'% ↔ 매도 '+Math.round(gsL)+'%'):'')+')</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
+            ['<b style="color:var(--gold2)">전투</b> · 현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS,bothDead(pRL,pRS),oneDead(pRL,pRS)],
+            ['<b style="color:var(--gold2)">전투</b> · 현재 진행중 중심간 <span class="sub">(지금 대치선 · 전선 기준)</span>'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS,bothDead(pCL,pCS),oneDead(pCL,pCS)],
+            ['<b style="color:var(--gold2)">전투</b> · 현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss,bothDead(pEL,pES),oneDead(pEL,pES)]];
   rows=rows.filter(function(r){return r[1]!=null;});
   if(!rows.length)return '';
   var vs=rows.map(function(r){return r[1];}).concat([px]);
@@ -13697,7 +13710,13 @@ function battleZones(tf,nm){try{
 
 
 
-    +'<div class="sub" style="font-size:9.5px;margin-top:2px;line-height:1.6">앞선 물량이 빠져나가면 남는 것은 더 뒤에서 들어온 물량이라, 그만큼 중심(평단)도 뒤로 물러납니다. <span style="color:var(--tx3)">일부만 내줘도 수도가 옮겨가는 것과 같습니다.</span></div>'
+
+
+
+
+
+
+    +'<div class="sub" style="font-size:9.5px;margin-top:2px;line-height:1.6"><b>전쟁</b>은 진영 전체의 자리(8년 전체사 평단)이고, <b style="color:var(--gold2)">전투</b>는 지금 맞붙은 자리입니다. <span style="color:var(--tx3)">한 지역을 내줘도 전쟁 축은 그대로입니다. 전투 축은 물량이 빠져나간 만큼 뒤로 물러납니다.</span></div>'
     +body+(function(){try{
       
 
