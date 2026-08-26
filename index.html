@@ -14146,20 +14146,23 @@ function waveDetailPanel(){try{
 
 
 
-              var _cluster=function(arr){
+              var _cluster=function(arr,_nm5){
                 if(arr.length<2)return '';
                 var g=[arr[0].v]; for(var i=1;i<arr.length;i++){ if(Math.abs(arr[i].v-g[g.length-1])/_px3*100<=0.5)g.push(arr[i].v); else break; }
-                return (g.length>=2)?('<div class="sub" style="font-size:9px;margin-top:1px">위 '+g.length+'개는 폭 '
+                return (g.length>=2)?('<div class="sub" style="font-size:9px;margin-top:1px">'+_nm5+' '+g.length+'개는 폭 '
                   +(Math.abs(g[0]-g[g.length-1])/_px3*100).toFixed(2)+'% 안 · 사실상 한 자리</div>'):'';
               };
               return '<div style="margin-top:6px;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;background:rgba(255,255,255,.02)">'
                 +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:2px">파동별 주체 평단 <span class="sub" style="font-weight:400">(실존가)</span> 5계단</div>'
                 +'<div class="sub" style="font-size:9.5px;margin-bottom:4px;line-height:1.55">현재가 '+f(_px3)+' 기준 · 파동 하나가 한 줄 · 그 파동에 들어간 사람들의 평균 단가입니다. '
                 +'<span style="color:var(--tx3)">여러 파동이 같은 자리에 겹치면 값이 비슷하게 모입니다.</span></div>'
+                
+
                 +'<div style="display:flex;gap:14px;flex-wrap:wrap">'
-                +'<div style="flex:1;min-width:190px">'+_col(_L5,true,'매수 평단').replace('<div style="flex:1;min-width:190px">','').replace(/<\/div>$/,'')+_cluster(_L5)+'</div>'
-                +'<div style="flex:1;min-width:190px">'+_col(_S5,false,'매도 평단').replace('<div style="flex:1;min-width:190px">','').replace(/<\/div>$/,'')+_cluster(_S5)+'</div>'
-                +'</div></div>';
+                +_col(_L5,true,'매수 평단')+_col(_S5,false,'매도 평단')
+                +'</div>'
+                +_cluster(_L5,'매수')+_cluster(_S5,'매도')
+                +'</div>';
             }catch(e){console.warn('[실존가 5계단] '+e);return '';}})()
             
 
