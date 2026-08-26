@@ -14292,8 +14292,18 @@ function waveDetailPanel(){try{
                 if(!c.length)return null; c.sort(function(a,b){return isL?(b.rep-a.rep):(a.rep-b.rep);}); return c[0];};
               [[_todayL,_prevL,true,'매수','var(--buy)'],[_todayS,_prevS,false,'매도','var(--sell)']].forEach(function(o){
                 var a=_front(o[0],o[2]), b=_front(o[1],o[2]);
-                if(a&&b&&a.s!==b.s) ev.push({t:'실존가 전환',c:o[4],
-                  x:'<b style="color:'+o[4]+'">'+o[3]+'</b> 최전방 실존가가 넘어갔습니다 <span class="sub">'+f(b.rep)+' → <b>'+f(a.rep)+'</b> ('+_dd(a.s)+' 파동)</span>'});
+                
+
+
+
+
+                if(a&&b&&a.s!==b.s){
+                  var _adv=o[2]?(a.rep>b.rep):(a.rep<b.rep);   
+                  ev.push({t:'실존가 전환',c:o[4],
+                    x:'<b style="color:'+o[4]+'">'+o[3]+'</b> 최전방 실존가가 '
+                      +(_adv?'<b>앞으로 나왔습니다</b>':'<b>뒤로 밀렸습니다</b>')
+                      +' <span class="sub">'+f(b.rep)+' → <b>'+f(a.rep)+'</b> ('+_dd(a.s)+' 파동)</span>'});
+                }
                 else if(a&&!b) ev.push({t:'실존가 전환',c:o[4],x:'<b style="color:'+o[4]+'">'+o[3]+'</b> 최전방 실존가가 다시 섰습니다 <span class="sub">'+f(a.rep)+'</span>'});
                 else if(!a&&b) ev.push({t:'실존가 전환',c:'var(--tx3)',x:'<b style="color:'+o[4]+'">'+o[3]+'</b> 서 있는 실존가가 없어졌습니다 <span class="sub">직전 '+f(b.rep)+' · 새 파동 대기</span>'});
               });
