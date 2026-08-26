@@ -14252,6 +14252,11 @@ function waveDetailPanel(){try{
 
             +(function(){try{
               var _n2=A2.length-1;                       
+              
+
+
+
+              var _WIN=7;                                
               if(_n2<3)return '';
               var _iv2=function(b){return (b.o+b.h+b.l)/3;};
               
@@ -14281,14 +14286,27 @@ function waveDetailPanel(){try{
                 else if(!a&&b) ev.push({t:'실존가 전환',c:'var(--tx3)',x:'<b style="color:'+o[4]+'">'+o[3]+'</b> 서 있는 실존가가 없어졌습니다 <span class="sub">직전 '+f(b.rep)+' · 새 파동 대기</span>'});
               });
               
-              try{ var c1=A2[_n2-1], c0=A2[_n2-2];
-                var s1=(c1.c>_iv2(c1)), s0b=(c0.c>_iv2(c0));
-                if(s1!==s0b) ev.push({t:'성격 전환',c:(s1?'var(--buy)':'var(--sell)'),
-                  x:'확정봉 성격이 <b style="color:'+(s1?'var(--buy)':'var(--sell)')+'">'+(s1?'매수':'매도')+'</b>로 바뀌었습니다 <span class="sub">'+_dd(_n2-1)+' · 종가가 변곡가를 '+(s1?'위로':'아래로')+' 넘음</span>'});
+
+
+              try{ var _flips=[];
+                for(var _q4=Math.max(1,_n2-_WIN); _q4<=_n2-1; _q4++){
+                  var _cA=A2[_q4], _cB=A2[_q4-1];
+                  var _sA=(_cA.c>_iv2(_cA)), _sB=(_cB.c>_iv2(_cB));
+                  if(_sA!==_sB) _flips.push({i:_q4,up:_sA});
+                }
+                _flips.reverse().slice(0,2).forEach(function(fp){
+                  ev.push({t:'성격 전환',c:(fp.up?'var(--buy)':'var(--sell)'),
+                    x:'봉 성격이 <b style="color:'+(fp.up?'var(--buy)':'var(--sell)')+'">'+(fp.up?'매수':'매도')+'</b>로 바뀌었습니다 <span class="sub">'+_dd(fp.i)+' · 종가가 변곡가를 '+(fp.up?'위로':'아래로')+' 넘음</span>'});
+                });
               }catch(e){}
               
+
+
               try{ var _rgN=(((window.__VERDICT||{}).data||{}).regime_dir)||'';
-                var _prevRg=window._kaneRgPrev; window._kaneRgPrev=_rgN;
+                var _prevRg=window._kaneRgPrev;
+                if(!_prevRg){try{_prevRg=localStorage.getItem('kane_rg_prev')||'';}catch(e){}}
+                window._kaneRgPrev=_rgN;
+                if(_rgN){try{localStorage.setItem('kane_rg_prev',_rgN);}catch(e){}}
                 if(_prevRg&&_rgN&&_prevRg!==_rgN) ev.push({t:'추세 전환',c:'var(--gold2)',
                   x:'국면 방향이 <b>'+_prevRg+' → '+_rgN+'</b>으로 바뀌었습니다'});
               }catch(e){}
@@ -14334,7 +14352,6 @@ function waveDetailPanel(){try{
 
 
 
-              var _WIN=7;
               
               try{
                 var _cut=_n2-_WIN;
@@ -21900,7 +21917,21 @@ function sellBook(tf,ax){try{
                       :function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
   var V=function(b){return (b.o+b.h+b.l)/3;};
   var cands=[];
-  for(var i=Math.max(1,n-90);i<n-2;i++){
+  
+
+
+
+
+
+
+  var _s0fix=null;
+  try{
+    var _sbSrv=((gkSrc()['파동']||{}).wb||{})['sell_'+(tf||'d1')];
+    if(_sbSrv&&_sbSrv.s0!=null){
+      for(var _k0=0;_k0<n;_k0++){ if(A[_k0].t===_sbSrv.s0){ _s0fix=_k0; break; } }
+    }
+  }catch(e){ _s0fix=null; }
+  for(var i=(_s0fix!=null?n:Math.max(1,n-90));i<n-2;i++){
     if(A[i-1].c>V(A[i-1])&&A[i].c<V(A[i])&&A[i+1].c<V(A[i+1])){
       
 
@@ -21915,6 +21946,8 @@ function sellBook(tf,ax){try{
       if(ok)cands.push(i);
     }
   }
+  
+  if(_s0fix!=null&&cands.indexOf(_s0fix)<0)cands.push(_s0fix);
   if(!cands.length)return _wbFB('sell',tf);
   var build=function(s0){
     var steps=[],cu=0,cv=0;
