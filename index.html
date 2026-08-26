@@ -14176,8 +14176,34 @@ function waveDetailPanel(){try{
                 var fireS=(pb.c>_iv2(pb) && cb2.c<_iv2(cb2));
                 if(fireL||fireS){
                   var hh=0; for(var q2=Math.max(0,i2-6);q2<i2;q2++){ if(fireL?(A2[q2].c<_iv2(A2[q2])):(A2[q2].c>_iv2(A2[q2])))hh++; }
-                  ev.push({t:'파동 발화중',c:(fireL?'var(--buy)':'var(--sell)'),
-                    x:'<b style="color:'+(fireL?'var(--buy)':'var(--sell)')+'">'+(fireL?'매수':'매도')+'</b> 형성 2봉째입니다 <span class="sub">'+_dd(i2)+' · 6봉 조항 '+hh+'/3 · 다음 봉이 같은 성격이면 파동 성립</span>'});
+                  
+
+
+
+                  var _fs0=i2-1;                                   
+                  var _fg=function(b){return (b.o+b.h+b.l+b.c)/4;};
+                  var _fc4=function(b){return (b.h+b.l+2*b.c)/4;};
+                  var _froot=_fg(A2[_fs0]);
+                  var _fu=0,_fv=0,_fuc=0;
+                  for(var _k2=_fs0;_k2<=i2;_k2++){ _fu+=_fg(A2[_k2])*A2[_k2].v; _fuc+=_fc4(A2[_k2])*A2[_k2].v; _fv+=A2[_k2].v; }
+                  var _fvw=_fv?(_fu/_fv):null;                     
+                  var _fcen=_fv?(_fuc/_fv):null;                   
+                  
+                  var _fcx=A2[i2].c, _fst=[], _u3=0,_v3=0;
+                  for(var _k3=_fs0;_k3<=i2;_k3++){ _u3+=_fg(A2[_k3])*A2[_k3].v; _v3+=A2[_k3].v;
+                    if(_v3>0){var _vw3=_u3/_v3; if(fireL?(_fcx>=_vw3):(_vw3>=_fcx))_fst.push(_vw3);} }
+                  var _frep=null;
+                  if(_fst.length){ var _near=_fst.filter(function(x){return fireL?(x<=px):(x>=px);});
+                    _frep=_near.length?(fireL?Math.max.apply(null,_near):Math.min.apply(null,_near))
+                                      :(fireL?Math.min.apply(null,_fst):Math.max.apply(null,_fst)); }
+                  var _fc=(fireL?'var(--buy)':'var(--sell)');
+                  ev.push({t:'파동 발화중',c:_fc,
+                    x:'<b style="color:'+_fc+'">'+(fireL?'매수':'매도')+'</b> 형성 2봉째 <span class="sub">'+_dd(i2)+' · 6봉 조항 '+hh+'/3 · 다음 봉이 같은 성격이면 성립</span>'
+                      +'<br><span style="font-size:10px">뿌리 <b style="color:'+_fc+'">'+f(_froot)+'</b>'
+                      +(_fvw!=null?(' · 단가 <b>'+f(_fvw)+'</b>'):'')
+                      +(_fcen!=null?(' · 중심 <b>'+f(_fcen)+'</b>'):'')
+                      +(_frep!=null?(' · 실존가 <b style="color:var(--gold2)">'+f(_frep)+'</b>'):' · <span class="sub">실존가 아직 없음(층 미생존)</span>')
+                      +' <span class="sub">(확정 전 · 다음 봉에서 바뀔 수 있음)</span></span>'});
                 }
               }catch(e){}
               
@@ -14230,17 +14256,35 @@ function waveDetailPanel(){try{
 
 
 
+        
+
+
+
         var _bigTxt='';
         try{var g2b=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
-          var _cand=alv.filter(function(w){return w.dir>0;});
-          if(_cand.length){var _big=_cand.reduce(function(x,y){return (x.s<y.s)?x:y;});
-            var _bc=_big._cw||null;
+          var _mkBig=function(dir){
+            var c=alv.filter(function(w){return dir>0?w.dir>0:w.dir<0;});
+            if(!c.length)return null;
+            var w=c.reduce(function(x,y){return (x.s<y.s)?x:y;});
+            return {w:w,cw:w._cw||null,n:c.length};
+          };
+          var _bL=_mkBig(1), _bS=_mkBig(-1);
+          var _card=function(o,dir){
+            if(!o)return '<div style="flex:1;min-width:200px"><div class="sub" style="font-size:10.5px">'
+              +(dir>0?'<b style="color:var(--buy)">매수</b>':'<b style="color:var(--sell)">매도</b>')+' 대파동 없음 <span style="font-size:9.5px">(서 있는 파동 0)</span></div></div>';
+            var col=dir>0?'var(--buy)':'var(--sell)', c=o.cw;
+            return '<div style="flex:1;min-width:200px">'
+              +'<div style="font-size:10.5px;font-weight:700;color:'+col+'">'+(dir>0?'매수':'매도')+' 대파동 '
+              +'<span class="sub" style="font-weight:400">'+dl2(o.w.s)+'~ · 이 진영의 출발점</span></div>'
+              +'<div style="margin-top:2px;font-size:10.5px">뿌리 <b style="color:'+col+'">'+f(g2b(A2[o.w.s]))+'</b>'
+              +((c&&c.cen!=null)?(' · 중심 <b>'+f(c.cen)+'</b>'):'')
+              +((c&&c.rep!=null)?(' · 실존가 <b style="color:var(--gold2)">'+f(c.rep)+'</b>'):'')
+              +'<br><span class="sub">나이 '+(n2-o.w.e)+'봉 · 파생 파동 '+(o.n-1)+'개</span></div></div>';
+          };
+          if(_bL||_bS)
             _bigTxt='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-top:8px;border:1px solid var(--gold);border-radius:8px;background:rgba(214,162,58,.05)">'
-              +'<b style="color:var(--gold2)">대파동</b> <span class="sub">'+dl2(_big.s)+'~'+dl2(_big.e)+' · 전체 파동의 출발점</span>'
-              +'<div style="margin-top:3px">파동 뿌리 <b style="color:var(--buy)">'+f(g2b(A2[_big.s]))+'</b>'
-              +((_bc&&_bc.cen!=null)?(' · 중심 <b>'+f(_bc.cen)+'</b><span class="sub">(소멸 제외)</span>'):'')
-              +((_bc&&_bc.rep!=null)?(' · 실존가 <b style="color:var(--gold2)">'+f(_bc.rep)+'</b>'):'')
-              +' · 나이 <b>'+(n2-_big.e)+'봉</b> · 소파동 <b>'+(_cand.length-1)+'개</b></div></div>';}
+              +'<b style="color:var(--gold2)">대파동</b> <span class="sub" style="font-size:9.5px">양 진영 출발점 · 중심은 빠져나간 물량 제외</span>'
+              +'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:3px">'+_card(_bL,1)+_card(_bS,-1)+'</div></div>';
         }catch(e){console.warn('[대파동 카드] '+e);}   
         
 
