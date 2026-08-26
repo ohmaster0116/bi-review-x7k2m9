@@ -1522,6 +1522,7 @@ function tzClusterPanel(){
 function convClusters(){
   try{
     const px=E.d1[E.d1.length-1].c;
+    
     const gj2=b=>((b.o+b.c)/2+(b.h+b.l)/2)/2, cen2=b=>(b.h+b.l+2*b.c)/4;
     const L=[];const add=(sys,name,v)=>{if(v!=null&&isFinite(v)&&v>0)L.push({sys,name,v});};
     [['d1','전일'],['w1','전주'],['M1','전월']].forEach(pr=>{const a=E[pr[0]];if(a&&a.length>=2){const p=a[a.length-2];
@@ -16165,6 +16166,7 @@ function lwTipMove(p,el){try{
   const intra=!(lwTf==='d1'||lwTf==='w1'||lwTf==='M1'||lwTf==='y1');
   const ds=dt.getFullYear()+'-'+pad(dt.getMonth()+1)+'-'+pad(dt.getDate())+(intra?' '+pad(dt.getHours())+':'+pad(dt.getMinutes()):'');
   const chg=(d.close-d.open)/d.open*100,cc=d.close>=d.open?'#26a69a':'#ef5350';
+  
   const gj=((d.open+d.close)/2+(d.high+d.low)/2)/2,cen=(d.high+d.low+2*d.close)/4;
   tip.innerHTML=`<b style="color:${cc}">${ds}</b><br>시 ${f1(d.open)} · 고 ${f1(d.high)}<br>저 ${f1(d.low)} · 종 <b style="color:${cc}">${f1(d.close)}</b> <span style="color:${cc}">(${chg>=0?'+':''}${chg.toFixed(2)}%)</span><br><span style="color:#d6a23a">기준가 ${f1(gj)}</span> · <span style="color:#46c2ff">중심가 ${f1(cen)}</span>`;
   tip.style.display='block';
@@ -16492,6 +16494,7 @@ function viewAlgo(){const px=E.d1[E.d1.length-1].c, cwin=px*0.0012, sp=avgSpread
     <div class="panel"><div class="hd">겹침 구간 - 강도별 카테고리(⭐강력 / 🧱매물대 / ·겹침) · 저항대 ↑ / 현재가 / 지지대 ↓</div><div class="scroll"><table class="tw"><thead><tr><th class="l">카테고리</th><th>가격</th><th>거리</th><th>겹</th><th class="l">겹친 밴드 (봉·종류)</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;}
 function mpCols(k){const a=E[k];if(!a.length)return null;const b=a[a.length-1];
   const gj=linAB((b.h+b.gijun)/2,(b.l+b.gijun)/2);   
+  
   const cen=linAB((b.h+b.center)/2,(b.l+b.center)/2); 
   const avg=gj.map((v,i)=>(v+cen[i])/2);
   return [{n:'기준가전투',v:gj},{n:'중심간전투',v:cen},{n:'평균',v:avg}];}
@@ -17618,6 +17621,7 @@ function battleBalance(){
 
 
 
+    
     const cen=(roll+gv)/2;
     let vBuy=null;
     
