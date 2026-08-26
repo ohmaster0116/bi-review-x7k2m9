@@ -18953,7 +18953,10 @@ var LW_PICK={
          ['tp','전투포인트','두 봉이 합의한 자리, 목표·재진입 좌표로 확인']]};   
 function lwPickHTML(){try{
   var rg='box'; try{var g=regimeCalc('d1'); if(g&&g.state)rg=g.state;}catch(e){}
-  var W={box:'박스장',warn:'경계·전환 중',trend:'추세장'}[rg]||rg;
+  
+
+  var _rgd=(((window.__VERDICT||{}).data||{}).regime_dir)||'';
+  var W={box:'박스장',warn:'경계·전환 중',trend:(_rgd?_rgd+' 추세':'추세장')}[rg]||rg;
   var P=LW_PICK[rg]||LW_PICK.box;
   var chip=function(x){return '<span onclick="pickBand(&quot;'+x[0]+'&quot;)" title="'+x[2]+'" style="cursor:pointer;display:inline-flex;flex-direction:column;gap:2px;padding:7px 11px;border:1px solid var(--gold2);border-radius:10px;background:rgba(214,162,58,.07);min-width:0">'
     +'<b style="font-size:11.5px;color:var(--gold2)">'+x[1]+' +</b>'
@@ -19945,7 +19948,8 @@ function twoBreathPanel(){try{
     +(resp?'<div style="font-size:11.5px;color:var(--tx2);margin-top:5px;padding-top:5px;border-top:1px dashed var(--bd);line-height:1.6"><span style="color:var(--tx3)">대응</span> · '+resp+'</div>':'')
     +'</div></div>';};
   
-  var _rgBadge='',_rgWord='';try{var _g=regimeCalc('d1');if(_g){var _w=_g.state==='trend'?'추세장':_g.state==='warn'?'경계 · 전환 중':'박스장';_rgWord=_w;var _c=_g.state==='trend'?'var(--sell)':_g.state==='warn'?'#f0a83c':'var(--tx2)';_rgBadge='<span title="추세장=한 방향 지속(3연속+)·박스장=위아래 회귀·경계=전환 신호" style="font-size:10.5px;font-weight:700;color:'+_c+';border:1px solid '+_c+';border-radius:6px;padding:1px 8px;white-space:nowrap">'+_w+'</span>';}}catch(e){}
+  
+  var _rgBadge='',_rgWord='';try{var _g=regimeCalc('d1');if(_g){var _rgd2=(((window.__VERDICT||{}).data||{}).regime_dir)||'';var _w=_g.state==='trend'?(_rgd2?_rgd2+' 추세':'추세장'):_g.state==='warn'?'경계 · 전환 중':'박스장';_rgWord=_w;var _c=_g.state==='trend'?'var(--sell)':_g.state==='warn'?'#f0a83c':'var(--tx2)';_rgBadge='<span title="추세장=한 방향 지속(3연속+)·박스장=위아래 회귀·경계=전환 신호" style="font-size:10.5px;font-weight:700;color:'+_c+';border:1px solid '+_c+';border-radius:6px;padding:1px 8px;white-space:nowrap">'+_w+'</span>';}}catch(e){}
   
   var _PB=window.__PROB||null;
   var _prob=function(pct,N){if(pct==null||isNaN(pct))return '';pct=+pct;var c=pct>=53?'var(--buy)':(pct<=47?'var(--sell)':'var(--tx2)');return '<b style="color:'+c+'">'+Math.round(pct)+'%</b>'+(N?'<span style="color:var(--tx3)"> (N'+N+')</span>':'');};   
