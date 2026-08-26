@@ -1537,8 +1537,22 @@ function convClusters(){
     try{if(Array.isArray(whaleData)&&whaleData.length>3&&waveCoin==='BTC'){const vw=(s2,k2)=>{const v=s2.reduce((x,r2)=>x+r2.vol,0);return v?s2.reduce((x,r2)=>x+r2[k2]*r2.vol,0)/v:0;};
       let ai=0;whaleData.forEach((r2,i)=>{if(r2.h>whaleData[ai].h)ai=i;});
       const bl=whaleData.filter(r2=>r2.bull),dc=whaleData.slice(ai).filter(r2=>!r2.bull);
-      wtp=((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2;
-      add('고래','고래 밀집 층',wtp);add('고래','매수 고래 평단',(vw(bl,'gj')+vw(bl,'cen'))/2);add('고래','매도 고래 평단',(vw(dc,'gj')+vw(dc,'cen'))/2);}}catch(e){}
+      
+
+
+
+
+
+
+
+      var _WD=(window.__WHDELTA||window._whDelta||{}), _WN=(_WD&&_WD.now)||null;
+      var _wbS=(_WN&&_WN.buy_avg!=null)?_WN.buy_avg:null, _wsS=(_WN&&_WN.sell_avg!=null)?_WN.sell_avg:null;
+      var _bpS=(_WN&&_WN.battle_point!=null)?_WN.battle_point:null;
+      var _fbTag=(_wsS==null)?' (소멸 포함·옛 자)':'';
+      wtp=(_bpS!=null)?_bpS:(((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2);
+      add('고래','고래 밀집 층'+_fbTag,wtp);
+      add('고래','매수 고래 평단'+_fbTag,(_wbS!=null)?_wbS:((vw(bl,'gj')+vw(bl,'cen'))/2));
+      add('고래','매도 고래 평단'+_fbTag,(_wsS!=null)?_wsS:((vw(dc,'gj')+vw(dc,'cen'))/2));}}catch(e){}
     try{const Mp=E.M1[E.M1.length-2];if(wtp)add('중간값','전월 기준·고래 전투 중간값',(gj2(Mp)+wtp)/2);}catch(e){}
     L.sort((x,y)=>x.v-y.v);
     const cl=[];let cc=null;
@@ -14033,7 +14047,7 @@ function waveDetailPanel(){try{
 
 
 
-              var _wc={},_ok=false,_wb=null,_ws=null,_wl=null;
+              var _wc={},_ok=false,_wb=null,_ws=null,_wl=null,_wsBasis='';
               try{
                 if(typeof whaleData!=='undefined'&&whaleData===null&&!whaleLoading&&typeof loadWhale==='function'){try{loadWhale();}catch(e){}}
                 if(typeof whaleData!=='undefined'&&Array.isArray(whaleData)&&whaleData.length>3){
@@ -14041,9 +14055,12 @@ function waveDetailPanel(){try{
                   var _ai=0; whaleData.forEach(function(r2,i2){if(r2.h>whaleData[_ai].h)_ai=i2;});
                   var _bl=whaleData.filter(function(r2){return r2.bull;}), _dc=whaleData.slice(_ai).filter(function(r2){return !r2.bull;});
                   if(_bl.length&&_dc.length){
-                    _wb=(_vwq(_bl,'gj')+_vwq(_bl,'cen'))/2;
-                    _ws=(_vwq(_dc,'gj')+_vwq(_dc,'cen'))/2;
-                    _wl=((_vwq(_bl,'gj')+_vwq(_dc,'gj'))/2+(_vwq(_bl,'cen')+_vwq(_dc,'cen'))/2)/2;
+                    
+                    var _WN2=((window.__WHDELTA||window._whDelta||{}).now)||null;
+                    _wb=(_WN2&&_WN2.buy_avg!=null)?_WN2.buy_avg:((_vwq(_bl,'gj')+_vwq(_bl,'cen'))/2);
+                    _ws=(_WN2&&_WN2.sell_avg!=null)?_WN2.sell_avg:((_vwq(_dc,'gj')+_vwq(_dc,'cen'))/2);
+                    _wl=(_WN2&&_WN2.battle_point!=null)?_WN2.battle_point:(((_vwq(_bl,'gj')+_vwq(_dc,'gj'))/2+(_vwq(_bl,'cen')+_vwq(_dc,'cen'))/2)/2);
+                    _wsBasis=(_WN2&&_WN2.sell_avg!=null)?(' <span class="sub">(살아남은 물량 기준'+((_WN2.dead_sell_pct>=1)?(' · '+Math.round(_WN2.dead_sell_pct)+'% 소멸 제외'):'')+')</span>'):' <span class="sub">(소멸 포함·옛 자)</span>';
                     _ok=true;
                   }
                 }
@@ -14056,7 +14073,7 @@ function waveDetailPanel(){try{
               if(_wb==null||_ws==null)
                 return '<div style="margin-top:3px;font-size:11px" class="sub">고래 평단 산출 없음</div>';
               return '<div style="margin-top:3px;font-size:11px">고래 평단 <span class="sub">(월봉 거래량 가중 · 매수는 전 구간 · 매도는 최고가 이후 · 분모가 다릅니다)</span> · '
-                +'<b style="color:var(--buy)">매수 '+f(_wb)+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">매도 '+f(_ws)+'</b>'
+                +'<b style="color:var(--buy)">매수 '+f(_wb)+'</b> <span class="sub">VS</span> <b style="color:var(--sell)">매도 '+f(_ws)+'</b>'+_wsBasis
                 +(_wl!=null?(' <span class="sub">= 밀집 층</span> <b>'+f(_wl)+'</b>'):' <span class="sub">= 밀집 층 산출 없음</span>')+'</div>';
             }catch(e){console.warn('[고래 평단 줄] '+e);return '';}})()
             
@@ -14158,18 +14175,41 @@ function waveDetailPanel(){try{
                     x:'<b style="color:'+(fireL?'var(--buy)':'var(--sell)')+'">'+(fireL?'매수':'매도')+'</b> 형성 2봉째입니다 <span class="sub">'+_dd(i2)+' · 6봉 조항 '+hh+'/3 · 다음 봉이 같은 성격이면 파동 성립</span>'});
                 }
               }catch(e){}
-              if(!ev.length)
-                return '<div style="margin-top:6px;padding:6px 9px;border:1px dashed var(--bd);border-radius:8px;font-size:10.5px" class="sub">갱신 <span style="font-size:9.5px">(직전 마감 대비)</span> · 파동 축에서 바뀐 것이 없습니다</div>';
+              
+
+
+
+
+              var _WIN=7;
+              
+              try{
+                var _cut=_n2-_WIN;
+                _todayL.concat(_todayS).forEach(function(w){
+                  if(w.s>=_cut && !ev.some(function(e3){return e3.t==='파동 생성'&&e3.x.indexOf(_dd(w.s))>=0;}))
+                    ev.push({t:'파동 생성',c:(w.dir>0?'var(--buy)':'var(--sell)'),
+                      x:'<b style="color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+(w.dir>0?'매수':'매도')+'</b> 파동이 섰습니다 <span class="sub">'+_dd(w.s)+' · 뿌리 '+f(w.root)+'</span>'});
+                });
+                (canonWaves(A2,tf,true).dead||[]).concat(canonWaves(A2,tf,false).dead||[]).forEach(function(w){
+                  if(w.s>=_cut) ev.push({t:'파동 소멸',c:'var(--tx3)',
+                    x:'<b style="color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+(w.dir>0?'매수':'매도')+'</b> 파동이 뿌리를 잃었습니다 <span class="sub">'+_dd(w.s)+' · 뿌리 '+f(w.root)+'</span>'});
+                });
+              }catch(e){}
               var _ord={'파동 발화중':0,'파동 생성':1,'파동 소멸':2,'실존가 전환':3,'성격 전환':4,'추세 전환':5};
               ev.sort(function(a,b){return (_ord[a.t]||9)-(_ord[b.t]||9);});
+              var _KINDS=['파동 발화중','파동 생성','파동 소멸','실존가 전환','성격 전환','추세 전환'];
+              var _byKind={}; ev.forEach(function(e2){(_byKind[e2.t]=_byKind[e2.t]||[]).push(e2);});
+              var _body=_KINDS.map(function(k){
+                var arr=(_byKind[k]||[]).slice(0,3);
+                var col=arr.length?arr[0].c:'var(--tx3)';
+                return '<div style="display:flex;gap:7px;font-size:10.5px;padding:2px 0;line-height:1.65;border-top:1px solid rgba(255,255,255,.05)">'
+                  +'<span style="flex:none;width:64px;font-size:9.5px;font-weight:700;color:'+(arr.length?col:'var(--tx3)')+'">'+k+'</span>'
+                  +'<span style="flex:1">'+(arr.length?arr.map(function(e2){return e2.x;}).join('<br>')
+                     :'<span class="sub" style="font-size:10px">최근 '+_WIN+'봉 없음</span>')+'</span></div>';
+              }).join('');
               return '<div style="margin-top:6px;padding:7px 9px;border:1px solid var(--gold);border-radius:8px;background:rgba(214,162,58,.05)">'
-                +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:4px">갱신 '
-                +'<span class="sub" style="font-weight:400;font-size:9.5px">직전 마감 대비 파동 축에서 바뀐 것 · '+ev.length+'건</span></div>'
-                +ev.slice(0,10).map(function(e2){
-                  return '<div style="display:flex;gap:7px;font-size:10.5px;padding:1.5px 0;line-height:1.6">'
-                    +'<span style="flex:none;width:62px;font-size:9.5px;font-weight:700;color:'+e2.c+'">'+e2.t+'</span>'
-                    +'<span style="flex:1">'+e2.x+'</span></div>';}).join('')
-                +'</div>';
+                +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:3px">갱신 '
+                +'<span class="sub" style="font-weight:400;font-size:9.5px">최근 '+_WIN+'봉 · 파동 축에서 바뀐 것 · 있는 것 '+ev.length+'건</span></div>'
+                +_body+'</div>';
             }catch(e){console.warn('[갱신 패널] '+e);return '';}})()
             +'</div>';}}catch(e){}
         
@@ -15650,7 +15690,9 @@ function alCheck(){
         const vw=(s,k)=>{const v=s.reduce((x,r)=>x+r.vol,0);return v?s.reduce((x,r)=>x+r[k]*r.vol,0)/v:0;};
         let ai=0;whaleData.forEach((r2,i)=>{if(r2.h>whaleData[ai].h)ai=i;});
         const bl=whaleData.filter(r2=>r2.bull),dc=whaleData.slice(ai).filter(r2=>!r2.bull);
-        const tp=((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2;
+        
+        const _wn3=((window.__WHDELTA||window._whDelta||{}).now)||null;
+        const tp=(_wn3&&_wn3.battle_point!=null)?_wn3.battle_point:(((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2);
         if(tp){const side=px>=tp?'up':'dn';
           if(window._alWhSide&&window._alWhSide!==side){
             if(side==='dn')alNotify('고래 방어선 이탈','현재가가 방어선 '+f1(tp)+' 아래로 내려왔습니다','wh_dn_'+day);
@@ -16126,7 +16168,9 @@ function lwDrawAll(){
     const vw=(s,k)=>{const v=s.reduce((x,r)=>x+r.vol,0);return v?s.reduce((x,r)=>x+r[k]*r.vol,0)/v:0;};
     let ai=0;whaleData.forEach((r2,i)=>{if(r2.h>whaleData[ai].h)ai=i;});
     const bl=whaleData.filter(r2=>r2.bull),dc=whaleData.slice(ai).filter(r2=>!r2.bull);
-    const tp=((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2;
+    
+    const _wn4=((window.__WHDELTA||window._whDelta||{}).now)||null;
+    const tp=(_wn4&&_wn4.battle_point!=null)?_wn4.battle_point:(((vw(bl,'gj')+vw(dc,'gj'))/2+(vw(bl,'cen')+vw(dc,'cen'))/2)/2);
     if(tp)lwAdd(tp,'#ffd24a','고래 방어선',LS.Solid,2);
   }
   
