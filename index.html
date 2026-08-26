@@ -14140,10 +14140,26 @@ function waveDetailPanel(){try{
                   +(arr.length?arr.map(function(o,i){return _cell(o,i,isL);}).join('')
                     :'<div class="sub" style="font-size:10px">서 있는 층 없음 <span style="font-size:9px">(전량 소멸 진행중·새 파동 대기)</span></div>')+'</div>';
               };
+              
+
+
+
+
+
+              var _cluster=function(arr){
+                if(arr.length<2)return '';
+                var g=[arr[0].v]; for(var i=1;i<arr.length;i++){ if(Math.abs(arr[i].v-g[g.length-1])/_px3*100<=0.5)g.push(arr[i].v); else break; }
+                return (g.length>=2)?('<div class="sub" style="font-size:9px;margin-top:1px">위 '+g.length+'개는 폭 '
+                  +(Math.abs(g[0]-g[g.length-1])/_px3*100).toFixed(2)+'% 안 · 사실상 한 자리</div>'):'';
+              };
               return '<div style="margin-top:6px;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;background:rgba(255,255,255,.02)">'
-                +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:4px">실존가 층 5계단 '
-                +'<span class="sub" style="font-weight:400;font-size:9.5px">현재가 '+f(_px3)+' 기준 · 생존 층만 · 파동마다 최전방 실존가 하나</span></div>'
-                +'<div style="display:flex;gap:14px;flex-wrap:wrap">'+_col(_L5,true,'롱 층')+_col(_S5,false,'숏 층')+'</div></div>';
+                +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:2px">파동별 주체 평단 <span class="sub" style="font-weight:400">(실존가)</span> 5계단</div>'
+                +'<div class="sub" style="font-size:9.5px;margin-bottom:4px;line-height:1.55">현재가 '+f(_px3)+' 기준 · 파동 하나가 한 줄 · 그 파동에 들어간 사람들의 평균 단가입니다. '
+                +'<span style="color:var(--tx3)">여러 파동이 같은 자리에 겹치면 값이 비슷하게 모입니다.</span></div>'
+                +'<div style="display:flex;gap:14px;flex-wrap:wrap">'
+                +'<div style="flex:1;min-width:190px">'+_col(_L5,true,'매수 평단').replace('<div style="flex:1;min-width:190px">','').replace(/<\/div>$/,'')+_cluster(_L5)+'</div>'
+                +'<div style="flex:1;min-width:190px">'+_col(_S5,false,'매도 평단').replace('<div style="flex:1;min-width:190px">','').replace(/<\/div>$/,'')+_cluster(_S5)+'</div>'
+                +'</div></div>';
             }catch(e){console.warn('[실존가 5계단] '+e);return '';}})()
             
 
@@ -14298,16 +14314,37 @@ function waveDetailPanel(){try{
             return {w:w,cw:w._cw||null,n:c.length};
           };
           var _bL=_mkBig(1), _bS=_mkBig(-1);
+          
+
+
+
+
+
+
+          var _frontOf=function(dir){
+            var arr=canonWaves(A2,tf,dir>0).live
+              .map(function(w){return w.rep;})
+              .filter(function(v){return v!=null&&(dir>0?(v<=px):(v>=px));});
+            if(!arr.length)return null;
+            return dir>0?Math.max.apply(null,arr):Math.min.apply(null,arr);
+          };
           var _card=function(o,dir){
             if(!o)return '<div style="flex:1;min-width:200px"><div class="sub" style="font-size:10.5px">'
               +(dir>0?'<b style="color:var(--buy)">매수</b>':'<b style="color:var(--sell)">매도</b>')+' 대파동 없음 <span style="font-size:9.5px">(서 있는 파동 0)</span></div></div>';
-            var col=dir>0?'var(--buy)':'var(--sell)', c=o.cw;
+            var col=dir>0?'var(--buy)':'var(--sell)', c=o.cw, _fr=_frontOf(dir);
             return '<div style="flex:1;min-width:200px">'
               +'<div style="font-size:10.5px;font-weight:700;color:'+col+'">'+(dir>0?'매수':'매도')+' 대파동 '
               +'<span class="sub" style="font-weight:400">'+dl2(o.w.s)+'~ · 이 진영의 출발점</span></div>'
               +'<div style="margin-top:2px;font-size:10.5px">뿌리 <b style="color:'+col+'">'+f(g2b(A2[o.w.s]))+'</b>'
               +((c&&c.cen!=null)?(' · 중심 <b>'+f(c.cen)+'</b>'):'')
-              +((c&&c.rep!=null)?(' · 실존가 <b style="color:var(--gold2)">'+f(c.rep)+'</b>'):'')
+              
+
+
+
+
+
+              +'<br><span style="font-size:10px">실존가 <b style="color:var(--gold2)">'+(_fr!=null?f(_fr):'없음')+'</b> '
+              +'<span class="sub">'+(_fr!=null?('이 진영 최전방 · 현재가 '+(dir>0?'아래':'위')+' 가장 가까운 방어선'):'서 있는 층 없음')+'</span></span>'
               +'<br><span class="sub">나이 '+(n2-o.w.e)+'봉 · 파생 파동 '+(o.n-1)+'개</span></div></div>';
           };
           if(_bL||_bS)
@@ -23937,7 +23974,19 @@ function whaleSupply(){
 
 
           var _fl=(_wd&&_whDelta&&_whDelta.flow)?_whDelta.flow:((window.__WHDELTA||{}).flow);
-          var _bs=(window.__WHDELTA||{}).breakout_stat||(_whDelta&&_whDelta.breakout_stat);
+          /* ★★★★[케인 08-26 ★자기 철회 · 독립 검증 기각] ★내 백테스트 수치를 ★내린다.
+             ★기각 근거(독립 재현·내 코드 미사용) :
+               ⒜ ★내 자에 ★조문에 없는 손잡이(ATH 이후 음봉 ≥2)가 박혀 있었다 —
+                  ★내 코드 vwavg() 에는 그 조건이 ★0건인데 ★백테스트에서만 그렇게 됐다.
+                  ★손잡이별 : minbars=1 → N=9·중앙 +2.70%·상승 56% / ★2 → N=7·+9.61%·71%(내 값) / 엄격 → N=11·★−3.89%·45%
+               ⒝ ★"매도 축소"는 ★변동성 착시 — 총물량 중앙 ★−19.6%. ★비율 자로 재면 5/7 → 4/7(p=0.34)
+                  ★표본을 늘리면 ★뒤집힌다 : 주봉 N=23 → 39%(기준선 57%) · ★일봉 N=76 → ★20%(기준선 52%)
+               ⒞ ★내 대조군(+3.0%·N=4)은 ★어떤 밴드로도 재현 불가. 강화 대조군 : 거울 ★−3.84% · 무조건 기준선 ★+2.70%
+                  ⇒ ★내 +9.61% 는 ★플라시보 상위 27.4% · 이항 P=★0.305 ⇒ ★유의하지 않다.
+             ★조문 [검증 전에 이름 붙이지 않는다]를 ★같은 형태로 ★두 번째 어겼다 —
+               ★"항복"을 내린 자리에 ★"익절·롱 전환"을 ★또 검증 없이 올렸다.
+             ★프레임(주둔지 이동)은 ★이사 조문이고 ★검증 대상이 아니었다 ⇒ ★프레임은 두고 ★수치만 뺀다. */
+          var _bs=null;
           if(!_fl&&!_bs)return '';
           var s1='';
           if(_fl&&_fl.sell_delta_pct!=null&&_fl.buy_delta_pct!=null){
@@ -23965,7 +24014,7 @@ function whaleSupply(){
         <b>프레임</b> - ${w.frame} <span class="sub">즉 프랙탈 반등은 매수의 승리이기 전에, <b>높은 자리에서 팔아야 하는 고래의 매도 유인</b>일 수 있습니다. 계단식 하락의 계단참.</span><br>
         <b>계획 궤적</b>: 매도평단 <b>${f0(w.now.sell_avg)}</b> → 동률 완성 목표 <b>${f0(w.target.sell_avg)}</b>(${w.target.month}) · 전투포인트 ${f0(w.now.battle_point)} → ${f0(w.target.bp||w.target.battle_point)}<br>
         <b>진행 판정</b>: <b style="color:${VC[w.verdict]||'var(--tx)'}">${w.verdict_txt}</b> <span class="sub">(예정 대비 편차 ${w.schedule.deviation_pct>=0?'+':''}${w.schedule.deviation_pct}% · ${w.schedule.elapsed_months}/${w.schedule.total}개월)</span><br>
-        <b>매도 고래 손익</b>: <b style="color:${w.sell_whale_side==='이익'?'var(--buy)':'var(--sell)'}">${w.sell_whale_side} ${w.sell_whale_edge_pct>=0?'+':''}${w.sell_whale_edge_pct}%</b> <span class="sub">- 손실 전환이 항복 신호</span>${w.defense?`<br>
+        <b>매도 고래 손익</b>: <b style="color:${w.sell_whale_side==='이익'?'var(--buy)':'var(--sell)'}">${w.sell_whale_side} ${w.sell_whale_edge_pct>=0?'+':''}${w.sell_whale_edge_pct}%</b> <span class="sub">- 살아남은 매도 물량 기준(빠져나간 분 제외)</span>${w.defense?`<br>
         <b>방어선 판정</b>: <b style="color:${w.defense.fill_direction==='up'?'var(--buy)':w.defense.fill_direction==='down'?'var(--sell)':'var(--gold2)'}">${w.defense.fill_txt}</b> <span class="sub">- 위로 메움 ${f0(w.defense.pivot_hold)} 유지선 / 전투포인트 ${f0(w.defense.battle_point)} / 하회 시 2022식 급하강(동률 가속)</span>`:''}<br>
         <span class="sub" style="opacity:.8">가정 명시: 추세 투영(월 −7.5% 기하 지속 전제) - 고래의 가격 정책이 바뀌면 궤적도 바뀝니다. 계획 추적이지 확정 예측이 아닙니다.</span>
       </div></div>`;
