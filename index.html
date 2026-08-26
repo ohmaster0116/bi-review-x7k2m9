@@ -14016,16 +14016,25 @@ function waveDetailPanel(){try{
         
         
 
+        
+
+
+
+
+
+
         var _bigTxt='';
-        try{var _cand=alv.filter(function(w){return w.dir>0;});
+        try{var g2b=function(b){return ((b.o+b.c)/2+(b.h+b.l)/2)/2;};
+          var _cand=alv.filter(function(w){return w.dir>0;});
           if(_cand.length){var _big=_cand.reduce(function(x,y){return (x.s<y.s)?x:y;});
-            var _BL=_wl(A2,_big,n2);
+            var _bc=_big._cw||null;
             _bigTxt='<div style="font-size:11px;line-height:1.8;padding:7px 10px;margin-top:8px;border:1px solid var(--gold);border-radius:8px;background:rgba(214,162,58,.05)">'
               +'<b style="color:var(--gold2)">대파동</b> <span class="sub">'+dl2(_big.s)+'~'+dl2(_big.e)+' · 전체 파동의 출발점</span>'
-              +'<div style="margin-top:3px">파동 뿌리 <b style="color:var(--buy)">'+f(g2(A2[_big.s]))+'</b>'
-              +((_BL&&_BL.vwC!=null)?(' · 주체 평단 <b>'+f(_BL.vwC)+'</b>'):'')
+              +'<div style="margin-top:3px">파동 뿌리 <b style="color:var(--buy)">'+f(g2b(A2[_big.s]))+'</b>'
+              +((_bc&&_bc.cen!=null)?(' · 중심 <b>'+f(_bc.cen)+'</b><span class="sub">(소멸 제외)</span>'):'')
+              +((_bc&&_bc.rep!=null)?(' · 실존가 <b style="color:var(--gold2)">'+f(_bc.rep)+'</b>'):'')
               +' · 나이 <b>'+(n2-_big.e)+'봉</b> · 소파동 <b>'+(_cand.length-1)+'개</b></div></div>';}
-        }catch(e){}
+        }catch(e){console.warn('[대파동 카드] '+e);}   
         
 
         
@@ -14034,15 +14043,14 @@ function waveDetailPanel(){try{
 
         var _cenStrip='';
         try{
-          var _WVX=(((gkSrc()['파동']||{}).wb||{}).waves||{})[tf]||{};
+          
+
           var _mk2=function(side){
-            var a=_WVX[side]||[]; if(!a.length)return '';
-            var mains=0,exts=0,al=0,to=0,rt=null;
+            var _c=canonWaves(A2,tf,side==='롱'); var a=_c.live; if(!a.length)return '';
+            var mains=a.length, exts=_c.merged, al=0, to=0, rt=null;
             a.forEach(function(e){
-              if(e.grp!==undefined){ if(e.grp===e.s0)mains++; else exts++; }
-              al+=(e.nAlive||0); to+=(e.n||0);
+              al+=(e.alive||0); to+=(e.total||0);
               var r=e.root; if(r!=null){ rt=(rt==null)?r:((side==='롱')?Math.min(rt,r):Math.max(rt,r)); } });
-            if(!mains)mains=a.length;   
             return '<span style="white-space:nowrap">'+(side==='롱'?'<b style="color:var(--buy)">롱</b>':'<b style="color:var(--sell)">숏</b>')
               +' 파동 <b>'+mains+'</b>'+(exts?('<span class="sub">(+확장 '+exts+')</span>'):'')
               +' · 뿌리 <b>'+f(rt)+'</b> · 층위 <b>'+al.toLocaleString('en-US')+'</b><span class="sub">/'+to.toLocaleString('en-US')+' 생존</span></span>';
