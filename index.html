@@ -13572,19 +13572,34 @@ function battleZones(tf,nm){try{
 
 
 
-  var rng=function(arr){ if(!arr.length)return null; var s0=null;
+  
+
+
+
+
+  var _rngRaw=function(arr){ if(!arr.length)return null; var s0=null;
     arr.forEach(function(w){ if(s0==null||w.s<s0)s0=w.s; });
     var hi=null,lo=null;
     for(var k=s0;k<n;k++){ if(hi==null||A[k].h>hi)hi=A[k].h; if(lo==null||A[k].l<lo)lo=A[k].l; }
-    return (hi!=null&&lo!=null)?(hi+lo)/2:null; };
-  var gl=rng(AL), gs=rng(AS);
+    return (hi!=null&&lo!=null)?{lo:lo,hi:hi}:null; };
+  var rng=function(arr,isL){ var r=_rngRaw(arr); if(!r)return null;
+    var flo=isL?r.lo:Math.max(r.lo,_cxb), fhi=isL?Math.min(r.hi,_cxb):r.hi;
+    return (fhi>flo)?((flo+fhi)/2):((r.hi+r.lo)/2); };   
+  var _lostPct=function(arr,isL){ var r=_rngRaw(arr); if(!r||r.hi<=r.lo)return null;
+    var flo=isL?r.lo:Math.max(r.lo,_cxb), fhi=isL?Math.min(r.hi,_cxb):r.hi;
+    return (fhi>flo)?((1-(fhi-flo)/(r.hi-r.lo))*100):null; };
+  var gl=rng(AL,true), gs=rng(AS,false);
+  var glL=_lostPct(AL,true), gsL=_lostPct(AS,false);
   var rows=[['전체 파동 뿌리간'+allTag(rl,rs),mid(rl,rs),rl,rs],
             
             ['전체 파동 중심간 <span class="sub">(잡아먹힌 물량 제외'
               +((csD!=null&&csD>=1)?(' · 매도 '+Math.round(csD)+'% 소멸'):'')
               +((clD!=null&&clD>=1)?(' · 매수 '+Math.round(clD)+'% 소멸'):'')
               +((csA!=null)?(' · 소멸 포함 시 매도 '+f0(csA)):'')+')</span>'+allTag(cl,cs),mid(cl,cs),cl,cs],
-            ['전체 구간중점간 <span class="sub">(각 진영 가격 여정의 한가운데)</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
+            
+            ['전체 구간중점간 <span class="sub">(남은 영토의 한가운데'
+              +((gsL!=null&&gsL>=1)?(' · 매도 영토 '+Math.round(gsL)+'% 상실'):'')
+              +((glL!=null&&glL>=1)?(' · 매수 '+Math.round(glL)+'% 상실'):'')+')</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
             ['현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS,bothDead(pRL,pRS),oneDead(pRL,pRS)],
             ['현재 진행중 중심간'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS,bothDead(pCL,pCS),oneDead(pCL,pCS)],
             ['현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss,bothDead(pEL,pES),oneDead(pEL,pES)]];
@@ -23618,18 +23633,33 @@ function whaleSupply(){
       const _wd=(_whDelta&&_whDelta.now)?_whDelta.now:null;
       const _bpNow=(_wd&&_wd.battle_point!=null)?_wd.battle_point:cn.bp_now;
       const _sellAvg=(_wd&&_wd.sell_avg!=null)?_wd.sell_avg:cn.sell_avg;
-      const liveRise=cn.current&&cn.current.low?((pxD/cn.current.low-1)*100):null;
+      
+
+
+
+
+
+
+      const _lf=(_whLife&&_whLife.born)?_whLife:null;
+      const _curLow=_lf?_lf.low:(cn.current?cn.current.low:null);
+      const _curLowD=_lf?_lf.born:(cn.current?cn.current.low_date:'');
+      const liveRise=_curLow?((pxD/_curLow-1)*100):null;
+      
+      const _pctNow=(function(){try{ if(liveRise==null||!cb.length)return null;
+        var rs=cb.map(function(b){return b.rise;}).sort(function(a,b){return a-b;});
+        var k=0; for(var i=0;i<rs.length;i++){ if(rs[i]<=liveRise)k++; }
+        return Math.round(k/rs.length*100); }catch(e){return null;}})();
       const rows=cb.slice().reverse().map(b=>`<tr><td class="l">${b.date}</td><td class="num">${f0(b.bp)}</td><td class="num" style="color:var(--buy)">+${b.rise.toFixed(1)}%</td><td class="num">${b.life}일</td></tr>`).join('');
       pWar=`<div class="panel"><div class="hd" style="color:var(--gold2)">⚔ 전투 전사(戰史) - 전투포인트 공방 연대기 <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9.5px;font-weight:700;margin-left:6px;background:rgba(70,194,255,.14);color:#46c2ff">관찰 · 매매 명령 아님</span> <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:9px;font-weight:700;margin-left:5px;background:rgba(139,148,168,.14);color:var(--tx2)">\uD83D\uDD12 아침 잠금 · 장중 고정</span> <span class="sub">월봉 캠페인 정본 · 8.9년</span></div>
       <div style="padding:10px 14px;font-size:12px;line-height:1.9">
         <b>전투포인트 하강 연대기</b> - 매도 고래가 후퇴하며 전선이 내려온 궤적:<br>
-        <span class="sub">2021-06 BP 30,741(매도평단 43,557) → 2022-01 35,492(49,714) → 2023-01 22,468(22,740) → 2026-02 60,018(90,422) → 현재 <b>${f0(_bpNow)}</b>(매도평단 ${f0(cn.sell_avg)}) · 작년 10월 최고가 이후 매도평단 95,549→84,920 계단 후퇴</span><br>
+        <span class="sub">2021-06 BP 30,741(매도평단 43,557) → 2022-01 35,492(49,714) → 2023-01 22,468(22,740) → 2026-02 60,018(90,422) → 현재 <b>${f0(_bpNow)}</b>(매도평단 ${f0(_sellAvg)}) <span style="color:var(--tx3)">· 최고가 이후 계단 후퇴 중이며, 지금 값은 ★살아남은 매도 물량 기준입니다</span></span><br>
         <b>전투 기록</b>: BP 도달 전투 <b>${cb.length}회</b> · 방어 성공률 <b>50%(반반 - 냉정판)</b> <span class="sub">(판정 기준 의존: 반등 발생 기준 관대판은 상회 - 반반으로 읽는 것이 냉정)</span> · 방어 성공 시 반등폭 중앙 <b>+${cn.rise_median}%</b> · 수명 중앙 <b>${cn.life_median}일</b> <span class="sub">(조건부 통계·확정 아님)</span></div>
-      ${cn.current?`<div style="padding:0 14px 10px;font-size:12px;line-height:1.9;border-top:1px solid var(--bd);padding-top:9px">
-        <b style="color:var(--gold2)">이번 파동 판독</b> - 저점 ${cn.current.low_date} ${f0(cn.current.low)}에서 ${liveRise!=null?`현재 <b>+${liveRise.toFixed(1)}%</b>`:''} <span class="sub">(과거 방어 성공 반등폭의 하위 ${cn.current.pct}% 지점 = 아직 초반)</span><br>
+      ${(_curLow!=null)?`<div style="padding:0 14px 10px;font-size:12px;line-height:1.9;border-top:1px solid var(--bd);padding-top:9px">
+        <b style="color:var(--gold2)">이번 파동 판독</b> - 저점 ${_curLowD} ${f0(_curLow)}에서 ${liveRise!=null?`현재 <b>+${liveRise.toFixed(1)}%</b>`:''} <span class="sub">(과거 방어 성공 반등폭 중 하위 ${_pctNow!=null?_pctNow:'-'}% 지점${_pctNow!=null?(_pctNow<40?' = 아직 초반':(_pctNow>70?' = 상위권':'')):''}${_lf?'':' · 굳은 판'})</span><br>
         전투포인트 <b>${f0(_bpNow)}</b> <span class="sub">(현재가 대비 ${((_bpNow-px)/px*100).toFixed(1)}% · ${(window.__WHDELTA&&window.__WHDELTA.as_of)||'저장'} 판)</span> · 천장: 근접 매도군 <b>74,732</b> → 매도평단 <b>${f0(_sellAvg)}</b> <span class="sub">(같은 판)</span><br>
         프랙탈 투영(시나리오·확정 아님 · 07 판 좌표): 중앙 반등(+27%) → <b>73,442</b>(근접 매도군과 수렴) / 강반등(75분위) → <b>79,106</b>(매도평단 수렴)<br>
-        <span class="sub">현재 = 매도 고래가 −25% 물린 자리에서 매수가 전투포인트 위에 서 있는 <b>자리</b> - 84,920을 회복하기 전까지 고래가 항복한 것은 아닙니다.</span></div>`:''}
+        <span class="sub">현재 = 매수가 전투포인트 위에 서 있는 <b>자리</b> · <b>${f0(_sellAvg)}</b>을 회복하기 전까지 고래가 항복한 것은 아닙니다.${(_wd&&_wd.dead_sell_pct>=1)?` <span style="color:var(--tx3)">(매도평단=살아남은 물량 기준 · ${Math.round(_wd.dead_sell_pct)}% 소멸분 제외${_wd.sell_avg_all?` · 소멸 포함 시 ${f0(_wd.sell_avg_all)}`:''})</span>`:''}</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식 · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
     }
