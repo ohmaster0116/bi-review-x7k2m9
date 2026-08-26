@@ -13419,7 +13419,17 @@ function canonWaves(A,key,isL){try{
   
   main.forEach(function(w){
     var i=w.s, best=null, opp=null, last=null, na=0, nt=0;
+    
+
+
+
+
+
+
+    var uA=0,qA=0;
     for(var k=i;k<n;k++){
+      var bc=c4(A[k]);
+      if(isL?(bc<=cx):(bc>=cx)){ uA+=bc*A[k].v; qA+=A[k].v; }   
       var dq=Q[k+1]-Q[i]; if(dq<=0) continue;
       var vw=(U[k+1]-U[i])/dq; nt++;
       if(isL?(cx<vw):(vw<cx)) continue;      
@@ -13428,7 +13438,10 @@ function canonWaves(A,key,isL){try{
       else { if(opp==null||(isL? vw<opp : vw>opp)) opp=vw; }
     }
     var dq2=Q[n]-Q[i];
-    w.cen=dq2?((UC[n]-UC[i])/dq2):null;      
+    w.cenAll=dq2?((UC[n]-UC[i])/dq2):null;   
+    w.cenAlive=qA?(uA/qA):null;              
+    w.cen=(w.cenAlive!=null)?w.cenAlive:w.cenAll;   
+    w.volAlive=qA; w.volAll=dq2;
     w.rep=(best!=null)?best:((opp!=null)?opp:last);
     w.alive=na; w.total=nt; w.e=n-1;
   });
@@ -13464,11 +13477,27 @@ function battleZones(tf,nm){try{
 
 
 
-  var cen=function(arr){if(!arr.length)return null;var s0=null;arr.forEach(function(w){if(s0==null||w.s<s0)s0=w.s;});
-    var u=0,q=0;for(var k=s0;k<n;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
   
 
-  var rl=root(AL,true),rs=root(AS,false),cl=cen(AL),cs=cen(AS);
+
+  var _cxb=A[n-1].c;   
+  var cen=function(arr,isL){if(!arr.length)return null;var s0=null;arr.forEach(function(w){if(s0==null||w.s<s0)s0=w.s;});
+    var u=0,q=0,uA=0,qA=0;
+    for(var k=s0;k<n;k++){var bc=c4(A[k]);u+=bc*A[k].v;q+=A[k].v;
+      if(isL?(bc<=_cxb):(bc>=_cxb)){uA+=bc*A[k].v;qA+=A[k].v;}}
+    return qA?(uA/qA):(q?u/q:null);};
+  
+  var cenAll=function(arr){if(!arr.length)return null;var s0=null;arr.forEach(function(w){if(s0==null||w.s<s0)s0=w.s;});
+    var u=0,q=0;for(var k=s0;k<n;k++){u+=c4(A[k])*A[k].v;q+=A[k].v;}return q?u/q:null;};
+  
+  var cenDeadPct=function(arr,isL){if(!arr.length)return null;var s0=null;arr.forEach(function(w){if(s0==null||w.s<s0)s0=w.s;});
+    var q=0,qA=0;for(var k=s0;k<n;k++){var bc=c4(A[k]);q+=A[k].v;if(isL?(bc<=_cxb):(bc>=_cxb))qA+=A[k].v;}
+    return q?((1-qA/q)*100):null;};
+  
+
+  var rl=root(AL,true),rs=root(AS,false),cl=cen(AL,true),cs=cen(AS,false);
+  var clA=cenAll(AL), csA=cenAll(AS);                        
+  var clD=cenDeadPct(AL,true), csD=cenDeadPct(AS,false);     
   
 
   
@@ -13550,7 +13579,11 @@ function battleZones(tf,nm){try{
     return (hi!=null&&lo!=null)?(hi+lo)/2:null; };
   var gl=rng(AL), gs=rng(AS);
   var rows=[['전체 파동 뿌리간'+allTag(rl,rs),mid(rl,rs),rl,rs],
-            ['전체 파동 중심간'+allTag(cl,cs),mid(cl,cs),cl,cs],
+            
+            ['전체 파동 중심간 <span class="sub">(잡아먹힌 물량 제외'
+              +((csD!=null&&csD>=1)?(' · 매도 '+Math.round(csD)+'% 소멸'):'')
+              +((clD!=null&&clD>=1)?(' · 매수 '+Math.round(clD)+'% 소멸'):'')
+              +((csA!=null)?(' · 소멸 포함 시 매도 '+f0(csA)):'')+')</span>'+allTag(cl,cs),mid(cl,cs),cl,cs],
             ['전체 구간중점간 <span class="sub">(각 진영 가격 여정의 한가운데)</span>'+allTag(gl,gs),mid(gl,gs),gl,gs],
             ['현재 진행중 뿌리간'+dieTag(pRL,pRS),mid(nrL,nrS),nrL,nrS,bothDead(pRL,pRS),oneDead(pRL,pRS)],
             ['현재 진행중 중심간'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS,bothDead(pCL,pCS),oneDead(pCL,pCS)],
@@ -13753,7 +13786,7 @@ function waveDetailPanel(){try{
             +'<span class="num" style="width:76px;flex:none;text-align:right;color:'+(st.dead?'var(--tx3)':dc)+'">'+f(st.v)+'</span>'
             +'<span style="flex:none">'+(st.dead?'소멸':'<b style="color:'+dc+'">생존</b>')+'</span>'
             +(st.fg>0?'<span class="sub">전투 '+st.fg+'회</span>':'')+'</div>';}).join('');
-        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+(_rep!=null?(' · <b style="color:var(--gold2)">실존가 '+f(_rep)+'</b>'+(_repN!=null?('<span class="sub">('+_repN+'층)</span>'):'')):'')+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f(vwC)+'</b> · 뿌리 '+f(g2(A[w.s]))+' · 자금 '+(_L.cap>=1e9?'$'+(_L.cap/1e9).toFixed(1)+'B':'$'+Math.round(_L.cap/1e6)+'M')+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
+        tr+='<tr'+(w.open?'':'')+'><td colspan="7" style="padding:0 8px 4px"><details><summary style="cursor:pointer;font-size:10px;color:var(--tx3)">층위 '+stAlive+'/'+stTot+(_rep!=null?(' · <b style="color:var(--gold2)">실존가 '+f(_rep)+'</b>'+(_repN!=null?('<span class="sub">('+_repN+'층)</span>'):'')):'')+' · 기준 <b style="color:'+dc+'">'+f(vw)+'</b> · 중심 <b>'+f((o._cw&&o._cw.cen!=null)?o._cw.cen:vwC)+'</b><span class="sub">'+((o._cw&&o._cw.cen!=null)?' (전구간·소멸 제외)':'')+'</span> · 형성기 평단 <span class="sub">'+f(vwC)+'</span> · 뿌리 '+f(g2(A[w.s]))+' · 자금 '+(_L.cap>=1e9?'$'+(_L.cap/1e9).toFixed(1)+'B':'$'+Math.round(_L.cap/1e6)+'M')+'</summary><div style="padding:3px 0 2px 8px">'+lis+'</div></details></td></tr>';}
       return tr;
     }).join('');
     
