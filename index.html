@@ -15190,7 +15190,7 @@ function viewWaveInner(){
   
   
   const _vwW=(_asofW&&_asofW.dir===ws.dir&&_asofW.vw)?sitgaCanonVW('d1',_asofW.vw):waveVW(E.d1,ws), _bufW=_vwW&&ws.dir>0&&_vwW<ws.line;
-  if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${above.length&&ws.dir>0?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:''}.`;
+  if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${(ws.dir>0&&above.length)?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:((ws.dir<0&&below&&below.length)?` · 주요 지지 <b style="color:var(--buy)">${f1(below[0].line)}</b>${below.length>1?` - 깨면 ${f1(below[1].line)}까지 공백 ${f1(below[0].line-below[1].line)}`:''}`:'')}.`;
   else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
   else{const hn0=hierNote();
     saga=`<b>무파동</b> - 활성 파동 없음. 박스 문법(실존 지지·되돌림)이 기본값인 구간.`
@@ -15522,10 +15522,14 @@ function viewToday(){
   
   const vwF=(_asofD&&_asofD.dir===ws.dir&&_asofD.vw)?sitgaCanonVW('d1',_asofD.vw):waveVW(A,ws), buf=vwF&&vwF<ws.line;
     const bonjeon=buf?` · <b>일봉 잔파동 실존가 ${f1(vwF)}</b>`:'';
-    const hClause=hh&&ws.dir>0?(hh.mandate
-      ?` - 이탈해도 주봉 명목 생존(위험선 ${f1(hh.risk)} 위)이면 <b>흔들기 후보</b>(주봉 전이 실측 기준 1.1%)`
-      :` - <b style="color:var(--sell)">주봉 명목도 훼손 상태</b>: 이탈 시 위계 동반 위험`):'';
-    const hClauseE=hh&&ws.dir>0&&hh.mandate?` (일봉이 내줘도 주봉 흐름이 살아 있으면 흔들림일 때가 많습니다)`:'';
+    
+
+
+    const _hUp=ws.dir>0;
+    const hClause=hh?(hh.mandate
+      ?` - ${_hUp?'이탈':'돌파'}해도 주봉 명목 생존(위험선 ${f1(hh.risk)} ${_hUp?'위':'아래'})이면 <b>흔들기 후보</b>(주봉 전이 실측 기준 1.1%)`
+      :` - <b style="color:${_hUp?'var(--sell)':'var(--buy)'}">주봉 명목도 훼손 상태</b>: ${_hUp?'이탈':'돌파'} 시 위계 동반 위험`):'';
+    const hClauseE=hh&&hh.mandate?` (일봉이 ${_hUp?'내줘도':'뚫려도'} 주봉 흐름이 살아 있으면 흔들림일 때가 많습니다)`:'';
     if(squeeze&&ws.mode==='live'){
       saga=LY==='입문'?`흐름 끝나는 구간 - 지금 ${ws.dir>0?'사면':'팔면'} 눌림 맞기 쉬움${hClauseE}`
         :LY==='운용'?`종료 눌림 진입 · <b style="color:var(--gold2)">${f1(ws.line)}</b> 사수=상승 힘 유지 / 이탈=1차 경고${bonjeon?bonjeon+' 이탈=힘 약화 확정':''}${supDn?'·다음 지지 '+f1(supDn.line)+'까지 공백':''}${hClause}`
@@ -18559,7 +18563,10 @@ function zoneResPanel(){try{
   var px=E.d1[E.d1.length-1].c;
   var f=function(v){return v==null?'없음':'$'+Math.round(v).toLocaleString('en-US');};
   var gW=E.w1[E.w1.length-2].gijun, gM=E.M1[E.M1.length-1].gijun;
+  
+
   try{var _bwz=waveBook('w1');if(_bwz&&_bwz.sitga)gW=_bwz.sitga;}catch(e){}   
+  try{var _cw1=((window.__VERDICT||{}).data||{}).파동||{}; if(_cw1.주봉실존!=null)gW=_cw1.주봉실존;}catch(e){}
   var lo=Math.max(gW,gM);
   
   var hi=null; try{var _srZ=sellRes(); if(_srZ&&_srZ.v>px)hi=_srZ.v;}catch(e){}   
