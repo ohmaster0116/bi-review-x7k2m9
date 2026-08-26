@@ -25315,13 +25315,18 @@ function loadCron(name,set,_try){
 
 
 loadCron('watch_state',d=>{window.__WATCH=d;try{_updStamp();}catch(e){}});
-loadCron('maturity_track',d=>{_matTrack=d;});
+
+
+
+
+
+loadCron('maturity_track',d=>{_matTrack=d;window.__MATTRACK=d;});
 let _whCanon=null;   
 loadCron('whale_battle_canon',d=>{_whCanon=d;});
 let _whDelta=null;   
-loadCron('whale_delta_state',d=>{_whDelta=d;});
+loadCron('whale_delta_state',d=>{_whDelta=d;window.__WHDELTA=d;});
 let _whLife=null;    
-loadCron('wave_lifecycle_state',d=>{_whLife=d;});
+loadCron('wave_lifecycle_state',d=>{_whLife=d;window.__WAVELIFE=d;});
 let _supState=null;  
 loadCron('support_state',d=>{_supState=d;});
 let _protoState=null;  
