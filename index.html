@@ -13622,11 +13622,20 @@ function battleZones(tf,nm){try{
 
 
 
-  var _holdPct=function(arr,isL){ var r=_rngRaw(arr); if(!r||r.hi<=r.lo)return null;
-    var flo=isL?r.lo:Math.max(r.lo,_cxb), fhi=isL?Math.min(r.hi,_cxb):r.hi;
-    return (fhi>flo)?(((fhi-flo)/(r.hi-r.lo))*100):0; };
+  
+
+
+
+  var _theater=function(){ var a=_rngRaw(AL), b=_rngRaw(AS);
+    var lo=null,hi=null;
+    [a,b].forEach(function(r){ if(!r)return;
+      if(lo==null||r.lo<lo)lo=r.lo; if(hi==null||r.hi>hi)hi=r.hi; });
+    return (lo!=null&&hi!=null&&hi>lo)?{lo:lo,hi:hi}:null; };
+  var _holdPct=function(isL){ var T=_theater(); if(!T)return null;
+    var f=Math.max(T.lo,Math.min(T.hi,_cxb));
+    return isL?(((f-T.lo)/(T.hi-T.lo))*100):(((T.hi-f)/(T.hi-T.lo))*100); };
   var gl=rng(AL,true), gs=rng(AS,false);
-  var glL=_holdPct(AL,true), gsL=_holdPct(AS,false);   
+  var glL=_holdPct(true), gsL=_holdPct(false);      
   var rows=[['<b>전쟁</b> · 전체 파동 뿌리간 <span class="sub">(진영 출발점 · 안 움직임)</span>'+allTag(rl,rs),mid(rl,rs),rl,rs],
             
 
