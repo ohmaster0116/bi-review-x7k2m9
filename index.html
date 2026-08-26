@@ -13401,8 +13401,14 @@ function canonWaves(A,key,isL){try{
   var N=A.length;
   var _cxK=(N>=2)?Math.round(A[N-2].c*100):0;                                  
   
+
+
+
+
+
+
   var _pxK=(function(){try{var p=(E.d1&&E.d1.length)?E.d1[E.d1.length-1].c:A[N-1].c;
-    return (p>0)?Math.floor(Math.log(p)*400):0;}catch(e){return 0;}})();
+    return (p>0)?Math.floor(Math.log(p)*5000):0;}catch(e){return 0;}})();
   var ck=key+(isL?'L':'S')+N+'_'+A[N-1].t+'_'+_cxK+'_'+_pxK;
   if(_CANON_WV[ck])return _CANON_WV[ck];
   
@@ -19131,8 +19137,22 @@ function reportPayload(){try{
     시각:new Date().toISOString(), 현재가:Math.round(px),
     상태한줄:{판정:call, 귀결:gyeol, 전제:rebasis, 근거:'방향 '+(monDir>0?'상승':monDir<0?'하락':'중립')+'(월·검증 p.02) · 반전 '+(tilt>0?'시도':tilt<0?'눌림':'중립')+'(일·주·검증 p.04)'},
     성격:{당일:chr('d1'), 금주:chr('w1'), 금월:chr('M1')},
-    파동:{일봉실존:bd?Math.round(bd.rep!=null?bd.rep:bd.sitga):null,       주봉실존:bw?Math.round(bw.sitga):null,
-      대립매도:sell?Math.round(sell):null, 대립메타:sMeta, 월전환라인:Math.round(monInfl)},
+    
+
+
+
+
+
+    파동:(function(){try{
+      var _sv=((window.__VERDICT||{}).data||{}).파동||{};
+      var _fb1=bd?Math.round(bd.rep!=null?bd.rep:bd.sitga):null;
+      var _fb2=bw?Math.round(bw.sitga):null;
+      return {일봉실존:(_sv.일봉실존!=null?_sv.일봉실존:_fb1),
+              주봉실존:(_sv.주봉실존!=null?_sv.주봉실존:_fb2),
+              대립매도:sell?Math.round(sell):null, 대립메타:sMeta, 월전환라인:Math.round(monInfl)};
+    }catch(e){console.warn('[payload 파동] '+e);
+      return {일봉실존:bd?Math.round(bd.rep!=null?bd.rep:bd.sitga):null, 주봉실존:bw?Math.round(bw.sitga):null,
+              대립매도:sell?Math.round(sell):null, 대립메타:sMeta, 월전환라인:Math.round(monInfl)};}})(),
     전투존:{하단:bw?Math.round(bw.sitga):null, 상단:sell?Math.round(sell):null, 하프존:half?Math.round(half):null, 위치pct:posPct},
     보폭:{주평균폭:Math.round(arW), 상승한계:Math.round(cw2.l+arW), 상승50:Math.round(cw2.l+arW/2), 회귀50:Math.round(cw2.h-arW/2), 반락한계:Math.round(cw2.h-arW),
       월평균폭:Math.round(arM), 월잔여:Math.round(Math.max(0,arM-(cm.h-cm.l))), 서명N:'주 N435·월 N77·반락중앙 0.5AR'},
