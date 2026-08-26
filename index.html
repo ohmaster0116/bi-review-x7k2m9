@@ -16810,7 +16810,9 @@ function fightSynthesis(){try{
     else if(mo['매도실존가']){ t.side='매수'; t.why='월봉 매도 평단 '+f(mo['매도실존가'])+' 위'; }
   }
   
+  
   var g={name:(V['regime']||'없음'), side:null};
+  try{var _rd3=(((window.__VERDICT||{}).data||{}).regime_dir)||''; if(_rd3&&/추세/.test(g.name))g.name=_rd3+' 추세';}catch(e){}
   if(/추세/.test(g.name)) g.side = (t.side==='매도' ? '매도' : '매수');
   
   var sg={side:null, long:null, short:null, standoff:false};
