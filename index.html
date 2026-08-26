@@ -23800,7 +23800,12 @@ function whaleTrajPanel(){
       +'<polygon points="'+poly+'" fill="rgba(216,90,48,0.06)"/>'
       +'<polyline points="'+cc+'" fill="none" stroke="#D85A30" stroke-width="2" stroke-dasharray="5,3"/>'
       +'<polyline points="'+ff+'" fill="none" stroke="#B4632A" stroke-width="2" stroke-dasharray="5,3"/>'
-      +'<text x="'+(L+3)+'" y="'+(Y(mon[0].ceiling)-4)+'" font-size="10" fill="#D85A30">매도평단선 '+f0(cor.ceiling_now||mon[0].ceiling)+'</text>'
+      
+
+
+
+
+      +'<text x="'+(L+3)+'" y="'+(Y(mon[0].ceiling)-4)+'" font-size="10" fill="#D85A30">매도평단선(캠페인 축) '+f0(cor.ceiling_now||mon[0].ceiling)+'</text>'
       +'<text x="'+(L+3)+'" y="'+(+Y(mon[0].floor)+11)+'" font-size="10" fill="#B4632A">전투포인트 '+f0(cor.floor_now||mon[0].floor)+'</text>'
       +'<line x1="'+L+'" y1="'+Y(px)+'" x2="'+RR+'" y2="'+Y(px)+'" stroke="#BA7517" stroke-width="1" stroke-dasharray="2,2"/>'
       +'<circle cx="'+L+'" cy="'+Y(px)+'" r="4" fill="#BA7517"/><text x="'+(L+7)+'" y="'+(+Y(px)+4)+'" font-size="10.5" font-weight="700" fill="#BA7517">현재가 '+f0(px)+'</text>'
@@ -23858,7 +23863,15 @@ function whaleTrajPanel(){
       }
     }catch(e){}
     return '<h2 class="sec" style="margin:2px 0 8px">고래 궤적 · 주/월 투영 '+badge+_pAsof+'</h2>'
-      +'<div class="sub" style="margin:0 0 10px;font-size:11px;line-height:1.7">고래 델타중립 매도 캠페인이 만드는 <b style="color:#D85A30">복도(매도평단선~전투포인트)</b>가 계단 하강하는 그림 + <b style="color:#378ADD">도달 가능 범위(변동폭 밴드)</b>. 두 축 겹치는 자리가 실제 격전. <b>확정 예언 아님, 이 가설을 추적·채점</b>(원장 ±1,000P·매주/매월).</div>'
+      +'<div class="sub" style="margin:0 0 10px;font-size:11px;line-height:1.7">고래 델타중립 매도 캠페인이 만드는 <b style="color:#D85A30">복도(매도평단선~전투포인트)</b>가 계단 하강하는 그림 + <b style="color:#378ADD">도달 가능 범위(변동폭 밴드)</b>. 두 축 겹치는 자리가 실제 격전. <b>확정 예언 아님, 이 가설을 추적·채점</b>(원장 ±1,000P·매주/매월).'
+      
+      +(function(){try{var _w=(_whDelta&&_whDelta.now)?_whDelta.now:((window.__CRON&&window.__CRON.whale_delta_state||{}).now);
+        if(!_w||_w.sell_avg==null)return '';
+        return '<br><b style="color:var(--gold2)">축 안내</b> , 이 궤적은 <b>캠페인 축</b>(전선 밖 물량 포함)입니다. 시작을 그 축으로 잡았으니 진도도 같은 축으로 잽니다. '
+          +'지금 <b>싸우고 있는</b> 매도 평단은 <b style="color:var(--sell)">'+f0(_w.sell_avg)+'</b>(생존 물량'
+          +((_w.dead_sell_pct>=1)?(' · '+Math.round(_w.dead_sell_pct)+'% 전선 밖 물량 제외'):'')+')입니다. <b>둘 다 맞는 값이고 자가 다릅니다.</b>';
+      }catch(e){return '';}})()
+      +'</div>'
       +'<div class="panel" style="margin-bottom:10px"><div style="padding:8px 6px">'+svg+'</div></div>'
       +baseHtml+secA+invHtml+secB;
   }catch(e){return '<div class="panel"><div style="padding:12px" class="sub">고래 궤적 렌더 오류: '+String(e&&e.message||e).slice(0,90)+'</div></div>';}
@@ -24180,18 +24193,18 @@ function whaleSupply(){
 
 
           var _fl=(_wd&&_whDelta&&_whDelta.flow)?_whDelta.flow:((window.__WHDELTA||{}).flow);
-          /* ★★★★[케인 08-26 ★자기 철회 · 독립 검증 기각] ★내 백테스트 수치를 ★내린다.
-             ★기각 근거(독립 재현·내 코드 미사용) :
-               ⒜ ★내 자에 ★조문에 없는 손잡이(ATH 이후 음봉 ≥2)가 박혀 있었다 —
-                  ★내 코드 vwavg() 에는 그 조건이 ★0건인데 ★백테스트에서만 그렇게 됐다.
-                  ★손잡이별 : minbars=1 → N=9·중앙 +2.70%·상승 56% / ★2 → N=7·+9.61%·71%(내 값) / 엄격 → N=11·★−3.89%·45%
-               ⒝ ★"매도 축소"는 ★변동성 착시 — 총물량 중앙 ★−19.6%. ★비율 자로 재면 5/7 → 4/7(p=0.34)
-                  ★표본을 늘리면 ★뒤집힌다 : 주봉 N=23 → 39%(기준선 57%) · ★일봉 N=76 → ★20%(기준선 52%)
-               ⒞ ★내 대조군(+3.0%·N=4)은 ★어떤 밴드로도 재현 불가. 강화 대조군 : 거울 ★−3.84% · 무조건 기준선 ★+2.70%
-                  ⇒ ★내 +9.61% 는 ★플라시보 상위 27.4% · 이항 P=★0.305 ⇒ ★유의하지 않다.
-             ★조문 [검증 전에 이름 붙이지 않는다]를 ★같은 형태로 ★두 번째 어겼다 —
-               ★"항복"을 내린 자리에 ★"익절·롱 전환"을 ★또 검증 없이 올렸다.
-             ★프레임(주둔지 이동)은 ★이사 조문이고 ★검증 대상이 아니었다 ⇒ ★프레임은 두고 ★수치만 뺀다. */
+          
+
+
+
+
+
+
+
+
+
+
+
           var _bs=null;
           if(!_fl&&!_bs)return '';
           var s1='';
@@ -24614,7 +24627,7 @@ function viewWhale(){
     ${[{t:P0,l:'현재 수익 보존'},{t:upLock,l:'+α'},{t:wantP,l:'계획수익(최대)'}].map(gg=>{const ra=(gg.t+(buyHold*bGj-sellQty*sGj))/(2*balQ);const up=((ra/px-1)*100).toFixed(0);return `<tr${Math.abs(gg.t-wantP)<1?' style="background:rgba(214,162,58,.12)"':''}><td class="l">${kwB(gg.t)} <span class="sub">${gg.l}</span></td><td class="num" style="color:#46c2ff;font-weight:700">${f0(ra)}</td><td class="num" style="color:${ra>=px?'var(--buy)':'var(--sell)'}">${ra>=px?'+':''}${up}%</td></tr>`;}).join('')}
     </tbody></table></div>
     <div style="padding:8px 14px;font-size:11.5px;color:var(--tx2);border-top:1px solid var(--bd);line-height:1.7"><b style="color:#46c2ff">동률(중립)은 가격과 무관하게 ${kwB(P0)} (이 전제하 계산)</b> - 방향 안 정해도 이게 바닥. 더 먹고 싶으면 <b style="color:var(--buy)">위로 가면 높게 동률 마무리(${kwB(upLock)})</b>, <b style="color:var(--sell)">아래로 가면 동률 넘겨 순매도(${kwB(case2(bGj))})</b>. <b>양방 다 가능 - 쏠림 없음</b>. 거래량 ${Math.round(mPace*100)}%/월이면 동률까지 ~${Math.round(balMo)}개월. <span style="color:#d6a23a">전부 가정치</span>.</div></div>`;
-  // 🎴 전략 성격 - 탈출이 아니라 채굴 (이 규모는 한 번에 못 팖)
+  
   const strat=`<div class="panel"><div class="hd" style="color:var(--gold2)">🎴 전략 성격</div>
     <div class="spaced" style="padding:11px 14px;font-size:12.5px;line-height:1.95">
      <b style="color:var(--sell)">① 못 빠져나갑니다.</b><br>
@@ -24627,14 +24640,14 @@ function viewWhale(){
      수년에 걸쳐 이익만 천천히 빼갑니다.<br>
      <span style="color:#d6a23a">가정입니다.</span>
     </div></div>`;
-  // ⚔ 결전 3선 - 상승기준(매도평단)/전투지역(전투포인트)/하락기준(매수평단)
-  const postTp=(bGj+newSellAvg)/2;   // 동률 후 새 전투포인트(매수·블렌드매도 중간)
-  // 결전 3선 칸: 평균가(크게) + 최대/최소 예상가(기준가·중심가 중 큰/작은 것). 평균이 어떻게 나왔는지 보이게.
+  
+  const postTp=(bGj+newSellAvg)/2;   
+  
   const col3=(lbl,cv,g,c,sub,bg,last,roll)=>`<div style="flex:${bg?1.18:1};padding:7px 5px;${last?'':'border-right:1px solid var(--bd);'}${bg?'background:rgba(214,162,58,.1);':''}"><div style="color:${cv};font-weight:700">${lbl}</div><div style="font-size:16px;font-weight:800;color:${cv};margin:1px 0 0">${f0((g+c)/2)}</div><div style="font-size:8.5px;color:${cv};opacity:.85">예상 평균</div><div class="sub" style="font-size:9px;line-height:1.55">최대 예상가(${g>=c?'기준가':'중심가'}) <b>${f0(Math.max(g,c))}</b><br>최소 예상가(${g>=c?'중심가':'기준가'}) <b>${f0(Math.min(g,c))}</b><br>${sub}</div></div>`;
-  // 위치 막대바 - 왼쪽=하락기준(bAvg) / 중심=전투지역(tpAvg) / 오른쪽=상승기준(sAvg), 현재가 실시간 마커
-  // 현재가 마커 = 고래 그림. 매수 우세(방어선 위)면 초록 · 매도 우세(방어선 아래)면 빨강.
-  //   색만 판정에 연동 · 값·위치 산식 무접촉. 이모지는 색을 못 바꾸므로 SVG 로 그린다.
-  //   4분할 - 방어선(중심)과 양 끝단 사이에 전투존 두 선.
+  
+  
+  
+  
   const whaleMk=(up)=>{const c=up?'#23d39e':'#ff5a6e';return `<svg viewBox="0 0 34 18" width="25" height="13" aria-hidden="true"><path fill="${c}" d="M3 9.5c0-4 5-6.5 11.5-6.5 5 0 8.6 1.8 10.6 4.2l5.4-3.8c.7-.5 1.6.2 1.3 1L30.4 9.5l1.4 5.1c.3.8-.6 1.5-1.3 1l-5.4-3.8C23.1 14.2 19.5 16 14.5 16 8 16 3 13.5 3 9.5Z"/><path fill="${c}" opacity=".7" d="M13 13.4c1.4 1.6 3.4 2.3 5 2.2-1.5 1-4.1.6-5-2.2Z"/><circle cx="8.5" cy="8.2" r="1.05" fill="#0b1220"/></svg>`;};
   const posBar=(lo,mid,hi,cur)=>{const span=(hi-lo)||1,pos=v=>Math.max(0,Math.min(100,(v-lo)/span*100)),pp=pos(cur),mp=pos(mid),off=cur<lo?'⚠ 하락기준 아래 이탈':cur>hi?'⚠ 상승기준 위 돌파':'';const buyWin=cur>=mid,q1=(lo+mid)/2,q3=(mid+hi)/2;return `<div style="padding:36px 18px 8px;position:relative">
       <div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,rgba(239,83,80,.5),rgba(214,162,58,.35) 50%,rgba(45,212,150,.5))">
