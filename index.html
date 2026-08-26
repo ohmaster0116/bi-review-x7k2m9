@@ -13933,9 +13933,22 @@ function waveDetailPanel(){try{
               +(_ps.length?('<div style="font-size:9.5px;margin-top:2px;color:var(--tx3)">종가로 확정되면 '+((_nxS!=null)?('다음 매도 파동선 <b class="num" style="color:var(--sell)">'+f(_nxS)+'</b>'):'<span class="sub">위 생존 매도 층 없음</span>')+'</div>'):'')
               +'</div>';}
             
-            lineage='<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">전투 계보 · 최근 사망 '+deads.length+'건(어느 파동이 어느 파동을 넘었나)</summary><div style="padding:4px 0 2px 6px">'+lin
-              +'<div class="sub" style="font-size:9.5px;margin-top:3px">사망=종가 판정(조문 ㉯) · 현 최전방은 위 [현 대립 구도]</div></div></details>';}
-        }catch(e){}
+
+
+
+
+
+            var _dl=(canonWaves(A2,tf,true).dead||[]).map(function(w){return {s:w.s,root:w.root,dir:1};})
+              .concat((canonWaves(A2,tf,false).dead||[]).map(function(w){return {s:w.s,root:w.root,dir:-1};}))
+              .sort(function(a,b){return b.s-a.s;}).slice(0,8);
+            if(_dl.length){
+              var _linTxt=_dl.map(function(w){
+                return '<div style="font-size:10px;padding:1px 0;color:var(--tx3)">'+dl2(w.s)
+                  +' <span style="color:'+(w.dir>0?'var(--buy)':'var(--sell)')+'">'+(w.dir>0?'매수':'매도')+'</span>'
+                  +' 뿌리 <span class="num">'+f(w.root)+'</span> 상실</div>';}).join('');
+              lineage='<details style="margin-top:6px"><summary style="cursor:pointer;font-size:10.5px;color:var(--tx3)">전투 계보 · 뿌리 잃은 파동 '+_dl.length+'건(최근순)</summary><div style="padding:4px 0 2px 6px">'+_linTxt
+                +'<div class="sub" style="font-size:9.5px;margin-top:3px">사망=종가가 뿌리를 깬 것(조문 ㉯) · 현 최전방은 위 [현 대립 구도]</div></div></details>';}}
+        }catch(e){console.warn('[대립 구도·계보] '+e);}   
         
 
         
