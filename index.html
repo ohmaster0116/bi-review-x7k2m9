@@ -18542,8 +18542,13 @@ function battleBalance(){
     try{const _sb=sellBook('d1'); if(_sb&&_sb.rep!=null){gv=_sb.rep; gate={s:_sb.s,e:_sb.e,line:_sb.rep,dir:-1,nAlive:_sb.nAlive};}}catch(e){}
     if(gv==null)return _bbNote('현재가 위에 살아 있는 <b>매도 파동이 없습니다</b> - 저항 축 부재 상태. 위 매도 파동이 새로 서면 저항 축이 다시 잡힙니다.');
     let roll=null, rollSrc='', _wbD=null;
+    
+
+
     try{_wbD=waveBook('d1');
-      if(_wbD){ if(_wbD.rep!=null){roll=_wbD.rep; rollSrc='생존 '+(_wbD.nAlive||0)+'층 중 최전방';}
+      var _cvD=null; try{_cvD=sitgaCanonVW('d1',null,1);}catch(e2){}
+      if(_cvD!=null){ roll=_cvD; rollSrc='전 파동 생존 층 중 최전방(판독 정본)'; }
+      else if(_wbD){ if(_wbD.rep!=null){roll=_wbD.rep; rollSrc='생존 '+(_wbD.nAlive||0)+'층 중 최전방(이 파동)';}
                 else if(_wbD.sitga){roll=_wbD.sitga;} }
     }catch(e){}
     if(roll==null)return _bbNote('<b>매수 실존가 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 매도 실존가: '+f1(gv)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 매수 축이 다시 잡힙니다.');
@@ -18771,7 +18776,11 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   var f=function(v){return v==null?'없음':'$'+Math.round(v).toLocaleString('en-US');};
   
   var bd=waveBook('d1'), bw=waveBook('w1');
-  var zLo=bw&&bw.sitga?bw.sitga:(bd?bd.sitga:null);
+  
+
+
+  var zLo=(function(){try{var v=sitgaCanonVW('w1',null,1); if(v!=null)return v;}catch(e){}
+    return bw&&bw.sitga?bw.sitga:(bd?bd.sitga:null);})();
   var sells=[];
   try{var L=waveLedger('d1');if(L)L.waves.forEach(function(w){if(w.dir<0&&w.death==null&&!w.open){var lv=null;try{lv=vwOfWave(E.d1,w)||w.line;}catch(e2){lv=w.line;}if(lv&&lv>px)sells.push(lv);}});sells.sort(function(a,b){return a-b;});}catch(e){}
   
@@ -18808,8 +18817,17 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   
 
 
-  if(bw&&(bw.rep!=null||bw.sitga))longs.push({v:(bw.rep!=null?bw.rep:bw.sitga),n:'롱 실존가(주)'});
-  if(bd&&(bd.rep!=null||bd.sitga))longs.push({v:(bd.rep!=null?bd.rep:bd.sitga),n:'롱 실존가(일)'});
+  
+
+
+  (function(){ var _w=null,_d=null;
+    try{_w=sitgaCanonVW('w1',null,1);}catch(e){}
+    try{_d=sitgaCanonVW('d1',null,1);}catch(e){}
+    if(_w==null&&bw)_w=(bw.rep!=null?bw.rep:bw.sitga);
+    if(_d==null&&bd)_d=(bd.rep!=null?bd.rep:bd.sitga);
+    if(_w!=null)longs.push({v:_w,n:'롱 실존가(주)'});
+    if(_d!=null)longs.push({v:_d,n:'롱 실존가(일)'});
+  })();
   longs.forEach(function(o){if(o.v<lo)lo=o.v;});
   var pad=(hi-lo)*0.06; lo-=pad; hi+=pad;
   var X=function(v){return Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));};
@@ -19129,8 +19147,17 @@ function waveNineTable(){try{
 
 
     var sb=null; try{ sb=((gkSrc()['파동']||{}).wb||{})['sell_'+tf]||null; }catch(e){ sb=null; }   
+    
+
+
+
+
+
+
+    var _tfRep=null; try{ _tfRep=sitgaCanonVW(tf,null,1); }catch(e){}
+    if(_tfRep==null) _tfRep=(b.rep!=null?b.rep:b.sitga);
     rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--buy);font-weight:400">롱</span></td>'
-       +'<td class="num" style="color:var(--buy);font-weight:700">'+f0(b.rep!=null?b.rep:b.sitga)+'</td>'
+       +'<td class="num" style="color:var(--buy);font-weight:700">'+f0(_tfRep)+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(b.root)+'</td></tr>';
     if(sb&&sb.rep!=null)
       rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--sell);font-weight:400">숏</span></td>'
