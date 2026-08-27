@@ -21640,6 +21640,22 @@ function todayPlanCard(){try{
   var tag = function(txt, on){ return ' <span class="sub" style="font-size:10.5px;color:'
     + (on ? 'var(--buy)' : 'var(--tx3)') + '">[' + txt + ']</span>'; };
   var note = function(t){ return t ? ' <span class="sub" style="font-size:10.5px">' + t + '</span>' : ''; };
+  
+
+
+
+
+  var born = function(m){
+    if(!m) return '';
+    var p=[];
+    if(m['tf']&&m['파동']) p.push('<b>'+m['tf']+' '+m['진영']+' 파동'+(m['파동']?' '+m['파동']:'')+'</b>');
+    if(m['시작']) p.push(m['시작']+' 시작');
+    if(m['뿌리']!=null) p.push('뿌리 '+f(m['뿌리']));
+    if(m['생존층']!=null&&m['층']!=null) p.push('층 '+m['생존층']+'/'+m['층']+' 생존');
+    if(m['부딪힘']!=null) p.push('이 자리 '+m['부딪힘']+'번 부딪힘');
+    return p.length ? ('<div class="sub" style="font-size:10px;margin-top:2px;color:var(--tx3);line-height:1.6">↳ '
+      + p.join(' · ') + '</div>') : '';
+  };
   var stopTxt = function(l){
     if(l['무효좌표'] == null) return '';
     
@@ -21647,7 +21663,12 @@ function todayPlanCard(){try{
     var w = (l['좌표'] && l['무효좌표']) ? Math.abs((l['좌표'] - l['무효좌표']) / l['좌표'] * 100) : null;
     return ' 들어가면 <b style="color:var(--sell)">' + f(l['무효좌표']) + '</b>'
       + (l['무효계열'] ? '(' + l['무효계열'] + ')' : '') + '을 마감으로 잃을 때 나옵니다.'
-      + (w != null ? ' <span class="sub" style="font-size:10.5px">잃을 폭 ' + w.toFixed(2) + '%</span>' : '');
+      + (w != null ? ' <span class="sub" style="font-size:10.5px">잃을 폭 ' + w.toFixed(2) + '%</span>' : '')
+      
+
+      + (l['무효보폭배'] != null
+          ? ' <span class="sub" style="font-size:10.5px;color:var(--tx3)">(오늘 보폭의 ' + l['무효보폭배']
+            + '배 아래 · 오늘 안에 닿을 거리가 아닙니다)</span>' : '');
   };
   var SPEC = {
     '매수준비': {ico:'ti-arrow-down-right', col:'var(--buy)',
@@ -21682,6 +21703,7 @@ function todayPlanCard(){try{
         if(l['양면']) t+=' <b style="color:var(--sell)">같은 자리가 매도 진입 자리이기도 합니다.</b>';
         if(l['보폭']!=null&&l['보폭대비']!=null)
           t+=' <span class="sub">오늘 보폭 '+f(l['보폭'])+'의 '+l['보폭대비']+'배 거리</span>';
+        if(l['보폭주석']) t+='<br><span class="sub" style="color:var(--tx3)">※ '+l['보폭주석']+'</span>';
         return t; }}
   };
   var body = D['lines'].map(function(l){
@@ -21691,7 +21713,10 @@ function todayPlanCard(){try{
       
 
       + '<div style="font-size:12.5px;color:var(--tx);line-height:1.75">' + sp.t(l)
-      + '<div class="sub" style="font-size:11px;margin-top:2px;line-height:1.7">' + sp.d(l) + '</div></div></div>';
+      + '<div class="sub" style="font-size:11px;margin-top:2px;line-height:1.7">' + sp.d(l) + '</div>'
+      + born(l['형성'])
+      + (l['무효형성'] ? born(l['무효형성']).replace('↳ ','↳ 손절 자리 , ') : '')
+      + '</div></div>';
   }).join('');
   if(!body) return '';
   
@@ -21748,6 +21773,22 @@ function todayPlanCard(){try{
   return '<div class="panel" id="todayPlanCard" data-src="daily_plan_ledger" style="margin-bottom:10px;border:1px solid var(--gold)">'
     + '<div class="hd" style="color:var(--gold2)">오늘 나는 뭘 하나 <span class="sub">, 지금 ' + f(px) + ' 기준, 닿으면 하는 계획'
     + (D['date'] ? ' · ' + D['date'] + ' 발행' : '') + '</span></div>'
+    
+
+
+
+
+    + (function(){ try{ var B=D['보폭표']; if(!B) return '';
+        var use=[],ref=[];
+        Object.keys(B).forEach(function(k){ var o=B[k];
+          var s=k+' <b>'+o['중앙%']+'%</b>';
+          if(o['안내용']) use.push(s); else ref.push(k+' '+o['중앙%']+'%(범위 '+o['최소%']+'~'+o['최대%']+'%)');
+        });
+        if(!use.length) return '';
+        return '<div class="sub" style="padding:7px 13px;border-bottom:1px solid var(--bd);font-size:10.5px;line-height:1.7">'
+          +'<b style="color:var(--gold2)">통상 움직이는 폭</b> , '+use.join(' · ')
+          +(ref.length?(' <span style="color:var(--tx3)">· '+ref.join(' · ')+'는 폭이 넓어 자리 안내에 쓰지 않습니다</span>'):'')
+          +'</div>'; }catch(e){ return ''; } })()
     + tn + body + lad.join('') + scLine
     + '<div class="sub" style="padding:7px 13px;border-top:1px solid var(--bd);font-size:10.5px;line-height:1.7">여기 적힌 가격에 닿기 전에는 기다리는 것도 계획입니다. 넘김과 이탈은 모두 마감 가격으로 봅니다. 발행 뒤에는 좌표를 바꾸지 않고 다음 날 마감으로 채점합니다. 비율은 지난 흐름에서 센 실측 빈도이며, 앞으로를 약속하지 않습니다.</div>'
     + '</div>';
