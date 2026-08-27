@@ -21672,7 +21672,17 @@ function todayPlanCard(){try{
         return '<b>' + f(lv) + '을 마감으로 잃으면 오늘 구도는 끝입니다</b>'
           + (below ? tag('지금 이 아래 · 마감 대기', false)
                    : touched ? tag('장중 이탈 · 마감은 방어 중', false) : ''); },
-      d:function(l){ return '들고 있다면 여기가 마지노선입니다, 여기서는 버티지 않습니다.'; }}
+      
+
+
+
+
+      d:function(l){
+        var t='들고 있다면 여기가 마지노선입니다, 여기서는 버티지 않습니다.';
+        if(l['양면']) t+=' <b style="color:var(--sell)">같은 자리가 매도 진입 자리이기도 합니다.</b>';
+        if(l['보폭']!=null&&l['보폭대비']!=null)
+          t+=' <span class="sub">오늘 보폭 '+f(l['보폭'])+'의 '+l['보폭대비']+'배 거리</span>';
+        return t; }}
   };
   var body = D['lines'].map(function(l){
     var sp = SPEC[l['종류']]; if(!sp || l['좌표'] == null) return '';
