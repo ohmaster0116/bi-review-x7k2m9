@@ -190,6 +190,13 @@ const TABGROUPS_V2=[
 
 
 
+  
+
+
+
+
+
+
   {g:'분석 도구', tabs:['분석 도구','주체형성가']},                
   {g:'내 자리', tabs:['포지션 진단']},
   {g:'인포 엣지', tabs:['인포 엣지']},             
@@ -208,6 +215,10 @@ const TABGROUPS=MENU_V2?TABGROUPS_V2:TABGROUPS_V1;
 
 const TABSHORT={'종합 밴드':'종합밴드','포지션 진단':'진단','고래 추적':'고래','상관계수':'상관','추세전환가':'추세전환','성격전환가':'성격전환','수급 분석':'수급','전투포인트':'전투','지지·저항':'지지저항','미확인값밴드':'미확인값','함정 분석':'함정'};
 const TABS=TABGROUPS.reduce((a,x)=>a.concat(x.tabs),[]);
+
+
+
+const NAV_HIDE=['주체형성가'];
 
 const TABIMP={'승률 매매':'#ffd24a','패닉 반등':'#ffd24a','매매 프로토콜':'#ffd24a','9층 트레일':'#ffd24a','롱의 역공':'#ffd24a','차트':'#ffd24a','LIVE':'#ffd24a','종합 밴드':'#ffd24a','파동 분석':'#2bb3a3','파동 현황':'#2bb3a3','파동 전투존':'#2bb3a3','파동 차트':'#2bb3a3','과거 사례':'#2bb3a3','전략':'#46c2ff','포지션 진단':'#ffd24a','고래 추적':'#ffd24a','상관계수':'#ff8a3c','알고리즘':'#ff8a3c','추세전환가':'#ff8a3c',
   '전투포인트':'#46c2ff',
@@ -25596,13 +25607,13 @@ function render(){if(!E)return;
   if(MENU_V2){
     let mainRow='', subRow='';
     TABGROUPS.forEach(grp=>{
-      if(grp.tabs.length<=1||grp.g==='매일 보기'){mainRow+='<span class="navgrp">'+grp.tabs.map(tabBtn).join('')+'</span>';return;}
+      if(grp.tabs.length<=1||grp.g==='매일 보기'){mainRow+='<span class="navgrp">'+grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')+'</span>';return;}
       const inGrp=grp.tabs.indexOf(active)>=0;
-      mainRow+=`<span class="navgrp navdrop"><button class="${inGrp?'on':''}" onclick="var p=this.parentNode,w=p.classList.contains('open');document.querySelectorAll('.navdrop.open').forEach(function(x){x.classList.remove('open')});if(!w)p.classList.add('open');event.stopPropagation();" style="font-weight:700${inGrp?'':';color:var(--tx2)'}">${grp.g} ▾</button><div class="navpanel"><span class="navlbl">${grp.g}</span>${grp.tabs.map(tabBtn).join('')}</div></span>`;
+      mainRow+=`<span class="navgrp navdrop"><button class="${inGrp?'on':''}" onclick="var p=this.parentNode,w=p.classList.contains('open');document.querySelectorAll('.navdrop.open').forEach(function(x){x.classList.remove('open')});if(!w)p.classList.add('open');event.stopPropagation();" style="font-weight:700${inGrp?'':';color:var(--tx2)'}">${grp.g} ▾</button><div class="navpanel"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</div></span>`;
     });
     nav.innerHTML='<div class="navwrap">'+mainRow+'</div>';
   }else{
-    nav.innerHTML='<div class="navwrap">'+TABGROUPS.map(grp=>`<span class="navgrp"><span class="navlbl">${grp.g}</span>${grp.tabs.map(tabBtn).join('')}</span>`).join('')+'</div>';
+    nav.innerHTML='<div class="navwrap">'+TABGROUPS.map(grp=>`<span class="navgrp"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</span>`).join('')+'</div>';
   }
   const v=document.getElementById('view');v.className='';
   const _ks={}; v.querySelectorAll('[data-ks]').forEach(function(e){if(e.id)_ks[e.id]={t:e.scrollTop,b:e.scrollTop+e.clientHeight>=e.scrollHeight-4};});   
