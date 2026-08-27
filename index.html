@@ -14477,22 +14477,51 @@ function waveDetailPanel(){try{
 
             +(function(){try{
               var _px3=E.d1[E.d1.length-1].c;
+              
+
+
+
+
+
+
+
+
+
+              var _CLUS_P=50;   
               var _step=function(isL){
                 var c=canonWaves(A2,tf,isL).live
                   .map(function(w){return {v:w.rep,s:w.s,al:w.alive};})
                   .filter(function(o){return o.v!=null&&(isL?(o.v<=_px3):(o.v>=_px3));});
                 c.sort(function(a,b){return isL?(b.v-a.v):(a.v-b.v);});   
-                return c.slice(0,5);
+                var out=[];
+                c.forEach(function(o){
+                  var g=out.length?out[out.length-1]:null;
+                  if(g&&Math.abs(o.v-g.v)<=_CLUS_P){
+                    g.n++; g.sum+=o.v; g.v=g.sum/g.n; g.ss.push(o.s);
+                    if(o.v<g.lo)g.lo=o.v; if(o.v>g.hi)g.hi=o.v;
+                  }else{
+                    out.push({v:o.v,sum:o.v,n:1,ss:[o.s],lo:o.v,hi:o.v});
+                  }
+                });
+                return out.slice(0,5);
               };
               var _L5=_step(true), _S5=_step(false);
               if(!_L5.length&&!_S5.length)return '';
               var _cell=function(o,i,isL){
                 var dpct=((o.v-_px3)/_px3*100);
+                
+
+
+                var _who=(o.n>=2)
+                  ? ('<b style="color:var(--gold2)">'+o.n+'겹</b> <span class="sub">'
+                     +o.ss.slice(0,2).map(function(s){return dl2(s);}).join(' + ')
+                     +(o.n>2?(' 외 '+(o.n-2)+'개'):'')+' · 폭 '+f(o.hi-o.lo)+'</span>')
+                  : (dl2(o.ss[0])+' 파동');
                 return '<div style="display:flex;gap:6px;font-size:10.5px;padding:1px 0;white-space:nowrap">'
                   +'<span class="sub" style="width:26px;flex:none">'+(i+1)+'층</span>'
                   +'<span class="num" style="width:74px;flex:none;text-align:right;font-weight:700;color:'+(isL?'var(--buy)':'var(--sell)')+'">'+f(o.v)+'</span>'
                   +'<span class="sub" style="width:52px;flex:none;text-align:right">'+(dpct>=0?'+':'')+dpct.toFixed(1)+'%</span>'
-                  +'<span class="sub" style="font-size:9.5px">'+dl2(o.s)+' 파동</span></div>';
+                  +'<span class="sub" style="font-size:9.5px">'+_who+'</span></div>';
               };
               var _col=function(arr,isL,ttl){
                 return '<div style="flex:1;min-width:190px">'
@@ -14507,16 +14536,21 @@ function waveDetailPanel(){try{
 
 
 
+              
+
               var _cluster=function(arr,_nm5){
                 if(arr.length<2)return '';
                 var g=[arr[0].v]; for(var i=1;i<arr.length;i++){ if(Math.abs(arr[i].v-g[g.length-1])/_px3*100<=0.5)g.push(arr[i].v); else break; }
-                return (g.length>=2)?('<div class="sub" style="font-size:9px;margin-top:1px">'+_nm5+' '+g.length+'개는 폭 '
-                  +(Math.abs(g[0]-g[g.length-1])/_px3*100).toFixed(2)+'% 안 · 사실상 한 자리</div>'):'';
+                if(g.length<2)return '';
+                var _w=Math.abs(g[0]-g[g.length-1]);
+                if(_w<=_CLUS_P)return '';   
+                return '<div class="sub" style="font-size:9px;margin-top:1px">'+_nm5+' 위 '+g.length+'줄은 폭 '
+                  +f(_w)+'('+(_w/_px3*100).toFixed(2)+'%) 안 · 서로 가깝습니다</div>';
               };
               return '<div style="margin-top:6px;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;background:rgba(255,255,255,.02)">'
                 +'<div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:2px">파동별 주체 평단 <span class="sub" style="font-weight:400">(실존가)</span> 5계단</div>'
-                +'<div class="sub" style="font-size:9.5px;margin-bottom:4px;line-height:1.55">현재가 '+f(_px3)+' 기준 · 파동 하나가 한 줄 · 그 파동에 들어간 사람들의 평균 단가입니다. '
-                +'<span style="color:var(--tx3)">여러 파동이 같은 자리에 겹치면 값이 비슷하게 모입니다.</span></div>'
+                +'<div class="sub" style="font-size:9.5px;margin-bottom:4px;line-height:1.55">현재가 '+f(_px3)+' 기준 · 그 파동에 들어간 사람들의 평균 단가입니다. '
+                +'<span style="color:var(--tx3)">'+_CLUS_P+'달러 안에 모인 것은 <b>한 줄로 묶어 평균</b>을 적고 <b>N겹</b>으로 표시합니다.</span></div>'
                 
 
                 +'<div style="display:flex;gap:14px;flex-wrap:wrap">'
