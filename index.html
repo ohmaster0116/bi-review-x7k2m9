@@ -22200,8 +22200,35 @@ function volBalancePanel(){try{
   [['d1','일봉'],['w1','주봉'],['M1','월봉']].forEach(function(x){
     var g=vbFill(x[0]); if(!g||!g.ar)return;
     var b=E[x[0]][E[x[0]].length-1];
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
     var rem=Math.max(0,g.ar-(b.h-b.l));
     var sellEnd=b.h+rem, buyEnd=b.l-rem;
+    var _edgeSrc='';
+    if(rem<=0){ try{
+      var _SX=window.__STRIDEEXT;
+      var _r=(_SX&&_SX.TF)?_SX.TF[x[1]]:null;
+      if(_r&&_r['판정']==='산출'){
+        var _e=(_r['끝단']||{})['상위10']||(_r['끝단']||{})['상위25']||(_r['끝단']||{})['최대'];
+        if(_e&&_e['위']>b.h&&_e['아래']<b.l){
+          sellEnd=_e['위']; buyEnd=_e['아래'];
+          _edgeSrc=' <span class="sub" style="font-size:9px;color:var(--gold2)">끝단=실측(같은 조건 '
+            +_r['표본']+'개 · 상위10%)</span>';
+        }
+      }
+    }catch(e){} }
     var mid=(sellEnd+buyEnd)/2;
     var span=sellEnd-buyEnd; if(span<=0)return;
     var half=span/2;
@@ -22237,7 +22264,7 @@ function volBalancePanel(){try{
       +'<div class="num" style="position:absolute;left:'+Math.max(4,Math.min(96,pxP)).toFixed(1)+'%;top:0;transform:translateX(-50%);font-size:9.5px;font-weight:700;color:#ff6d00;line-height:10px;text-align:center;white-space:nowrap">'+f(px)+'<br>▼</div>'   
       +'</div>'
       
-      +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--tx3)"><span>매수 끝 '+f(buyEnd)+'</span><span style="color:var(--gold2)">전투존 '+f((buyEnd+mid)/2)+'</span><span style="color:var(--tx);font-weight:700">중심 '+f(mid)+'</span><span style="color:var(--gold2)">전투존 '+f((mid+sellEnd)/2)+'</span><span>매도 끝 '+f(sellEnd)+'</span></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--tx3)"><span>매수 끝 '+f(buyEnd)+'</span><span style="color:var(--gold2)">전투존 '+f((buyEnd+mid)/2)+'</span><span style="color:var(--tx);font-weight:700">중심 '+f(mid)+'</span><span style="color:var(--gold2)">전투존 '+f((mid+sellEnd)/2)+'</span><span>매도 끝 '+f(sellEnd)+_edgeSrc+'</span></div>'
       
 
 
@@ -22278,7 +22305,9 @@ function volBalancePanel(){try{
   if(!rows)return '';
   return '<div class="panel" style="margin-top:10px"><div class="hd">변동폭 힘의 균형 <span class="sub">- 잔여 변동폭의 매수 끝·매도 끝 × 전투존 안 현재가 <b style="color:#ff6d00">▼ '+f(px)+'</b></span></div>'
     +rows
-    +'<div class="sub" style="padding:7px 15px">매수율·매도율=평균변동폭 기준(중심=50 · 중심±반AR=0/100, 넘으면 평균변동폭율 돌파/이탈 병기) · 밴드 좌표(매수 끝·전투존·매도 끝)는 원래 산식 그대로 · 도달 한계이지 목표가 아닙니다</div></div>';
+    +'<div class="sub" style="padding:7px 15px">매수율·매도율=평균변동폭 기준(중심=50 · 중심±반AR=0/100, 넘으면 평균변동폭율 돌파/이탈 병기) · '
+    + 
+      '밴드 좌표는 <b>평균 안</b>이면 원래 산식(고가·저가 ± 잔여), <b>평균을 넘은 봉</b>은 <b style="color:var(--gold2)">같은 조건 과거 사례의 상위10% 도달점</b>으로 잡습니다(표본 수 병기 · 새 사례가 생기면 자동 갱신) · 도달 한계이지 목표가 아닙니다</div></div>';
 }catch(e){return '';}}
 
 function dirWeightPanel(){try{
