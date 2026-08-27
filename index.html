@@ -1092,7 +1092,33 @@ function sellWallM(){try{
 
 
 
-function sitgaCanonVW(tf, fallback){
+
+
+
+
+
+
+
+
+
+
+
+
+
+function sitgaCanonVW(tf, fallback, dir){
+  try{
+    var R = window.__SITGAREG;
+    if(R && R['시간축']){
+      var M = {d1:'1d', w1:'1w', M1:'1M', h4:'4h', h1:'1h', m30:'30m'};
+      var key = M[tf] || tf;
+      var row = null;
+      for(var i=0;i<R['시간축'].length;i++){ if(R['시간축'][i].tf===key){ row=R['시간축'][i]; break; } }
+      if(row){
+        var v = (dir!=null && dir<0) ? row['매도실존가'] : row['매수실존가'];
+        if(v!=null) return v;
+      }
+    }
+  }catch(e){}
   try{ var _b = waveBook(tf); if(_b && _b.sitga) return _b.sitga; }catch(e){}
   return fallback;
 }
@@ -1334,8 +1360,8 @@ function trailStopPanel(){try{
   
   ['m30','h1','h4','d1'].forEach(k=>{try{const d=asofWaveDisp(k);if(d&&d.vw){
     const cmd=d.dir>0?' - <span style="color:var(--buy)">종가 이탈 시 롱 청산</span>':d.dir<0?' - <span style="color:var(--sell)">종가 돌파 시 숏 청산</span>':'';
-    lv.push({v:sitgaCanonVW(k,d.vw),n:NAME[k]+(d.dir>0?' 매수 실존가':d.dir<0?' 매도 실존가':' 실존가')+cmd,w:1,p:1});}}catch(e){}});
-  ['w1','M1'].forEach(k=>{try{const d=asofWaveDisp(k);if(d&&d.vw)refLv.push({v:sitgaCanonVW(k,d.vw),n:NAME[k]+(d.dir>0?' 매수':d.dir<0?' 매도':'')+' 실존가',w:1,ref:true});}catch(e){}});
+    lv.push({v:sitgaCanonVW(k,d.vw,d.dir),n:NAME[k]+(d.dir>0?' 매수 실존가':d.dir<0?' 매도 실존가':' 실존가')+cmd,w:1,p:1});}}catch(e){}});
+  ['w1','M1'].forEach(k=>{try{const d=asofWaveDisp(k);if(d&&d.vw)refLv.push({v:sitgaCanonVW(k,d.vw,d.dir),n:NAME[k]+(d.dir>0?' 매수':d.dir<0?' 매도':'')+' 실존가',w:1,ref:true});}catch(e){}});
   try{if(typeof _protoState!=='undefined'&&_protoState){const P=_protoState,nm=t=>{const m=String(t||'').replace(/,/g,'').match(/([0-9]{4,7})/);return m?+m[1]:null;};
     const up=P['상방_익절']||{},al=P['1차경보_대피']||{},re=P['재진입_귀가']||{},fs=P['최종손절_포기']||{};
     if(nm(up.trigger))lv.push({v:nm(up.trigger),n:'수명결정선',w:1,p:1});
@@ -15546,7 +15572,7 @@ function viewWaveInner(){
   
   
   
-  const _vwW=(_asofW&&_asofW.dir===ws.dir&&_asofW.vw)?sitgaCanonVW('d1',_asofW.vw):waveVW(E.d1,ws), _bufW=_vwW&&ws.dir>0&&_vwW<ws.line;
+  const _vwW=(_asofW&&_asofW.dir===ws.dir&&_asofW.vw)?sitgaCanonVW('d1',_asofW.vw,_asofW.dir):waveVW(E.d1,ws), _bufW=_vwW&&ws.dir>0&&_vwW<ws.line;
   if(ws.mode==='form')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'form',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> ${ws.dir>0?'위':'아래'}. 승부는 <b>${_bufW?f1(_vwW):f1(ws.line)} ${ws.dir>0?'사수':'방어'}</b>${(ws.dir>0&&above.length)?` · 주요 저항 <b style="color:var(--sell)">${f1(above[0].line)}</b>${above.length>1?` - 넘으면 ${f1(above[1].line)}까지 공백 ${f1(above[1].line-above[0].line)}`:''}`:((ws.dir<0&&below&&below.length)?` · 주요 지지 <b style="color:var(--buy)">${f1(below[0].line)}</b>${below.length>1?` - 깨면 ${f1(below[1].line)}까지 공백 ${f1(below[0].line-below[1].line)}`:''}`:'')}.`;
   else if(ws.mode==='live')saga=`<b style="color:${dirC}">${waveWord('d1',ws.dir,'live',ws.days)}</b> - 일봉 잔파동 실존가 <b style="color:var(--gold2)">${f1(_vwW||ws.line)}</b> 사수가 승부. 종가가 이 선 ${ws.dir>0?'아래':'위'}로 마감하면 지금까지의 ${ws.dir>0?'상승':'하락'} 힘이 약해졌다는 기준 = 그 선의 반대 역할(${ws.dir>0?'저항':'지지'}) 전환 확인.${(function(){try{const h=hierNote();return h&&ws.dir>0&&h.mandate?` 단 주봉 명목 생존(위험선 ${f1(h.risk)} 위)이면 이탈도 흔들기 후보 - 판정권은 주봉.`:'';}catch(e){return ''}})()}`;
   else{const hn0=hierNote();
@@ -15759,7 +15785,7 @@ function viewWaveInner(){
     
     
     
-    const vw2=(a2&&a2.dir===s2.dir&&a2.vw)?sitgaCanonVW(x.k,a2.vw):waveVW(E[x.k],s2);
+    const vw2=(a2&&a2.dir===s2.dir&&a2.vw)?sitgaCanonVW(x.k,a2.vw,a2.dir):waveVW(E[x.k],s2);
     return `<b style="color:${c2}">${waveWord(x.k,s2.dir,s2.mode,s2.days)}</b> <span class="sub">${vw2?`실존 <b>${f1(vw2)}</b>`:`실존 ${f1(s2.line)}`}</span>`;}).join(' · ');
   const shortSt=['m30','h1','h4'].map(k2=>({k:k2,s:waveState(k2)})).filter(x=>x.s);
   const sDirs=shortSt.map(x=>x.s.mode==='none'?0:x.s.dir);
@@ -15891,7 +15917,7 @@ function viewToday(){
     const hh=hierNote();
     
   
-  const vwF=(_asofD&&_asofD.dir===ws.dir&&_asofD.vw)?sitgaCanonVW('d1',_asofD.vw):waveVW(A,ws), buf=vwF&&vwF<ws.line;
+  const vwF=(_asofD&&_asofD.dir===ws.dir&&_asofD.vw)?sitgaCanonVW('d1',_asofD.vw,_asofD.dir):waveVW(A,ws), buf=vwF&&vwF<ws.line;
     const bonjeon=buf?` · <b>일봉 잔파동 실존가 ${f1(vwF)}</b>`:'';
     
 
@@ -17910,7 +17936,9 @@ function fightSynthesis(){try{
 
 
 
-    var _regNm=(g&&g.name&&g.name!=='없음')?String(g.name):'박스';
+    
+
+    var _regNm=(g&&g.name&&g.name!=='없음')?String(g.name):'현재 구간';
     var _isBox=/박스|횡보/.test(_regNm);
     var _hdTail=_dl?(_isBox?(' '+_dl):(' <span class="sub" style="font-size:12px;font-weight:400">현 구간 '+_dl+'</span>')):'';
     ir='<div style="font-size:16px;font-weight:700;line-height:1.45;color:var(--tx)">'+_regNm+_hdTail+'</div>'
@@ -19579,7 +19607,23 @@ function reportPayload(){try{
     }catch(e){console.warn('[payload 파동] '+e);
       return {일봉실존:bd?Math.round(bd.rep!=null?bd.rep:bd.sitga):null, 주봉실존:bw?Math.round(bw.sitga):null,
               대립매도:sell?Math.round(sell):null, 대립메타:sMeta, 월전환라인:Math.round(monInfl)};}})(),
-    전투존:{하단:bw?Math.round(bw.sitga):null, 상단:sell?Math.round(sell):null, 하프존:half?Math.round(half):null, 위치pct:posPct},
+    
+
+
+
+
+
+
+
+    전투존:(function(){try{
+      var _sv=((window.__VERDICT||{}).data||{}).파동||{};
+      var _lo=(_sv.주봉실존!=null)?_sv.주봉실존:(bw?Math.round(bw.sitga):null);
+      var _hi=sell?Math.round(sell):null;
+      var _hf=(_lo!=null&&_hi!=null)?Math.round((_lo+_hi)/2):null;
+      var _pc=(_lo!=null&&_hi!=null&&_hi!==_lo)?Math.round((px-_lo)/(_hi-_lo)*100):null;
+      return {하단:_lo, 상단:_hi, 하프존:_hf, 위치pct:_pc};
+    }catch(e){console.warn('[payload 전투존] '+e);
+      return {하단:bw?Math.round(bw.sitga):null, 상단:sell?Math.round(sell):null, 하프존:half?Math.round(half):null, 위치pct:posPct};}})(),
     보폭:{주평균폭:Math.round(arW), 상승한계:Math.round(cw2.l+arW), 상승50:Math.round(cw2.l+arW/2), 회귀50:Math.round(cw2.h-arW/2), 반락한계:Math.round(cw2.h-arW),
       월평균폭:Math.round(arM), 월잔여:Math.round(Math.max(0,arM-(cm.h-cm.l))), 서명N:'주 N435·월 N77·반락중앙 0.5AR'},
     보폭일:(function(){try{const cd=A[n-1];const arD=avgRangePct(E.d1);   
