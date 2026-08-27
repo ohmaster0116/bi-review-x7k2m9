@@ -17902,7 +17902,18 @@ function fightSynthesis(){try{
     
     var L=function(h){ return '<div style="font-size:12.5px;line-height:1.75;color:var(--tx2);margin-bottom:9px">'+h+'</div>'; };
     
-    ir='<div style="font-size:16px;font-weight:700;line-height:1.45;color:var(--tx)">박스'+(_dl?(' '+_dl):'')+'</div>'
+    
+
+
+
+
+
+
+
+    var _regNm=(g&&g.name&&g.name!=='없음')?String(g.name):'박스';
+    var _isBox=/박스|횡보/.test(_regNm);
+    var _hdTail=_dl?(_isBox?(' '+_dl):(' <span class="sub" style="font-size:12px;font-weight:400">현 구간 '+_dl+'</span>')):'';
+    ir='<div style="font-size:16px;font-weight:700;line-height:1.45;color:var(--tx)">'+_regNm+_hdTail+'</div>'
       +'<div style="font-size:13px;font-weight:700;line-height:1.5;margin-bottom:11px;color:var(--tx2)">저가 <b style="color:'+_dn+'">'
         +f(_s)+'</b> ~ 고가 <b style="color:'+_up+'">'+f(_r)+'</b></div>'
       
