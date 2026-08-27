@@ -19177,7 +19177,7 @@ function waveNineTable(){try{
 
 
     try{ b=((gkSrc()['파동']||{}).wb||{})[tf]||null; }catch(e){ b=null; }   
-    if(!b||b.rep==null){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="2">산출 대기</td></tr>'; continue; }
+    if(!b||b.rep==null){ rows+='<tr><td class="l">'+nm+'</td><td class="num sub" colspan="3">산출 대기</td></tr>'; continue; }
     
     
     
@@ -19206,18 +19206,35 @@ function waveNineTable(){try{
       }
       return s;
     };
+    
+
+
+    var _cenOf=function(isL){
+      try{
+        var W=((gkSrc()['파동']||{}).wb||{}).waves||{};
+        var arr=(W[tf]||{})[isL?'롱':'숏'];
+        if(!arr||!arr.length||_pxN==null) return null;
+        var c=arr.filter(function(w){return w.rep!=null&&w.cen!=null&&(isL?(w.rep<=_pxN):(w.rep>=_pxN));});
+        if(!c.length) return null;
+        c.sort(function(a,b2){return isL?(b2.rep-a.rep):(a.rep-b2.rep);});
+        return c[0].cen;
+      }catch(e){ return null; }
+    };
     rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--buy);font-weight:400">롱</span></td>'
        +'<td class="num" style="color:var(--buy);font-weight:700">'+f0(_tfRep)+_mk(true,_tfRep)+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(true))+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(b.root)+'</td></tr>';
     if(sb&&sb.rep!=null)
       rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--sell);font-weight:400">숏</span></td>'
        +'<td class="num" style="color:var(--sell);font-weight:700">'+f0(sb.rep)+_mk(false,sb.rep)+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(false))+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(sb.root)+'</td></tr>';
   }
   
 
   return '<div class="panel" id="waveNine"><div class="hd">파동 <span class="sub">- 일·주·월 · 실존가 = 지금 맞붙은 최전방 층(현재가에 붙는 것이 정상) · 밀리면 다음 층으로 승계</span></div>'
-    +'<div class="scroll"><table class="tw"><thead><tr><th class="l">TF</th><th>실존가</th><th>뿌리</th></tr></thead>'
+    
+    +'<div class="scroll"><table class="tw"><thead><tr><th class="l">TF</th><th>실존가</th><th>중심</th><th>뿌리</th></tr></thead>'
     +'<tbody>'+rows+'</tbody></table></div></div>';
 }catch(e){ return ''; }}
 
