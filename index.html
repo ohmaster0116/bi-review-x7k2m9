@@ -19220,25 +19220,33 @@ function waveNineTable(){try{
     
 
 
-    var _cenOf=function(isL){
+
+
+
+
+
+
+
+    var _cenOf=function(isL, s0key){
       try{
+        if(s0key==null) return null;
         var W=((gkSrc()['파동']||{}).wb||{}).waves||{};
         var arr=(W[tf]||{})[isL?'롱':'숏'];
-        if(!arr||!arr.length||_pxN==null) return null;
-        var c=arr.filter(function(w){return w.rep!=null&&w.cen!=null&&(isL?(w.rep<=_pxN):(w.rep>=_pxN));});
-        if(!c.length) return null;
-        c.sort(function(a,b2){return isL?(b2.rep-a.rep):(a.rep-b2.rep);});
-        return c[0].cen;
+        if(!arr||!arr.length) return null;
+        for(var q=0;q<arr.length;q++){
+          if(arr[q].s0===s0key && arr[q].cen!=null) return arr[q].cen;
+        }
+        return null;
       }catch(e){ return null; }
     };
     rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--buy);font-weight:400">롱</span></td>'
        +'<td class="num" style="color:var(--buy);font-weight:700">'+f0(_tfRep)+_mk(true,_tfRep)+'</td>'
-       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(true))+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(true,b.s0))+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(b.root)+'</td></tr>';
     if(sb&&sb.rep!=null)
       rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--sell);font-weight:400">숏</span></td>'
        +'<td class="num" style="color:var(--sell);font-weight:700">'+f0(sb.rep)+_mk(false,sb.rep)+'</td>'
-       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(false))+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(false,sb.s0))+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(sb.root)+'</td></tr>';
   }
   
