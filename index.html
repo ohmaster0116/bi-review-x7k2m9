@@ -1140,7 +1140,14 @@ function sitgaCanonVW(tf, fallback, dir){
       }
     }
   }catch(e){}
-  try{ var _b = waveBook(tf); if(_b && _b.sitga) return _b.sitga; }catch(e){}
+  
+
+
+
+
+
+
+  try{ var _b = waveBook(tf); if(_b){ if(_b.rep!=null) return _b.rep; if(_b.sitga) return _b.sitga; } }catch(e){}
   return fallback;
 }
 
@@ -1951,9 +1958,20 @@ function wvSecHtml(){
     if(h.buyOn)sv.push('<span style="color:var(--buy)">매수 '+(h.buySt>=2?'연속 '+unitOf(h.buySt)+'째':unitOf(h.buyAge||1))+'</span>');
     if(h.sellOn)sv.push('<span style="color:var(--sell)">매도 '+(h.sellSt>=2?'연속 '+unitOf(h.sellSt)+'째':unitOf(h.sellAge||1))+'</span>');
     const survTxt=sv.length?sv.join(' · '):'<span class="sub">-</span>';
-    const ar=arAt(t);let cap='없음';
-    if(ar!=null){const up=b.h>=b.o+ar,dn=b.l<=b.o-ar;cap=up&&dn?'<b>상·하단 ✓</b>':up?'<span style="color:var(--buy)">상단 ✓</span>':dn?'<span style="color:var(--sell)">하단 ✓</span>':'없음';}
-    rows+=`<tr><td class="l" style="white-space:nowrap">${ds}</td><td class="num" style="color:${b.c>=b.o?'var(--buy)':'var(--sell)'}">${f1(b.c)}</td><td class="num">${f1(b.gijun)}</td><td class="l" style="white-space:nowrap">${stTxt}</td><td class="l" style="white-space:nowrap;font-size:11px">${survTxt}</td><td class="num" style="color:var(--gold2)">${h.buyOn&&h.buyW!=null?f1(h.buyW):'없음'}</td><td class="num" style="color:var(--sell)">${h.sellOn&&h.sellW!=null?f1(h.sellW):'없음'}</td><td class="l" style="white-space:nowrap;font-size:11px">${cap}</td></tr>`;
+    
+
+
+
+
+
+
+
+
+    const ar=arAt(t);
+    let cap='<span class="sub">표본 부족</span>';
+    if(ar!=null){const up=b.h>=b.o+ar,dn=b.l<=b.o-ar;
+      cap=up&&dn?'<b>상·하단 ✓</b>':up?'<span style="color:var(--buy)">상단 ✓</span>':dn?'<span style="color:var(--sell)">하단 ✓</span>':'<span class="sub">미도달</span>';}
+    rows+=`<tr><td class="l" style="white-space:nowrap">${ds}</td><td class="num" style="color:${b.c>=b.o?'var(--buy)':'var(--sell)'}">${f1(b.c)}</td><td class="num">${f1(b.gijun)}</td><td class="l" style="white-space:nowrap">${stTxt}</td><td class="l" style="white-space:nowrap;font-size:11px">${survTxt}</td><td class="num" style="color:var(--gold2)">${h.buyOn&&h.buyW!=null?f1(h.buyW):'<span class="sub">해당 없음</span>'}</td><td class="num" style="color:var(--sell)">${h.sellOn&&h.sellW!=null?f1(h.sellW):'<span class="sub">해당 없음</span>'}</td><td class="l" style="white-space:nowrap;font-size:11px">${cap}</td></tr>`;
   }
   return `<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">캔들:</span>${tfBtns}</div>
   <div id="wvSlot"></div>
