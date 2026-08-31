@@ -23116,7 +23116,18 @@ function m30Panel(){try{
   var half=(function(){try{var lo=sitgaCanonVW('w1',null,1)||(bw&&bw.sitga); return (lo&&sell)?((lo+sell)/2):null;}catch(e){return (bw&&bw.sitga&&sell)?(bw.sitga+sell)/2:null;}})();
   var side=half!=null?(px>=half?'매수':'매도'):null;
   return '<div class="panel"><div class="hd">30분봉 대응 <span class="sub">- 단타 층 · 실시간</span></div><div style="padding:9px 14px;font-size:12px;line-height:2">'
-    +'<div>30분 실존가 <b>'+f(b.sitga)+'</b> <span class="sub">- 현재가가 '+(px>=(b.roll||b.sitga)?'위(단기 매수 진지 위)':'아래(단기 진지 이탈 시험)')+'</span></div>'
+    
+
+
+
+
+
+
+    +(function(){var _base=(b.roll!=null?b.roll:(b.sitga!=null?b.sitga:(b.rep!=null?b.rep:null)));
+      var _sv=(b.sitga!=null?b.sitga:(b.rep!=null?b.rep:null));
+      return '<div>30분 실존가 <b>'+f(_sv)+'</b> <span class="sub">- 현재가가 '
+        +(_base==null?'판정 보류(이 TF 실존가 미산출)'
+          :(px>=_base?'위(단기 매수 진지 위)':'아래(단기 진지 이탈 시험)'))+'</span></div>';})()
     +(half!=null?'<div>전투존 하프 <b>'+f(half)+'</b> 기준 지금은 <b style="color:'+(side==='매수'?'var(--buy)':'var(--sell)')+'">'+side+' 우위 구간</b></div>':'')
     +'<div class="sub">최소 30분봉 기준 0.2% 이상 손익이 나오는 자리입니다 - 매매 신호가 아니라 국면을 읽어주는 내용입니다</div>'
     +'</div></div>';
