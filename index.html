@@ -20232,22 +20232,43 @@ function waveNineTable(){try{
         if(!arr||!arr.length||_pxN==null) return null;
         var c=arr.filter(function(w){return w.rep!=null&&(isL?(w.rep<=_pxN):(w.rep>=_pxN));});
         if(!c.length) return null;
-        c.sort(function(a,b2){return isL?(b2.rep-a.rep):(a.rep-b2.rep);});
         
-        var reps=c.map(function(w){return w.rep;});
+
+
+
+
+
+
+
+
+        c.sort(function(a,b2){ if(b2.s0!==a.s0) return b2.s0-a.s0;
+                               return isL?(b2.rep-a.rep):(a.rep-b2.rep); });
+        
+
+        var byRep=c.slice().sort(function(a,b2){return isL?(b2.rep-a.rep):(a.rep-b2.rep);});
+        var reps=byRep.map(function(w){return w.rep;});
         var g=[];
         reps.forEach(function(v){
           var last=g.length?g[g.length-1]:null;
           if(last&&Math.abs(v-last.v)<=_CLUS_P){ last.n++; last.sum+=v; last.v=last.sum/last.n; }
           else g.push({v:v,sum:v,n:1});
         });
-        return {w:c[0], grp:g};
+        
+        return {w:c[0], grp:g, front:byRep[0]};
       }catch(e){ return null; }
     };
     var _mk=function(isL,base){
       var P=_pick(isL); if(!P||_pxN==null) return '';
+      
+
+
+
       var g=P.grp, s='';
-      var g0=g[0], g1=g.length>1?g[1]:null;
+      var gi=-1;
+      for(var _i=0;_i<g.length;_i++){ if(Math.abs(g[_i].v-base)<=_CLUS_P){ gi=_i; break; } }
+      if(gi<0){ for(var _j=0;_j<g.length;_j++){ if(isL? (g[_j].v<=base) : (g[_j].v>=base)){ gi=_j; break; } } }
+      if(gi<0) gi=0;
+      var g0=g[gi], g1=(g.length>gi+1)?g[gi+1]:null;
       if(g0&&g0.n>=2) s+='<span class="sub" style="font-size:9.5px;color:var(--gold2)"> '+g0.n+'겹</span>';
       if(g1){
         var dp=Math.abs(g1.v-_pxN)/_pxN*100;
@@ -20286,7 +20307,8 @@ function waveNineTable(){try{
 
     var _rowOf=function(isL,fb){
       var P=_pick(isL);
-      if(P&&P.w) return {rep:P.w.rep, cen:P.w.cen, root:P.w.root, src:'w'};
+      if(P&&P.w) return {rep:P.w.rep, cen:P.w.cen, root:P.w.root, src:'w',
+                         s0:P.w.s0, front:(P.front&&P.front.rep!=null?P.front.rep:null)};
       if(fb&&fb.rep!=null) return {rep:fb.rep, cen:null, root:fb.root, src:'fb'};
       return null;
     };
@@ -20296,7 +20318,14 @@ function waveNineTable(){try{
       if(cen!=null&&R.rep!=null&&Math.abs(cen-R.rep)<=_CLUS_P) cen=null;   
       var col=isL?'var(--buy)':'var(--sell)';
       return '<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:'+col+';font-weight:400">'+(isL?'롱':'숏')+'</span></td>'
-        +'<td class="num" style="color:'+col+';font-weight:700">'+f0(R.rep)+_mk(isL,R.rep)+'</td>'
+        +'<td class="num" style="color:'+col+';font-weight:700">'+f0(R.rep)+_mk(isL,R.rep)
+          
+
+          +(R.s0? '<div class="sub" style="font-size:9px;color:var(--tx3);line-height:1.4">이번 파동 '
+                  +new Date(R.s0).toISOString().slice(0,10).replace(/-/g,'.').slice(2)+' 시작</div>' : '')
+          +((R.front!=null&&R.rep!=null&&Math.abs(R.front-R.rep)>_CLUS_P)
+              ? '<div class="sub" style="font-size:9px;color:var(--tx3);line-height:1.4">전 파동 최전방 '+f0(R.front)+'</div>' : '')
+          +'</td>'
         +'<td class="num" style="color:var(--tx2)">'+f0(cen)+'</td>'
         +'<td class="num" style="color:var(--tx2)">'+f0(R.root)+'</td></tr>';
     };
