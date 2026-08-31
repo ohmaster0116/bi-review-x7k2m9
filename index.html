@@ -784,9 +784,19 @@ function regimeCalc(k){
 
 
 
+  
+
+
+
+
+
+
   var _sv=null;
-  try{ var _R=((window.__VERDICT||{}).data||{}).regime;
-       if(_R) _sv = (_R.indexOf('추세')>=0)?'trend':((_R.indexOf('경계')>=0)?'warn':'box'); }catch(e){}
+  try{ var _RD=((window.__VERDICT||{}).data||{});
+       var _RC=_RD.regime_code, _R=_RD.regime;
+       if(_RC==='trend'||_RC==='box'||_RC==='warn') _sv=_RC;
+       else if(_R) _sv = (_R.indexOf('추세')>=0)?'trend'
+                       :((_R.indexOf('경계')>=0||_R.indexOf('전환')>=0||_R.indexOf('중립')>=0)?'warn':'box'); }catch(e){}
   var _st=_sv||state, _lst=_sv||liveState;
   return {k,full,recent,drop,streak,dir,state:_st,short:rc.length<30,liveTouch,liveStreak,liveDir,liveState:_lst,gPrev,src:(_sv?'서버효율비':'화면터치율'),raw_state:state,raw_liveState:liveState};
 }
