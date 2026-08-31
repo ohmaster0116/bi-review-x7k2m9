@@ -23206,11 +23206,20 @@ function volBalancePanel(){try{
       var _SX=window.__STRIDEEXT;
       var _r=(_SX&&_SX.TF)?_SX.TF[x[1]]:null;
       if(_r&&_r['판정']==='산출'){
-        var _e=(_r['끝단']||{})['상위10']||(_r['끝단']||{})['상위25']||(_r['끝단']||{})['최대'];
+        
+
+
+
+
+
+
+        var _eq=(_r['끝단']||{});
+        var _e=_eq['상위10']||_eq['상위25']||_eq['최대'];
+        var _ek=_eq['상위10']?'상위10%':(_eq['상위25']?'상위25%':'최대');
         if(_e&&_e['위']>b.h&&_e['아래']<b.l){
           sellEnd=_e['위']; buyEnd=_e['아래'];
           _edgeSrc=' <span class="sub" style="font-size:9px;color:var(--gold2)">끝단=실측(같은 조건 '
-            +_r['표본']+'개 · 상위10%)</span>';
+            +_r['표본']+'개 · '+_ek+')</span>';
         }
       }
     }catch(e){} }
