@@ -939,6 +939,10 @@ function dlY(x){var d=(x instanceof Date)?x:new Date(x);var s=(d.getUTCMonth()+1
 function waveKDate(i,short){const d=new Date(E.d1[i].t);return short?(d.getUTCFullYear()===(new Date()).getUTCFullYear()?'':(d.getUTCFullYear()%100)+'년 ')+String(d.getUTCMonth()+1).padStart(2,'0')+'월 '+String(d.getUTCDate()).padStart(2,'0')+'일':d.getUTCFullYear()+'년 '+String(d.getUTCMonth()+1).padStart(2,'0')+'월 '+String(d.getUTCDate()).padStart(2,'0')+'일';}
 
 var _wsC={},_wsAt={};   
+
+
+
+
 function waveState(tf,arr,opt){
   if(arr)return _wsCalc(tf,arr,opt);
   var _k=tf||'d1';
@@ -20288,7 +20292,7 @@ function waveBookPanel(){try{
     +'</tbody></table></div>';
   
   var marks=[{v:bd.root,n:'최종 뿌리',c:'#2bb3a3'},{v:cLo,n:'뿌리 본진',c:'var(--buy)'},{v:bd.sitga,n:'일 실존가',c:'#00e5a0'}];
-  if(bw&&bw.sitga)marks.push({v:bw.sitga,n:'주 실존가',c:'#46c2ff'});
+  (function(){var _v=null;try{_v=sitgaCanonVW('w1',null,1);}catch(e){} if(_v==null&&bw&&bw.sitga)_v=bw.sitga; if(_v!=null)marks.push({v:_v,n:'주 실존가',c:'#46c2ff'});})();
   marks.push({v:px,n:'현재가',c:'var(--gold2)',big:true});
   sells.slice(0,2).forEach(function(sv,ii){marks.push({v:sv,n:'매도 파동'+(ii+1),c:'var(--sell)'});});
   var vs=marks.map(function(m){return m.v;}),mn2=Math.min.apply(null,vs),mx2=Math.max.apply(null,vs),pad=(mx2-mn2)*0.07||1;
@@ -20425,7 +20429,11 @@ function hierPanel(){try{
     +row('중기','분기',(midVW5!=null)?((midUp5?'상승':'하락')+' · 관문(최근 완성 3개월 실존가) <b>'+f1(midVW5)+'</b>'):'없음',(midUp5!=null)?(midUp5?'국면 2층 상승':'국면 2층 하락 - 관문 '+f1(midVW5)+' 위 마감이 전환'):'',midUp5?'var(--buy)':'var(--sell)')
     +row('단기','월봉',mDir+' · 기준가 '+f1(gM),'국면 3층 - 전환은 월봉이 바뀌어야(매도 파동선 위 마감)',wsM&&wsM.dir>0?'var(--buy)':'var(--sell)')
     +(function(){var wb=null,ww=null;try{wb=waveBook('d1');ww=waveBook('w1');}catch(e){}
-      var st5=(wAlive?'주봉 생명선 생존':'생명선 이탈')+(wb?' · 일 실존가(정본) '+f1(wb.sitga)+(ww?' · 주 '+f1(ww.sitga):''):' · 일봉 '+((rgD?({trend:'추세',warn:'경계',box:'박스'})[rgD.state]:'없음')));
+      
+
+  var _hpD=(function(){try{var v=sitgaCanonVW('d1',null,1); if(v!=null)return v;}catch(e){} return wb?wb.sitga:null;})();
+  var _hpW=(function(){try{var v=sitgaCanonVW('w1',null,1); if(v!=null)return v;}catch(e){} return ww?ww.sitga:null;})();
+  var st5=(wAlive?'주봉 생명선 생존':'생명선 이탈')+(_hpD!=null?' · 일 실존가(정본) '+f1(_hpD)+(_hpW!=null?' · 주 '+f1(_hpW):''):' · 일봉 '+((rgD?({trend:'추세',warn:'경계',box:'박스'})[rgD.state]:'없음')));
       var rd5=wb?('현 파동: 생존 '+wb.nInc+'봉'+' · 뿌리 '+f1(wb.root)+' 생존 - 가지는 공격 허용 범주, 뿌리만 살면 재생(4자 R계열)'):'반전 시그널 층 - 국면은 못 바꿈(사다리 1칸)';
       return row('시그널','일·주',st5,rd5,wAlive?'var(--buy)':'var(--sell)');})()
     +row('포착','시간·30분','1h '+(s1?s1.dirScore:'없음')+' · 4h '+(s4?s4.dirScore:'없음')+' · 미확인 중심 '+(pin?f1(pin):'없음'),'진입 타이밍 - 위 '+(fUp?f1(fUp):'없음')+' / 아래 '+(fDn?f1(fDn):'없음')+' 먼저 딛는 쪽이 결','var(--tx)')
@@ -23102,7 +23110,10 @@ function m30Panel(){try{
   var b=waveBook('m30'); if(!b)return '';
   var bw=waveBook('w1');
   var sell=null;try{var _srM=sellRes(); if(_srM&&_srM.v>px)sell=_srM.v;}catch(e){}   
-  var half=(bw&&bw.sitga&&sell)?(bw.sitga+sell)/2:null;
+  
+
+
+  var half=(function(){try{var lo=sitgaCanonVW('w1',null,1)||(bw&&bw.sitga); return (lo&&sell)?((lo+sell)/2):null;}catch(e){return (bw&&bw.sitga&&sell)?(bw.sitga+sell)/2:null;}})();
   var side=half!=null?(px>=half?'매수':'매도'):null;
   return '<div class="panel"><div class="hd">30분봉 대응 <span class="sub">- 단타 층 · 실시간</span></div><div style="padding:9px 14px;font-size:12px;line-height:2">'
     +'<div>30분 실존가 <b>'+f(b.sitga)+'</b> <span class="sub">- 현재가가 '+(px>=(b.roll||b.sitga)?'위(단기 매수 진지 위)':'아래(단기 진지 이탈 시험)')+'</span></div>'
@@ -23509,8 +23520,8 @@ function rootBranchStrip(){try{
     
     const partsDn=[];
     try{const bdX=waveBook('d1'),bwX=waveBook('w1');
-      if(bdX&&bdX.sitga&&bdX.sitga<px)partsDn.push('단기(일) '+f1(bdX.sitga));
-      if(bwX&&bwX.sitga&&bwX.sitga<px)partsDn.push('중기(주) '+f1(bwX.sitga));
+      (function(){var _v=null;try{_v=sitgaCanonVW('d1',null,1);}catch(e){} if(_v==null&&bdX)_v=bdX.sitga; if(_v&&_v<px)partsDn.push('단기(일) '+f1(_v));})();
+      (function(){var _v=null;try{_v=sitgaCanonVW('w1',null,1);}catch(e){} if(_v==null&&bwX)_v=bwX.sitga; if(_v&&_v<px)partsDn.push('중기(주) '+f1(_v));})();
     }catch(e){}
     if(partsDn.length)ladder+=(ladder?'<br>':'')+'<b style="color:var(--buy)">지지 사다리(하방·이탈=매수 파동 실존가 종가 이탈)</b> '+partsDn.join(' → ');
   }catch(e){}
@@ -23533,7 +23544,10 @@ function rootBranchStrip(){try{
     const md2=(t)=>{const d=new Date(t);return dlY(d);};
     let sell=null,sStart=null,sEnd=null,sDays=null;
     try{const L=waveLedger('d1');const arr=[];L.waves.forEach(w=>{if(w.dir<0&&w.death==null&&!w.open){const vw=vwOfWave(E.d1,w);if(vw&&vw>px)arr.push({vw,w});}});arr.sort((a,b)=>a.vw-b.vw);if(arr.length){sell=arr[0].vw;sStart=E.d1[arr[0].w.s].t;sEnd=E.d1[arr[0].w.e].t;sDays=Math.round((E.d1[E.d1.length-1].t-sEnd)/86400000);}}catch(e){}
-    const buyLo=bw?bw.sitga:null;
+    
+
+
+  const buyLo=(function(){try{var v=sitgaCanonVW('w1',null,1); if(v!=null)return v;}catch(e){} return bw?bw.sitga:null;})();
     const half=(buyLo!=null&&sell!=null)?(buyLo+sell)/2:null;
     const posPct=(buyLo!=null&&sell!=null)?Math.round((px-buyLo)/(sell-buyLo)*100):null;
     const dS=bd&&bd.s0?md2(bd.s0):'', wS=bw&&bw.s0?md2(bw.s0):'';
