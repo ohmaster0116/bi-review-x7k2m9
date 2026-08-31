@@ -14660,13 +14660,22 @@ function canonWaves(A,key,isL){try{
 
 
 
+    
+
+
+
+
+
+
+
+
+
     var uA=0,qA=0;
     for(var k=i;k<n;k++){
-      var bc=c4(A[k]);
-      if(isL?(bc<=cx):(bc>=cx)){ uA+=bc*A[k].v; qA+=A[k].v; }   
       var dq=Q[k+1]-Q[i]; if(dq<=0) continue;
       var vw=(U[k+1]-U[i])/dq; nt++;
       if(isL?(cx<vw):(vw<cx)) continue;      
+      uA+=vw*A[k].v; qA+=A[k].v;             
       na++; last=vw;
       if(isL? vw<px : vw>px){ if(best==null||(isL? vw>best : vw<best)) best=vw; }
       else { if(opp==null||(isL? vw<opp : vw>opp)) opp=vw; }
