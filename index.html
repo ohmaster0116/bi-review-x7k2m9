@@ -20268,7 +20268,14 @@ function waveBookPanel(){try{
           
           
           
-          +(px>bd.sitga?'<b style="color:var(--buy)">방어 중</b>':'<b style="color:var(--sell)">종가 이탈</b>')
+          
+
+
+
+
+
+          +(bd.sitga==null?'<span class="sub">판정 보류(이 TF 실존가 미산출)</span>'
+             :(px>bd.sitga?'<b style="color:var(--buy)">방어 중</b>':'<b style="color:var(--sell)">종가 이탈</b>'))
           +'<br><span class="sub">판정선 종가 이탈이 대립각(하락 연장) 신호 · 장중 이탈은 흔들기</span></div>';}}
   }catch(e){}
   var rw=function(nm,b){if(!b)return '';
