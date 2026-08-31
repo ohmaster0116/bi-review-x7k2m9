@@ -14646,8 +14646,16 @@ function canonWaves(A,key,isL){try{
   var main=[];
   cand.forEach(function(w){
     var p=main[main.length-1];
-    if(p){ var gap=w.s-(p.s+p.form-1);
-      if(gap>0&&gap<=Math.max(p.form*2,EXT_MIN)){ p.ext=(p.ext||0)+1; (p.kids=p.kids||[]).push(w); res.merged++; return; } }
+    
+
+
+
+
+
+    if(p){ var gap=w.s-(p.s+p.form-1), thr=Math.max(p.form*2,EXT_MIN);
+      if(gap>0&&gap<=thr){ p.ext=(p.ext||0)+1;
+        w.mergeGap=gap; w.mergeThr=thr; w.mergeEdge=(gap===thr); w.mergeInto=p.s;
+        (p.kids=p.kids||[]).push(w); res.merged++; return; } }
     main.push(w);
   });
   
