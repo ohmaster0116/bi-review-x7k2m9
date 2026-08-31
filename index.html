@@ -16615,6 +16615,20 @@ function viewWaveInner(){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     bigBanner=`<div class="panel" style="border-left:3px solid var(--gold2)"><div class="spaced" style="padding:10px 14px;font-size:12.5px;line-height:1.8">
       <b style="color:var(--gold2)">📏 ${_BIGW} 대응 규칙 (강도 판정)</b> - ${_BIGW}이 나와도 <b>종가가 파동선(${f1(ws.line)}) ${_KEEP}면 "흔들기"</b>. <b>이탈 마감이면 "붕괴"</b>. ★강도: <b>장대(폭 1.3배+)로 깊이(0.3배+) 관통 = 붕괴 확정</b> / 얕게(0.15배) 스침 = 흔들기 여지.<br>
       · 지금: ${judge}<br>
@@ -18796,7 +18810,7 @@ function gongOpinion(){
     let wvLine='';
     try{const ws2=waveState();
       if(ws2&&ws2.mode!=='none'){const wc=ws2.dir>0?'var(--buy)':'var(--sell)';
-        wvLine=`<br>&nbsp;&nbsp;· <b style="color:${wc}">${waveWord('d1',ws2.dir,ws2.mode,ws2.days)}</b> - 주체 평단 <b style="color:var(--gold2)">${f1(ws2.line)}</b> ${ws2.mode==='form'?'사수가 승부':'사수가 승부'}. 장대 음봉이 나와도 <b>종가가 이 선 위면 흔들기(회복 65%)·이탈 마감이면 힘 약화 신호</b> - 상세는 파동 분석 탭.`;}
+        wvLine=`<br>&nbsp;&nbsp;· <b style="color:${wc}">${waveWord('d1',ws2.dir,ws2.mode,ws2.days)}</b> - 주체 평단 <b style="color:var(--gold2)">${f1(ws2.line)}</b> ${ws2.mode==='form'?'사수가 승부':'사수가 승부'}. 장대 음봉이 나와도 <b>종가가 이 선 위면 흔들기·이탈 마감이면 힘 약화 신호</b> - 상세는 파동 분석 탭.`;}
       else if(ws2)wvLine=`<br>&nbsp;&nbsp;· 무파동 - 방향 주체 없음, 박스 문법(지지) 기본값.`;
       const cs=waveConsensus();
       if(cs.sig==='pullback')wvLine+=`<br>&nbsp;&nbsp;· <b style="color:var(--buy)">파동 눌림 - 최상 신호</b>: 긴 호흡(일·주·월) 파동은 살아있는데 짧은 호흡(30분~4시간)만 과매도 = 눌림 받는 자리. 실측 다음 캔들 +0.50~0.71%(3코인).`;
