@@ -19822,6 +19822,9 @@ function waveNineTable(){try{
 
 
   var _CL50=50;
+  
+
+  var _CLUS_P=50;
   var _layers=function(tfk,isL,pxv){
     try{
       var W=((gkSrc()['파동']||{}).wb||{}).waves||{};
@@ -19896,26 +19899,35 @@ function waveNineTable(){try{
 
 
 
-    var _cenOf=function(isL, s0key){
+    
+
+
+
+
+    var _cenOf=function(isL, s0key, repv){
       try{
         if(s0key==null) return null;
         var W=((gkSrc()['파동']||{}).wb||{}).waves||{};
         var arr=(W[tf]||{})[isL?'롱':'숏'];
         if(!arr||!arr.length) return null;
         for(var q=0;q<arr.length;q++){
-          if(arr[q].s0===s0key && arr[q].cen!=null) return arr[q].cen;
+          if(arr[q].s0===s0key && arr[q].cen!=null){
+            var cv=arr[q].cen;
+            if(repv!=null&&Math.abs(cv-repv)<=_CLUS_P) return null;   
+            return cv;
+          }
         }
         return null;
       }catch(e){ return null; }
     };
     rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--buy);font-weight:400">롱</span></td>'
        +'<td class="num" style="color:var(--buy);font-weight:700">'+f0(_tfRep)+_mk(true,_tfRep)+'</td>'
-       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(true,b.s0))+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(true,b.s0,_tfRep))+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(b.root)+'</td></tr>';
     if(sb&&sb.rep!=null)
       rows+='<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:var(--sell);font-weight:400">숏</span></td>'
        +'<td class="num" style="color:var(--sell);font-weight:700">'+f0(sb.rep)+_mk(false,sb.rep)+'</td>'
-       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(false,sb.s0))+'</td>'
+       +'<td class="num" style="color:var(--tx2)">'+f0(_cenOf(false,sb.s0,sb.rep))+'</td>'
        +'<td class="num" style="color:var(--tx2)">'+f0(sb.root)+'</td></tr>';
   }
   
