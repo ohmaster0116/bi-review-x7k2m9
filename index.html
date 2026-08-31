@@ -1995,7 +1995,16 @@ function wvBuild(){try{
   const el=document.getElementById('wvChart');if(!el||!window.LightweightCharts)return;
   if(el.clientWidth<10){if((window._wvR=(window._wvR||0)+1)<12)setTimeout(wvBuild,400);else window._wvR=0;return;}window._wvR=0;   
   if(wvChart){try{wvChart.remove();}catch(e){}wvChart=null;}
-  wvChart=LightweightCharts.createChart(el,{layout:{background:{type:'solid',color:'#0b0f16'},textColor:'#c8d0dc'},
+  
+
+
+
+
+
+
+  wvChart=LightweightCharts.createChart(el,{
+    width:el.clientWidth, height:(el.clientHeight||380),
+    layout:{background:{type:'solid',color:'#0b0f16'},textColor:'#c8d0dc'},
     grid:{vertLines:{color:'rgba(255,255,255,.04)'},horzLines:{color:'rgba(255,255,255,.04)'}},
     rightPriceScale:{borderColor:'rgba(255,255,255,.1)'},
     timeScale:{borderColor:'rgba(255,255,255,.1)',timeVisible:true,secondsVisible:false},
@@ -20244,6 +20253,16 @@ function waveNineTable(){try{
         var dp=Math.abs(g1.v-_pxN)/_pxN*100;
         s+='<div class="sub" style="font-size:9.5px;color:var(--tx3);line-height:1.5">밀리면 다음 '
           +f0(g1.v)+' <span style="opacity:.85">('+(isL?'−':'+')+dp.toFixed(2)+'%'+(g1.n>=2?(' · '+g1.n+'겹'):'')+')</span></div>';
+      }
+      
+
+
+
+
+
+      else if(g0){
+        s+='<div class="sub" style="font-size:9.5px;color:var(--tx3);line-height:1.5">'
+          +'뒤 층 없음 <span style="opacity:.85">(이 진영 최후방 · 밀리면 승계 자리가 없다)</span></div>';
       }
       return s;
     };
