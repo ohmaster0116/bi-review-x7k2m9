@@ -14925,7 +14925,7 @@ function battleZones(tf,nm){try{
                     if(va==null||!vt)return;
                     var d=(1-va/vt)*100;
                     if(d>=1)t.push(o[1]+' '+Math.round(d)+'% 전선 밖'); });
-                  return t.length?(' · '+t.join(' · ')):''; }catch(e){return '';}})()
+                  return t.length?(' · '+t.join(' · ')):''; }catch(e){console.warn('[전투존 전선밖] '+e);return '';}})()
               +')</span>'+dieTag(pCL,pCS),mid(ncL,ncS),ncL,ncS,bothDead(pCL,pCS),oneDead(pCL,pCS)],
             ['<b style="color:var(--gold2)">전투</b> · 현재 진행중 실존가간'+_fbL+_fbS+dieTag(pEL,pES),mid(sl,ss),sl,ss,bothDead(pEL,pES),oneDead(pEL,pES)]];
   rows=rows.filter(function(r){return r[1]!=null;});
@@ -15012,7 +15012,7 @@ function battleZones(tf,nm){try{
       return '<div class="sub" style="font-size:10px;margin-top:5px">마지막 생존 매수 파동 <b style="color:var(--buy)">'
         +(d0.getUTCFullYear()%100)+'/'+(d0.getUTCMonth()+1)+'/'+d0.getUTCDate()
         +'</b> · 그 뒤 만들어진 <b>'+deadL+'개</b>는 뿌리를 잃었습니다</div>';
-    }catch(e){return '';}})()
+    }catch(e){console.warn('[전투존 중심] '+e);return '';}})()
     
 
 
@@ -15370,7 +15370,7 @@ function waveDetailPanel(){try{
                 +(_lads.length?' <span class="sub">(밀려도 다음 층 '+_lads.map(function(o){return f(o.vw);}).join(' · ')+')</span>':'')
                 +' · <b style="color:var(--buy)">'+f(fs.vw)+' 종가 돌파 = 매수 우위 전환 후보</b>';
               return ' · <span class="sub">매도 최전방 '+f(fs.vw)+' 는 이미 위로 넘어섰습니다</span>';
-            }catch(e){return '';}})()
+            }catch(e){console.warn('[대파동] '+e);return '';}})()
             +(function(){try{   
 
 
@@ -15395,7 +15395,7 @@ function waveDetailPanel(){try{
               if(!(cb.v>0)&&!(cs.v>0))return '';
               return '<div style="margin-top:3px;font-size:11px">진영 형성기 평단 <span class="sub">(형성 구간 기준가 평균 · 실존가 아님'+_spanTxt+')</span> · <b style="color:var(--buy)">롱 '+(cb.v>0?f(cb.u/cb.v):'-')+'</b><span class="sub">(형성기 거래대금 '+(cb.v>0?dfmt(cb.u):'-')+' · 근사)</span>'
                 +' <span class="sub">↔</span> <b style="color:var(--sell)">숏 '+(cs.v>0?f(cs.u/cs.v):'-')+'</b><span class="sub">(형성기 거래대금 '+(cs.v>0?dfmt(cs.u):'-')+' · 근사)</span></div>';   
-            }catch(e){return '';}})()
+            }catch(e){console.warn('[파동 발화] '+e);return '';}})()
             +(function(){try{   
 
 
@@ -20097,8 +20097,9 @@ function waveNineTable(){try{
 
 
 
-  var _CL50=50;
   
+
+
 
   var _CLUS_P=50;
   var _pxN=null; try{_pxN=E.d1[E.d1.length-1].c;}catch(e){}
@@ -22989,11 +22990,11 @@ function todayPlanCard(){try{
         return '<div class="sub" style="padding:7px 13px;border-bottom:1px solid var(--bd);font-size:10.5px;line-height:1.7">'
           +'<b style="color:var(--gold2)">통상 움직이는 폭</b> , '+use.join(' · ')
           +(ref.length?(' <span style="color:var(--tx3)">· '+ref.join(' · ')+'는 폭이 넓어 자리 안내에 쓰지 않습니다</span>'):'')
-          +'</div>'; }catch(e){ return ''; } })()
+          +'</div>'; }catch(e){console.warn('[보폭 안내] '+e);return '';} })()
     + tn + body + lad.join('') + scLine
     + '<div class="sub" style="padding:7px 13px;border-top:1px solid var(--bd);font-size:10.5px;line-height:1.7">여기 적힌 가격에 닿기 전에는 기다리는 것도 계획입니다. 넘김과 이탈은 모두 마감 가격으로 봅니다. 발행 뒤에는 좌표를 바꾸지 않고 다음 날 마감으로 채점합니다. 비율은 지난 흐름에서 센 실측 빈도이며, 앞으로를 약속하지 않습니다.</div>'
     + '</div>';
-}catch(e){ return ''; }}
+}catch(e){console.warn('[실측 끝단] '+e);return '';}}
 function edgeActionCard(){try{
   var E1 = window.__EDGEBP; if(!E1) return '';
   var f = function(v){ return (v==null||isNaN(v)) ? '없음' : '$' + Math.round(v).toLocaleString('en-US'); };
@@ -23140,7 +23141,7 @@ function m30Panel(){try{
     +(half!=null?'<div>전투존 하프 <b>'+f(half)+'</b> 기준 지금은 <b style="color:'+(side==='매수'?'var(--buy)':'var(--sell)')+'">'+side+' 우위 구간</b></div>':'')
     +'<div class="sub">최소 30분봉 기준 0.2% 이상 손익이 나오는 자리입니다 - 매매 신호가 아니라 국면을 읽어주는 내용입니다</div>'
     +'</div></div>';
-}catch(e){return '';}}
+}catch(e){console.warn('[m30 하프] '+e);return '';}}
 
 
 function ingredientsPanel(){try{
@@ -23340,7 +23341,7 @@ function volBalancePanel(){try{
     +'<div class="sub" style="padding:7px 15px">매수율·매도율=평균변동폭 기준(중심=50 · 중심±반AR=0/100, 넘으면 평균변동폭율 돌파/이탈 병기) · '
     + 
       '밴드 좌표는 <b>평균 안</b>이면 원래 산식(고가·저가 ± 잔여), <b>평균을 넘은 봉</b>은 <b style="color:var(--gold2)">같은 조건 과거 사례의 상위10% 도달점</b>으로 잡습니다(표본이 적으면 상위25%나 최대로 내려가며, 어느 쪽을 썼는지 값 옆에 적습니다 · 표본 수 병기 · 새 사례가 생기면 자동 갱신) · 도달 한계이지 목표가 아닙니다</div></div>';
-}catch(e){return '';}}
+}catch(e){console.warn('[골든 끝단] '+e);return '';}}
 
 function dirWeightPanel(){try{
   var p=reportPayload(); if(!p||p.error||!p.방향무게)return '';
@@ -25549,7 +25550,7 @@ function whaleTrajPanel(){
         return '<br><b style="color:var(--gold2)">축 안내</b> , 이 궤적은 <b>캠페인 축</b>(전선 밖 물량 포함)입니다. 시작을 그 축으로 잡았으니 진도도 같은 축으로 잽니다. '
           +'지금 <b>싸우고 있는</b> 매도 평단은 <b style="color:var(--sell)">'+f0(_w.sell_avg)+'</b>(생존 물량'
           +((_w.dead_sell_pct>=1)?(' · '+Math.round(_w.dead_sell_pct)+'% 전선 밖 물량 제외'):'')+')입니다. <b>둘 다 맞는 값이고 자가 다릅니다.</b>';
-      }catch(e){return '';}})()
+      }catch(e){console.warn('[겹 표기] '+e);return '';}})()
       +'</div>'
       +'<div class="panel" style="margin-bottom:10px"><div style="padding:8px 6px">'+svg+'</div></div>'
       +baseHtml+secA+invHtml+secB;
@@ -25900,7 +25901,7 @@ function whaleSupply(){
             +'</b> · 매수 확대 <b>'+_bs.buy_up+'/'+_bs.n+'</b> · 돌파 후 1개월 중앙 <b>+'+_bs.fwd1m_median_pct
             +'%</b> <span class="sub">(N='+_bs.n+'·표본 작음 · 대조군 +'+_bs.ctrl_fwd1m_median_pct+'% · 과거 기록이며 예측 아님)</span></span>';
           return s1+s2;
-        }catch(e){return '';}})()}</span></div>`:''}
+        }catch(e){console.warn('[사례 줄] '+e);return '';}})()}</span></div>`:''}
       <div class="scroll" style="max-height:200px"><table><thead><tr><th class="l">일자</th><th>전투포인트</th><th>방어 후 반등</th><th>수명</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="sub" style="padding:8px 14px;font-size:10.5px">자체 정본 산식 · 반등폭·수명은 방어 성공 조건부 - 과거 기록이며 예측 아님.</div></div>`;
     }
