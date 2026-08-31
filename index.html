@@ -14860,6 +14860,13 @@ function battleZones(tf,nm){try{
 
 
 
+
+
+
+
+
+
+
   var glA=(function(){var r=_rngRaw(AL);return r?((r.hi+r.lo)/2):null;})();   
   var gsA=(function(){var r=_rngRaw(AS);return r?((r.hi+r.lo)/2):null;})();
   var gl=rng(AL,true), gs=rng(AS,false);         
@@ -14998,7 +15005,7 @@ function battleZones(tf,nm){try{
 
 
 
-    +'<div class="sub" style="font-size:9.5px;margin-top:2px;line-height:1.6"><b>전쟁</b>은 진영 전체의 자리(8년 전체사 평단)이고, <b style="color:var(--gold2)">전투</b>는 지금 맞붙은 자리입니다. <span style="color:var(--tx3)">한 지역을 내줘도 전쟁 축은 그대로입니다. 전투 축은 물량이 빠져나간 만큼 뒤로 물러납니다.</span></div>'
+    +'<div class="sub" style="font-size:9.5px;margin-top:2px;line-height:1.6"><b>전쟁</b>은 진영 전체의 자리(8년 전체사 평단)이고, <b style="color:var(--gold2)">전투</b>는 지금 맞붙은 자리입니다. <span style="color:var(--tx3)">최전방이 밀리면 중심도 함께 물러납니다. 전쟁·전투 <b>두 축 모두</b> 전선 밖으로 나간 물량은 뺍니다(괄호가 포함 시 값). 다만 <b>뿌리</b>는 진영이 처음 선 자리라 함락과 무관하게 안 움직입니다.</span></div>'
     +body+(function(){try{
       
 
@@ -16581,6 +16588,14 @@ function viewWaveInner(){
     else if(width>=1.3&&depth>=0.3)judge=`<b style="color:${_cBreak}">붕괴 확정 - 장대(폭 ${width.toFixed(1)}배)로 파동선을 깊이(${depth.toFixed(2)}배) 관통</b>`;
     else if(depth<=0.15)judge=`<b style="color:var(--amber)">흔들기 여지 - 파동선을 얕게(${depth.toFixed(2)}배) 스침, 사수 가능성</b>`;
     else judge=`<b style="color:var(--amber)">경계 - 파동선 ${_isL?'아래':'위'} ${depth.toFixed(2)}배 관통 (붕괴/흔들기 사이, 종가 확정 대기)</b>`;
+    
+
+
+
+
+
+
+
     bigBanner=`<div class="panel" style="border-left:3px solid var(--gold2)"><div class="spaced" style="padding:10px 14px;font-size:12.5px;line-height:1.8">
       <b style="color:var(--gold2)">📏 ${_BIGW} 대응 규칙 (강도 판정)</b> - ${_BIGW}이 나와도 <b>종가가 파동선(${f1(ws.line)}) ${_KEEP}면 "흔들기"</b>${_isL?'(5일 후 회복 65/64/63%·+1.9%)':''}. <b>이탈 마감이면 "붕괴"</b>${_isL?'(48/53/52%·−0.6%)':''}. ★강도: <b>장대(폭 1.3배+)로 깊이(0.3배+) 관통 = 붕괴 확정</b> / 얕게(0.15배) 스침 = 흔들기 여지.<br>
       · 지금: ${judge}<br>
