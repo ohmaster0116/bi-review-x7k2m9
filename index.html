@@ -19593,7 +19593,30 @@ function support2Axis(){
         +'<td class="num sub">기준 '+f0(lv.gijun)+' / 중심 '+f0(lv.center)+'</td>'
         +'<td class="l" style="color:'+(up?'var(--buy)':'var(--sell)')+';font-weight:700">'+(up?'▲ ':'▼ ')+lv.verdict+'</td></tr>';
     }).join('');
+    
+
+
+
+
+
+
+
+
+    
+
+
+    var _pxLive=null;
+    try{
+      var _c1=(typeof px!=='undefined')?px:null;
+      if(Number.isFinite(_c1)) _pxLive=_c1;
+      else if(E&&E.d1&&E.d1.length&&Number.isFinite(E.d1[E.d1.length-1].c)) _pxLive=E.d1[E.d1.length-1].c;
+    }catch(e){}
     var alive=A2.alive;
+    if(Number.isFinite(_pxLive)&&Number.isFinite(A2.siljon)){
+      alive=(_pxLive>A2.siljon);
+      A2=Object.assign({},A2,{price:Math.round(_pxLive),
+                              edge_pct:Math.round((_pxLive/A2.siljon-1)*1000)/10});
+    }
     
     var _SL=(S.axis2_sell_life&&S.axis2_sell_life.layers)||[], _px2=A2.price, _TFN={'1d':'일봉','1w':'주봉','1M':'월봉'};
     var _sellLv=_SL.filter(function(l){return l&&l.alive&&l.sitga>_px2&&l.dist_pct<=35;}).sort(function(a,b){return a.sitga-b.sitga;});
