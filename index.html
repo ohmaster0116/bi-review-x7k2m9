@@ -19392,7 +19392,7 @@ function support2Axis(){
         +'<div style="font-size:12.5px;font-weight:700;color:var(--gold2);margin-bottom:7px">'+(S.read||'')+'</div>'
         +'<div style="font-size:11.5px;color:var(--tx2);margin-bottom:5px"><b>축1 · 저항/지지</b> <span class="sub">캔들 종가 vs 기준가·중심가 - 한 캔들로 즉시 · TF 높을수록 신뢰(주봉&gt;30분)</span> - 종합 <b>'+A1.summary+'</b>(위 '+A1.weighted_up+' / 아래 '+A1.weighted_dn+', 신뢰가중)</div>'
         +'<div class="scroll"><table><thead><tr><th class="l">TF</th><th>종가</th><th class="l">기준가/지지저항 중심</th><th class="l">판정</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
-        +'<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tx2);line-height:1.7"><b>축2 · 파동 생사</b> <span class="sub">일봉 잔파동 실존가 - 구조·누적</span><br>'
+        +'<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tx2);line-height:1.7"><b>축2 · 파동 생사</b> <span class="sub">일봉 파동 실존가(정본) - 구조·누적</span><br>'
           
 
 
@@ -19401,10 +19401,16 @@ function support2Axis(){
 
 
 
-          +'잔파동 실존가(현재 파동 1개) <b style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+f0(A2.siljon)+'</b>'
-          +(function(){try{var _c=sitgaCanonVW('d1',null,1);
-             return (_c!=null&&Math.abs(_c-A2.siljon)>1)?(' <span class="sub">· 정본 실존가(전 파동 최전방) '+f0(_c)+'</span>'):'';
-            }catch(e){return '';}})()
+          
+
+
+
+          +'파동 실존가<span class="sub">(전 파동 최전방·정본)</span> <b style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+f0(A2.siljon)+'</b>'
+          
+
+
+
+
           +' · 현재가 '+f0(A2.price)+' <b class="'+(alive?'up':'dn')+'" style="color:'+(alive?'var(--buy)':'var(--sell)')+'">'+(alive?'생존 (+'+A2.edge_pct+'%)':'이탈=반등 종료')+'</b> <span class="sub">- 나이 '+A2.born_days+'일 · 지키면 생존, 1회 이탈=휩쏘 후보(주체가 이익 보존하며 물량을 뺏는 수법 - 정본 2026-07-08) · 연속 이탈+계단 순차 제거 시 종료</span></div>'
         +_sellHtml
         +'<div class="sub" style="margin-top:8px;font-size:11px;line-height:1.7;color:var(--tx3)"><b>'+(S.note||'')+'</b><br>단기(축1)와 구조(축2)는 갈릴 수 있습니다 - 한 캔들 이탈이 곧 파동 사망은 아닙니다. 관찰 언어(확정 아님).</div>'
@@ -26774,7 +26780,21 @@ function viewWhale(){
     <div style="display:flex;text-align:center;font-size:10.5px;border-bottom:1px solid var(--bd)">${col3('하락 기준','var(--sell)',bGj0,bCen0,'매수 고래 평단',false,false,null)}${col3('고래 방어선','var(--gold2)',tpGj,tpCen,'동률 후 '+f0(postTp),true,false,tpRoll)}${col3('상승 기준','var(--buy)',sGj0,sCen0,'매도 고래 평단',false,true,sRoll)}</div>
     ${posBarHtml}${touchHtml}
     <div style="padding:9px 14px;font-size:12px;color:var(--tx2);line-height:1.95">
-     현재가 ${f0(px)}는 고래 방어선 부근입니다.<br>
+     ${
+
+
+
+''}
+     ${(function(){
+        var d=(tpAvg&&px)?((px/tpAvg-1)*100):null;
+        if(d==null) return '현재가 '+f0(px)+' · 고래 방어선 '+f0(tpAvg)+'.';
+        var a=Math.abs(d);
+        var 자리 = a<=3 ? '바로 위에서 맞붙는 자리입니다' + (d<0?'':'')
+                 : a<=10 ? '사거리 안입니다'
+                 : '사거리 밖입니다';
+        return '현재가 '+f0(px)+'는 고래 방어선 '+f0(tpAvg)+'에서 <b>'+(d>=0?'+':'')+d.toFixed(1)+'%</b>('
+               +f0(Math.abs(px-tpAvg))+') '+(d>=0?'위':'아래')+', '+자리+'.';
+      })()}<br>
      ${
 
 
