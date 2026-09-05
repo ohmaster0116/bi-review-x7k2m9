@@ -1155,6 +1155,50 @@ function sitgaFront(tf, dir){
     return pick;
   }catch(e){ return null; }
 }
+
+
+
+
+
+
+
+function waveList(tf, dir){
+  try{
+    var G=(typeof gkSrc==='function')?gkSrc():null; if(!G) return [];
+    var W=(((G['파동']||{}).wb)||{})['waves']||{};
+    var A=((W[tf]||{})[(dir<0)?'숏':'롱'])||[]; if(!A.length) return [];
+    var S=A.slice().sort(function(a,b){return a.s0-b.s0;});
+    var seen={}, nth={}, out=[], k=0, i;
+    for(i=0;i<S.length;i++){
+      var g=S[i].grp;
+      if(seen[g]==null){ k++; seen[g]=k; nth[g]=0; }
+      nth[g]++;
+      out.push({s0:S[i].s0, name:S[i].name, rep:S[i].rep, root:S[i].root,
+                nAlive:(S[i].nAlive||0), n:S[i].n,
+                no:(nth[g]===1 ? (seen[g]+'파동') : (seen[g]+'-'+(nth[g]-1)+'파동'))});
+    }
+    return out;
+  }catch(e){ return []; }
+}
+function waveNoOf(tf, dir, s0){
+  var L=waveList(tf,dir); for(var i=0;i<L.length;i++){ if(L[i].s0===s0) return L[i].no; } return null;
+}
+
+function sitgaTag(tf, dir, v, plain){
+  try{
+    if(v==null) return '';
+    var canon=null; try{ canon=sitgaCanonVW(tf,null,dir); }catch(e){}
+    if(canon!=null && Math.abs(canon-v)<1) return '';
+    var L=waveList(tf,dir), hit=null, best=null, i;
+    for(i=0;i<L.length;i++){
+      if(L[i].rep==null) continue;
+      var d=Math.abs(L[i].rep-v);
+      if(best==null||d<best){ best=d; hit=L[i]; }
+    }
+    if(hit==null||best>1) return plain?'':'';
+    return plain ? ('('+hit.no+')') : (' <span class="sub">('+hit.no+')</span>');
+  }catch(e){ return ''; }
+}
 function sitgaCanonVW(tf, fallback, dir){
   try{
     var R = window.__SITGAREG;
