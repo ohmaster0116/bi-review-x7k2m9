@@ -1130,6 +1130,31 @@ function sellWallM(){try{
 
 
 
+
+
+
+
+
+
+function sitgaFront(tf, dir){
+  try{
+    var G=(typeof gkSrc==='function')?gkSrc():null; if(!G) return null;
+    var WB=((G['파동']||{}).wb)||{}; var W=WB['waves']||{};
+    var A=((W[tf]||{})[(dir<0)?'숏':'롱'])||[]; if(!A.length) return null;
+    var px=null; try{ px=E.d1[E.d1.length-1].c; }catch(e){}
+    if(px==null){ try{ px=(window.__SITGAREG||{})['현재가']; }catch(e){} }
+    if(px==null) return null;
+    var reps=[],i;
+    for(i=0;i<A.length;i++){ var r=A[i]; if(r&&typeof r.rep==='number'&&(r.nAlive||0)>0) reps.push(r.rep); }
+    if(!reps.length) return null;
+    var pick=null;
+    if(dir<0){ for(i=0;i<reps.length;i++){ if(reps[i]>=px&&(pick==null||reps[i]<pick)) pick=reps[i]; }
+               if(pick==null) pick=Math.max.apply(null,reps); }
+    else     { for(i=0;i<reps.length;i++){ if(reps[i]<=px&&(pick==null||reps[i]>pick)) pick=reps[i]; }
+               if(pick==null) pick=Math.min.apply(null,reps); }
+    return pick;
+  }catch(e){ return null; }
+}
 function sitgaCanonVW(tf, fallback, dir){
   try{
     var R = window.__SITGAREG;
@@ -1151,7 +1176,18 @@ function sitgaCanonVW(tf, fallback, dir){
 
 
 
-  try{ var _b = waveBook(tf); if(_b){ if(_b.rep!=null) return _b.rep; if(_b.sitga) return _b.sitga; } }catch(e){}
+  
+
+
+
+
+
+
+
+
+
+
+  try{ var _f = sitgaFront(tf, dir); if(_f!=null) return _f; }catch(e){}
   return fallback;
 }
 
@@ -21601,7 +21637,7 @@ function waveBookPanel(){try{
     +'</tbody></table></div>';
   
   var marks=[{v:bd.root,n:'최종 뿌리',c:'#2bb3a3'},{v:cLo,n:'뿌리 본진',c:'var(--buy)'},{v:bd.sitga,n:'일 실존가',c:'#00e5a0'}];
-  (function(){var _v=null;try{_v=sitgaCanonVW('w1',null,1);}catch(e){} if(_v==null&&bw&&bw.sitga)_v=bw.sitga; if(_v!=null)marks.push({v:_v,n:'주 실존가',c:'#46c2ff'});})();
+  (function(){var _v=null;try{_v=sitgaCanonVW('w1',null,1);}catch(e){} if(_v==null){try{_v=sitgaFront('w1',1);}catch(e){}}   if(_v!=null)marks.push({v:_v,n:'주 실존가',c:'#46c2ff'});})();
   marks.push({v:px,n:'현재가',c:'var(--gold2)',big:true});
   sells.slice(0,2).forEach(function(sv,ii){marks.push({v:sv,n:'매도 파동'+(ii+1),c:'var(--sell)'});});
   var vs=marks.map(function(m){return m.v;}),mn2=Math.min.apply(null,vs),mx2=Math.max.apply(null,vs),pad=(mx2-mn2)*0.07||1;
@@ -21740,8 +21776,8 @@ function hierPanel(){try{
     +(function(){var wb=null,ww=null;try{wb=waveBook('d1');ww=waveBook('w1');}catch(e){}
       
 
-  var _hpD=(function(){try{var v=sitgaCanonVW('d1',null,1); if(v!=null)return v;}catch(e){} return wb?wb.sitga:null;})();
-  var _hpW=(function(){try{var v=sitgaCanonVW('w1',null,1); if(v!=null)return v;}catch(e){} return ww?ww.sitga:null;})();
+  var _hpD=(function(){try{var v=sitgaCanonVW('d1',null,1); if(v!=null)return v;}catch(e){} try{return sitgaFront('d1',1);}catch(e){return null;} })();  
+  var _hpW=(function(){try{var v=sitgaCanonVW('w1',null,1); if(v!=null)return v;}catch(e){} try{return sitgaFront('w1',1);}catch(e){return null;} })();  
   var st5=(wAlive?'주봉 생명선 생존':'생명선 이탈')+(_hpD!=null?' · 일 실존가(정본) '+f1(_hpD)+(_hpW!=null?' · 주 '+f1(_hpW):''):' · 일봉 '+((rgD?({trend:'추세',warn:'경계',box:'박스'})[rgD.state]:'없음')));
       var rd5=wb?('현 파동: 생존 '+wb.nInc+'봉'+' · 뿌리 '+f1(wb.root)+' 생존 - 가지는 공격 허용 범주, 뿌리만 살면 재생(4자 R계열)'):'반전 시그널 층 - 국면은 못 바꿈(사다리 1칸)';
       return row('시그널','일·주',st5,rd5,wAlive?'var(--buy)':'var(--sell)');})()
@@ -22042,8 +22078,9 @@ function reportPayload(){try{
 
     파동:(function(){try{
       var _sv=((window.__VERDICT||{}).data||{}).파동||{};
-      var _fb1=bd?Math.round(bd.rep!=null?bd.rep:bd.sitga):null;
-      var _fb2=bw?Math.round(bw.sitga):null;
+      
+      var _fb1=(function(){try{var v=sitgaFront('d1',1); if(v!=null)return Math.round(v);}catch(e){} return bd?Math.round(bd.rep!=null?bd.rep:bd.sitga):null;})();
+      var _fb2=(function(){try{var v=sitgaFront('w1',1); if(v!=null)return Math.round(v);}catch(e){} return bw?Math.round(bw.sitga):null;})();
       return {일봉실존:(_sv.일봉실존!=null?_sv.일봉실존:_fb1),
               주봉실존:(_sv.주봉실존!=null?_sv.주봉실존:_fb2),
               대립매도:sell?Math.round(sell):null, 대립메타:sMeta, 월전환라인:Math.round(monInfl)};
@@ -22060,7 +22097,7 @@ function reportPayload(){try{
 
     전투존:(function(){try{
       var _sv=((window.__VERDICT||{}).data||{}).파동||{};
-      var _lo=(_sv.주봉실존!=null)?_sv.주봉실존:(bw?Math.round(bw.sitga):null);
+      var _lo=(_sv.주봉실존!=null)?_sv.주봉실존:(function(){try{var v=sitgaFront('w1',1); if(v!=null)return Math.round(v);}catch(e){} return bw?Math.round(bw.sitga):null;})();  
       var _hi=sell?Math.round(sell):null;
       var _hf=(_lo!=null&&_hi!=null)?Math.round((_lo+_hi)/2):null;
       var _pc=(_lo!=null&&_hi!=null&&_hi!==_lo)?Math.round((px-_lo)/(_hi-_lo)*100):null;
@@ -24436,7 +24473,7 @@ function m30Panel(){try{
   
 
 
-  var half=(function(){try{var lo=sitgaCanonVW('w1',null,1)||(bw&&bw.sitga); return (lo&&sell)?((lo+sell)/2):null;}catch(e){return (bw&&bw.sitga&&sell)?(bw.sitga+sell)/2:null;}})();
+  var half=(function(){try{var lo=sitgaCanonVW('w1',null,1); return (lo&&sell)?((lo+sell)/2):null;}catch(e){return null;}})();  
   var side=half!=null?(px>=half?'매수':'매도'):null;
   return '<div class="panel"><div class="hd">30분봉 대응 <span class="sub">- 단타 층 · 실시간</span></div><div style="padding:9px 14px;font-size:12px;line-height:2">'
     
