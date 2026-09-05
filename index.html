@@ -21562,7 +21562,8 @@ function waveNineTable(){try{
     var _rowOf=function(isL,fb){
       var P=_pick(isL);
       if(P&&P.w) return {rep:P.w.rep, cen:P.w.cen, root:P.w.root, src:'w',
-                         s0:P.w.s0, front:(P.front&&P.front.rep!=null?P.front.rep:null)};
+                         s0:P.w.s0, front:(P.front&&P.front.rep!=null?P.front.rep:null),
+                         front_s0:(P.front?P.front.s0:null)};   
       if(fb&&fb.rep!=null) return {rep:fb.rep, cen:null, root:fb.root, src:'fb'};
       return null;
     };
@@ -21575,10 +21576,16 @@ function waveNineTable(){try{
         +'<td class="num" style="color:'+col+';font-weight:700">'+f0(R.rep)+_mk(isL,R.rep)
           
 
+          
+
+
           +(R.s0? '<div class="sub" style="font-size:9px;color:var(--tx3);line-height:1.4">이번 파동 '
+                  +(function(){try{var _n=waveNoOf(tf,isL?1:-1,R.s0); return _n?('<b style="color:var(--tx2)">'+_n+'</b> · '):'';}catch(e){return '';}})()
                   +new Date(R.s0).toISOString().slice(0,10).replace(/-/g,'.').slice(2)+' 시작</div>' : '')
           +((R.front!=null&&R.rep!=null&&Math.abs(R.front-R.rep)>_CLUS_P)
-              ? '<div class="sub" style="font-size:9px;color:var(--tx3);line-height:1.4">전 파동 최전방 '+f0(R.front)+'</div>' : '')
+              ? '<div class="sub" style="font-size:9px;color:var(--tx3);line-height:1.4">전 파동 최전방 '
+                  +(function(){try{var _n=(R.front_s0!=null)?waveNoOf(tf,isL?1:-1,R.front_s0):null; return _n?('<b style="color:var(--tx2)">'+_n+'</b> ')  :'';}catch(e){return '';}})()
+                  +f0(R.front)+'</div>' : '')
           +'</td>'
         +'<td class="num" style="color:var(--tx2)">'+f0(cen)+'</td>'
         +'<td class="num" style="color:var(--tx2)">'+f0(R.root)+'</td></tr>';
@@ -21639,9 +21646,9 @@ function waveBookPanel(){try{
     +(function(){try{var _c=((window.__VERDICT||{}).data||{}).파동||{};
         var _d=(_c.일봉실존!=null)?_c.일봉실존:(bd.rep!=null?bd.rep:bd.sitga);
         var _w=(_c.주봉실존!=null)?_c.주봉실존:(bw?bw.sitga:null);
-        return '일봉 실존가 <b>'+f(_d)+'</b>'+(bd.rep!=null?' <span class="sub">(생존 '+(bd.nAlive||0)+'층)</span>':'')
+        return '일봉 실존가 <b>'+f(_d)+'</b>'+sitgaTag('d1',1,_d)+(bd.rep!=null?' <span class="sub">(생존 '+(bd.nAlive||0)+'층)</span>':'')
           +(_w!=null?(' · 주봉 실존가 <b>'+f(_w)+'</b>'+((_d&&_w&&Math.abs(_d-_w)/_d<0.01)?' <b style="color:var(--buy)">(독립 수렴)</b>':'')):'');
-      }catch(e){return '일봉 실존가 <b>'+f(bd.sitga)+'</b>';}})()
+      }catch(e){return '일봉 실존가 <b>'+f(bd.sitga)+'</b>'+sitgaTag('d1',1,bd.sitga);}})()
     +''+(false?' · 주봉 실존가 <b>'+f(bw.sitga)+'</b>'+(bd.sitga&&bw.sitga&&Math.abs(bd.sitga-bw.sitga)/bd.sitga<0.01?' <b style="color:var(--buy)">(독립 수렴)</b>':''):'')
     +' → <b>싸우는 곳</b>: 위 매도 파동선 '+(fightUp?f(fightUp):'없음')+foeTxt+' vs 아래 실존가 진지 '+f(bd.sitga)+' · '+conflTxt+' · 최종 뿌리 '+f(bd.root)+'.'
     +(moFlip!=null?'<br><b style="color:var(--gold2)">월봉 성격 전환 라인 '+f(moFlip)+'</b> - 현재가가 이 '+(px>=moFlip?'<b style="color:var(--buy)">위</b>(이번 달이 매수 성격으로 바뀌는 중)':'<b style="color:var(--sell)">아래</b>(매도 성격 유지)')+' · 자체 산식 · 실시간 이동':'');
@@ -21680,7 +21687,7 @@ function waveBookPanel(){try{
     +'<tr><td class="l" style="font-weight:700;color:var(--gold2)">월봉</td><td class="num" style="color:var(--gold2)">월 기준가 <b>'+f(gM)+'</b> <span class="sub" style="font-size:9px">'+pc(gM)+' · 실시간 이동 - 월 마감 때 확정 · 프랙탈 반등 최대 요건</span></td><td class="num sub">-</td></tr>'
     +'</tbody></table></div>';
   
-  var marks=[{v:bd.root,n:'최종 뿌리',c:'#2bb3a3'},{v:cLo,n:'뿌리 본진',c:'var(--buy)'},{v:bd.sitga,n:'일 실존가',c:'#00e5a0'}];
+  var marks=[{v:bd.root,n:'최종 뿌리',c:'#2bb3a3'},{v:cLo,n:'뿌리 본진',c:'var(--buy)'},{v:bd.sitga,n:'일 실존가'+(sitgaTag('d1',1,bd.sitga,true)?' '+sitgaTag('d1',1,bd.sitga,true):''),c:'#00e5a0'}];
   (function(){var _v=null;try{_v=sitgaCanonVW('w1',null,1);}catch(e){} if(_v==null){try{_v=sitgaFront('w1',1);}catch(e){}}   if(_v!=null)marks.push({v:_v,n:'주 실존가',c:'#46c2ff'});})();
   marks.push({v:px,n:'현재가',c:'var(--gold2)',big:true});
   sells.slice(0,2).forEach(function(sv,ii){marks.push({v:sv,n:'매도 파동'+(ii+1),c:'var(--sell)'});});
@@ -22154,7 +22161,7 @@ function reportPayload(){try{
       return {오늘시가:Math.round(cd.o), 일평균폭:Math.round(arD), 소진율pct:Math.round((cd.h-cd.l)/arD*100),
         상승한계:Math.round(cd.l+arD), 상승50:Math.round(cd.l+arD/2), 회귀50:Math.round(cd.h-arD/2), 반락한계:Math.round(cd.h-arD)};}catch(e){return null;}})(),
     생사선:(function(){try{const comps=[];
-      if(bw&&bw.sitga)comps.push(['주봉 실존가',bw.sitga]);
+      if(bw&&bw.sitga)comps.push(['주봉 실존가'+(sitgaTag('w1',1,bw.sitga,true)?' '+sitgaTag('w1',1,bw.sitga,true):''),bw.sitga]);
       comps.push(['월봉 기준가',((cm.o+cm.c)/2+(cm.h+cm.l)/2)/2]);
       const dn2=[];for(let i2=Math.max(1,n-21);i2<n-1;i2++){const b2=A[i2];let mn2=1e15;for(let j2=i2+1;j2<n;j2++){if(A[j2].l<mn2)mn2=A[j2].l;}if(mn2>b2.gijun)dn2.push(b2.gijun);}
       if(dn2.length)comps.push(['미확인 평균',dn2.reduce((a,b)=>a+b,0)/dn2.length]);
@@ -25317,7 +25324,7 @@ function defenseLadderPanel(){try{
   try{var sw=sellWallM();if(sw)hi.push({v:sw.vw,n:'월 저항벽(R6)',layer:'월',note:'완성봉 고정'});}catch(e){}
   try{var Q3=E.M1.slice(0,-1).slice(-3);var sv=0,pu=0;Q3.forEach(function(b){sv+=b.v;pu+=(((b.o+b.c)/2+(b.h+b.l)/2)/2)*b.v;});if(sv>0)hi.push({v:pu/sv,n:'분기 관문',layer:'분기',note:''});}catch(e){}
   var aux=[];
-  if(bw&&bw.sitga)aux.push({v:bw.sitga,n:'주 실존가',layer:'주',note:'롱 중봉 성분'});
+  if(bw&&bw.sitga)aux.push({v:bw.sitga,n:'주 실존가'+(sitgaTag('w1',1,bw.sitga,true)?' '+sitgaTag('w1',1,bw.sitga,true):''),layer:'주',note:'롱 중봉 성분'});
   try{var A6=E.d1,N6=A6.length,dn6=[];for(var i6=Math.max(1,N6-121);i6<N6-1;i6++){var v6=A6[i6].gijun;if(v6<=px){var mn6=1e15;for(var j6=i6+1;j6<N6;j6++)if(A6[j6].l<mn6)mn6=A6[j6].l;if(mn6>v6)dn6.push(v6);}}
     if(dn6.length)aux.push({v:dn6.reduce(function(a,b){return a+b;},0)/dn6.length,n:'미확인 평균',layer:'일',note:'참고·변동'});}catch(e){}
   if(bd.root)aux.push({v:bd.root,n:'최종 뿌리('+dl(bd.s0)+')',layer:'일',note:'사망 판정 참고'});
@@ -25414,7 +25421,7 @@ function actionPanel(){try{
   var bw2=null;try{bw2=waveBook('w1');}catch(e){}
   var view='<div class="panel" style="border:1px solid var(--bd);padding:13px 16px;margin-top:10px"><b style="font-size:12px;color:var(--gold2)">지금 시장을 보는 관점</b><div style="font-size:12px;line-height:2;color:var(--tx2);margin-top:5px">'
     +'· 큰 흐름은 아직 하락 - 이 상승은 그 안의 반등<br>'
-    +'· 반등의 본전 = 실존가 '+f(bd.sitga)+' - 되밀려도 여길 지키면 반등 유효, 밑에서 종가 마감이면 훼손<br>'
+    +'· 반등의 본전 = 실존가 '+f(bd.sitga)+sitgaTag('d1',1,bd.sitga)+' - 되밀려도 여길 지키면 반등 유효, 밑에서 종가 마감이면 훼손<br>'
     +'· 위는 매도 평단 '+(res?f(res):'없음')+'과의 싸움 - 종가로 넘으면 반등이 추세 전환 쪽으로 한 칸 승격<br>'
     +'· 아래 성분('+f(lifeLo)+'대)까지 무너지면 하락 재개</div></div>';
   return '<div class="panel" style="border:1px solid rgba(214,162,58,.4);background:rgba(214,162,58,.02)"><div class="hd" style="color:var(--gold2)">🧭 현재 파동 읽기 <span class="sub">해석이며 주문 아님 · 판정은 위 현재 BTC 국면</span></div>'
