@@ -23803,6 +23803,26 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   var mw=null;try{var sw=sellWallM();if(sw)mw=sw.vw;}catch(e){}
   if(zLo==null||zHi==null)return '';
   
+
+
+
+  var _SV=null;
+  try{ var _sl=(window.__CRON&&__CRON.sitga_levels&&__CRON.sitga_levels.levels)||[];
+    var _al=_sl.filter(function(l){return l&&l.alive&&(l.tf==='1d'||l.tf==='1w')&&typeof l.price==='number';});
+    var _bs=_al.filter(function(l){return l.kind==='buy_sitga'&&l.price<=px;}), _ss=_al.filter(function(l){return l.kind==='sell_sitga'&&l.price>=px;});
+    var _top=function(a,tf){return a.filter(function(l){return l.tf===tf;}).sort(function(x,y){return y.price-x.price;})[0];};
+    var _bot=function(a,tf){return a.filter(function(l){return l.tf===tf;}).sort(function(x,y){return x.price-y.price;})[0];};
+    var _bw=_top(_bs,'1w'), _bd=_top(_bs,'1d'), _sd=_bot(_ss,'1d'), _sw=_bot(_ss,'1w');
+    var _lo=(_bw||_bd), _hi=(_sd||_sw);
+    if(_lo&&_hi&&_hi.price>_lo.price){
+      var _mS=_sl.filter(function(l){return l&&l.alive&&l.tf==='1M'&&l.kind==='sell_sitga'&&l.price>_hi.price;}).sort(function(x,y){return x.price-y.price;})[0];
+      _SV={lo:_lo.price,hi:_hi.price,bw:_bw?_bw.price:null,bd:_bd?_bd.price:null,
+           above:_ss.filter(function(l){return l.price>_hi.price+1;}).map(function(l){return l.price;}).sort(function(x,y){return x-y;}),
+           m:_mS?_mS.price:null, gen:String(__CRON.sitga_levels.generated||'')};
+    }
+  }catch(e){ _SV=null; }
+  if(_SV){ zLo=_SV.lo; zHi=_SV.hi; }
+  
   var gauge='', axTop='';
   {
     var gMid=(zLo+zHi)/2, gHalf=(zHi-zLo)/2;
@@ -23833,7 +23853,8 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   
 
 
-  (function(){ var _w=null,_d=null;
+  if(_SV){ if(_SV.bw!=null)longs.push({v:_SV.bw,n:'롱 실존가(주)'}); if(_SV.bd!=null&&_SV.bd!==_SV.bw)longs.push({v:_SV.bd,n:'롱 실존가(일)'}); }   
+  else (function(){ var _w=null,_d=null;
     try{_w=sitgaCanonVW('w1',null,1);}catch(e){}
     try{_d=sitgaCanonVW('d1',null,1);}catch(e){}
     if(_w==null&&bw)_w=(bw.rep!=null?bw.rep:bw.sitga);
@@ -23888,13 +23909,18 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   
   var beyond=[];
   
-  try{if(_sbk&&_sbk.steps){var _up=_sbk.steps.filter(function(x){return x.alive&&x.vw>zHi+1;}).map(function(x){return x.vw;}).sort(function(a,b){return a-b;}).slice(0,2).map(f);
+  try{if(!_SV&&_sbk&&_sbk.steps){var _up=_sbk.steps.filter(function(x){return x.alive&&x.vw>zHi+1;}).map(function(x){return x.vw;}).sort(function(a,b){return a-b;}).slice(0,2).map(f);
       if(_up.length)beyond.push('다음 생존 계단 '+_up.join('·'));}}catch(e){}
-  var _nw=sells.filter(function(v){return v>zHi+1;})[0];
-  if(_nw)beyond.push('다음 숏 파동 '+f(_nw));
-  if(mw)beyond.push('월 저항벽 '+f(mw));
+  if(_SV){   
+    if(_SV.above.length)beyond.push('다음 매도 실존가 '+_SV.above.slice(0,2).map(f).join('·'));
+    if(_SV.m)beyond.push('월 매도 실존가 '+f(_SV.m));
+  } else {
+    var _nw=sells.filter(function(v){return v>zHi+1;})[0];
+    if(_nw)beyond.push('다음 숏 파동 '+f(_nw));
+    if(mw&&mw>zHi)beyond.push('월 저항벽 '+f(mw));   
+  }
   var byLine=beyond.length?'<div class="sub" style="font-size:9.5px;text-align:right;margin-top:2px">전투존 위쪽 대기 → '+beyond.join(' · ')+'</div>':'';
-  return '<div style="margin-top:9px"><div class="sub" style="font-size:9px">전투존=50 · 매수 끝=매수율 0 · 매도 끝=매수율 100 · 우위만큼 가감 · 판독이며 명령 아님</div>'
+  return '<div style="margin-top:9px"><div class="sub" style="font-size:9px">전투존=50 · 매수 끝=매수율 0 · 매도 끝=매수율 100 · 우위만큼 가감 · 판독이며 명령 아님'+(_SV?' · 좌표=실존가 정본(일·주'+(_SV.gen?' · '+_SV.gen.slice(5,16).replace('T',' '):'')+')':'')+'</div>'
     +gauge+ax+byLine+'</div>';
 }catch(e){return '';}}
 
@@ -27383,8 +27409,8 @@ function volBalancePanel(){try{
         var _e=_eq['상위10']||_eq['상위25']||_eq['최대'];
         var _ek=_eq['상위10']?'상위10%':(_eq['상위25']?'상위25%':'최대');
         if(_e&&_e['위']>b.h&&_e['아래']<b.l){
-          sellEnd=_e['위']; buyEnd=_e['아래'];
-          _edgeSrc=' <span class="sub" style="font-size:9px;color:var(--gold2)">끝단=실측(같은 조건 '
+          
+          _edgeSrc=' <span class="sub" style="font-size:9px;color:var(--gold2)">참고 · 같은 조건 과거 확장 위 '+f(_e['위'])+' / 아래 '+f(_e['아래'])+' ('
             +_r['표본']+'개 · '+_ek+')</span>';
         }
       }
@@ -27467,7 +27493,7 @@ function volBalancePanel(){try{
     +rows
     +'<div class="sub" style="padding:7px 15px">매수율·매도율=평균변동폭 기준(중심=50 · 중심±반AR=0/100, 넘으면 평균변동폭율 돌파/이탈 병기) · '
     + 
-      '밴드 좌표는 <b>평균 안</b>이면 원래 산식(고가·저가 ± 잔여), <b>평균을 넘은 봉</b>은 <b style="color:var(--gold2)">같은 조건 과거 사례의 상위10% 도달점</b>으로 잡습니다(표본이 적으면 상위25%나 최대로 내려가며, 어느 쪽을 썼는지 값 옆에 적습니다 · 표본 수 병기 · 새 사례가 생기면 자동 갱신) · 도달 한계이지 목표가 아닙니다</div></div>';
+      '밴드 좌표는 원래 산식(고가·저가 ± 잔여 · 잔여가 0이면 고가·저가 그대로)입니다. <b>평균을 넘은 봉</b>은 같은 조건 과거 사례가 얼마나 더 갔는지를 <b style="color:var(--gold2)">참고로만 병기</b>합니다(표본 수 병기 · 새 사례가 생기면 자동 갱신) · 도달 한계이지 목표가 아닙니다</div></div>';
 }catch(e){console.warn('[골든 끝단] '+e);return '';}}
 
 function dirWeightPanel(){try{
@@ -27510,7 +27536,7 @@ function xAxisPanel(){try{
   
   
   try{var _sg=(window.__SCEN||{}).골든||{};
-    if(_sg.매도끝!=null&&_sg.매수끝!=null){up=_sg.매도끝; dn=_sg.매수끝; if(_sg.전투존!=null)x=_sg.전투존;}
+    if(_sg.매도끝!=null&&_sg.매수끝!=null&&!(_sg.끝단출처&&Object.keys(_sg.끝단출처).length)){up=_sg.매도끝; dn=_sg.매수끝; if(_sg.전투존!=null)x=_sg.전투존;}   
   }catch(e){}
   if(up==null||dn==null)return '';
   var lo=dn-(up-dn)*0.05, hi=up+(up-dn)*0.05;
@@ -27533,7 +27559,7 @@ function xAxisPanel(){try{
       
       var pxc=Math.max(X(dn),Math.min(X(up),X(px)));
       var buyPct=Math.round(Math.max(0,Math.min(100,(px-dn)/(up-dn)*100)));
-      try{var _sg=(window.__SCEN||{}).골든||{};if(_sg.매수율!=null)buyPct=_sg.매수율;}catch(e){}
+      try{var _sg=(window.__SCEN||{}).골든||{};if(_sg.매수율!=null&&!(_sg.끝단출처&&Object.keys(_sg.끝단출처).length))buyPct=_sg.매수율;}catch(e){}   
       if(px>=up)buyPct=100; else if(px<=dn)buyPct=0;   
       var wL=pxc-X(dn), wR=X(up)-pxc;
       return '<div style="position:absolute;left:'+X(dn).toFixed(1)+'%;width:'+(X(up)-X(dn)).toFixed(1)+'%;top:12px;height:12px;border:1px solid var(--gold2);border-radius:6px;box-sizing:border-box"></div>'
