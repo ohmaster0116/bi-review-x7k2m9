@@ -863,73 +863,39 @@ var _wlC=new WeakMap();
 function waveLedger(tf,arr,opt){
   const A=arr||E[tf||'d1']; if(!A||A.length<40)return arr?null:_wbFB('ledger',tf||'d1');
   const _lc=(opt&&opt.lastClosed)?'C':'R';
-  const _ck=_lc+'|'+A.length+'|'+A[A.length-1].t+'|'+A[A.length-1].c;
+  
+
+
+
+
+
+  const last=(opt&&opt.lastClosed)?A.length-1:A.length-2;
+  if(last<3)return arr?null:_wbFB('ledger',tf||'d1');
+  const _ck=_lc+'|'+A.length+'|'+A[last].t+'|'+A[last].c;
   {const _m=_wlC.get(A); if(_m){const _h=_m.get(_lc); if(_h&&_h.k===_ck)return _h.r;}}
-  
-
-
-  const n=(opt&&opt.lastClosed)?A.length:A.length-1, G=i=>A[i].gijun;   
-  const runs=[];let curDir=0,runStart=1;
-  
-
-
-
-
-
-  for(let i=1;i<n;i++){const d=G(i)>G(i-1)?1:G(i)<G(i-1)?-1:0;   
-    if(d!==0&&d===curDir)continue;
-    if(curDir!==0&&i-runStart>=2)runs.push({dir:curDir,s:runStart,e:i-1});
-    curDir=d;runStart=i;}
-  if(curDir!==0&&(n-1)-runStart+1>=2)runs.push({dir:curDir,s:runStart,e:n-1,open:true});
-  
-
-
-
-
-
-
-
-  const _sMax=new Float64Array(n>0?n:1),_sMin=new Float64Array(n>0?n:1);
-  {let mx=-Infinity,mn=Infinity;
-   for(let i=n-1;i>=0;i--){const cv=A[i].c; if(cv>mx)mx=cv; if(cv<mn)mn=cv; _sMax[i]=mx;_sMin[i]=mn;}}
-  const waves=runs.map(r=>{
-    let s=0;for(let i=r.s;i<=r.e;i++)s+=G(i);
-    const line=s/(r.e-r.s+1);
-    let death=null;
-    
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-    if(!r.open){
-      const _cc=A[n-1].c;                                   
-      if(r.dir>0?_cc<line:_cc>line){                        
-        
-
-
-
-        let _lo=0,_hi=n-1,_j=-1;
-        if(r.dir>0){ while(_lo<=_hi){const _m=(_lo+_hi)>>1; if(_sMax[_m]>=line){_j=_m;_lo=_m+1;}else _hi=_m-1;} }
-        else       { while(_lo<=_hi){const _m=(_lo+_hi)>>1; if(_sMin[_m]<=line){_j=_m;_lo=_m+1;}else _hi=_m-1;} }
-        death=(_j>r.e)?(_j+1):(r.e+1);
-        if(death>n-1)death=n-1;
-      }
+  const n=(opt&&opt.lastClosed)?A.length:A.length-1;
+  const G=i=>A[i].gijun, V=i=>A[i].byeong;
+  const raw=[];
+  [1,-1].forEach(dir=>{
+    const isL=dir>0;
+    const up=k=>isL? A[k].c>V(k) : A[k].c<V(k);
+    for(let i=1;i+1<=last;i++){
+      if(!((isL? A[i-1].c<V(i-1) : A[i-1].c>V(i-1))&&up(i)&&up(i+1)))continue;
+      let held=0; for(let k=Math.max(0,i-6);k<i;k++){ if(isL? A[k].c<V(k) : A[k].c>V(k))held++; }
+      if(held<3)continue;
+      const root=G(i);
+      let k=i; while(k+1<=last&&up(k+1))k++;
+      const e=k, form=e-i+1;
+      let death=null; for(let j=i+1;j<=last;j++){ if(isL? A[j].c<root : A[j].c>root){death=j;break;} }
+      let sg=0; for(let q=i;q<=e;q++)sg+=G(q);
+      raw.push({dir:dir,s:i,e:e,line:sg/form,death:death,deathRoot:death,open:(e===last),formDays:form,form:form,root:root,rootByeong:A[i].byeong,ext:0});
     }
-    return {dir:r.dir,s:r.s,e:r.e,line,death,open:!!r.open,formDays:r.e-r.s+1};
   });
+  raw.sort(function(x,y){return x.s-y.s||x.dir-y.dir;});
+  const waves=[], lastAlive={1:null,'-1':null};
+  raw.forEach(function(w){ const p=lastAlive[w.dir];
+    if(p){ const gap=w.s-(p.s+p.form-1); if(gap>0&&gap<=Math.max(p.form*2,7)){ p.ext++; return; } }
+    waves.push(w); if(w.death==null)lastAlive[w.dir]=w; });
   const _out={waves,n};
   {let _m=_wlC.get(A); if(!_m){_m=new Map();_wlC.set(A,_m);} _m.set(_lc,{k:_ck,r:_out});}
   return _out;
@@ -950,16 +916,15 @@ function waveState(tf,arr,opt){
   var _r=_wsCalc(tf,arr);_wsC[_k]=_r;_wsAt[_k]=performance.now();return _r;
 }
 function _wsCalc(tf,arr,opt){
+  
+  
   const L=waveLedger(tf,arr,opt); if(!L)return null;
-  const A=arr||E[tf||'d1'], m=A.length-1;
-  let st=0,dr=0;const acc=[];
-  for(let t=m;t>=1;t--){const d=A[t].gijun>A[t-1].gijun?1:A[t].gijun<A[t-1].gijun?-1:0;
-    if(t===m){if(d===0)break;dr=d;}
-    if(d!==dr)break;st++;acc.unshift(A[t].gijun);}
-  if(st>=2)return {L,mode:'form',dir:dr,days:st,line:acc.reduce((a,b)=>a+b,0)/acc.length};
-  const last=L.waves.length?L.waves[L.waves.length-1]:null;
-  if(last&&!last.open&&last.death==null)return {L,mode:'live',dir:last.dir,days:L.n-last.e,line:last.line,w:last};
-  return {L,mode:'none',dir:0,days:0,line:null};
+  const A=arr||E[tf||'d1'], last=(opt&&opt.lastClosed)?A.length-1:A.length-2;
+  const W=L.waves; if(!W||!W.length)return {L,mode:'none',dir:0,days:0,line:null};
+  const w=W[W.length-1];
+  if(w.death!=null)return {L,mode:'none',dir:0,days:0,line:null};
+  if(w.open)return {L,mode:'form',dir:w.dir,days:w.formDays,line:w.line,w:w};
+  return {L,mode:'live',dir:w.dir,days:last-w.e,line:w.line,w:w};
 }
 
 function waveConsensus(){
@@ -991,7 +956,7 @@ function consAgainstText(cons){
 const _vwCache=new WeakMap();   
 function waveVW(A,ws){
   try{
-    const ck=ws.mode==='live'&&ws.w?('L'+ws.w.s+'_'+ws.w.e):('D'+ws.days);
+    const ck=ws.w?('L'+ws.w.s+'_'+ws.w.e):('D'+ws.days);
     let cm=_vwCache.get(A);
     if(cm&&cm.has(ck))return cm.get(ck);
     
@@ -1002,7 +967,7 @@ function waveVW(A,ws){
 
 
 
-    const bs=ws.mode==='live'&&ws.w?A.slice(ws.w.s,ws.w.e+1):A.slice(A.length-ws.days,A.length-1);
+    const bs=ws.w?A.slice(ws.w.s,ws.w.e+1):A.slice(A.length-ws.days,A.length-1);
     
     let r=null;
     if(bs.length&&!bs.some(b=>!(b.v>0))){
