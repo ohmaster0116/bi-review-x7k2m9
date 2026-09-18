@@ -24007,18 +24007,23 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
 
 
   var _SV=null;
-  try{ var _sl=(window.__CRON&&__CRON.sitga_levels&&__CRON.sitga_levels.levels)||[];
-    var _al=_sl.filter(function(l){return l&&l.alive&&(l.tf==='1d'||l.tf==='1w')&&typeof l.price==='number';});
-    var _bs=_al.filter(function(l){return l.kind==='buy_sitga'&&l.price<=px;}), _ss=_al.filter(function(l){return l.kind==='sell_sitga'&&l.price>=px;});
-    var _top=function(a,tf){return a.filter(function(l){return l.tf===tf;}).sort(function(x,y){return y.price-x.price;})[0];};
-    var _bot=function(a,tf){return a.filter(function(l){return l.tf===tf;}).sort(function(x,y){return x.price-y.price;})[0];};
-    var _bw=_top(_bs,'1w'), _bd=_top(_bs,'1d'), _sd=_bot(_ss,'1d'), _sw=_bot(_ss,'1w');
-    var _lo=(_bw||_bd), _hi=(_sd||_sw);
-    if(_lo&&_hi&&_hi.price>_lo.price){
-      var _mS=_sl.filter(function(l){return l&&l.alive&&l.tf==='1M'&&l.kind==='sell_sitga'&&l.price>_hi.price;}).sort(function(x,y){return x.price-y.price;})[0];
-      _SV={lo:_lo.price,hi:_hi.price,bw:_bw?_bw.price:null,bd:_bd?_bd.price:null,
-           above:_ss.filter(function(l){return l.price>_hi.price+1;}).map(function(l){return l.price;}).sort(function(x,y){return x-y;}),
-           m:_mS?_mS.price:null, gen:String(__CRON.sitga_levels.generated||'')};
+  
+
+  try{ var _WB=((gkSrc()['파동']||{}).wb)||{};
+    var _rp=function(o){return (o&&typeof o.rep==='number')?o.rep:null;};
+    var _bw=(_rp(_WB.w1)!=null&&_rp(_WB.w1)<=px)?_rp(_WB.w1):null, _bd=(_rp(_WB.d1)!=null&&_rp(_WB.d1)<=px)?_rp(_WB.d1):null;
+    var _sd=(_rp(_WB.sell_d1)!=null&&_rp(_WB.sell_d1)>=px)?_rp(_WB.sell_d1):null, _sw=(_rp(_WB.sell_w1)!=null&&_rp(_WB.sell_w1)>=px)?_rp(_WB.sell_w1):null;
+    var _lo=(_bw!=null?_bw:_bd), _hi=(_sd!=null?_sd:_sw);
+    if(_lo!=null&&_hi!=null&&_hi>_lo){
+      var _ab=[];
+      try{ var _sb2=(_sd!=null)?_WB.sell_d1:_WB.sell_w1; var _st=(_sb2&&(_sb2.stepsAll||_sb2.steps))||[];
+        _st.forEach(function(x){ if(x&&x.alive!==false&&typeof x.vw==='number'&&x.vw>_hi+50)_ab.push(x.vw); });
+        _ab.sort(function(x,y){return x-y;});
+        var _cl=[]; _ab.forEach(function(v){ if(!_cl.length||v-_cl[_cl.length-1]>50)_cl.push(v); }); _ab=_cl;   
+      }catch(e){}
+      var _m=(_rp(_WB.sell_M1)!=null&&_rp(_WB.sell_M1)>_hi)?_rp(_WB.sell_M1):null;
+      var _g=''; try{ _g=String((gkSrc()['파동']||{}).generated||(gkSrc()||{}).generated||(window.__CRON&&__CRON.verdict_live&&(__CRON.verdict_live.generated||(__CRON.verdict_live.data||{}).generated))||''); }catch(e){}
+      _SV={lo:_lo,hi:_hi,bw:_bw,bd:_bd,above:_ab,m:_m,gen:_g};
     }
   }catch(e){ _SV=null; }
   if(_SV){ zLo=_SV.lo; zHi=_SV.hi; }
@@ -24112,7 +24117,7 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
   try{if(!_SV&&_sbk&&_sbk.steps){var _up=_sbk.steps.filter(function(x){return x.alive&&x.vw>zHi+1;}).map(function(x){return x.vw;}).sort(function(a,b){return a-b;}).slice(0,2).map(f);
       if(_up.length)beyond.push('다음 생존 계단 '+_up.join('·'));}}catch(e){}
   if(_SV){   
-    if(_SV.above.length)beyond.push('다음 매도 실존가 '+_SV.above.slice(0,2).map(f).join('·'));
+    if(_SV.above.length)beyond.push('숏 뒤 층 '+_SV.above.slice(0,2).map(f).join('·'));
     if(_SV.m)beyond.push('월 매도 실존가 '+f(_SV.m));
   } else {
     var _nw=sells.filter(function(v){return v>zHi+1;})[0];
@@ -24120,7 +24125,7 @@ function wbProfileBars(s0t,px,cLo,cHi){try{
     if(mw&&mw>zHi)beyond.push('월 저항벽 '+f(mw));   
   }
   var byLine=beyond.length?'<div class="sub" style="font-size:9.5px;text-align:right;margin-top:2px">전투존 위쪽 대기 → '+beyond.join(' · ')+'</div>':'';
-  return '<div style="margin-top:9px"><div class="sub" style="font-size:9px">전투존=50 · 매수 끝=매수율 0 · 매도 끝=매수율 100 · 우위만큼 가감 · 판독이며 명령 아님'+(_SV?' · 좌표=실존가 정본(일·주'+(_SV.gen?' · '+_SV.gen.slice(5,16).replace('T',' '):'')+')':'')+'</div>'
+  return '<div style="margin-top:9px"><div class="sub" style="font-size:9px">전투존=50 · 매수 끝=매수율 0 · 매도 끝=매수율 100 · 우위만큼 가감 · 판독이며 명령 아님'+(_SV?' · 좌표=실존가 정본(서버 12키 · 일·주'+(_SV.gen?' · '+_SV.gen.slice(5,16).replace('T',' '):'')+')':'')+'</div>'
     +gauge+ax+byLine+'</div>';
 }catch(e){return '';}}
 
@@ -24507,11 +24512,23 @@ function waveNineTable(){try{
 
 
     var _rowOf=function(isL,fb){
+      
+
+
+      if(fb&&fb.rep!=null){
+        var cen=null, front=null, front_s0=null;
+        try{ var W=((gkSrc()['파동']||{}).wb||{}).waves||{}; var arr=(W[tf]||{})[isL?'롱':'숏']||[];
+          var same=arr.filter(function(w){return w.s0!=null&&fb.s0!=null&&Math.abs(w.s0-fb.s0)<=86400000*1.5;})[0];
+          if(same&&same.cen!=null)cen=same.cen;
+          if(_pxN!=null){ var c=arr.filter(function(w){return w.rep!=null&&(isL?(w.rep<=_pxN):(w.rep>=_pxN));});
+            c.sort(function(x,y){return isL?(y.rep-x.rep):(x.rep-y.rep);}); if(c.length){front=c[0].rep;front_s0=c[0].s0;} }
+        }catch(e){}
+        return {rep:fb.rep, cen:cen, root:fb.root, src:'wb', s0:fb.s0, front:front, front_s0:front_s0, nAlive:fb.nAlive};
+      }
       var P=_pick(isL);
       if(P&&P.w) return {rep:P.w.rep, cen:P.w.cen, root:P.w.root, src:'w',
                          s0:P.w.s0, front:(P.front&&P.front.rep!=null?P.front.rep:null),
                          front_s0:(P.front?P.front.s0:null)};   
-      if(fb&&fb.rep!=null) return {rep:fb.rep, cen:null, root:fb.root, src:'fb'};
       return null;
     };
     var _cell=function(isL,R){
@@ -24520,7 +24537,7 @@ function waveNineTable(){try{
       if(cen!=null&&R.rep!=null&&Math.abs(cen-R.rep)<=_CLUS_P) cen=null;   
       var col=isL?'var(--buy)':'var(--sell)';
       return '<tr><td class="l" style="font-weight:700">'+nm+' <span class="sub" style="color:'+col+';font-weight:400">'+(isL?'롱':'숏')+'</span></td>'
-        +'<td class="num" style="color:'+col+';font-weight:700">'+f0(R.rep)+_mk(isL,R.rep)
+        +'<td class="num" style="color:'+col+';font-weight:700">'+f0(R.rep)+_mk(isL,R.rep)+(R.nAlive!=null?'<span class="sub" style="font-size:9.5px;color:var(--tx3)"> · 생존 '+R.nAlive+'층</span>':'')
           
 
           
