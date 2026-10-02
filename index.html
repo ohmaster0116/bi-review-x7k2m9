@@ -1859,7 +1859,12 @@ function waveLinesAll(k){
 }
 
 function waveRS4(k){
-  const px=E.d1[E.d1.length-1].c;
+  
+
+
+
+
+  const px=E.d1[E.d1.length-1].o;
   const ls=waveLinesAll(k);
   const above=ls.filter(L=>L.dir<0&&L.W>px).sort((x,y)=>x.W-y.W).slice(0,4);   
   const below=ls.filter(L=>L.dir>0&&L.W<px).sort((x,y)=>y.W-x.W).slice(0,4);   
