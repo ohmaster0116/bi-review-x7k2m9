@@ -29360,7 +29360,7 @@ function sitgaRegimePanel(){try{
       if(bk['유효까지']){ var _t = new Date(bk['유효까지']); if(!isNaN(_t) && Date.now() > _t.getTime()) alive = false; }
       
       
-      var _bt = String(bk['문구']).replace(/^\s*깜빡이\s*[—\-·:]?\s*/, '');
+      var _bt = String(bk['문구']).replace(/^\s*깜빡이\s*[·\-·:]?\s*/, '');
       if(alive && _bt) blink = '<div style="margin:0 12px 8px;padding:8px 11px;border:1px dashed var(--gold);border-radius:9px;font-size:11.5px;color:var(--tx2);line-height:1.7">'
         + '<b style="color:var(--gold2)">깜빡이</b>, ' + _bt + '</div>';
     }
@@ -35125,7 +35125,7 @@ function _dashScrub(root){
   var w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), n, hit=[];
   while((n=w.nextNode())) if(n.nodeValue.indexOf('—')>=0) hit.push(n);
   for(var i=0;i<hit.length;i++){
-    var t=hit[i].nodeValue.replace(/\s*—\s*/g, ', ').replace(/,\s*,/g, ',');
+    var t=hit[i].nodeValue.replace(/\s*·\s*/g, ', ').replace(/,\s*,/g, ',');
     hit[i].nodeValue = (t.trim()===',') ? '' : t;
   }
 }
