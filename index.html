@@ -722,15 +722,38 @@ function layerRows(k){
     if(!live.length)return {px:px,rows:[],buy:0,sell:0,n:0};
     
     
+    
     const _hold=(w)=>{let n=0; for(let i=last;i>=w.s;i--){ const c=A[i].c;
       if(w.dir>0? c>=w.rep : c<=w.rep)n++; else break; } return n;};
-    const rows=live.map(w=>({dir:w.dir,v:w.rep,age:_hold(w),since:last-w.s,roll:w.roll,
+    const rows=live.map(w=>({dir:w.dir,v:w.rep,age:last-w.s,hold:_hold(w),since:last-w.s,roll:w.roll,
                              born:(function(){try{return new Date(A[w.s].t).toISOString().slice(0,10);}catch(e){return '';}})(),
                              nAlive:w.nAlive||0}))
                    .sort((a,b)=>b.v-a.v);
     return {px:px,rows:rows,n:rows.length,
             buy:rows.filter(r=>r.dir>0).length, sell:rows.filter(r=>r.dir<0).length,
             above:rows.filter(r=>r.dir<0&&r.v>px).length, below:rows.filter(r=>r.dir>0&&r.v<px).length};
+  }catch(e){return null;}
+}
+
+
+const _SURV={};
+function layerSurv(k){
+  try{
+    const A=E[k]; if(!A||A.length<120)return null;
+    const L=waveLedger(k); if(!L||!L.waves)return null;
+    const nd=A.length-2, H=20, key=k+'|'+A.length+'|'+nd;
+    if(_SURV[key])return _SURV[key];
+    const cnt=_AGEB.map(()=>({n:0,ok:0}));
+    for(const w of L.waves){
+      const end=(w.deathRoot!=null)?w.deathRoot:nd+1;      
+      for(let i=w.s;i<end && i+H<=nd;i++){
+        const b=_AGEB.findIndex(x=>(i-w.s)>=x.n);
+        const bi=b<0?_AGEB.length-1:b;
+        cnt[bi].n++; if(i+H<end)cnt[bi].ok++;              
+      }
+    }
+    const R=_AGEB.map((b,i)=>({t:b.t,n:cnt[i].n,p:cnt[i].n?cnt[i].ok/cnt[i].n*100:null}));
+    _SURV[key]=R; return R;
   }catch(e){return null;}
 }
 function layerBar(k){
@@ -743,10 +766,13 @@ function layerBar(k){
   const pad=(hi-lo)*0.06||1, L0=lo-pad, H0=hi+pad, X=v=>((v-L0)/((H0-L0)||1)*100);
   const ages=D.rows.map(r=>r.age).sort((a,b)=>a-b), med=ages[Math.floor(ages.length/2)];
   const ticks=inR.map(r=>{const b=_ageB(r.age), c=r.dir>0?'var(--buy)':'var(--sell)';
-    return `<div title="${r.dir>0?'매수':'매도'} ${f1(r.v)} · ${r.age}봉째 연속 유지 · ${r.born}생(${r.since}봉 경과)"
+    return `<div title="${r.dir>0?'매수':'매도'} ${f1(r.v)} · ${r.born}생 ${r.age}봉 경과 · 종가가 ${r.hold}봉째 연속으로 지킴"
       style="position:absolute;left:${X(r.v).toFixed(2)}%;top:${r.dir>0?'50%':'6%'};height:44%;width:${b.w}px;
       background:${c};opacity:${b.o};transform:translateX(-50%)"></div>`;}).join('');
-  const legend=_AGEB.slice().reverse().map(b=>`<span style="display:inline-block;margin-right:9px"><span style="display:inline-block;width:${b.w}px;height:11px;background:var(--tx2);opacity:${b.o};vertical-align:-2px"></span> ${b.t}</span>`).join('');
+  const _sv=layerSurv(k)||[];
+  const legend=_AGEB.map((b,i)=>({b:b,s:_sv[i]})).reverse().map(x=>{
+    const p=(x.s&&x.s.p!=null)?` <span class="sub">(${x.s.p.toFixed(0)}%·N${x.s.n.toLocaleString()})</span>`:'';
+    return `<span style="display:inline-block;margin-right:10px"><span style="display:inline-block;width:${x.b.w}px;height:11px;background:var(--tx2);opacity:${x.b.o};vertical-align:-2px"></span> ${x.b.t}${p}</span>`;}).join('');
   const noSell=D.above===0, noBuy=D.below===0;
   const warn=[];
   if(noSell)warn.push('<b style="color:var(--warn)">현재가 위에 살아있는 매도 층이 없습니다 · 저항 축 부재</b>');
@@ -782,7 +808,7 @@ function layerBarPanel(ks){
     <div class="sub" style="padding:7px 14px;font-size:10.5px;line-height:1.75;border-top:1px solid var(--bd)">
       한 눈금 = <b>살아있는 파동 하나의 실존가</b>(그 파동에서 생존한 층 중 현재가에 가장 가까운 것)입니다. 위쪽은 <span style="color:var(--sell)">매도</span>, 아래쪽은 <span style="color:var(--buy)">매수</span>입니다.<br>
       <b>대표값을 고르지 않습니다</b> · 살아있는 층을 전부 찍습니다. 하나를 골라 선으로 삼으면 그 선이 <b>봉마다 갈아탑니다</b>.<br>
-      <b>굵기·진하기 = 그 층을 종가가 몇 봉째 연속으로 지키고 있나</b>입니다(생긴 지 얼마나 됐나가 아닙니다). 갓 지키기 시작한 층과 오래 지켜 온 층을 같은 선으로 그리면 읽는 사람이 속습니다.<br>
+      <b>굵기·진하기 = 그 층이 선 지 몇 봉 지났나</b>입니다. 갓 선 층과 오래 버틴 층을 같은 선으로 그리면 읽는 사람이 속습니다. 괄호 안 비율은 <b>이 시간축에서 그 나이 층이 20봉 뒤에도 살아 있던 비율</b>입니다(이 화면 자료로 직접 센 값).<br>
       <b>죽은 파동은 넣지 않습니다.</b> 뿌리가 깨진 파동의 층은 이 그림에서 빠집니다.
     </div></div>`;
 }
