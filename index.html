@@ -25398,6 +25398,34 @@ function alCheck(){
 setInterval(alCheck,5000);
 
 
+
+function alIgnite(){
+  if(!AL.ignite)return;
+  try{
+    for(const k of ['m30','h1','h4','d1','w1','M1']){
+      const A=(typeof E!=='undefined'&&E)?E[k]:null; if(!A||A.length<40)continue;
+      let L=null; try{L=waveLedger(k);}catch(e){continue;}
+      if(!L||!L.waves)continue;
+      const last=A.length-2; if(last<2)continue;
+      for(const w of L.waves){
+        if(w.s!==last-1)continue;
+        const b=A[w.s]; if(!b)continue;
+        const buy=w.dir>0;
+        const when=dstr(b.t,(k==='m30'||k==='h1'||k==='h4'));
+        alNotify(
+          (buy?'🔥 매수 발화':'🔥 매도 발화')+' - '+NAME[k],
+          when+' 봉에서 '+(buy?'매수':'매도')+' 쪽으로 성격이 바뀌었고 다음 봉이 그것을 지켰습니다. '
+          +'뿌리(사망선) <b>'+f1(w.root)+'</b>'+(w.line?' · 파동선 '+f1(w.line):'')
+          +' - 종가가 뿌리를 '+(buy?'밑돌면':'윗돌면')+' 그 발화는 끝납니다.',
+          'ig_'+k+'_'+(buy?'b':'s')+'_'+b.t);
+      }
+    }
+  }catch(e){}
+}
+setInterval(alIgnite,5000);
+
+
+
 async function integCheck(){try{
   if(typeof E==='undefined'||!E||!E.d1||E.d1.length<3)return;
   const r=await fetch(EXB.k+'?symbol=BTCUSDT&interval=1d&limit=3',{cache:'no-store'});
@@ -25721,7 +25749,7 @@ function viewOpenTrade(){
         <div class="scroll"><table><thead><tr><th class="l">날짜</th><th class="l">방향</th><th>진입</th><th>목표</th><th>손절</th><th class="l">결과</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     }catch(e){return '';}
   })();
-  return `<h2 class="sec" style="margin:0 0 12px">승률 매매 (지지) <span class="sub">- 일봉 시가 전략 · 5년 검증 + 라이브 전진검증</span>${alBtn('skill','신호')}</h2>`+lyNote(
+  return `<h2 class="sec" style="margin:0 0 12px">승률 매매 (지지) <span class="sub">- 일봉 시가 전략 · 5년 검증 + 라이브 전진검증</span>${alBtn('skill','신호')}${alBtn('ignite','발화')}</h2>`+lyNote(
     '눌림목에서 지정가로 받는 전략입니다. 추격하지 않고 자리에 오면 받고, 안 오면 쉽니다. 박스 구간에서 유효하고 추세 구간에서는 자제로 보시면 됩니다.',
     '지지(눌림목 지정가) - 진입·목표·손절이 미리 정해지는 구조입니다. 국면이 박스일 때 유효하고, 추세 전환 시 회귀 반등 전략은 중단이 정석이라는 판단입니다.',
     '')+stratHub()+rgBanner+cardA+liveFwd+perf+btNoteA+fixedPanel+panicBounceCard()+fwd+rules+why+cav;
