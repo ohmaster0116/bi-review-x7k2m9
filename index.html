@@ -24404,7 +24404,7 @@ function viewWave(){
   }catch(e){return '';}})();
   const axTab=`<div style="display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:0 0 10px">${axBtn}<span class="sub" style="margin-left:auto;align-self:center;font-size:10.5px">${waveAx==='중심값'?'저항·지지의 한가운데로 잰 축':'봉 전체의 무게중심으로 잰 축'}</span></div>`;
   
-  const head=`<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">코인 테스트기:</span>${btn}${alBtn('ignite','발화')}${waveCoin!=='BTC'?`<span class="sub" style="color:var(--gold2)">- ${waveCoin} · 3코인 검증 통과 엔진(파동·국면·미확인·합의)만 이식 · 실존 지지·저항·고래는 BTC 전용</span>`:''}</div>`;
+  const head=`<div style="margin:0 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="sub">코인 테스트기:</span>${btn}${waveCoin!=='BTC'?`<span class="sub" style="color:var(--gold2)">- ${waveCoin} · 3코인 검증 통과 엔진(파동·국면·미확인·합의)만 이식 · 실존 지지·저항·고래는 BTC 전용</span>`:''}</div>`;
   if(waveCoin!=='BTC'&&!COINE[waveCoin])return head+`<div class="loading">${waveCoin} 데이터 수신 중… (바이낸스 직접 · 최초 1회 ~10초)</div>`;
   const _E0=E; if(waveCoin!=='BTC')E=COINE[waveCoin];
   const _AX0=window.__WAVE_AX; window.__WAVE_AX=(waveAx==='중심값')?'중심값':null;
@@ -34951,9 +34951,9 @@ function render(){if(!E)return;
       const inGrp=grp.tabs.indexOf(active)>=0;
       mainRow+=`<span class="navgrp navdrop"><button class="${inGrp?'on':''}" onclick="var p=this.parentNode,w=p.classList.contains('open');document.querySelectorAll('.navdrop.open').forEach(function(x){x.classList.remove('open')});if(!w)p.classList.add('open');event.stopPropagation();" style="font-weight:700${inGrp?'':';color:var(--tx2)'}">${grp.g} ▾</button><div class="navpanel"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</div></span>`;
     });
-    nav.innerHTML='<div class="navwrap">'+mainRow+'</div>';
+    nav.innerHTML='<div class="navwrap">'+mainRow+'<span class="navgrp">'+alBtn('ignite','발화')+'</span></div>';   
   }else{
-    nav.innerHTML='<div class="navwrap">'+TABGROUPS.map(grp=>`<span class="navgrp"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</span>`).join('')+'</div>';
+    nav.innerHTML='<div class="navwrap">'+TABGROUPS.map(grp=>`<span class="navgrp"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</span>`).join('')+'<span class="navgrp">'+alBtn('ignite','발화')+'</span></div>';   
   }
   const v=document.getElementById('view');v.className='';
   const _ks={}; v.querySelectorAll('[data-ks]').forEach(function(e){if(e.id)_ks[e.id]={t:e.scrollTop,b:e.scrollTop+e.clientHeight>=e.scrollHeight-4};});   
