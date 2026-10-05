@@ -777,7 +777,9 @@ function layerBar(k){
       background:${c};opacity:${b.o};transform:translateX(-50%)"></div>`;}).join('');
   const _sv=layerSurv(k)||[];
   const legend=_AGEB.map((b,i)=>({b:b,s:_sv[i]})).reverse().map(x=>{
-    const p=(x.s&&x.s.p!=null)?` <span class="sub">(${x.s.p.toFixed(0)}%·N${x.s.n.toLocaleString()})</span>`:'';
+    
+    const p=(x.s&&x.s.p!=null)?` <span class="sub">(${x.s.p.toFixed(0)}%·N${x.s.n.toLocaleString()})</span>`
+            :` <span class="sub" style="color:var(--tx3)">(표본 없음)</span>`;
     return `<span style="display:inline-block;margin-right:10px"><span style="display:inline-block;width:${x.b.w}px;height:11px;background:var(--tx2);opacity:${x.b.o};vertical-align:-2px"></span> ${x.b.t}${p}</span>`;}).join('');
   const noSell=D.above===0, noBuy=D.below===0;
   const warn=[];
