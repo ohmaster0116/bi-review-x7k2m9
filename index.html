@@ -707,6 +707,81 @@ function bandZoneRows(k){
     +`<td class="num">${t.awn?`<b style="color:var(--warn)">${(t.aw/t.awn).toFixed(1)}배</b>`:'없음'}</td></tr></tbody></table></div>`
     +trLine+`</div>`;
 }
+
+
+
+const _AGEB=[{n:200,t:'200봉+',w:5,o:1.00},{n:61,t:'61~200봉',w:4,o:.85},
+             {n:21,t:'21~60봉',w:3,o:.68},{n:6,t:'6~20봉',w:2,o:.50},{n:0,t:'1~5봉',w:1,o:.34}];
+function _ageB(a){for(const b of _AGEB)if(a>=b.n)return b;return _AGEB[_AGEB.length-1];}
+function layerRows(k){
+  try{
+    const A=E[k]; if(!A||A.length<40)return null;
+    const L=waveLedger(k); if(!L||!L.waves)return null;
+    const last=A.length-2; if(last<2)return null; const px=A[last].c;   
+    const live=L.waves.filter(w=>w.deathRoot==null&&w.rep!=null);
+    if(!live.length)return {px:px,rows:[],buy:0,sell:0,n:0};
+    const rows=live.map(w=>({dir:w.dir,v:w.rep,age:last-w.s,roll:w.roll,
+                             born:(function(){try{return new Date(A[w.s].t).toISOString().slice(0,10);}catch(e){return '';}})(),
+                             nAlive:w.nAlive||0}))
+                   .sort((a,b)=>b.v-a.v);
+    return {px:px,rows:rows,n:rows.length,
+            buy:rows.filter(r=>r.dir>0).length, sell:rows.filter(r=>r.dir<0).length,
+            above:rows.filter(r=>r.dir<0&&r.v>px).length, below:rows.filter(r=>r.dir>0&&r.v<px).length};
+  }catch(e){return null;}
+}
+function layerBar(k){
+  const D=layerRows(k); if(!D||!D.n)return '';
+  
+  
+  const _W=0.25, _lo=D.px*(1-_W), _hi=D.px*(1+_W);
+  const inR=D.rows.filter(r=>r.v>=_lo&&r.v<=_hi), outLo=D.rows.filter(r=>r.v<_lo), outHi=D.rows.filter(r=>r.v>_hi);
+  const lo=Math.min(D.px,inR.length?inR[inR.length-1].v:D.px), hi=Math.max(D.px,inR.length?inR[0].v:D.px);
+  const pad=(hi-lo)*0.06||1, L0=lo-pad, H0=hi+pad, X=v=>((v-L0)/((H0-L0)||1)*100);
+  const ages=D.rows.map(r=>r.age).sort((a,b)=>a-b), med=ages[Math.floor(ages.length/2)];
+  const ticks=inR.map(r=>{const b=_ageB(r.age), c=r.dir>0?'var(--buy)':'var(--sell)';
+    return `<div title="${r.dir>0?'매수':'매도'} ${f1(r.v)} · ${r.age}봉째 유지 · ${r.born}생"
+      style="position:absolute;left:${X(r.v).toFixed(2)}%;top:${r.dir>0?'50%':'6%'};height:44%;width:${b.w}px;
+      background:${c};opacity:${b.o};transform:translateX(-50%)"></div>`;}).join('');
+  const legend=_AGEB.slice().reverse().map(b=>`<span style="display:inline-block;margin-right:9px"><span style="display:inline-block;width:${b.w}px;height:11px;background:var(--tx2);opacity:${b.o};vertical-align:-2px"></span> ${b.t}</span>`).join('');
+  const noSell=D.above===0, noBuy=D.below===0;
+  const warn=[];
+  if(noSell)warn.push('<b style="color:var(--warn)">현재가 위에 살아있는 매도 층이 없습니다 · 저항 축 부재</b>');
+  if(noBuy)warn.push('<b style="color:var(--warn)">현재가 아래에 살아있는 매수 층이 없습니다 · 지지 축 부재</b>');
+  const near=(dir)=>{const c=D.rows.filter(r=>r.dir===dir&&(dir>0?r.v<D.px:r.v>D.px));
+    if(!c.length)return '없음';
+    const t=dir>0?c[0]:c[c.length-1];
+    return `${f1(t.v)} <span class="sub">(${t.age}봉째)</span>`;};
+  return `<div style="margin-bottom:11px">
+    <div style="font-size:11.5px;margin:0 0 5px"><b>${NAME[k]}</b>
+      <span class="sub">· 살아있는 층 <b>${D.n}</b>개 (매수 ${D.buy} · 매도 ${D.sell}) · 나이 중앙 <b>${med}봉</b>
+      · 현재가 <b style="color:var(--gold2)">${f1(D.px)}</b></span></div>
+    <div style="position:relative;height:46px;border:1px solid var(--bd);border-radius:7px;background:rgba(255,255,255,.02)">
+      ${ticks}
+      <div style="position:absolute;left:${X(D.px).toFixed(2)}%;top:0;height:100%;width:2px;background:var(--gold2);transform:translateX(-50%)"></div>
+      <div style="position:absolute;left:0;top:50%;width:100%;height:1px;background:var(--bd)"></div>
+    </div>
+    <div class="sub" style="font-size:10px;margin-top:3px;display:flex;justify-content:space-between">
+      <span>${f1(L0)}</span><span style="color:var(--gold2)">현재가 ${f1(D.px)}</span><span>${f1(H0)}</span></div>
+    ${(outLo.length||outHi.length)?`<div class="sub" style="font-size:10px;margin-top:2px;color:var(--tx3)">축 밖 ${outLo.length+outHi.length}층${outLo.length?` · 아래 ${outLo.length}층(${f1(outLo[outLo.length-1].v)}~${f1(outLo[0].v)})`:''}${outHi.length?` · 위 ${outHi.length}층(${f1(outHi[outHi.length-1].v)}~${f1(outHi[0].v)})`:''} — 현재가에서 25% 밖이라 그림에서만 뺐습니다(살아 있습니다)</div>`:''}
+    <div class="sub" style="font-size:10.5px;margin-top:4px">위 첫 <span style="color:var(--sell)">매도</span> 층 ${near(-1)}
+      · 아래 첫 <span style="color:var(--buy)">매수</span> 층 ${near(1)}${warn.length?'<br>'+warn.join('<br>'):''}</div>
+    <div class="sub" style="font-size:9.5px;margin-top:3px;color:var(--tx3)">${legend}</div>
+  </div>`;
+}
+function layerBarPanel(ks){
+  const rows=(ks||['h4','d1','w1','M1']).map(layerBar).filter(Boolean).join('');
+  if(!rows)return '';
+  const mk='비트코인';
+  return `<div class="panel" style="border:1px solid var(--gold)"><div class="hd" style="color:var(--gold2)">
+    층 대립 · 살아있는 실존가 층이 어디에 서 있나 <span class="sub">· ${mk} 실측 · 위치 표기 · 예측 아님</span></div>
+    <div style="padding:10px 14px 4px">${rows}</div>
+    <div class="sub" style="padding:7px 14px;font-size:10.5px;line-height:1.75;border-top:1px solid var(--bd)">
+      한 눈금 = <b>살아있는 파동 하나의 실존가</b>(그 파동에서 생존한 층 중 현재가에 가장 가까운 것)입니다. 위쪽은 <span style="color:var(--sell)">매도</span>, 아래쪽은 <span style="color:var(--buy)">매수</span>입니다.<br>
+      <b>대표값을 고르지 않습니다</b> · 살아있는 층을 전부 찍습니다. 하나를 골라 선으로 삼으면 그 선이 <b>봉마다 갈아탑니다</b>.<br>
+      <b>굵기·진하기 = 그 층이 몇 봉째 유지 중인가</b>입니다. 갓 생긴 층과 오래 버틴 층을 같은 선으로 그리면 읽는 사람이 속습니다.<br>
+      <b>죽은 파동은 넣지 않습니다.</b> 뿌리가 깨진 파동의 층은 이 그림에서 빠집니다.
+    </div></div>`;
+}
 function bandZonePanel(){
   const rows=['h4','d1','w1','M1'].map(bandZoneRows).filter(Boolean).join('');   
   if(!rows)return '';
@@ -733,7 +808,7 @@ function viewVB(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1',
     '평소 하루 움직임(변동폭) 대비 오늘 얼마나 썼는지 봅니다. 남은 여력이 적으면 그 방향 추격은 자제하는 편이 낫다는 판단입니다.',
     '잔여 변동폭 = 목표 도달 여지입니다. 진행률 50% 미만은 역회전이 잦고, 100% 이상은 캡 달성이라 그 방향 신규는 자제로 보시면 됩니다.',
     '')
-    +vbFillPanel(ks)+bandZonePanel()+'<div class="bandgrid">'
+    +vbFillPanel(ks)+bandZonePanel()+layerBarPanel()+'<div class="bandgrid">'
     +ks.map(k=>bandPanelM(NAME[k],vbCols(k),px,vbNote(k),k)).join('')+'</div>'
     +'<div class="bandgrid2">'+comboPanelM('일·주',['d1','w1'],vbBand)+comboPanelM('일·주·월',['d1','w1','M1'],vbBand)+comboPanelM('일·주·월·연',['d1','w1','M1','y1'],vbBand)+'</div>';}
 function viewExp(){const ks=['d1','w1','M1','y1'], px=E.d1[E.d1.length-1].c;
