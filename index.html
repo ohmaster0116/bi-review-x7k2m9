@@ -1003,7 +1003,35 @@ function waveLedger(tf,arr,opt){
   raw.forEach(function(w){ const p=lastAlive[w.dir];
     if(p){ const gap=w.s-(p.s+p.form-1); if(gap>0&&gap<=Math.max(p.form*2,7)){ p.ext++; return; } }
     waves.push(w); if(w.death==null)lastAlive[w.dir]=w; });
-  const _out={waves,n};
+  
+  
+  
+  
+  const _cx=A[last].c;
+  const waves2=waves.map(function(w){
+    const wEnd=(w.deathRoot!=null)?w.deathRoot:last+1;
+    let roll=null, rollAll=null, deadPct=null, rollNote=null, nBar=0, nBarAlive=0;
+    { let cu=0,cv=0,au=0,av=0,ok=true;
+      for(let i=w.s;i<wEnd;i++){ if(!(A[i].v>0)){ok=false;break;} const g=G(i),v=A[i].v; cu+=g*v;cv+=v;nBar++;
+        if(w.dir>0? g<=_cx : g>=_cx){au+=g*v;av+=v;nBarAlive++;} }
+      if(ok&&cv>0){ rollAll=cu/cv; deadPct=(1-av/cv)*100; if(av>0)roll=au/av; else rollNote='생존 물량 없음'; }
+      else rollNote='거래량 없음'; }
+    const steps=[];
+    { let cu=0,cv=0,ok=true;
+      for(let i=w.s;i<wEnd;i++){ if(!(A[i].v>0)){ok=false;break;} cu+=G(i)*A[i].v; cv+=A[i].v; const vw=cv>0?cu/cv:null;
+        steps.push({i:i,t:A[i].t,vw:vw,v:A[i].v,alive:(w.dir>0? _cx>=vw : _cx<=vw)}); }
+      if(!ok)steps.length=0; }
+    const sv=steps.filter(function(st){return st.alive;});
+    let rep=null, repNote=null;
+    if(sv.length){
+      const below=sv.filter(function(st){return st.vw<_cx;}), above=sv.filter(function(st){return st.vw>_cx;});
+      if(w.dir>0){ if(below.length)rep=Math.max.apply(null,below.map(function(st){return st.vw;})); else repNote='생존 층이 전부 현재가 위 · 지지 대표 없음'; }
+      else       { if(above.length)rep=Math.min.apply(null,above.map(function(st){return st.vw;})); else repNote='생존 층이 전부 현재가 아래 · 저항 대표 없음'; }
+    } else if(steps.length){ repNote='전 층 소멸'; }
+    return Object.assign(w,{roll:roll,rollAll:rollAll,deadPct:deadPct,rollNote:rollNote,nBar:nBar,
+      nBarAlive:nBarAlive,steps:steps,rep:rep,repNote:repNote,nAlive:sv.length,nStep:steps.length});
+  });
+  const _out={waves:waves2,n};
   {let _m=_wlC.get(A); if(!_m){_m=new Map();_wlC.set(A,_m);} _m.set(_lc,{k:_ck,r:_out});}
   return _out;
 }
@@ -27779,9 +27807,10 @@ function battleBalance(){
 
 
     try{_wbD=waveBook('d1');
-      var _cvD=null; try{_cvD=sitgaCanonVW('d1',null,1);}catch(e2){}
-      if(_cvD!=null){ roll=_cvD; rollSrc='전 파동 생존 층 중 최전방(판독 정본)'; }
-      else if(_wbD){ if(_wbD.rep!=null){roll=_wbD.rep; rollSrc='생존 '+(_wbD.nAlive||0)+'층 중 최전방(이 파동)';}
+      
+
+
+      if(_wbD){ if(_wbD.rep!=null){roll=_wbD.rep; rollSrc='생존 '+(_wbD.nAlive||0)+'층 중 최전방(이 파동)';}
                 else if(_wbD.sitga){roll=_wbD.sitga;} }
     }catch(e){}
     if(roll==null)return _bbNote('<b>매수 실존가 축 부재</b> - 아래 매수 파동이 급락으로 사망해 실존가가 소멸했습니다(사라진 게 아니라 죽은 것). 위 매도 실존가: '+f1(gv)+' 유지 중 · 새 매수 파동(기준가 2연속 상승)이 서면 매수 축이 다시 잡힙니다.');
