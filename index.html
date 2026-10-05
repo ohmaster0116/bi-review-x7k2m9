@@ -25399,33 +25399,6 @@ setInterval(alCheck,5000);
 
 
 
-function alIgnite(){
-  if(!AL.ignite)return;
-  try{
-    for(const k of ['m30','h1','h4','d1','w1','M1']){
-      const A=(typeof E!=='undefined'&&E)?E[k]:null; if(!A||A.length<40)continue;
-      let L=null; try{L=waveLedger(k);}catch(e){continue;}
-      if(!L||!L.waves)continue;
-      const last=A.length-2; if(last<2)continue;
-      for(const w of L.waves){
-        if(w.s!==last-1)continue;
-        const b=A[w.s]; if(!b)continue;
-        const buy=w.dir>0;
-        const when=dstr(b.t,(k==='m30'||k==='h1'||k==='h4'));
-        alNotify(
-          (buy?'🔥 매수 발화':'🔥 매도 발화')+' - '+NAME[k],
-          when+' 봉에서 '+(buy?'매수':'매도')+' 쪽으로 성격이 바뀌었고 다음 봉이 그것을 지켰습니다. '
-          +'뿌리(사망선) <b>'+f1(w.root)+'</b>'+(w.line?' · 파동선 '+f1(w.line):'')
-          +' - 종가가 뿌리를 '+(buy?'밑돌면':'윗돌면')+' 그 발화는 끝납니다.',
-          'ig_'+k+'_'+(buy?'b':'s')+'_'+b.t);
-      }
-    }
-  }catch(e){}
-}
-setInterval(alIgnite,5000);
-
-
-
 async function integCheck(){try{
   if(typeof E==='undefined'||!E||!E.d1||E.d1.length<3)return;
   const r=await fetch(EXB.k+'?symbol=BTCUSDT&interval=1d&limit=3',{cache:'no-store'});
@@ -34951,9 +34924,9 @@ function render(){if(!E)return;
       const inGrp=grp.tabs.indexOf(active)>=0;
       mainRow+=`<span class="navgrp navdrop"><button class="${inGrp?'on':''}" onclick="var p=this.parentNode,w=p.classList.contains('open');document.querySelectorAll('.navdrop.open').forEach(function(x){x.classList.remove('open')});if(!w)p.classList.add('open');event.stopPropagation();" style="font-weight:700${inGrp?'':';color:var(--tx2)'}">${grp.g} ▾</button><div class="navpanel"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</div></span>`;
     });
-    nav.innerHTML='<div class="navwrap">'+mainRow+'<span class="navgrp">'+alBtn('ignite','발화')+'</span></div>';   
+    nav.innerHTML='<div class="navwrap">'+mainRow+'</div>';
   }else{
-    nav.innerHTML='<div class="navwrap">'+TABGROUPS.map(grp=>`<span class="navgrp"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</span>`).join('')+'<span class="navgrp">'+alBtn('ignite','발화')+'</span></div>';   
+    nav.innerHTML='<div class="navwrap">'+TABGROUPS.map(grp=>`<span class="navgrp"><span class="navlbl">${grp.g}</span>${grp.tabs.filter(function(t){return NAV_HIDE.indexOf(t)<0;}).map(tabBtn).join('')}</span>`).join('')+'</div>';
   }
   const v=document.getElementById('view');v.className='';
   const _ks={}; v.querySelectorAll('[data-ks]').forEach(function(e){if(e.id)_ks[e.id]={t:e.scrollTop,b:e.scrollTop+e.clientHeight>=e.scrollHeight-4};});   
