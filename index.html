@@ -1300,6 +1300,14 @@ function sitgaTag(tf, dir, v, plain){
   }catch(e){ return ''; }
 }
 function sitgaCanonVW(tf, fallback, dir){
+  
+
+
+
+  try{
+    var _bk = (dir!=null && dir<0) ? sellBook(tf) : waveBook(tf);   
+    if(_bk && _bk.rep!=null) return _bk.rep;
+  }catch(e){}
   try{
     var R = window.__SITGAREG;
     if(R && R['시간축']){
