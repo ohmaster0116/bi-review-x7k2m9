@@ -691,7 +691,7 @@ function bandZoneRows(k){
     const cells=[2,1,0].map(j=>`<span style="color:${cl[j]}${j===ct?';font-weight:800':''}">${nm[j]}${j===ct?' ◀ 지금':''} <b>${p(T[j].m1,T[j].n)}</b></span> <span class="sub">(N ${T[j].n.toLocaleString()})</span>`).join(' · ');
     const vs=T.filter(x=>x.n).map(x=>x.m1/x.n*100), sp=vs.length>1?(Math.max(...vs)-Math.min(...vs)):0;
     return `<div class="sub" style="font-size:10px;margin:3px 0 0;line-height:1.6">추세로 갈라 본 가운데 회귀율 : ${cells} <b>· 가장 벌어진 폭 ${sp.toFixed(1)}%p</b>${sp<=3?' (추세로 갈라도 거의 같습니다)':' · <b>추세에 따라 이만큼 갈립니다. 지금 추세 칸을 보십시오.</b>'}</div>`;})();
-  return `<div style="margin-bottom:10px"><div style="font-size:11.5px;margin:0 0 4px"><b>${NAME[k]}</b>`
+  return `<div style="margin-bottom:10px"><div style="font-size:11.5px;margin:0 0 4px"><b>${(typeof MKTS!=='undefined'&&typeof MKT!=='undefined'&&MKTS[MKT])?MKTS[MKT].nm+' ':'비트코인 '}${NAME[k]}</b>`
     +` <span class="sub">· ${R.from} ~ ${R.to} · 센 봉 ${t.n.toLocaleString()}개`
     +`${R.now?` · 지금 매수율 <b style="color:var(--gold2)">${R.now.rate.toFixed(0)}%</b>`:''}`
     +` · 기준가까지 닿은 비율은 전체 <b>${p(t.g1,t.n)}</b>${t.n<300?` · <b style="color:var(--warn)">표본이 얇습니다 · 참고로만</b>`:''}</span></div>`
@@ -718,7 +718,7 @@ function bandZonePanel(){
     +`칸 = 그 봉이 마감한 <b>매수율</b> 자리(밴드 가운데=50 · 가운데±반폭=0/100). 값은 <b>그 봉 마감 시점</b>에 정해지며 다음 봉을 보고 정하지 않습니다.<br>`
     +`<b>「지금 추세에서」 칸이 실제로 보실 수</b>입니다 · 같은 자리라도 추세에 따라 갈립니다. 괄호는 그 칸의 N.<br>`
     +`<b>못 돌아오면</b> = 5봉 안에 가운데를 못 닿은 경우가 그 5봉 동안 <b>가운데에서 가장 멀어진 거리</b>(평소 변동폭의 몇 배). <b>돌아온 쪽만 보면 안 돌아온 쪽이 가려집니다.</b><br>`
-    +`<b>N 을 먼저 보십시오.</b> N 30 미만 칸은 ⚠ 를 달았습니다. 이 표는 <b>${mk} 실측</b>이며 <b>다른 시장 수치를 쓰지 않습니다</b> · 같은 자로 재도 시장마다 답이 다릅니다.<br>`
+    +`<b>N 을 먼저 보십시오.</b> N 30 미만 칸은 ⚠ 를 달았습니다. 이 표는 <b>${mk} 실측</b>입니다.<br>`
     +`<b>이 표는 방향을 말하지 않습니다</b> · 되돌아오는 비율일 뿐입니다. 비율이 낮다는 것은 <b>그 자리에 머물지 않는다</b>는 뜻이지 어느 쪽으로 간다는 뜻이 아닙니다.`
     +`</div></div>`;
 }
