@@ -27665,7 +27665,7 @@ function decisiveAxis(){
 
     try{var _wbA=waveBook('d1');
       var _cv=null; try{ _cv=sitgaCanonVW('d1',null,1); }catch(e){}
-      if(_cv!=null){ siljon=_cv; _repSrc=' <span class="sub" style="font-size:9.5px">전 파동 생존 층 중 최전방(판독 정본)</span>'; }
+      if(_cv!=null){ siljon=_cv; _repSrc=' <span class="sub" style="font-size:9.5px">현재 파동 생존 층 중 최전방</span>'; }
       else if(_wbA){ if(_wbA.rep!=null){siljon=_wbA.rep; _repSrc=' <span class="sub" style="font-size:9.5px">생존 '+(_wbA.nAlive||0)+'층 중 최전방(이 파동)</span>';}
                 else if(_wbA.sitga){siljon=_wbA.sitga;} }
     }catch(e){}   
