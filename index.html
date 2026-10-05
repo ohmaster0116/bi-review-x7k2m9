@@ -1724,7 +1724,7 @@ function tzClusterPanel(){
     if(!hits.length)return '';
     const rows=hits.map(c=>`<tr><td class="num" style="font-weight:700;color:${c.price>px?'var(--sell)':'var(--buy)'}">${f1(c.price)}</td><td class="num sub">${((c.price-px)/px*100).toFixed(1)}%</td><td style="text-align:center;font-weight:800">${c.k}겹</td><td class="l" style="font-size:10px;line-height:1.6">${c.items.map(x=>x.n).join(' · ')}</td></tr>`).join('');
     return `<div class="panel"><div class="hd">겹침 위치 - 현재가 주변 레벨 수렴(±8%) <span class="sub">(현재 상태 측정 · 겹수만 표기 - 방어 확률·강도 주장 아님)</span></div>
-      <div class="scroll"><table><thead><tr><th>가격</th><th>거리</th><th>겹수</th><th class="l">구성(어느 축)</th></tr></thead><tbody>${rows}${more.length?`<tr><td colspan="4" style="padding:0"><details><summary style="cursor:pointer;padding:5px 10px;font-size:10.5px;color:var(--gold2)">전체 보기 — 겹침 자리 ${more.length}곳 더</summary><table style="width:100%">${more.map(c=>`<tr><td class="num" style="font-weight:700;color:${c.price>px?'var(--sell)':'var(--buy)'}">${f1(c.price)}</td><td class="num sub">${((c.price-px)/px*100).toFixed(1)}%</td><td style="text-align:center;font-weight:800">${c.k}겹</td><td class="l" style="font-size:10px;line-height:1.6">${c.items.map(x=>x.n).join(' · ')}</td></tr>`).join('')}</table></details></td></tr>`:''}</tbody></table></div>
+      <div class="scroll"><table><thead><tr><th>가격</th><th>거리</th><th>겹수</th><th class="l">구성(어느 축)</th></tr></thead><tbody>${rows}${more.length?`<tr><td colspan="4" style="padding:0"><details><summary style="cursor:pointer;padding:5px 10px;font-size:10.5px;color:var(--gold2)">전체 보기 · 겹침 자리 ${more.length}곳 더</summary><table style="width:100%">${more.map(c=>`<tr><td class="num" style="font-weight:700;color:${c.price>px?'var(--sell)':'var(--buy)'}">${f1(c.price)}</td><td class="num sub">${((c.price-px)/px*100).toFixed(1)}%</td><td style="text-align:center;font-weight:800">${c.k}겹</td><td class="l" style="font-size:10px;line-height:1.6">${c.items.map(x=>x.n).join(' · ')}</td></tr>`).join('')}</table></details></td></tr>`:''}</tbody></table></div>
       <div class="sub" style="padding:6px 12px;font-size:10px;border-top:1px solid var(--bd)">지도(현재 힘의 분포)로 읽는 화면입니다 - 매매 신호가 아닙니다. 축=각 TF 기준가·중심가·파동선·변동폭 상하(외생축만·미확인/변곡/실존가 제외).</div></div>`;
   }catch(e){return '';}
 }
@@ -2261,8 +2261,8 @@ window.__LEDGER={
  "meta": {
   "created": "2026-07-03",
   "fee_ver": "v3",
-  "note": "전진검증 원장 — append-only, done 재계산 금지",
-  "correction_rule": "정정 허용 = pending + 당일 + 채점 전 + corrected 이력(사유·시각·from/to) 필수. done 이후 절대 불가. 대상은 계산 규칙 변경으로 인한 라벨류만 — 예측 수치(가격·날짜) 정정은 당일이라도 불가(재잠금 사유). 확정 2026-07-03 케빈 제안·헤븐 승인·케인 무결성 검증 ★재정정 시 corrected는 리스트로 append(dict 덮어쓰기 금지 — 중간 이력 소실 방지, 2026-07-03 band_rank 이중정정서 발견).",
+  "note": "전진검증 원장 · append-only, done 재계산 금지",
+  "correction_rule": "정정 허용 = pending + 당일 + 채점 전 + corrected 이력(사유·시각·from/to) 필수. done 이후 절대 불가. 대상은 계산 규칙 변경으로 인한 라벨류만 · 예측 수치(가격·날짜) 정정은 당일이라도 불가(재잠금 사유). 확정 2026-07-03 케빈 제안·헤븐 승인·케인 무결성 검증 ★재정정 시 corrected는 리스트로 append(dict 덮어쓰기 금지 · 중간 이력 소실 방지, 2026-07-03 band_rank 이중정정서 발견).",
   "rule_changes": [
    {
     "id": "horizon_d1_2026-07-10",
@@ -2273,7 +2273,7 @@ window.__LEDGER={
    {
     "id": "cron_delay_2026-07-13",
     "date": "2026-07-13",
-    "note": "07-13 09:25 정규 잠금 결손 — bitinfo-lock-score 스케줄러는 정상 호출(Result=1 실패)·근본=engine_snapshot batchim=null에 gate가 s.get(k,{}) 방어만 해 NoneType.get 크래시. 케빈 null 방어((s.get(k) or {}))로 수정·02:20Z 수동 재잠금(완성봉 07-12 기준이라 값 동일·append-only). 내일 09:25 자동 정상 예상.",
+    "note": "07-13 09:25 정규 잠금 결손 · bitinfo-lock-score 스케줄러는 정상 호출(Result=1 실패)·근본=engine_snapshot batchim=null에 gate가 s.get(k,{}) 방어만 해 NoneType.get 크래시. 케빈 null 방어((s.get(k) or {}))로 수정·02:20Z 수동 재잠금(완성봉 07-12 기준이라 값 동일·append-only). 내일 09:25 자동 정상 예상.",
     "author": "케빈",
     "integrity": "append-only·기존 레코드 무변경"
    }
@@ -2447,7 +2447,7 @@ window.__LEDGER={
     {
      "at": "2026-07-03T07:55:00Z",
      "by": "kevin",
-     "reason": "구버전 스냅샷(736864c·케인 수렴 전) 소스로 잠긴 방어율을 정본(df1f601) 소스로 재잠금. 단 이 단계선 top=전일지지저항 유지(불완전 — 동률 미반영).",
+     "reason": "구버전 스냅샷(736864c·케인 수렴 전) 소스로 잠긴 방어율을 정본(df1f601) 소스로 재잠금. 단 이 단계선 top=전일지지저항 유지(불완전 · 동률 미반영).",
      "from": {
       "top": "전일지지저항",
       "defs": "58/56/54/51/49",
@@ -2461,7 +2461,7 @@ window.__LEDGER={
     },
     {
      "at": "2026-07-03T07:55:16Z",
-     "reason": "구버전 스냅샷(736864c·정정 전 방어율) 소스로 잠김 — 정본 스냅샷 재생성 후 재잠금",
+     "reason": "구버전 스냅샷(736864c·정정 전 방어율) 소스로 잠김 · 정본 스냅샷 재생성 후 재잠금",
      "from": {
       "top": "전일지지저항",
       "defs": "58/58/55/54/50"
@@ -2889,7 +2889,7 @@ window.__LEDGER={
     "kevin": 62455.8,
     "key": 62455.8,
     "kane": "kane-verified 2026-07-05 trend / 바이낸스 직수신 독립재현 / ms=3·md=+1·entry 62,455.8·stop 60,161.9·target 68,190.7(반올림순서차 0.1=오차아님)·lev 24 정본일치 / 서명원본=케인 세션 회신",
-    "success": "success-verified 2026-07-05 trend / 하니스=바이낸스 BTCUSDT 일봉 직수신·data_ts 1783123200000 절단(완성봉 3,244, 마지막 07-04 종가 63,144.01)·kevin_core 미참조 독립 재계산 / 범위=신호 ms=3·md=+1 일봉 단위 재현(07-02 저가 59,588>전일G 59,445.7 / 07-03 61,248.86>60,843.0 / 07-04 62,328.24>62,093.0, 07-01 hit=1서 정지) + AR120 2,293.93 + entry 62,455.8=종가−0.3AR·stop 60,161.9=entry−1.0AR·lev 24=floor(0.9/(AR/entry)) 원장 pred 소수 일치 + target 68,190.6=반올림 entry 파생(기전 (b), 원시 연쇄면 68,190.7 — 명세 §1 명문화 일치 확인) + 채점 6분기(명세 §2) 논리 검토 구멍 없음(동시도달 손절우선·갭 체결 보수·expire 정의 화면 집계 정합) / 서명원본=성공 세션 회신."
+    "success": "success-verified 2026-07-05 trend / 하니스=바이낸스 BTCUSDT 일봉 직수신·data_ts 1783123200000 절단(완성봉 3,244, 마지막 07-04 종가 63,144.01)·kevin_core 미참조 독립 재계산 / 범위=신호 ms=3·md=+1 일봉 단위 재현(07-02 저가 59,588>전일G 59,445.7 / 07-03 61,248.86>60,843.0 / 07-04 62,328.24>62,093.0, 07-01 hit=1서 정지) + AR120 2,293.93 + entry 62,455.8=종가−0.3AR·stop 60,161.9=entry−1.0AR·lev 24=floor(0.9/(AR/entry)) 원장 pred 소수 일치 + target 68,190.6=반올림 entry 파생(기전 (b), 원시 연쇄면 68,190.7 · 명세 §1 명문화 일치 확인) + 채점 6분기(명세 §2) 논리 검토 구멍 없음(동시도달 손절우선·갭 체결 보수·expire 정의 화면 집계 정합) / 서명원본=성공 세션 회신."
    },
    "verified": false,
    "no_snapshot_gate": true,
@@ -2921,7 +2921,7 @@ window.__LEDGER={
      57304.7
     ],
     "basis": "px 62,922.4 · AR_w 4,515 · 이격(차주 시가~금주 기준가) 44%AR · 자석 클러스터 61.6~61.9k(채움 22~28%=역회전 우위) · 구조선 61.1k(채움40% 교차)",
-    "prob_ref": "이격해소 60%(25~50%AR n92) · 3주 내 시가 복귀 터치 76%(터치군 n54)",
+    "prob_ref": "이격해소 60%(25~50%AR n92) · 3주 내 시가 복귀 터치 76%(터치군 n54) ·",
     "rule": "hit=앵커 주(06-29 개시) 완성 후 3개 완성 주봉 내 고가>=target / invalidated=그 전 주봉 종가<파기선(동주 동시=파기 우선) / miss=창 경과",
     "grade": "scenario"
    },
