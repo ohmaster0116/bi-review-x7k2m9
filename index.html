@@ -720,7 +720,11 @@ function layerRows(k){
     const last=A.length-2; if(last<2)return null; const px=A[last].c;   
     const live=L.waves.filter(w=>w.deathRoot==null&&w.rep!=null);
     if(!live.length)return {px:px,rows:[],buy:0,sell:0,n:0};
-    const rows=live.map(w=>({dir:w.dir,v:w.rep,age:last-w.s,roll:w.roll,
+    
+    
+    const _hold=(w)=>{let n=0; for(let i=last;i>=w.s;i--){ const c=A[i].c;
+      if(w.dir>0? c>=w.rep : c<=w.rep)n++; else break; } return n;};
+    const rows=live.map(w=>({dir:w.dir,v:w.rep,age:_hold(w),since:last-w.s,roll:w.roll,
                              born:(function(){try{return new Date(A[w.s].t).toISOString().slice(0,10);}catch(e){return '';}})(),
                              nAlive:w.nAlive||0}))
                    .sort((a,b)=>b.v-a.v);
@@ -739,7 +743,7 @@ function layerBar(k){
   const pad=(hi-lo)*0.06||1, L0=lo-pad, H0=hi+pad, X=v=>((v-L0)/((H0-L0)||1)*100);
   const ages=D.rows.map(r=>r.age).sort((a,b)=>a-b), med=ages[Math.floor(ages.length/2)];
   const ticks=inR.map(r=>{const b=_ageB(r.age), c=r.dir>0?'var(--buy)':'var(--sell)';
-    return `<div title="${r.dir>0?'매수':'매도'} ${f1(r.v)} · ${r.age}봉째 유지 · ${r.born}생"
+    return `<div title="${r.dir>0?'매수':'매도'} ${f1(r.v)} · ${r.age}봉째 연속 유지 · ${r.born}생(${r.since}봉 경과)"
       style="position:absolute;left:${X(r.v).toFixed(2)}%;top:${r.dir>0?'50%':'6%'};height:44%;width:${b.w}px;
       background:${c};opacity:${b.o};transform:translateX(-50%)"></div>`;}).join('');
   const legend=_AGEB.slice().reverse().map(b=>`<span style="display:inline-block;margin-right:9px"><span style="display:inline-block;width:${b.w}px;height:11px;background:var(--tx2);opacity:${b.o};vertical-align:-2px"></span> ${b.t}</span>`).join('');
@@ -778,7 +782,7 @@ function layerBarPanel(ks){
     <div class="sub" style="padding:7px 14px;font-size:10.5px;line-height:1.75;border-top:1px solid var(--bd)">
       한 눈금 = <b>살아있는 파동 하나의 실존가</b>(그 파동에서 생존한 층 중 현재가에 가장 가까운 것)입니다. 위쪽은 <span style="color:var(--sell)">매도</span>, 아래쪽은 <span style="color:var(--buy)">매수</span>입니다.<br>
       <b>대표값을 고르지 않습니다</b> · 살아있는 층을 전부 찍습니다. 하나를 골라 선으로 삼으면 그 선이 <b>봉마다 갈아탑니다</b>.<br>
-      <b>굵기·진하기 = 그 층이 몇 봉째 유지 중인가</b>입니다. 갓 생긴 층과 오래 버틴 층을 같은 선으로 그리면 읽는 사람이 속습니다.<br>
+      <b>굵기·진하기 = 그 층을 종가가 몇 봉째 연속으로 지키고 있나</b>입니다(생긴 지 얼마나 됐나가 아닙니다). 갓 지키기 시작한 층과 오래 지켜 온 층을 같은 선으로 그리면 읽는 사람이 속습니다.<br>
       <b>죽은 파동은 넣지 않습니다.</b> 뿌리가 깨진 파동의 층은 이 그림에서 빠집니다.
     </div></div>`;
 }
