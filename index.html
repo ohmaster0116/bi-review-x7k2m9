@@ -616,6 +616,113 @@ function vbFillPanel(ks){
       <b style="color:#f0a83c">★파동과의 관계 - 캔들 크기로 갈립니다(2026-07-05 §M-0-1 4자 정본 · 정의: 완주=(고−저)≥평균변동폭, 파동=전봉 마감 기준)</b> - <b>주봉이 가장 명확</b>: 완주율 일치 48.7%(N158) vs 역행 37.8%(N148) = 10.9%p. <b>일봉은 중간</b>(44.9% vs 37.3%, 7.6%p·N1117/1197). 월봉은 표본 부족(N34/28)이라 판단 보류. 역행이면 완주가 통계적으로 어려워지되 <b>확정이 아니라 우세</b>입니다 - 역행인데 절반 이상 진행하면 <b>소수 시나리오 진행 = 반전/프랙탈 신호 후보</b>(위 ④ 캡 줄에 자동 표시). 완주 자체는 그 방향 파동의 동시 증거 - 확인용이지 선행 예측이 아닙니다.<br>
       <b style="color:var(--gold2)">★역회전(되돌림) 발생 진행률</b> - 전체 역회전율 15~17%인데, <b>대부분 진행률 50% 이전(중앙값 ~35%)에 발생</b>(역회전의 약 60%가 0~50% 구간, 그중 0~25%가 40%↑). 진행률이 낮을수록 역회전율↑(0~25%=약 20~26%), <b>평균변동폭을 넘기면(150%+) 역회전 ~3~7%로 급감</b>. → 초반 진입은 되돌림 위험, <b>이미 절반 이상 진행한 방향은 마저 갈 확률이 높음</b>.</div>
     <div class="scroll"><table><thead><tr><th class="l">봉</th><th>평균변동폭</th><th>현재 변동폭</th><th>충전율</th><th class="l">달성 / 미달성</th><th class="l">메움 방향 (이미 간 쪽)</th><th>메움 유지%</th><th>단기반등 회복%</th></tr></thead><tbody>${ks.map(row).join('')}</tbody></table></div></div>`;}
+
+
+
+
+
+
+
+const _BZK={};
+function bandZoneKR(k){
+  try{
+    const A=E[k]; if(!A||A.length<60)return null;
+    const w=null;   
+    const nd=A.length-2; if(nd<40)return null;              
+    const key=k+'|'+A.length+'|'+nd+'|'+(A[nd]?A[nd].c:0);
+    if(_BZK[key])return _BZK[key];
+    const gj=b=>(b.o+b.h+b.l+b.c)/4;
+    const B=[]; const win=[]; let s=0,c=0;
+    for(let i=0;i<=nd;i++){
+      const b=A[i], r=b.h-b.l;
+      let ar=null;
+      if(w){ ar=(win.length>=Math.min(w.take,20))?(win.reduce((x,y)=>x+y,0)/w.div):null; }
+      else { ar=c?s/c:null; }
+      if(ar>0){
+        const mid=(b.h+b.l)/2;
+        let tr=1; const p1=A[i-1],p2=A[i-2],p3=A[i-3];
+        if(p1&&p2&&p3){const g1=gj(p1),g2=gj(p2),g3=gj(p3);
+          if(g1>g2&&g2>g3)tr=2; else if(g1<g2&&g2<g3)tr=0;}
+        B.push({i:i,rate:Math.max(0,Math.min(100,50+(b.c-mid)/(ar/2)*50)),mid:mid,gj:gj(b),ar:ar,tr:tr});
+      }
+      if(r>0){ s+=r; c++; win.push(r); if(w&&win.length>w.take)win.shift(); }
+    }
+    if(!B.length)return null;
+    const Z=[]; for(let z=0;z<10;z++)Z.push({lo:z*10,hi:z*10+10,n:0,m1:0,g1:0,m3:0,m5:0,aw:0,awn:0,
+      t:[{n:0,m:0},{n:0,m:0},{n:0,m:0}]});
+    const tot={n:0,m1:0,g1:0,m3:0,m5:0,aw:0,awn:0};
+    const TR=[{n:0,m1:0},{n:0,m1:0},{n:0,m1:0}];
+    const touch=(f,t,v)=>{for(let j=f;j<=t&&j<=nd;j++){if(A[j].l<=v&&v<=A[j].h)return true;}return false;};
+    for(const e of B){
+      if(e.i+1>nd)continue;
+      const Zi=Z[Math.min(9,Math.floor(e.rate/10))];
+      Zi.n++; tot.n++; TR[e.tr].n++; Zi.t[e.tr].n++;
+      if(touch(e.i+1,e.i+1,e.mid)){Zi.m1++;tot.m1++;TR[e.tr].m1++;Zi.t[e.tr].m++;}
+      if(touch(e.i+1,e.i+1,e.gj)){Zi.g1++;tot.g1++;}
+      if(touch(e.i+1,e.i+3,e.mid)){Zi.m3++;tot.m3++;}
+      if(touch(e.i+1,e.i+5,e.mid)){Zi.m5++;tot.m5++;}
+      else if(e.ar>0){ let far=0;
+        for(let j=e.i+1;j<=Math.min(e.i+5,nd);j++)far=Math.max(far,Math.abs(A[j].h-e.mid),Math.abs(A[j].l-e.mid));
+        Zi.aw+=far/e.ar; Zi.awn++; tot.aw+=far/e.ar; tot.awn++; }
+    }
+    const last=B[B.length-1];
+    const dt=t=>{try{return new Date(t).toISOString().slice(0,10);}catch(e){return '';}};
+    const R={tf:k,zones:Z,tot:tot,tr:TR,now:last?{rate:last.rate,tr:last.tr}:null,
+             from:dt(A[B[0].i].t),to:dt(A[nd].t)};
+    _BZK[key]=R; return R;
+  }catch(e){return null;}
+}
+function bandZoneRows(k){
+  const R=bandZoneKR(k); if(!R||!R.tot.n)return '';
+  const p=(a,b)=>b?(a/b*100).toFixed(1)+'%':'없음';
+  const nz=R.now?Math.min(9,Math.floor(R.now.rate/10)):-1, ct=R.now?R.now.tr:-1;
+  const body=R.zones.map((z,zi)=>{
+    const hit=zi===nz, thin=z.n>0&&z.n<30, zt=ct>=0?z.t[ct]:null, tthin=zt&&zt.n>0&&zt.n<30;
+    return `<tr${hit?' style="background:rgba(214,162,58,.14)"':''}>`
+      +`<td class="l"${hit?' style="font-weight:800;color:var(--gold2)"':''}>${z.lo}~${z.hi}%${hit?' ◀ 지금':''}</td>`
+      +`<td class="num"${thin?' style="color:var(--warn)"':''}>${z.n}${thin?' ⚠':''}</td>`
+      +`<td class="num" style="font-weight:700">${p(z.m1,z.n)}</td>`
+      +`<td class="num"${tthin?' style="color:var(--warn)"':''}>${zt?p(zt.m,zt.n):'없음'}${zt&&zt.n?` <span class="sub">(${zt.n})</span>`:''}</td>`
+      +`<td class="num">${p(z.m3,z.n)}</td><td class="num">${p(z.m5,z.n)}</td>`
+      +`<td class="num">${z.awn?`<b style="color:var(--warn)">${(z.aw/z.awn).toFixed(1)}배</b> <span class="sub">(${z.awn})</span>`:'없음'}</td></tr>`;}).join('');
+  const t=R.tot;
+  const trLine=(()=>{const T=R.tr; if(!T||!T.some(x=>x.n))return '';
+    const nm=['매도 추세','중립','매수 추세'], cl=['var(--sell)','var(--tx2)','var(--buy)'];
+    const cells=[2,1,0].map(j=>`<span style="color:${cl[j]}${j===ct?';font-weight:800':''}">${nm[j]}${j===ct?' ◀ 지금':''} <b>${p(T[j].m1,T[j].n)}</b></span> <span class="sub">(N ${T[j].n.toLocaleString()})</span>`).join(' · ');
+    const vs=T.filter(x=>x.n).map(x=>x.m1/x.n*100), sp=vs.length>1?(Math.max(...vs)-Math.min(...vs)):0;
+    return `<div class="sub" style="font-size:10px;margin:3px 0 0;line-height:1.6">추세로 갈라 본 가운데 회귀율 : ${cells} <b>· 가장 벌어진 폭 ${sp.toFixed(1)}%p</b>${sp<=3?' (추세로 갈라도 거의 같습니다)':' · <b>추세에 따라 이만큼 갈립니다. 지금 추세 칸을 보십시오.</b>'}</div>`;})();
+  return `<div style="margin-bottom:10px"><div style="font-size:11.5px;margin:0 0 4px"><b>${NAME[k]}</b>`
+    +` <span class="sub">· ${R.from} ~ ${R.to} · 센 봉 ${t.n.toLocaleString()}개`
+    +`${R.now?` · 지금 매수율 <b style="color:var(--gold2)">${R.now.rate.toFixed(0)}%</b>`:''}`
+    +` · 기준가까지 닿은 비율은 전체 <b>${p(t.g1,t.n)}</b>${t.n<300?` · <b style="color:var(--warn)">표본이 얇습니다 · 참고로만</b>`:''}</span></div>`
+    +`<div class="scroll"><table style="font-size:11px;table-layout:fixed;width:100%"><thead><tr>`
+    +`<th class="l" style="width:24%">매수율 칸</th><th style="width:9%">N</th>`
+    +`<th style="width:13%">가운데</th><th style="width:18%">지금 추세에서</th>`
+    +`<th style="width:9%">3봉</th><th style="width:9%">5봉</th><th style="width:18%">못 돌아오면</th></tr></thead>`
+    +`<tbody>${body}<tr style="border-top:1px solid var(--gold)"><td class="l" style="font-weight:700">전체</td>`
+    +`<td class="num" style="font-weight:700">${t.n.toLocaleString()}</td>`
+    +`<td class="num" style="font-weight:700">${p(t.m1,t.n)}</td>`
+    +`<td class="num">${(R.tr&&ct>=0)?p(R.tr[ct].m1,R.tr[ct].n):'없음'}</td>`
+    +`<td class="num">${p(t.m3,t.n)}</td><td class="num">${p(t.m5,t.n)}</td>`
+    +`<td class="num">${t.awn?`<b style="color:var(--warn)">${(t.aw/t.awn).toFixed(1)}배</b>`:'없음'}</td></tr></tbody></table></div>`
+    +trLine+`</div>`;
+}
+function bandZonePanel(){
+  const rows=['h4','d1','w1','M1'].map(bandZoneRows).filter(Boolean).join('');   
+  if(!rows)return '';
+  const mk='비트코인';
+  return `<div class="panel" style="border:1px solid var(--gold)"><div class="hd" style="color:var(--gold2)">`
+    +`구간별 회귀율 · 지금 자리에서 되돌아온 비율 <span class="sub">· ${mk} 실측 · 예측 아님</span></div>`
+    +`<div style="padding:9px 14px 2px">${rows}</div>`
+    +`<div class="sub" style="padding:7px 14px;font-size:10.5px;line-height:1.75;border-top:1px solid var(--bd)">`
+    +`칸 = 그 봉이 마감한 <b>매수율</b> 자리(밴드 가운데=50 · 가운데±반폭=0/100). 값은 <b>그 봉 마감 시점</b>에 정해지며 다음 봉을 보고 정하지 않습니다.<br>`
+    +`<b>「지금 추세에서」 칸이 실제로 보실 수</b>입니다 · 같은 자리라도 추세에 따라 갈립니다. 괄호는 그 칸의 N.<br>`
+    +`<b>못 돌아오면</b> = 5봉 안에 가운데를 못 닿은 경우가 그 5봉 동안 <b>가운데에서 가장 멀어진 거리</b>(평소 변동폭의 몇 배). <b>돌아온 쪽만 보면 안 돌아온 쪽이 가려집니다.</b><br>`
+    +`<b>N 을 먼저 보십시오.</b> N 30 미만 칸은 ⚠ 를 달았습니다. 이 표는 <b>${mk} 실측</b>이며 <b>다른 시장 수치를 쓰지 않습니다</b> · 같은 자로 재도 시장마다 답이 다릅니다.<br>`
+    +`<b>이 표는 방향을 말하지 않습니다</b> · 되돌아오는 비율일 뿐입니다. 비율이 낮다는 것은 <b>그 자리에 머물지 않는다</b>는 뜻이지 어느 쪽으로 간다는 뜻이 아닙니다.`
+    +`</div></div>`;
+}
+
 function viewVB(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1','M1','y1'];
   
   const vbNote=k=>{const a=E[k];const ar=avgRangePct(a);const f2=vbFill(k);var ex='';
@@ -626,7 +733,7 @@ function viewVB(){const px=E.d1[E.d1.length-1].c, ks=['m30','h1','h4','d1','w1',
     '평소 하루 움직임(변동폭) 대비 오늘 얼마나 썼는지 봅니다. 남은 여력이 적으면 그 방향 추격은 자제하는 편이 낫다는 판단입니다.',
     '잔여 변동폭 = 목표 도달 여지입니다. 진행률 50% 미만은 역회전이 잦고, 100% 이상은 캡 달성이라 그 방향 신규는 자제로 보시면 됩니다.',
     '')
-    +vbFillPanel(ks)+'<div class="bandgrid">'
+    +vbFillPanel(ks)+bandZonePanel()+'<div class="bandgrid">'
     +ks.map(k=>bandPanelM(NAME[k],vbCols(k),px,vbNote(k),k)).join('')+'</div>'
     +'<div class="bandgrid2">'+comboPanelM('일·주',['d1','w1'],vbBand)+comboPanelM('일·주·월',['d1','w1','M1'],vbBand)+comboPanelM('일·주·월·연',['d1','w1','M1','y1'],vbBand)+'</div>';}
 function viewExp(){const ks=['d1','w1','M1','y1'], px=E.d1[E.d1.length-1].c;
